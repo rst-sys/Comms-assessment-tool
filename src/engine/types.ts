@@ -215,8 +215,8 @@ export interface Finding {
   finding: string;
   why_it_matters: string;
   stakeholder_risk: string;
+  /** The kind of information to add, remove or clarify; never rewritten text. */
   recommended_action: string;
-  suggested_revision: string;
   fact_validation_needed: boolean;
   specialist_review_needed: boolean;
   specialist_review_type: SpecialistReviewType | null;
@@ -230,17 +230,17 @@ export interface AgencyScanItem {
   assessment: ScanAssessment;
   why: string;
   what_would_make_it_credible: string;
-  suggested_edit: string;
   finding_id: string | null;
 }
 
 export interface Persona {
   persona: string;
+  /** At most twelve words: the persona's key concern. */
+  headline: string;
   may_hear: string;
   may_question: string;
   may_find_missing: string;
   would_address_it: string;
-  suggested_sentence: string;
 }
 
 export interface DevilsAdvocate {

@@ -64,7 +64,7 @@ export function FindingsRegister({ findings }: { findings: Finding[] }) {
               </th>
               <th scope="col">Excerpt or omission</th>
               <th scope="col">Finding</th>
-              <th scope="col">Suggested revision</th>
+              <th scope="col">What to add or clarify</th>
               <th scope="col">Fact validation</th>
               <th scope="col">Specialist review</th>
               <th scope="col">Status</th>
@@ -77,7 +77,7 @@ export function FindingsRegister({ findings }: { findings: Finding[] }) {
                 <td>{DIMENSION_LABELS[f.dimension]}</td>
                 <td>{f.excerpt !== null ? <q>{f.excerpt}</q> : <span className="omission">{f.omission}</span>}</td>
                 <td>{f.finding}</td>
-                <td>{f.suggested_revision}</td>
+                <td>{f.recommended_action}</td>
                 <td>{f.fact_validation_needed ? "Needed" : "—"}</td>
                 <td>{f.specialist_review_needed ? f.specialist_review_type ?? "Needed" : "—"}</td>
                 <td>

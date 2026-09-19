@@ -5,7 +5,7 @@ export { ANALYSIS_SCHEMA } from "./schema.js";
 export { buildSystemBlocks, buildUserMessage, OUTPUT_NOTES } from "./prompt.js";
 export { SYSTEM_PROMPT, LAYOFF_BLOCK } from "./promptText.js";
 export { EngineError, type EngineErrorKind, type ModelUsage } from "./client.js";
-export { evaluateDraft, type EvaluationResult, type EvaluateOptions } from "./evaluate.js";
+export { evaluateDraft, finishEvaluation, type EvaluationResult, type EvaluateOptions } from "./evaluate.js";
 export {
   validateAnalysis,
   findVerbatim,
@@ -14,4 +14,3 @@ export {
   type ValidationAdjustments,
 } from "./validate.js";
 export * from "./fixtures.js";
-export { redraftMinimalRisk, validateRedraft, extractPlaceholders, buildRedraftUserMessage, REDRAFT_SYSTEM_PROMPT, type Redraft, type RedraftResult, type RedraftChange } from "./redraft.js";

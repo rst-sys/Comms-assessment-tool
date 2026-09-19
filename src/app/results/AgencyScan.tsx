@@ -83,7 +83,6 @@ function ScanCard({ item }: { item: AgencyScanItem }) {
         <dt>Assessment</dt><dd>{item.assessment}</dd>
         <dt>Why</dt><dd>{item.why}</dd>
         <dt>What would make it credible</dt><dd>{item.what_would_make_it_credible}</dd>
-        <dt>Suggested edit</dt><dd>{item.suggested_edit}</dd>
         <dt>Related finding</dt>
         <dd>
           {item.finding_id ? (

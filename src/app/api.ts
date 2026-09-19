@@ -3,8 +3,7 @@
  * nothing here logs request or response bodies.
  */
 import type { EvaluationResult } from "../engine/evaluate.js";
-import type { RedraftResult } from "../engine/redraft.js";
-import type { Analysis, CommunicationType, EvaluationRequest } from "../engine/types.js";
+import type { CommunicationType, EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
 export interface ImportedPage {
@@ -55,14 +54,12 @@ async function post<T>(path: string, body: unknown, fallback: string): Promise<T
 /** How the app reaches the engine. The default talks to the application server; another runtime can swap it. */
 export interface ApiImplementation {
   evaluate(request: EvaluationRequest): Promise<EvaluationResult>;
-  redraft(request: EvaluationRequest, analysis: Analysis): Promise<RedraftResult>;
   importUrl(url: string): Promise<ImportedPage>;
   fetchConfig(): Promise<PrivacyConfig | null>;
 }
 
 export const serverApi: ApiImplementation = {
   evaluate: (request) => post<EvaluationResult>("/api/evaluate", request, "The evaluation failed. Try again."),
-  redraft: (request, analysis) => post<RedraftResult>("/api/redraft", { request, analysis }, "The revision failed. Try again."),
   importUrl: (url) => post<ImportedPage>("/api/import", { url }, "Couldn't extract readable text from this page. Paste the text instead."),
   async fetchConfig() {
     try {
@@ -83,6 +80,5 @@ export function configureApi(impl: ApiImplementation): void {
 }
 
 export const evaluate = (request: EvaluationRequest) => current.evaluate(request);
-export const redraft = (request: EvaluationRequest, analysis: Analysis) => current.redraft(request, analysis);
 export const importUrl = (url: string) => current.importUrl(url);
 export const fetchConfig = () => current.fetchConfig();

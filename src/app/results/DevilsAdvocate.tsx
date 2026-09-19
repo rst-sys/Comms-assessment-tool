@@ -7,13 +7,13 @@ export function DevilsAdvocate({ data }: { data: DevilsAdvocateData }) {
       <p className="muted" style={{ marginTop: 0 }}>{data.disclaimer}</p>
       <div className="persona-grid">
         {data.personas.map((p) => (
-          <article key={p.persona} className="card" aria-label={p.persona}>
-            <h3 style={{ marginTop: 0 }}>{p.persona}</h3>
+          <article key={p.persona} className="card persona" aria-label={p.persona}>
+            <div className="label">{p.persona}</div>
+            <h3 className="persona-headline">{p.headline}</h3>
             <div className="label">May hear</div><p style={{ margin: 0 }}>{p.may_hear}</p>
             <div className="label">May question</div><p style={{ margin: 0 }}>{p.may_question}</p>
             <div className="label">May find missing</div><p style={{ margin: 0 }}>{p.may_find_missing}</p>
             <div className="label">What would address it</div><p style={{ margin: 0 }}>{p.would_address_it}</p>
-            <div className="label">Suggested sentence</div><p style={{ margin: 0 }}>{p.suggested_sentence}</p>
           </article>
         ))}
       </div>

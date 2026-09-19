@@ -1,15 +1,21 @@
 # Accountable Communications Review — Build Prompt v2
 
+> **Revisions after testing (2026-09-19).** Four decisions from the owner's first round of testing amend this prompt and take precedence over any conflicting line below:
+> 1. **Brevity.** The executive assessment is two sentences, at most 60 words. Every finding field is at most two sentences.
+> 2. **Agency calibration.** An organization speaking in its own name ("COMPANY_NAME has decided") or as "we", or naming a body such as the executive team or the board, as the subject of an active decision counts as identified agency. Naming an individual is never required; many organizations cannot or will not. Accountability findings are reserved for decisions attributed to conditions, abstractions, outside forces or passive constructions, or where no one at all is shown deciding. "Name the deciding body or role" is a Low-severity suggestion, never a cap on the score.
+> 3. **No rewrites.** The tool never proposes replacement wording, rewritten sentences or a redraft. It highlights the passages that could use rewriting and describes the kind of information to add, remove or clarify. The user is the author and the authority. The Minimal-Risk redraft mode is removed; step 4 of the build order is void.
+> 4. **Devil's Advocate headlines.** Each persona card leads with a strong headline of at most twelve words that states the persona's key concern.
+
 ## 1. Build mandate
 
-Build a working prototype of one review loop, not a product suite. The loop is: intake → evaluate → results → one redraft. Everything else in this prompt is either a stub or explicitly out of scope.
+Build a working prototype of one review loop, not a product suite. The loop is: intake → evaluate → results. Everything else in this prompt is either a stub or explicitly out of scope.
 
 **Build in this order, and finish each step before starting the next:**
 
 1. The evaluation engine (Sections 5–8), tested against the three demo fixtures in Section 12 until every expected finding appears.
 2. The results page (Section 9).
 3. The intake screen (Section 3) with the privacy panel (Section 4).
-4. The Minimal-Risk redraft mode only.
+4. ~~The Minimal-Risk redraft mode only.~~ Removed after testing (see revisions above).
 5. Design polish (Section 11).
 
 **Stub, do not build:** Saved Reviews, Compare Revisions, Team Workspace, Enterprise Governance Console, Standards Library, Settings. Each gets a nav entry and a one-paragraph page stating what it will do and that it is not in this build. Do not add placeholder forms, fake data tables, or mock toggles for these areas.
@@ -52,7 +58,7 @@ One screen, two panels: the draft on the left, context on the right (stacked on 
 
 **Draft source.** Two tabs above the draft box: "Paste text" and "Import from URL." The URL tab lets a user evaluate an announcement that is already published — a press release, a CEO letter on the corporate site, a blog post, a LinkedIn article, a regulatory filing page. On submit, fetch the page through a thin server-side proxy (browsers block cross-origin fetches), extract the main article text with a readability library, strip navigation, boilerplate, cookie banners, and comments, and drop the result into the draft box as editable text. Show the source URL, page title, and publication date if the page exposes one, and pre-fill Communication type where the page makes it obvious (a newsroom URL suggests Press release). The user reviews and trims the extracted text before evaluating; the engine never sees the URL or the raw HTML, only the text in the box.
 
-When the draft came from a URL, set `already_published: true` on the request and tell the engine so in the user message. The engine then frames findings retrospectively — "this may have left agency unclear for readers" rather than "consider identifying the decision owner before issuing" — the readiness line reads "Retrospective review — already issued," and the redraft is labeled as a model for future statements or a follow-up, not a fix to the original. Handle failures plainly: paywalled, login-gated, PDF, or JavaScript-only pages return "Couldn't extract readable text from this page. Paste the text instead." The proxy logs the domain and a status code, never the URL path or the fetched content.
+When the draft came from a URL, set `already_published: true` on the request and tell the engine so in the user message. The engine then frames findings retrospectively — "this may have left agency unclear for readers" rather than "consider identifying the decision owner before issuing" — and the readiness line reads "Retrospective review — already issued." Handle failures plainly: paywalled, login-gated, PDF, or JavaScript-only pages return "Couldn't extract readable text from this page. Paste the text instead." The proxy logs the domain and a status code, never the URL path or the fetched content.
 
 **Required fields.** The Evaluate button stays disabled until all seven are set.
 
@@ -135,7 +141,10 @@ Evaluate whether the draft makes visible: the decision; who had authority over i
 SCORING
 Score ten dimensions from 0.0 to 5.0 in increments of 0.5. The dimensions and weights are: truthfulness_factual_discipline (12), clarity_plain_language (8), accountability_agency (18), causation_explanation (12), stakeholder_respect_impact (12), listening_employee_voice (10), corrective_action_proof (10), verification_follow_through (8), fairness_independence_conflicts (5), future_readiness_learning (5). Do not compute the total; the application does. For every dimension, give a two-sentence rationale citing an exact excerpt or a specific omission, and a one-sentence "what would raise this".
 
-A dimension scores 4.0 or above only if the draft names a specific actor, action, impact, or verifier for it. Values statements, intentions, and reassurance do not earn above 3.0 on their own.
+A dimension scores 4.0 or above only if the draft names a specific actor, action, impact, or verifier for it. The actor may be the organization itself speaking in its own name or as "we", a body such as the executive team or the board, a role, or a person; an individual's name is never required. Values statements, intentions, and reassurance do not earn above 3.0 on their own.
+
+AGENCY CALIBRATION
+Treat the organization's own name or "we" as the subject of an active decision, or a named body or role, as identified agency, provided the draft also owns the reasons for the decision. Reserve accountability findings for decisions attributed to conditions, abstractions, outside forces, or passive constructions, or where no one at all is shown deciding. Where a draft owns a decision but could name the deciding body or role, say so in "what would raise this" at Low severity; never cap a score for the absence of an individual's name.
 
 STATED VERSUS SUBSTANTIATED
 For accountability_agency, causation_explanation, and corrective_action_proof, every claim in the draft carries one of three labels: ASSERTED (the draft says it, nothing in context confirms or contradicts it), SUPPORTED (a context field confirms it), or UNVERIFIABLE (nothing in the draft or context could confirm it). A draft that asserts ownership or causation without support cannot score above 3.5 on that dimension, and the rationale must say the claim is asserted, not confirmed. If context fields are empty, say so in the executive assessment and note that agency and causation scores reflect the draft's language only.
@@ -147,13 +156,13 @@ AGENCY AND ABSTRACTION SCAN
 Flag a phrase only when it is doing causal or explanatory work: it is the grammatical subject of a sentence about what happened or why, or it follows "due to", "because", "as a result of", "driven by", "reflecting", or an equivalent. A word on the watchlist in an incidental position is not a finding. For each flag, state whether it is legitimate context, an incomplete explanation, or a potential accountability gap, and say what information would make it credible. Never treat all abstraction as wrong.
 
 DEVIL'S ADVOCATE
-Select five audience personas appropriate to the communication type, audience, and setting. For each, describe what a skeptical but reasonable reader may hear, question, and find missing, what would address it, and one suggested sentence. Then state the single most damaging plausible interpretation if the draft is issued unchanged. These are interpretations, not facts, and you must say so.
+Select five audience personas appropriate to the communication type, audience, and setting. For each, write a strong headline of at most twelve words that states the persona's key concern, then describe what a skeptical but reasonable reader may hear, question, and find missing, and what kind of information would address it. Then state the single most damaging plausible interpretation if the draft is issued unchanged. These are interpretations, not facts, and you must say so.
 
 NON-INVENTION
-Never invent metrics, dates, figures, benefits, personnel outcomes, policies, commitments, reviews, approvals, support programs, or facts. Where a revision needs one, use a bracketed placeholder such as [accountable executive or team], [date], [metric], [update channel], [employee support information], [legal review]. Do not force self-blame the context does not support.
+Never invent metrics, dates, figures, benefits, personnel outcomes, policies, commitments, reviews, approvals, support programs, or facts. Never write replacement wording, rewritten sentences, or a redraft: the author is the writer. Describe the kind of information that could be added, removed, or clarified, such as the deciding body, a date, a metric, an update channel, or support information. Do not force self-blame the context does not support.
 
 LANGUAGE
-Use calibrated phrasing: "this may leave agency unclear", "a reasonable stakeholder could interpret this as", "this identifies an external condition but does not yet explain internal exposure", "this commitment is not yet verifiable", "consider identifying the decision owner". Never write that the organization lied, is guilty, acted in bad faith, broke the law, or is legally compliant. Never state a motive. Distinguish missing information from false information. Where a finding touches employment, labor, securities, privacy, health, litigation, or local-market rules, set specialist_review_needed to true and name the review type.
+Use calibrated phrasing: "this may leave agency unclear", "a reasonable stakeholder could interpret this as", "this identifies an external condition but does not yet explain internal exposure", "this commitment is not yet verifiable", "consider identifying the deciding body or role". Be brief: the executive assessment is two sentences of at most 60 words in total, and every finding field is at most two sentences. Never write that the organization lied, is guilty, acted in bad faith, broke the law, or is legally compliant. Never state a motive. Distinguish missing information from false information. Where a finding touches employment, labor, securities, privacy, health, litigation, or local-market rules, set specialist_review_needed to true and name the review type.
 
 OUTPUT
 Return only the JSON object specified in the schema. No prose before or after it.
@@ -167,7 +176,7 @@ Validate every response against this schema before rendering. On failure, show "
 {
   "schema_version": "1.0",
   "executive_summary": {
-    "assessment": "string, 2-4 sentences",
+    "assessment": "string, 2 sentences, at most 60 words",
     "risk_level": "Low | Moderate | High | Critical",
     "readiness": "Ready with minor edits | Revise before issuing | Escalate for senior or specialist review | Do not issue until material gaps are resolved",
     "context_supplied": "boolean",
@@ -193,8 +202,7 @@ Validate every response against this schema before rendering. On failure, show "
       "finding": "string",
       "why_it_matters": "string",
       "stakeholder_risk": "string",
-      "recommended_action": "string",
-      "suggested_revision": "string with [placeholders] where facts are needed",
+      "recommended_action": "string: the kind of information to add, remove, or clarify, never rewritten text",
       "fact_validation_needed": "boolean",
       "specialist_review_needed": "boolean",
       "specialist_review_type": "Legal | HR | Labor | Privacy | Investor relations | Local market | Executive | null",
@@ -209,7 +217,6 @@ Validate every response against this schema before rendering. On failure, show "
       "assessment": "Legitimate context | Incomplete explanation | Potential accountability gap",
       "why": "string",
       "what_would_make_it_credible": "string",
-      "suggested_edit": "string with [placeholders] where needed",
       "finding_id": "F-xxx or null"
     }
   ],
@@ -218,11 +225,11 @@ Validate every response against this schema before rendering. On failure, show "
     "personas": [
       {
         "persona": "string",
+        "headline": "string, at most twelve words, the persona's key concern",
         "may_hear": "string",
         "may_question": "string",
         "may_find_missing": "string",
-        "would_address_it": "string",
-        "suggested_sentence": "string"
+        "would_address_it": "string"
       }
     ],
     "most_damaging_interpretation": "string"
@@ -288,14 +295,14 @@ The scan identifies language that lets decision-making responsibility disappear 
 | Values without action | we take this seriously, we remain committed, our values guide us, we are listening, we will do better, we care deeply, we are focused on trust | Incomplete unless followed by a specific action |
 | Vague action | streamline, optimize, rightsize, transform, enhance, simplify, evolve, modernize, realign, move forward, strengthen | Incomplete when no concrete action, owner, or date follows |
 
-**Display.** Render the draft with each flagged phrase highlighted in the category's tint. Clicking a highlight opens a card with: phrase, category, severity, assessment (Legitimate context / Incomplete explanation / Potential accountability gap), why, what would make it credible, suggested edit, and a link to the related finding if one exists. A filter row lets the user hide categories.
+**Display.** Render the draft with each flagged phrase highlighted in the category's tint. Clicking a highlight opens a card with: phrase, category, severity, assessment (Legitimate context / Incomplete explanation / Potential accountability gap), why, what would make it credible, and a link to the related finding if one exists. A filter row lets the user hide categories.
 
 **Reference example the build should reproduce on Demo 1.**
 
 - Phrase: "Rapid growth brought complexity."
 - Category: Institutional abstraction. Severity: High. Assessment: Potential accountability gap.
 - Why: Growth is a condition, not a decision-maker. The sentence leaves readers without an account of the leadership choices, structures, priorities, or governance practices that produced complexity.
-- Suggested edit: "As we grew, leadership added structures and coordination layers that fit an earlier stage but became too layered at our current scale. We did not simplify quickly enough." Alternative: "As the company expanded, our operating model did not keep pace with the need for clear ownership and faster decisions. We are changing that through [specific actions]."
+- What would make it credible: an account of the leadership choices, structures, priorities, or governance practices that produced the complexity, and what is changing. (Earlier versions of this prompt supplied a suggested edit here; the tool no longer proposes wording.)
 
 **Calibration target.** On a well-written, specific executive message with no accountability problems, the scan should return zero or one Low finding. If the build produces three or more flags on such a draft, the trigger rule is being ignored and the prompt needs tightening before anything else proceeds.
 
@@ -310,7 +317,6 @@ flowchart TD
   B --> D[Agency scan<br/>collapsed]
   B --> E[Devil's advocate<br/>collapsed]
   B --> F[Questions before publication<br/>collapsed]
-  B --> G[Minimal-risk redraft<br/>on request]
 ```
 
 Summary and top findings render open; the five sections below them render as collapsed panels the user expands.
@@ -319,19 +325,19 @@ Summary and top findings render open; the five sections below them render as col
 
 **Readiness label.** Display the readiness value under the heading "Communications readiness," never "Approval" or "Cleared." When specialist review is required, render the readiness line with the review chips beside it so the two are read together.
 
-**Top findings (always open).** The five highest-severity findings as cards: severity marker, dimension, excerpt in a quote block or omission in italics, claim status chip when present, finding, why it matters, suggested revision, and the fact-validation and specialist-review flags. A "Show all findings" link expands the full register.
+**Top findings (always open).** The five highest-severity findings as cards: severity marker, dimension, excerpt in a quote block or omission in italics, claim status chip when present, finding, why it matters, what to add or clarify, and the fact-validation and specialist-review flags. A "Show all findings" link expands the full register.
 
-**Full findings register (collapsed).** A table with columns: Severity · Dimension · Excerpt or omission · Finding · Suggested revision · Fact validation · Specialist review · Status. Sortable by severity and dimension. Filter chips: High only · Accountability · Employee voice · Clarity · Impact · Commitments and verification · Specialist review. Status is a per-row dropdown held in state only: Open · Accepted risk · Not applicable · Resolved · Needs review. Status is not persisted anywhere.
+**Full findings register (collapsed).** A table with columns: Severity · Dimension · Excerpt or omission · Finding · What to add or clarify · Fact validation · Specialist review · Status. Sortable by severity and dimension. Filter chips: High only · Accountability · Employee voice · Clarity · Impact · Commitments and verification · Specialist review. Status is a per-row dropdown held in state only: Open · Accepted risk · Not applicable · Resolved · Needs review. Status is not persisted anywhere.
 
 **Scorecard (collapsed).** Ten horizontal bars in the color scale, weight shown beside each, click to expand rationale and "what would raise this."
 
 **Agency scan (collapsed).** Per Section 8.
 
-**Devil's advocate (collapsed).** Heading: "Devil's Advocate: how skeptical audiences may read this." Disclaimer line from the schema rendered above the personas, not below. Five persona cards, then the most damaging plausible interpretation in a burgundy-bordered callout.
+**Devil's advocate (collapsed).** Heading: "Devil's Advocate: how skeptical audiences may read this." Disclaimer line from the schema rendered above the personas, not below. Five persona cards, each led by its headline, then the most damaging plausible interpretation in a burgundy-bordered callout.
 
 **Questions before publication (collapsed).** A numbered list, 5–12 items, with a copy button.
 
-**Minimal-risk redraft (on request).** A button "Draft a minimal-risk revision" makes a second LLM call with the original draft, the findings, and the non-invention rule. Show original and revised side by side with additions and deletions marked, a change log, and a list of bracketed placeholders the user must fill. The redraft must preserve the original's structure and tone and change only what a finding justifies.
+**Minimal-risk redraft.** Removed after testing (see revisions above). The tool does not propose wording.
 
 **Footer of every results page and every export:** the core principle from Section 2, in full, followed by the decision-support disclaimer.
 

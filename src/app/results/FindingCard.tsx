@@ -20,8 +20,8 @@ export function FindingCard({ finding }: { finding: Finding }) {
       <h3 id={`finding-${f.id}-title`} style={{ margin: "8px 0 4px" }}>{f.finding}</h3>
       <div className="label">Why it matters</div>
       <p style={{ margin: 0 }}>{f.why_it_matters}</p>
-      <div className="label">Suggested revision</div>
-      <p style={{ margin: 0 }}>{f.suggested_revision}</p>
+      <div className="label">What to add or clarify</div>
+      <p style={{ margin: 0 }}>{f.recommended_action}</p>
       <div className="flags">
         <span className={`flag ${f.fact_validation_needed ? "flag-on" : ""}`}>
           Fact validation: {f.fact_validation_needed ? "needed" : "not flagged"}

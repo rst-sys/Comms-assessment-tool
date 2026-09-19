@@ -10,7 +10,6 @@ import type { PrivacyConfig } from "../app/PrivacyPanel.js";
 import { finishEvaluation } from "../engine/evaluate.js";
 import { EngineError } from "../engine/client.js";
 import { buildSystemBlocks, buildUserMessage } from "../engine/prompt.js";
-import { buildRedraftUserMessage, finishRedraft, REDRAFT_SCHEMA, REDRAFT_SYSTEM_PROMPT } from "../engine/redraft.js";
 import { ANALYSIS_SCHEMA } from "../engine/schema.js";
 
 type SampleFn = ((input: string, opts?: Record<string, unknown>) => Promise<{ text: string; truncated: boolean; modelTierApplied: string }>) & {
@@ -91,24 +90,6 @@ export const sampleApi: ApiImplementation = {
       return finishEvaluation(raw, request, { requestId: id, provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" }, usage, log: (l) => console.log(l) });
     } catch (e) {
       throw toApiError(e, "The evaluation failed. Try again.");
-    }
-  },
-
-  async redraft(request, analysis) {
-    const sample = await getSample();
-    if (!sample) throw new ApiError(viewerMessage("not_granted", ""), 503, "not_granted");
-    const id = requestId();
-    const input = [REDRAFT_SYSTEM_PROMPT, buildRedraftUserMessage(request, analysis), schemaBlock(REDRAFT_SCHEMA)].join("\n\n");
-    let raw: unknown;
-    try {
-      raw = await sample.json(input, { modelTier: "complex" });
-    } catch (e) {
-      throw toApiError(e, "The revision failed. Try again.");
-    }
-    try {
-      return finishRedraft(raw, request, analysis, { requestId: id, provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" }, usage, log: (l) => console.log(l) });
-    } catch (e) {
-      throw toApiError(e, "The revision failed. Try again.");
     }
   },
 

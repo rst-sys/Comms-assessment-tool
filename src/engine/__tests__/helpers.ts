@@ -14,8 +14,7 @@ export function sampleFinding(overrides: Partial<Finding> = {}): Finding {
     finding: "Growth is named as the cause; no decision-maker is identified.",
     why_it_matters: "Readers cannot tell who decided.",
     stakeholder_risk: "Employees may read this as evasive.",
-    recommended_action: "Name the decision owner.",
-    suggested_revision: "[accountable executive] decided to ...",
+    recommended_action: "The deciding body or role, and the reasons it owned the decision.",
     fact_validation_needed: false,
     specialist_review_needed: true,
     specialist_review_type: "HR",
@@ -27,11 +26,11 @@ export function sampleFinding(overrides: Partial<Finding> = {}): Finding {
 export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
   const persona = {
     persona: "Affected employee",
+    headline: "My job is gone and no one says who decided",
     may_hear: "My role is gone because of feedback.",
     may_question: "Who decided?",
     may_find_missing: "Selection criteria.",
     would_address_it: "State who decided and how roles were selected.",
-    suggested_sentence: "The executive team decided ...",
   };
   return {
     schema_version: "1.0",
@@ -58,7 +57,6 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
         assessment: "Potential accountability gap",
         why: "Growth is a condition, not a decision-maker.",
         what_would_make_it_credible: "Name the leadership choices.",
-        suggested_edit: "As we grew, leadership added structures ...",
         finding_id: "F-001",
       },
     ],

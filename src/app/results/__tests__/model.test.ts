@@ -9,7 +9,6 @@ const scanItem = (phrase: string, overrides: Partial<AgencyScanItem> = {}): Agen
   assessment: "Incomplete explanation",
   why: "",
   what_would_make_it_credible: "",
-  suggested_edit: "",
   finding_id: null,
   ...overrides,
 });
@@ -25,7 +24,6 @@ const finding = (overrides: Partial<Finding>): Finding => ({
   why_it_matters: "",
   stakeholder_risk: "",
   recommended_action: "",
-  suggested_revision: "",
   fact_validation_needed: false,
   specialist_review_needed: false,
   specialist_review_type: null,

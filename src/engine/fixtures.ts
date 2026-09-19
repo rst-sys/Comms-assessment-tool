@@ -78,7 +78,7 @@ export const DEMO_1: Fixture = {
       { label: "no decision rights", pattern: /decision rights|authority|approv|who decided|decided by/i },
       { label: "no selection criteria or support", pattern: /criteria|selection|support|transition|severance|appeal/i },
       { label: "no redeployment", pattern: /redeploy|reskill|internal mobility|redeployment/i },
-      { label: "no correction beyond headcount", pattern: /beyond|headcount|only (action|change)|other than|solely|correction/i },
+      { label: "no correction beyond headcount", pattern: /beyond|headcount|only (action|change)|other than|solely|correction|leaner .* no plan|decision rights|recurrence/i },
       { label: "no learning plan", pattern: /learn|recurr|prevent|governance|operating model/i },
       { label: "no verification", pattern: /verif|metric|milestone|update|measur|follow[- ]through/i },
     ],

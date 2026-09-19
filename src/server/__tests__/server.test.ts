@@ -44,12 +44,6 @@ describe("server endpoints", () => {
     expect(JSON.parse(text).error).toBe("bad_request");
   });
 
-  it("rejects a redraft request whose analysis is malformed, without echoing it", async () => {
-    const res = await fetch(`${base}/api/redraft`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ request: DEMO_1.request, analysis: { schema_version: "1.0", secret: "do not echo" } }) });
-    expect(res.status).toBe(400);
-    expect(await res.text()).not.toContain("do not echo");
-  });
-
   it("refuses a private import address", async () => {
     const res = await fetch(`${base}/api/import`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: "http://127.0.0.1/" }) });
     expect(res.status).toBe(400);

@@ -66,7 +66,6 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
       why_it_matters: str,
       stakeholder_risk: str,
       recommended_action: str,
-      suggested_revision: str,
       fact_validation_needed: bool,
       specialist_review_needed: bool,
       specialist_review_type: nullableEnum(SPECIALIST_REVIEW_TYPES),
@@ -81,7 +80,6 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
       assessment: enumOf(SCAN_ASSESSMENTS),
       why: str,
       what_would_make_it_credible: str,
-      suggested_edit: str,
       finding_id: nullableStr,
     }),
   ),
@@ -90,11 +88,11 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
     personas: arr(
       obj({
         persona: str,
+        headline: str,
         may_hear: str,
         may_question: str,
         may_find_missing: str,
         would_address_it: str,
-        suggested_sentence: str,
       }),
     ),
     most_damaging_interpretation: str,

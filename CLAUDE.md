@@ -10,6 +10,10 @@ the source of truth for scope, behavior, schema, scoring, design, and the
 definition of done. Do not start planning, coding, or answering questions about
 the project until you have read it.
 
+## Revisions after testing take precedence
+
+The note at the top of `PROMPT.md` records decisions the owner made after testing. They override any conflicting line elsewhere in the prompt.
+
 ## Follow the build order in Section 1
 
 `PROMPT.md` Section 1 ("Build mandate") defines a strict build order. Build in
@@ -19,7 +23,7 @@ this order, and finish each step completely before starting the next:
    in Section 12 until every expected finding appears.
 2. The results page (Section 9).
 3. The intake screen (Section 3) with the privacy panel (Section 4).
-4. The Minimal-Risk redraft mode only.
+4. ~~The Minimal-Risk redraft mode only.~~ Removed after testing; see the revisions note at the top of PROMPT.md.
 5. Design polish (Section 11).
 
 ## Never skip ahead
