@@ -171,7 +171,7 @@ function summarize(label: string, r: EvaluationResult): void {
 
 async function main(): Promise<void> {
   const config = getEngineConfig();
-  console.log(`Accountable Communications Review — fixture run\nprovider ${config.provider}, model ${config.model}, effort ${config.effort}`);
+  console.log(`Communications Trustability Review — fixture run\nprovider ${config.provider}, model ${config.model}, effort ${config.effort}`);
 
   if (want("demo1") || want("calibration")) {
     const r = await run(DEMO_1);

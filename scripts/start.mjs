@@ -40,7 +40,7 @@ if (!hasKey && !process.env.ACR_API_KEY) {
 
 const port = process.env.PORT ?? "8787";
 const url = `http://localhost:${port}/`;
-console.log(`\nStarting Accountable Communications Review at ${url}\nLeave this window open while you use the app. Close it to stop.\n`);
+console.log(`\nStarting Communications Trustability Review at ${url}\nLeave this window open while you use the app. Close it to stop.\n`);
 const server = spawn(process.execPath, [join(root, "node_modules", "tsx", "dist", "cli.mjs"), join(root, "src", "server", "server.ts")], {
   stdio: "inherit",
   env: { ...process.env, ACR_SERVE_STATIC: "1", PORT: port },

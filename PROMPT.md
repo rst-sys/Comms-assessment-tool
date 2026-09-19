@@ -1,10 +1,11 @@
-# Accountable Communications Review — Build Prompt v2
+# Communications Trustability Review — Build Prompt v2
 
 > **Revisions after testing (2026-09-19).** Four decisions from the owner's first round of testing amend this prompt and take precedence over any conflicting line below:
 > 1. **Brevity.** The executive assessment is two sentences, at most 60 words. Every finding field is at most two sentences.
 > 2. **Agency calibration.** An organization speaking in its own name ("COMPANY_NAME has decided") or as "we", or naming a body such as the executive team or the board, as the subject of an active decision counts as identified agency. Naming an individual is never required; many organizations cannot or will not. Accountability findings are reserved for decisions attributed to conditions, abstractions, outside forces or passive constructions, or where no one at all is shown deciding. "Name the deciding body or role" is a Low-severity suggestion, never a cap on the score.
 > 3. **No rewrites.** The tool never proposes replacement wording, rewritten sentences or a redraft. It highlights the passages that could use rewriting and describes the kind of information to add, remove or clarify. The user is the author and the authority. The Minimal-Risk redraft mode is removed; step 4 of the build order is void.
 > 4. **Devil's Advocate headlines.** Each persona card leads with a strong headline of at most twelve words that states the persona's key concern.
+> 5. **Name and introduction.** The product is named "Communications Trustability Review". The introductory text shown under the title on every screen is: "This tool helps communicators evaluate draft communications and provides objective feedback on how well they build trust and credibility, all based on recognized standards and best practices." It replaces the tagline in the header; the tagline may still be used elsewhere.
 
 ## 1. Build mandate
 
@@ -28,7 +29,7 @@ If a requirement in this prompt conflicts with the build order above, the build 
 
 ## 2. Purpose and core principle
 
-Accountable Communications Review helps a communications professional decide whether a draft message actually gives an account of a decision before it is issued. Tagline: "Does this message give an account?"
+Communications Trustability Review helps a communications professional decide whether a draft message actually gives an account of a decision before it is issued. Tagline: "Does this message give an account?"
 
 It is not a grammar checker, a sentiment tool, a readability app, or a compliance certifier. It is decision-support software, and every screen must say so. It is not legal, employment, labor, financial-disclosure, regulatory, privacy, or tax advice, and it does not replace review by counsel, HR, investor relations, or local-market experts.
 
@@ -130,7 +131,7 @@ Below the card, one line: "Enterprise controls — customer-controlled processin
 Use the following as the system prompt for the evaluation call, verbatim. Send the draft and every intake field in the user message as labeled blocks. Set temperature to 0.2 or lower. Request JSON output matching Section 6 and validate it before rendering.
 
 ```markdown
-You are the evaluation engine for Accountable Communications Review. You assess whether a draft communication gives a credible account of a decision. You are not a grammar checker, a sentiment tool, or a legal reviewer.
+You are the evaluation engine for Communications Trustability Review. You assess whether a draft communication gives a credible account of a decision. You are not a grammar checker, a sentiment tool, or a legal reviewer.
 
 YOUR EVIDENCE
 You have the draft text and the context fields the user supplied. Treat the context fields as the only ground truth. Treat the draft as claims. You know nothing else about this organization, decision, or event.

@@ -3,7 +3,7 @@ import type { EvaluationResult } from "../engine/evaluate.js";
 import type { EvaluationRequest } from "../engine/types.js";
 import { ApiError, evaluate, fetchConfig } from "./api.js";
 import { ConfidentialityNotice } from "./ConfidentialityNotice.js";
-import { TAGLINE } from "./copy.js";
+import { APP_NAME, INTRO } from "./copy.js";
 import { IntakeScreen } from "./intake/IntakeScreen.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 import { ResultsPage } from "./results/ResultsPage.js";
@@ -82,8 +82,8 @@ export function App({ initialFixture, urlImport = true, runtimeNote }: AppOption
       {!noticeDismissed ? <ConfidentialityNotice onDismiss={() => setNoticeDismissed(true)} /> : null}
       <header className="site-header no-print">
         <div className="page" style={{ paddingBottom: 0 }}>
-          <h1 style={{ marginBottom: 4 }}>Accountable Communications Review</h1>
-          <p className="muted" style={{ marginTop: 0 }}>{TAGLINE}</p>
+          <h1 style={{ marginBottom: 4 }}>{APP_NAME}</h1>
+          <p className="muted intro" style={{ marginTop: 0 }}>{INTRO}</p>
           <nav aria-label="Areas">
             <ul className="nav">
               <li>

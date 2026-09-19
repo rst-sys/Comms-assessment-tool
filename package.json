@@ -2,7 +2,7 @@
   "name": "accountable-communications-review",
   "version": "0.1.0",
   "private": true,
-  "description": "Accountable Communications Review \u2014 does this message give an account?",
+  "description": "Communications Trustability Review \u2014 does this message give an account?",
   "type": "module",
   "engines": {
     "node": ">=20"
