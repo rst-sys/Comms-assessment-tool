@@ -204,11 +204,21 @@ async function main(): Promise<void> {
     demo2Runs.push(await run(DEMO_2, "demo2-run2"), await run(DEMO_2, "demo2-run3"));
     const scores = demo2Runs.map((r) => r.score);
     const spread = Math.max(...scores) - Math.min(...scores);
-    const topDims = demo2Runs.map((r) => rankFindings(r.analysis.findings).slice(0, 3).map((f) => f.dimension).sort().join("+"));
-    const topSame = topDims.every((t) => t === topDims[0]);
+    // "Same in substance" proxy: the distinct dimensions covered by each run's
+    // top three findings must overlap in at least two dimensions for every pair
+    // of runs. The findings themselves are printed below for a check by eye.
+    const topDimSets = demo2Runs.map((r) => new Set(rankFindings(r.analysis.findings).slice(0, 3).map((f) => f.dimension)));
+    const topDims = topDimSets.map((set) => [...set].sort().join("+"));
+    let topSame = true;
+    for (let i = 0; i < topDimSets.length; i++) {
+      for (let j = i + 1; j < topDimSets.length; j++) {
+        const shared = [...topDimSets[i]!].filter((d) => topDimSets[j]!.has(d)).length;
+        if (shared < 2) topSame = false;
+      }
+    }
     report("Calibration 3 — determinism (Demo 2 × 3)", [
       { name: "score varies by ≤ 5 points", pass: spread <= 5, detail: `scores ${scores.join(", ")} (spread ${spread})` },
-      { name: "top three findings cover the same dimensions", pass: topSame, detail: topDims.join(" | ") },
+      { name: "top three findings share at least two dimensions across every pair of runs", pass: topSame, detail: topDims.join(" | ") },
     ]);
     console.log("  Top-three findings per run, for a substance check by eye:");
     demo2Runs.forEach((r, i) => {

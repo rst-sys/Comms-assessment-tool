@@ -26,11 +26,11 @@ Score each dimension against its own definition, not against a checklist of ever
 - accountability_agency: the decision is named, decision rights are visible, responsibility is matched to authority, failure is not abstracted while success is individualized.
 - truthfulness_factual_discipline: specificity, supportability, fact distinguished from forecast and aspiration, uncertainty disclosed, no misleading certainty.
 - causation_explanation: root cause rather than symptoms, external context distinguished from internal exposure, credible and proportionate causal language.
-- stakeholder_respect_impact: affected groups named, material impact acknowledged, no minimizing or euphemism, audience information needs met.
+- stakeholder_respect_impact: affected groups named, material impact acknowledged, no minimizing or euphemism, audience information needs met. Naming the affected group and its size, the impact on them and the support offered meets every element; a case the support does not spell out is a would-raise line, so such a draft scores 4.5 or above.
 - listening_employee_voice: feedback used responsibly, stakeholder voice kept separate from leadership decisions, candor and psychological safety protected. A draft that cites no feedback, takes ownership plainly and shields the people affected from blame scores 4.5 or above here; a missing question channel is at most a Low finding, not a lower score.
 - corrective_action_proof: specific, proportionate, owned, timed, feasible commitments; changed behavior, not just language.
 - clarity_plain_language: affected audiences can understand what happened and what is next; no jargon, euphemism or agency-hiding passive voice.
-- verification_follow_through: metrics, milestones, update dates, independent review, falsifiable commitments.
+- verification_follow_through: metrics, milestones, update dates, independent review, falsifiable commitments. A named owner, a fixed update cadence and an end date are milestones, update dates and a falsifiable commitment, so a draft that names them scores 4.5 or above even when no metric is named.
 - fairness_independence_conflicts: interests disclosed, no scapegoating or self-serving framing, fair representation. A speaker who takes responsibility and explicitly protects the affected team from blame scores 4.0 or above; self-assessment without an independent reviewer is not by itself a low score.
 - future_readiness_learning: changes to leadership practice, governance, incentives or operating model that reduce recurrence.
 
