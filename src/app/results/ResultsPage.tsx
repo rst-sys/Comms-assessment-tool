@@ -1,4 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { ApiError, saveFile } from "../api.js";
+import { buildReviewPdf, reviewPdfFilename } from "./pdf.js";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
@@ -47,13 +49,30 @@ export function ResultsPage({ result, request, config = null, onDiscard }: Props
     };
   }, []);
 
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const savePdf = async () => {
+    setSaving(true);
+    setSaveStatus(null);
+    try {
+      const doc = buildReviewPdf(result, request);
+      const blob = doc.output("blob");
+      await saveFile(reviewPdfFilename(request), blob);
+      setSaveStatus("PDF saved.");
+    } catch (e) {
+      setSaveStatus(e instanceof ApiError ? e.message : "The PDF could not be saved.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <main className="page results">
-      {onDiscard ? (
-        <p className="no-print results-actions">
-          <button type="button" onClick={onDiscard}>Discard and start over</button>
-        </p>
-      ) : null}
+      <div className="no-print results-actions">
+        <button type="button" onClick={savePdf} disabled={saving}>{saving ? "Preparing PDF…" : "Save as PDF"}</button>
+        {onDiscard ? <button type="button" onClick={onDiscard}>Discard and start over</button> : null}
+        {saveStatus ? <span className="status" role="status">{saveStatus}</span> : null}
+      </div>
       <div className="results-grid">
         <ExecutiveSummary result={result} request={request} />
         <PrivacyPanel config={config} />

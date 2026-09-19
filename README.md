@@ -99,7 +99,7 @@ The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code
 | The confidentiality notice appears on first load | Met. Once per page load, dismissable. |
 | Stubbed areas show a nav entry and a one-paragraph page, nothing more | Met. |
 | Keyboard-only navigation reaches every control; contrast passes AA | Met. Verified by keyboard in a browser; contrast measured, see `DEVIATIONS.md` item 25. |
-| Every results page and print view ends with the core principle and the decision-support disclaimer | Met. |
+| Every results page and print view ends with the core principle and the decision-support disclaimer | Met; the PDF export ends with them too. |
 | URL import extracts readable text from a public press release, shows a plain error on a paywalled page, sets the retrospective framing, and the proxy logs only domain and status | Met in tests with sample pages (article, paywall, PDF) and in the browser with a stubbed response; a live fetch of a public site could not be exercised from the build sandbox, whose outbound proxy blocks external sites. |
 
 ## Preview on claude.ai

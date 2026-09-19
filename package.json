@@ -2,7 +2,7 @@
   "name": "accountable-communications-review",
   "version": "0.1.0",
   "private": true,
-  "description": "Communications Trustability Review \u2014 does this message give an account?",
+  "description": "Communications Trustability Review — does this message give an account?",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -24,6 +24,7 @@
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "jsdom": "^30.1.0",
+    "jspdf": "^4.2.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

@@ -118,6 +118,21 @@ export const sampleApi: ApiImplementation = {
     throw new ApiError("Import from URL is not available on this page. Paste the text instead.", 501, "unavailable");
   },
 
+  async saveFile(filename, data) {
+    const downloads = (await (window.claude?.use("downloads") ?? Promise.resolve(null))) as
+      | { save: (r: { filename: string; data: Blob }) => Promise<{ status: string }> }
+      | null;
+    if (!downloads) throw new ApiError("Saving files is not available in this view.", 501, "unavailable");
+    try {
+      await downloads.save({ filename, data });
+    } catch (e) {
+      const code = typeof e === "object" && e !== null && "code" in e ? String((e as { code: unknown }).code) : "unavailable";
+      if (code === "declined") throw new ApiError("The save was cancelled.", 499, "declined");
+      if (code === "rate_limited") throw new ApiError("A save is already waiting for your answer.", 429, "rate_limited");
+      throw new ApiError("Saving files is not available in this view.", 501, code);
+    }
+  },
+
   async fetchConfig(): Promise<PrivacyConfig | null> {
     return {
       provider: "Anthropic",

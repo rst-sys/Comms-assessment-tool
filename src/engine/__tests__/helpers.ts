@@ -35,6 +35,7 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
   return {
     schema_version: "1.0",
     executive_summary: {
+      headline: "Job cuts announced with no owner, criteria, or support",
       assessment: "The draft announces a reduction without naming a decision-maker. It offers no support, verification, or learning.",
       risk_level: "Critical",
       readiness: "Do not issue until material gaps are resolved",

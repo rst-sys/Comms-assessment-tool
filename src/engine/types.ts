@@ -190,6 +190,8 @@ export const DEVILS_ADVOCATE_DISCLAIMER =
 export const SCHEMA_VERSION = "1.0";
 
 export interface ExecutiveSummary {
+  /** At most twelve words: the key takeaway. */
+  headline: string;
   assessment: string;
   risk_level: RiskLevel;
   readiness: Readiness;

@@ -6,6 +6,8 @@
 > 3. **No rewrites.** The tool never proposes replacement wording, rewritten sentences or a redraft. It highlights the passages that could use rewriting and describes the kind of information to add, remove or clarify. The user is the author and the authority. The Minimal-Risk redraft mode is removed; step 4 of the build order is void.
 > 4. **Devil's Advocate headlines.** Each persona card leads with a strong headline of at most twelve words that states the persona's key concern.
 > 5. **Name and introduction.** The product is named "Communications Trustability Review". The introductory text shown under the title on every screen is: "This tool helps communicators evaluate draft communications and provides objective feedback on how well they build trust and credibility, all based on recognized standards and best practices." It replaces the tagline in the header; the tagline may still be used elsewhere.
+> 6. **Executive summary headline.** The executive summary opens with a headline of at most twelve words that states the key takeaway, before the score and assessment.
+> 7. **Save as PDF.** The results page has a "Save as PDF" button that produces a text-based PDF of the whole review (summary, findings, scorecard, scan, Devil's Advocate, questions, and the closing principle and disclaimer). PDF export is in scope; DOCX export remains out of scope.
 
 ## 1. Build mandate
 
@@ -21,7 +23,7 @@ Build a working prototype of one review loop, not a product suite. The loop is: 
 
 **Stub, do not build:** Saved Reviews, Compare Revisions, Team Workspace, Enterprise Governance Console, Standards Library, Settings. Each gets a nav entry and a one-paragraph page stating what it will do and that it is not in this build. Do not add placeholder forms, fake data tables, or mock toggles for these areas.
 
-**Out of scope entirely:** authentication, database, user roles, SSO, SCIM, audit logs, data residency, legal hold, export to DOCX/PDF, internationalization, collaboration, and Accountability-Forward and Stakeholder-Specific redraft modes. Do not implement any of these even partially.
+**Out of scope entirely:** authentication, database, user roles, SSO, SCIM, audit logs, data residency, legal hold, export to DOCX, internationalization, collaboration, and Accountability-Forward and Stakeholder-Specific redraft modes. Do not implement any of these even partially.
 
 **Technical shape:** single-page web app, one LLM provider called through a zero-retention API endpoint, no server-side storage of draft text, one stateless fetch-and-extract proxy for URL import (Section 3), structured JSON output validated against the schema in Section 6. Fail loudly on schema violations; never render a partial or malformed analysis.
 
@@ -179,6 +181,7 @@ Validate every response against this schema before rendering. On failure, show "
   "executive_summary": {
     "assessment": "string, 2 sentences, at most 60 words",
     "risk_level": "Low | Moderate | High | Critical",
+    "headline": "string, at most twelve words, the key takeaway",
     "readiness": "Ready with minor edits | Revise before issuing | Escalate for senior or specialist review | Do not issue until material gaps are resolved",
     "context_supplied": "boolean",
     "strongest_elements": ["string", "string", "string"],
@@ -322,7 +325,7 @@ flowchart TD
 
 Summary and top findings render open; the five sections below them render as collapsed panels the user expands.
 
-**Executive summary (always open).** Score with band and confidence label (Section 7) · risk level · readiness recommendation · 2–4 sentence assessment · three strongest elements · three priority improvements · specialist review summary as a row of labeled chips (Legal, HR, Investor relations, and so on) when any finding requires it. The privacy panel from Section 4 sits in the right margin.
+**Executive summary (always open).** Headline stating the key takeaway (revision 6) · score with band and confidence label (Section 7) · risk level · readiness recommendation · 2–4 sentence assessment · three strongest elements · three priority improvements · specialist review summary as a row of labeled chips (Legal, HR, Investor relations, and so on) when any finding requires it. The privacy panel from Section 4 sits in the right margin.
 
 **Readiness label.** Display the readiness value under the heading "Communications readiness," never "Approval" or "Cleared." When specialist review is required, render the readiness line with the review chips beside it so the two are read together.
 
@@ -342,7 +345,7 @@ Summary and top findings render open; the five sections below them render as col
 
 **Footer of every results page and every export:** the core principle from Section 2, in full, followed by the decision-support disclaimer.
 
-**Export.** Print stylesheet only. Print-friendly layout with all panels expanded, page breaks between sections, no interactive controls. No PDF or DOCX generation in this build.
+**Export.** A "Save as PDF" button produces a text-based PDF of the whole review (revision 7). The print stylesheet remains: all panels expanded, page breaks between sections, no interactive controls. No DOCX generation in this build.
 
 ## 10. High-risk protocol
 

@@ -14,6 +14,7 @@ export function ExecutiveSummary({ result, request }: Props) {
   return (
     <section className="card" id="executive-summary" aria-labelledby="summary-heading">
       <h2 id="summary-heading">Executive summary</h2>
+      {s.headline ? <p className="summary-headline">{s.headline}</p> : null}
       <div className="summary-grid">
         <div className="score-block">
           <div className="label">Accountable Communication Score</div>

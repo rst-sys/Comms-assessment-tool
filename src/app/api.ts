@@ -56,6 +56,8 @@ export interface ApiImplementation {
   evaluate(request: EvaluationRequest): Promise<EvaluationResult>;
   importUrl(url: string): Promise<ImportedPage>;
   fetchConfig(): Promise<PrivacyConfig | null>;
+  /** Hands a generated file to the viewer. Resolves when the save was offered or completed. */
+  saveFile(filename: string, data: Blob): Promise<void>;
 }
 
 export const serverApi: ApiImplementation = {
@@ -70,6 +72,19 @@ export const serverApi: ApiImplementation = {
       return null;
     }
   },
+  async saveFile(filename, data) {
+    const url = URL.createObjectURL(data);
+    try {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } finally {
+      setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    }
+  },
 };
 
 let current: ApiImplementation = serverApi;
@@ -82,3 +97,4 @@ export function configureApi(impl: ApiImplementation): void {
 export const evaluate = (request: EvaluationRequest) => current.evaluate(request);
 export const importUrl = (url: string) => current.importUrl(url);
 export const fetchConfig = () => current.fetchConfig();
+export const saveFile = (filename: string, data: Blob) => current.saveFile(filename, data);

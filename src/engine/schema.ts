@@ -39,6 +39,7 @@ const obj = (properties: Record<string, JsonSchema>): JsonSchema => ({
 export const ANALYSIS_SCHEMA: JsonSchema = obj({
   schema_version: enumOf([SCHEMA_VERSION]),
   executive_summary: obj({
+    headline: str,
     assessment: str,
     risk_level: enumOf(RISK_LEVELS),
     readiness: enumOf(READINESS_VALUES),

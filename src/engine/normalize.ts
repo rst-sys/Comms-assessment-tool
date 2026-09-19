@@ -56,6 +56,7 @@ export function normalizeAnalysis(raw: unknown): unknown {
   const normalized = {
     schema_version: SCHEMA_VERSION,
     executive_summary: {
+      headline: str(summary.headline),
       assessment: str(summary.assessment),
       risk_level: str(summary.risk_level),
       readiness: str(summary.readiness),
