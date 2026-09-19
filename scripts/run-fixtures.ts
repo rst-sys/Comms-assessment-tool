@@ -105,7 +105,17 @@ function checkFixture(fixture: Fixture, result: EvaluationResult): Check[] {
     checks.push({ name: `High finding: ${exp.label}`, pass: Boolean(hit), detail: hit ? `${hit.id} (${hit.dimension})` : `no High finding matched ${exp.pattern}` });
   }
   for (const exp of expect.scan_flags ?? []) {
-    const hit = a.agency_scan.find((s) => exp.phrase.test(s.phrase));
+    // Several entries can contain the expected text (a whole sentence and the
+    // clause inside it); prefer the one whose category, severity and
+    // assessment match, and fall back to the first so the mismatch is shown.
+    const matches = a.agency_scan.filter((s) => exp.phrase.test(s.phrase));
+    const hit =
+      matches.find(
+        (s) =>
+          (!exp.category || s.category === exp.category) &&
+          (!exp.severity || s.severity === exp.severity) &&
+          (!exp.assessment || s.assessment === exp.assessment),
+      ) ?? matches[0];
     let pass = Boolean(hit);
     const problems: string[] = [];
     if (hit) {
