@@ -44,13 +44,13 @@ To change the model, set `ACR_MODEL` to another model id. The UI reads provider 
 src/app/
   main.tsx, App.tsx   entry point; intake → evaluating → results, plus the stub pages
   intake/             the intake screen and its rules (word range, heightened review,
-                      high-risk warning, demo loader, URL import)
+                      high-risk warning, demo loader, URL import, audience context documents, stance, public-context search)
   results/            the results page: summary, top findings, register, scorecard,
                       agency scan, devil's advocate, questions, footer
   PrivacyPanel.tsx    the Section 4 panel, provider and model read from the server
   ConfidentialityNotice.tsx, stubs.ts, api.ts, copy.ts, styles.css
 src/server/
-  server.ts           POST /api/evaluate, /api/import; GET /api/config; serves dist/ in production
+  server.ts           POST /api/evaluate, /api/import, /api/public-context; GET /api/config; serves dist/ in production
   import.ts           stateless fetch-and-extract for URL import (Readability)
   requestSchema.ts    validation of the intake request
 src/engine/
@@ -63,6 +63,7 @@ src/engine/
   config.ts       provider, model and effort from the environment
   client.ts       the single provider call; errors carry a kind and a hashed request id
   evaluate.ts     build → call → parse → validate → score
+  publicContext.ts one call with the provider's web search tool, for a topic the user typed
   fixtures.ts     the three demos, the control draft and their expectations (Section 12)
 scripts/
   run-fixtures.ts live fixture and calibration runner

@@ -7,6 +7,15 @@ describe("parseEvaluationRequest", () => {
   it("accepts a complete request", () => {
     expect(parseEvaluationRequest(DEMO_1.request)).toEqual(DEMO_1.request);
   });
+  it("accepts audience documents and stance within limits and rejects too many, oversized or unknown-kind ones", () => {
+    const doc = { kind: "prior_communication", title: "Earlier note", description: "d", delivery: "emailed last week", reach: "all", same_time: false, text: "text" };
+    expect(parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [doc], stance: "reactive", reacting_to: "a report" }).audience_documents).toHaveLength(1);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: Array(9).fill(doc) })).toThrow(RequestValidationError);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [{ ...doc, text: "x".repeat(20_001) }] })).toThrow(RequestValidationError);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [{ ...doc, kind: "rumour" }] })).toThrow(RequestValidationError);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, stance: "defensive" })).toThrow(RequestValidationError);
+  });
+
   it("rejects unknown fields, bad enums and a missing draft", () => {
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, extra: 1 })).toThrow(RequestValidationError);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, setting: "Casual" })).toThrow(/setting/);
@@ -42,6 +51,11 @@ describe("server endpoints", () => {
     const text = await res.text();
     expect(text).not.toContain("secret text");
     expect(JSON.parse(text).error).toBe("bad_request");
+  });
+
+  it("rejects an empty public-context query without calling the provider", async () => {
+    const res = await fetch(`${base}/api/public-context`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "ab" }) });
+    expect(res.status).toBe(400);
   });
 
   it("refuses a private import address", async () => {

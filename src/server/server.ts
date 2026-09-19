@@ -15,6 +15,7 @@ import { extname, join, normalize } from "node:path";
 import { EngineError } from "../engine/client.js";
 import { getEngineConfig } from "../engine/config.js";
 import { evaluateDraft } from "../engine/evaluate.js";
+import { findPublicContext } from "../engine/publicContext.js";
 import { loadEnvFile } from "./env.js";
 import { allowedUrl, extractReadable, fetchPage, IMPORT_ERROR } from "./import.js";
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
@@ -98,6 +99,35 @@ async function handleEvaluate(req: IncomingMessage, res: ServerResponse): Promis
   }
 }
 
+async function handlePublicContext(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  let body: unknown;
+  try {
+    body = await readJson(req);
+  } catch {
+    send(res, 400, { error: "bad_request", message: "The request could not be read." });
+    return;
+  }
+  const query = typeof body === "object" && body !== null && typeof (body as { query?: unknown }).query === "string" ? (body as { query: string }).query.trim() : "";
+  if (query.length < 3 || query.length > 300) {
+    send(res, 400, { error: "bad_request", message: "Enter a topic of 3 to 300 characters." });
+    return;
+  }
+  try {
+    const result = await findPublicContext(query);
+    console.log(`[${result.request_id}] public-context ok (${result.items.length} items)`);
+    send(res, 200, result);
+  } catch (error) {
+    if (error instanceof EngineError) {
+      console.log(`[${error.requestId}] public-context failed: ${error.kind}`);
+      const status = error.kind === "auth" ? 503 : error.kind === "refusal" ? 422 : 502;
+      send(res, status, { error: error.kind, message: error.message, request_id: error.requestId });
+      return;
+    }
+    console.log(`public-context failed: ${error instanceof Error ? error.name : "unknown"}`);
+    send(res, 500, { error: "server_error", message: "The search failed. Try again." });
+  }
+}
+
 async function handleImport(req: IncomingMessage, res: ServerResponse): Promise<void> {
   let body: unknown;
   try {
@@ -161,6 +191,7 @@ export const server = createServer(async (req, res) => {
   if (url.pathname === "/api/config" && method === "GET") return handleConfig(res);
   if (url.pathname === "/api/evaluate" && method === "POST") return handleEvaluate(req, res);
   if (url.pathname === "/api/import" && method === "POST") return handleImport(req, res);
+  if (url.pathname === "/api/public-context" && method === "POST") return handlePublicContext(req, res);
   if (url.pathname.startsWith("/api/")) return send(res, 404, { error: "not_found", message: "No such endpoint." });
   if (method === "GET" && serveStatic(url.pathname, res)) return;
   send(res, 404, { error: "not_found", message: "Not found." });

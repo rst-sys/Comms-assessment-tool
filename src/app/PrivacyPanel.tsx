@@ -14,7 +14,7 @@ export function PrivacyPanel({ config }: { config: PrivacyConfig | null }) {
   const rows: [string, string][] = [
     ["Processing mode", config?.processing_mode ?? "Reading configuration…"],
     ["Provider and model", config ? `${config.provider} · ${config.model}` : "Reading configuration…"],
-    ["Retention", "Draft text is sent to the provider for this analysis only and is not stored by this app."],
+    ["Retention", "Draft text and any supporting documents are sent to the provider for this analysis only and are not stored by this app."],
     ["Training", config?.training_term ?? "Reading configuration…"],
     ["Storage", "Nothing is saved. Closing this tab discards the draft and results."],
     ["Classification", "Confidential"],

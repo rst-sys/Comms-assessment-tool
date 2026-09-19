@@ -3,7 +3,7 @@
  * (PROMPT.md Sections 3, 5 and 10).
  */
 import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "./promptText.js";
-import { CONTEXT_FIELDS, DIMENSION_IDS, type EvaluationRequest } from "./types.js";
+import { CONTEXT_FIELDS, DIMENSION_IDS, DOCUMENT_KINDS, DOCUMENT_REACH, type EvaluationRequest } from "./types.js";
 
 /**
  * Structural notes that the provider's structured-output schema cannot carry.
@@ -96,6 +96,8 @@ export function buildUserMessage(request: EvaluationRequest): string {
         `Audience scope: ${request.audience_scope}`,
         `heightened_review: ${request.heightened_review}`,
         `already_published: ${request.already_published}`,
+        `stance: ${request.stance ?? "proactive"}`,
+        ...(request.stance === "reactive" ? [`reacting_to: ${request.reacting_to?.trim() || NOT_SUPPLIED}`] : []),
       ].join("\n"),
     ),
   );
@@ -112,6 +114,23 @@ export function buildUserMessage(request: EvaluationRequest): string {
         contextLines.join("\n"),
     ),
   );
+
+  const docs = request.audience_documents ?? [];
+  if (docs.length > 0) {
+    const kindLabel = Object.fromEntries(DOCUMENT_KINDS) as Record<string, string>;
+    const reachLabel = Object.fromEntries(DOCUMENT_REACH) as Record<string, string>;
+    const blocks = docs.map((d, i) =>
+      [
+        `Document ${i + 1}: ${d.title.trim() || "(untitled)"}`,
+        `Kind: ${kindLabel[d.kind] ?? d.kind}`,
+        `What it is: ${d.description.trim() || NOT_SUPPLIED}`,
+        `How and when the audience receives or encountered it: ${d.delivery.trim() || NOT_SUPPLIED}`,
+        `Reach: ${reachLabel[d.reach] ?? d.reach}${d.kind === "supporting" ? `; same time as the main communication: ${d.same_time ? "yes" : "no"}` : ""}`,
+        `<<<\n${d.text.trim()}\n>>>`,
+      ].join("\n"),
+    );
+    parts.push(block(`AUDIENCE CONTEXT DOCUMENTS (${docs.length}; what the audience already has or will receive)`, blocks.join("\n\n")));
+  }
 
   const notes: string[] = [];
   if (request.already_published) {

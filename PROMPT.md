@@ -8,6 +8,9 @@
 > 5. **Name and introduction.** The product is named "Communications Trustability Review". The introductory text shown under the title on every screen is: "This tool helps communicators evaluate draft communications and provides objective feedback on how well they build trust and credibility, all based on recognized standards and best practices." It replaces the tagline in the header; the tagline may still be used elsewhere.
 > 6. **Executive summary headline.** The executive summary opens with a headline of at most twelve words that states the key takeaway, before the score and assessment.
 > 7. **Save as PDF.** The results page has a "Save as PDF" button that produces a text-based PDF of the whole review (summary, findings, scorecard, scan, Devil's Advocate, questions, and the closing principle and disclaimer). PDF export is in scope; DOCX export remains out of scope.
+> 8. **Audience context documents.** The intake accepts optional documents describing what the audience already has or will receive when the communication lands: supporting documents provided with it (an FAQ, a manager toolkit, a benefits summary), earlier communications from the organization on the topic, media reports or public commentary the audience may have seen, and other background. Each has a kind, a title, a short description, how and when the audience receives or encountered it, and how much of the audience it reaches. The engine treats information a supporting document provides to the same audience at the same time as visible; checks the draft for consistency with earlier communications and for acknowledgment of changed positions; expects the draft to address material claims or concerns already in public view; and never treats media claims as fact. Particularly relevant to internal communications.
+> 9. **Proactive or reactive.** The intake asks whether the communication is proactive (the organization is initiating) or reactive (it responds to an event, a report, criticism, or a question already in front of the audience) and, if reactive, what it is reacting to. A reactive draft is judged on whether it names the trigger plainly, answers the specific claims or concerns, and does not present itself as unprompted.
+> 10. **Find public context.** On the hosted app, an intake box lets the user search the public web for a topic they type (a company, event, or issue) through the provider's web search tool; results are shown with sources and the user chooses which to add as media-report documents before evaluating. The draft text is never used as a search query and never leaves the app in a search. The claude.ai page has no network and shows the box as unavailable.
 
 ## 1. Build mandate
 
@@ -91,6 +94,12 @@ When the draft came from a URL, set `already_published: true` on the request and
 - Desired tone
 - Known legal, HR, labor, privacy, or disclosure review requirements
 
+**Stance (revision 9).** Two radio buttons after the required fields: "Proactive: we are initiating this" and "Reactive: this responds to something the audience already knows about." When Reactive is chosen, a free-text field "What is this reacting to?" appears and is required.
+
+**Audience context documents (optional; revision 8).** Below the context fields: "What the audience already has or will receive." Up to eight. Each has a kind (Supporting document provided with this communication · Earlier communication from us · Media report or public commentary · Other background), a title, a file (.txt, .md or .docx; text is extracted in the browser) or pasted text, a one-line description, how and when the audience receives or encountered it, whether it reaches the whole audience, part of it, or unknown, and, for supporting documents, whether it arrives at the same time as the main communication. Documents are sent to the engine with the draft and live in component state only. Each is limited to 20,000 characters.
+
+**Find public context (revision 10; hosted app only).** In the same section: a search box for a topic the user types. Results (title, source, date, summary, link) appear with checkboxes; "Add selected" turns each into a media-report document the user can edit or remove. The proxy logs a hashed request id and a result count, never the query.
+
 **Heightened review toggle.** One checkbox: "Apply heightened review for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or vulnerable audiences." Auto-check it when Communication type is Layoff or restructuring, Crisis statement, Investor communication, or Apology, or when Setting is Crisis or Material corporate event. The user can uncheck it. When on, pass `heightened_review: true` to the engine (Section 5 describes the effect).
 
 **Demo loader.** A small link above the draft box: "Load a demo draft." It offers the three fixtures in Section 12 and fills every required field for each.
@@ -105,7 +114,7 @@ Practitioners will paste unreleased layoff memos, earnings narratives, and crisi
 | --- | --- |
 | Processing mode | Zero-retention API |
 | Provider and model | The actual provider and model string in use, read from config, never hardcoded in the UI |
-| Retention | "Draft text is sent to the provider for this analysis only and is not stored by this app." |
+| Retention | "Draft text and any audience context documents are sent to the provider for this analysis only and are not stored by this app." |
 | Training | "Not used to train models" — only if the provider's terms for the endpoint in use say so; otherwise show the provider's actual term |
 | Storage | "Nothing is saved. Closing this tab discards the draft and results." |
 | Classification | Confidential (fixed label in this build) |
@@ -151,6 +160,12 @@ Treat the organization's own name or "we" as the subject of an active decision, 
 
 STATED VERSUS SUBSTANTIATED
 For accountability_agency, causation_explanation, and corrective_action_proof, every claim in the draft carries one of three labels: ASSERTED (the draft says it, nothing in context confirms or contradicts it), SUPPORTED (a context field confirms it), or UNVERIFIABLE (nothing in the draft or context could confirm it). A draft that asserts ownership or causation without support cannot score above 3.5 on that dimension, and the rationale must say the claim is asserted, not confirmed. If context fields are empty, say so in the executive assessment and note that agency and causation scores reflect the draft's language only.
+
+STANCE
+When stance is reactive, the audience already knows the trigger described in "reacting to". Judge whether the draft names that trigger plainly, answers the specific claims, questions, or concerns it raised, and does not present itself as unprompted. A reactive draft that never mentions what it is responding to may leave a reasonable stakeholder reading it as evasive. When stance is proactive, do not require the draft to answer questions no one has asked.
+
+AUDIENCE CONTEXT DOCUMENTS
+When audience context documents are supplied, each carries a kind and a note on how and when the audience receives or encountered it and how much of the audience it reaches. Supporting documents provided with this communication: treat information they give to the same audience at the same time as visible to that audience; do not raise a finding for its absence from the main draft; instead judge whether the draft points the reader to it clearly and whether the document actually provides it. Earlier communications from the organization: the audience already holds these; do not penalise the draft for omitting background they already gave the whole audience, but raise a finding where the draft contradicts them, changes a position or commitment without acknowledging it, or leaves an earlier commitment unaddressed. Media reports and public commentary: treat them as what the audience may already believe or ask, not as facts; where the draft is silent on a material claim or concern they raise, say so. Information delivered later, or to part of the audience, does not count for the wider audience. Excerpts must still come from the main draft. Say in the executive assessment which documents were considered.
 
 HEIGHTENED REVIEW
 When heightened_review is true, apply stricter thresholds: any unsupported reassurance, euphemism for adverse impact, omitted acknowledgment of affected people, or citation of employee feedback near an adverse decision becomes at least a High-severity finding, and specialist_review_needed defaults to true for those findings.

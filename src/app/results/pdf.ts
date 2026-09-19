@@ -9,6 +9,7 @@ import type { EvaluationResult } from "../../engine/evaluate.js";
 import { DIMENSION_IDS, type EvaluationRequest } from "../../engine/types.js";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/scoring.js";
 import { APP_NAME, CORE_PRINCIPLE, DECISION_SUPPORT_DISCLAIMER } from "../copy.js";
+import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { specialistQuestions } from "./model.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
@@ -138,6 +139,14 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(`${s.readiness}${a.specialist_review_summary.length ? ` — specialist review: ${a.specialist_review_summary.join(", ")}` : ""}${request.already_published ? " — Retrospective review, already issued" : ""}`, 10.5, 0, "bold");
   w.label("Assessment");
   w.paragraph(s.assessment);
+  if (request.stance === "reactive" && request.reacting_to) {
+    w.label("Reacting to");
+    w.paragraph(request.reacting_to);
+  }
+  if (request.audience_documents?.length) {
+    w.label("Audience context considered");
+    w.bullets(request.audience_documents.map((d) => `${KIND_LABEL[d.kind]}: ${d.title}${d.description ? ` — ${d.description}` : ""} (${d.delivery || "delivery not described"}; ${REACH_LABEL[d.reach].toLowerCase()}${d.kind === "supporting" ? (d.same_time ? "; same time" : "; later") : ""})`));
+  }
   w.label("Strongest elements");
   w.bullets(s.strongest_elements);
   w.label("Priority improvements");

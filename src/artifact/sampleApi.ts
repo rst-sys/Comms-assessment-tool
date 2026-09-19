@@ -6,6 +6,7 @@
  * network from such a page, so Import from URL is unavailable.
  */
 import { ApiError, type ApiImplementation } from "../app/api.js";
+import type { EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "../app/PrivacyPanel.js";
 import { finishEvaluation } from "../engine/evaluate.js";
 import { EngineError } from "../engine/client.js";
@@ -32,6 +33,21 @@ function getSample(): Promise<SampleFn | null> {
 }
 
 const FORMAT_ERROR = "The analysis did not return in the expected format. Try again.";
+
+/** The page runtime accepts about 64 KiB of prompt. Audience context documents are trimmed, longest first, to stay under it. */
+const PROMPT_BUDGET_BYTES = 60_000;
+export function fitToPromptLimit(request: EvaluationRequest): EvaluationRequest {
+  const size = (r: EvaluationRequest) => new TextEncoder().encode([...buildSystemBlocks(r).map((b) => b.text), buildUserMessage(r), schemaBlock(ANALYSIS_SCHEMA)].join("\n\n")).length;
+  let docs = [...(request.audience_documents ?? [])];
+  let current = { ...request, audience_documents: docs };
+  let guard = 0;
+  while (size(current) > PROMPT_BUDGET_BYTES && docs.some((d) => d.text.length > 500) && guard++ < 40) {
+    const longest = docs.reduce((a, b) => (b.text.length > a.text.length ? b : a));
+    docs = docs.map((d) => (d === longest ? { ...d, text: d.text.slice(0, Math.floor(d.text.length * 0.8)).trimEnd() + "\n[trimmed to fit this preview's size limit]" } : d));
+    current = { ...request, audience_documents: docs };
+  }
+  return current;
+}
 
 function viewerMessage(code: string, fallback: string): string {
   switch (code) {
@@ -100,7 +116,8 @@ export const sampleApi: ApiImplementation = {
     const sample = await getSample();
     if (!sample) throw new ApiError(viewerMessage("not_granted", ""), 503, "not_granted");
     const id = requestId();
-    const input = [...buildSystemBlocks(request).map((b) => b.text), buildUserMessage(request), schemaBlock(ANALYSIS_SCHEMA)].join("\n\n");
+    const fitted = fitToPromptLimit(request);
+    const input = [...buildSystemBlocks(fitted).map((b) => b.text), buildUserMessage(fitted), schemaBlock(ANALYSIS_SCHEMA)].join("\n\n");
     let raw: unknown;
     try {
       raw = await sample.json(input, { modelTier: "complex" });
@@ -131,6 +148,10 @@ export const sampleApi: ApiImplementation = {
       if (code === "rate_limited") throw new ApiError("A save is already waiting for your answer.", 429, "rate_limited");
       throw new ApiError("Saving files is not available in this view.", 501, code);
     }
+  },
+
+  async findPublicContext() {
+    throw new ApiError("Web search is available in the hosted app, not on this page.", 501, "unavailable");
   },
 
   async fetchConfig(): Promise<PrivacyConfig | null> {

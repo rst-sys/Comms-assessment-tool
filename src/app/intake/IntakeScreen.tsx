@@ -10,7 +10,10 @@ import {
   SETTINGS,
   type ContextFields,
   type EvaluationRequest,
+  type AudienceDocument,
+  type Stance,
 } from "../../engine/types.js";
+import { AudienceDocuments } from "./AudienceDocuments.js";
 import { importUrl, type ImportedPage } from "../api.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import {
@@ -35,6 +38,8 @@ interface Props {
   initialFixture?: Fixture;
   /** Whether Import from URL is available in this runtime. */
   urlImport?: boolean;
+  /** Whether the hosted web search for public context is available. */
+  publicSearch?: boolean;
 }
 
 type SourceTab = "paste" | "url";
@@ -53,7 +58,7 @@ const FIELD_OPTIONS: { key: keyof DraftFields; label: string; options: readonly 
  * privacy panel above both. All state lives in this component; nothing is
  * written to storage, the URL or the page title.
  */
-export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, urlImport = true }: Props) {
+export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, urlImport = true, publicSearch = true }: Props) {
   const init = initialFixture?.request;
   const [tab, setTab] = useState<SourceTab>("paste");
   const [draft, setDraft] = useState(init?.draft ?? "");
@@ -64,6 +69,9 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
   );
   const [context, setContext] = useState<ContextFields>(init ? { ...init.context } : {});
   const [heightened, setHeightened] = useState(init?.heightened_review ?? false);
+  const [documents, setDocuments] = useState<AudienceDocument[]>(init?.audience_documents ?? []);
+  const [stance, setStance] = useState<Stance>(init?.stance ?? "proactive");
+  const [reactingTo, setReactingTo] = useState(init?.reacting_to ?? "");
   const [isDemo, setIsDemo] = useState(Boolean(init));
   const [url, setUrl] = useState("");
   const [imported, setImported] = useState<ImportedPage | null>(null);
@@ -76,7 +84,8 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
   }, [fields.communication_type, fields.setting]);
 
   const words = wordCount(draft);
-  const ready = canEvaluate(draft, fields, isDemo) && !busy;
+  const stanceOk = stance === "proactive" || reactingTo.trim().length > 0;
+  const ready = canEvaluate(draft, fields, isDemo) && stanceOk && !busy;
 
   const setField = (key: keyof DraftFields, value: string) => {
     setFields((prev) => ({ ...prev, [key]: value as DraftFields[typeof key] }));
@@ -130,6 +139,9 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
       context: Object.fromEntries(Object.entries(context).filter(([, v]) => (v ?? "").trim().length > 0)),
       heightened_review: heightened,
       already_published: imported !== null,
+      ...(documents.length > 0 ? { audience_documents: documents } : {}),
+      stance,
+      ...(stance === "reactive" ? { reacting_to: reactingTo.trim() } : {}),
     });
   };
 
@@ -201,6 +213,24 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
             ))}
           </div>
 
+          <fieldset className="stance">
+            <legend className="label">Stance</legend>
+            <label className="checkbox">
+              <input type="radio" name="stance" value="proactive" checked={stance === "proactive"} onChange={() => setStance("proactive")} />
+              Proactive: we are initiating this
+            </label>
+            <label className="checkbox">
+              <input type="radio" name="stance" value="reactive" checked={stance === "reactive"} onChange={() => setStance("reactive")} />
+              Reactive: this responds to something the audience already knows about
+            </label>
+            {stance === "reactive" ? (
+              <label className="field">
+                <span className="label">What is this reacting to?</span>
+                <textarea rows={2} value={reactingTo} onChange={(e) => setReactingTo(e.target.value)} placeholder="A press report on 12 September claiming the Denver center will close without notice; employee questions at the town hall." aria-label="What is this reacting to" />
+              </label>
+            ) : null}
+          </fieldset>
+
           <label className="checkbox">
             <input type="checkbox" checked={heightened} onChange={(e) => setHeightened(e.target.checked)} />
             Apply heightened review for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or vulnerable audiences.
@@ -225,6 +255,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
               <textarea rows={2} value={context[key] ?? ""} onChange={(e) => setContext((prev) => ({ ...prev, [key]: e.target.value }))} />
             </Field>
           ))}
+          <AudienceDocuments documents={documents} onChange={setDocuments} publicSearch={publicSearch} />
         </section>
       </div>
     </div>

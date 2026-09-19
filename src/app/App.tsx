@@ -15,6 +15,8 @@ export interface AppOptions {
   initialFixture?: Fixture;
   /** Whether Import from URL is available in this runtime. */
   urlImport?: boolean;
+  /** Whether the hosted web search for public context is available. */
+  publicSearch?: boolean;
   /** Extra line for the intake screen describing this runtime, if any. */
   runtimeNote?: string;
 }
@@ -31,7 +33,7 @@ interface Review {
  * no storage, no URL parameters, no page-title changes. "Discard" remounts
  * the intake screen blank.
  */
-export function App({ initialFixture, urlImport = true, runtimeNote }: AppOptions = {}) {
+export function App({ initialFixture, urlImport = true, publicSearch = true, runtimeNote }: AppOptions = {}) {
   const [view, setView] = useState<View>("review");
   const [config, setConfig] = useState<PrivacyConfig | null>(null);
   const [noticeDismissed, setNoticeDismissed] = useState(false);
@@ -112,7 +114,7 @@ export function App({ initialFixture, urlImport = true, runtimeNote }: AppOption
       ) : (
         <>
           {runtimeNote ? <p className="page muted small" style={{ paddingBottom: 0 }}>{runtimeNote}</p> : null}
-          <IntakeScreen key={intakeKey} config={config} busy={busy} error={error} onEvaluate={runEvaluation} initialFixture={initialFixture} urlImport={urlImport} />
+          <IntakeScreen key={intakeKey} config={config} busy={busy} error={error} onEvaluate={runEvaluation} initialFixture={initialFixture} urlImport={urlImport} publicSearch={publicSearch} />
         </>
       )}
     </>

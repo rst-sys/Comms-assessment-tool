@@ -107,6 +107,44 @@ export const CONTEXT_FIELDS = [
 export type ContextFieldKey = (typeof CONTEXT_FIELDS)[number][0];
 export type ContextFields = Partial<Record<ContextFieldKey, string>>;
 
+/** What the audience already has or will receive when the communication lands (revision 8). */
+export const DOCUMENT_KINDS = [
+  ["supporting", "Supporting document provided with this communication"],
+  ["prior_communication", "Earlier communication from us on this topic"],
+  ["media_report", "Media report or public commentary"],
+  ["other_context", "Other background the audience has"],
+] as const;
+export type DocumentKind = (typeof DOCUMENT_KINDS)[number][0];
+
+export const DOCUMENT_REACH = [
+  ["all", "The whole audience"],
+  ["some", "Part of the audience"],
+  ["unknown", "Unknown"],
+] as const;
+export type DocumentReach = (typeof DOCUMENT_REACH)[number][0];
+
+export interface AudienceDocument {
+  kind: DocumentKind;
+  title: string;
+  /** What it is, in a line. */
+  description: string;
+  /** How and when the audience receives or encountered it. */
+  delivery: string;
+  /** How much of the audience it reaches. */
+  reach: DocumentReach;
+  /** Supporting documents only: arrives at the same time as the main communication. */
+  same_time: boolean;
+  /** Extracted text. */
+  text: string;
+}
+
+export const MAX_AUDIENCE_DOCUMENTS = 8;
+export const MAX_AUDIENCE_DOCUMENT_CHARS = 20_000;
+
+/** Proactive: the organization is initiating. Reactive: it responds to something the audience already knows about (revision 9). */
+export const STANCES = ["proactive", "reactive"] as const;
+export type Stance = (typeof STANCES)[number];
+
 export interface EvaluationRequest {
   draft: string;
   communication_type: CommunicationType;
@@ -118,6 +156,10 @@ export interface EvaluationRequest {
   context: ContextFields;
   heightened_review: boolean;
   already_published: boolean;
+  audience_documents?: AudienceDocument[];
+  stance?: Stance;
+  /** When reactive: what the communication is responding to. */
+  reacting_to?: string;
 }
 
 // ---------------------------------------------------------------------------

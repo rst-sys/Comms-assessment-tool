@@ -3,6 +3,7 @@
  * nothing here logs request or response bodies.
  */
 import type { EvaluationResult } from "../engine/evaluate.js";
+import type { PublicContextResult } from "../engine/publicContext.js";
 import type { CommunicationType, EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
@@ -58,6 +59,8 @@ export interface ApiImplementation {
   fetchConfig(): Promise<PrivacyConfig | null>;
   /** Hands a generated file to the viewer. Resolves when the save was offered or completed. */
   saveFile(filename: string, data: Blob): Promise<void>;
+  /** Searches the public web for a topic the user typed (hosted app only). */
+  findPublicContext(query: string): Promise<PublicContextResult>;
 }
 
 export const serverApi: ApiImplementation = {
@@ -72,6 +75,7 @@ export const serverApi: ApiImplementation = {
       return null;
     }
   },
+  findPublicContext: (query) => post<PublicContextResult>("/api/public-context", { query }, "The search failed. Try again."),
   async saveFile(filename, data) {
     const url = URL.createObjectURL(data);
     try {
@@ -98,3 +102,4 @@ export const evaluate = (request: EvaluationRequest) => current.evaluate(request
 export const importUrl = (url: string) => current.importUrl(url);
 export const fetchConfig = () => current.fetchConfig();
 export const saveFile = (filename: string, data: Blob) => current.saveFile(filename, data);
+export const findPublicContext = (query: string) => current.findPublicContext(query);

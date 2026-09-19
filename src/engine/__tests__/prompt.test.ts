@@ -62,3 +62,31 @@ describe("buildUserMessage", () => {
     expect(published).toContain("already_published: true");
   });
 });
+
+describe("audience context documents and stance in the user message", () => {
+  it("adds a labeled block per document with its kind, delivery and reach, and none when absent", () => {
+    const withDocs = buildUserMessage({
+      ...DEMO_1.request,
+      audience_documents: [
+        { kind: "supporting", title: "Employee FAQ", description: "Questions on selection and support", delivery: "Linked from the email", reach: "all", same_time: true, text: "Q: How were roles selected? A: By [criteria]." },
+        { kind: "media_report", title: "Trade press story", description: "Reports layoffs are planned", delivery: "Published last week", reach: "some", same_time: false, text: "Sources say 200 roles will go." },
+      ],
+    });
+    expect(withDocs).toContain("AUDIENCE CONTEXT DOCUMENTS (2; what the audience already has or will receive)");
+    expect(withDocs).toContain("Document 1: Employee FAQ");
+    expect(withDocs).toContain("Kind: Supporting document provided with this communication");
+    expect(withDocs).toContain("Reach: The whole audience; same time as the main communication: yes");
+    expect(withDocs).toContain("Document 2: Trade press story");
+    expect(withDocs).toContain("Kind: Media report or public commentary");
+    expect(withDocs).toContain("Reach: Part of the audience");
+    expect(withDocs).toContain("Sources say 200 roles will go.");
+    expect(buildUserMessage(DEMO_1.request)).not.toContain("AUDIENCE CONTEXT DOCUMENTS");
+  });
+
+  it("states the stance and, when reactive, what the draft reacts to", () => {
+    expect(buildUserMessage(DEMO_1.request)).toContain("stance: proactive");
+    const reactive = buildUserMessage({ ...DEMO_1.request, stance: "reactive", reacting_to: "A press report claiming 200 roles will go." });
+    expect(reactive).toContain("stance: reactive");
+    expect(reactive).toContain("reacting_to: A press report claiming 200 roles will go.");
+  });
+});

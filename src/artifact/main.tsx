@@ -13,7 +13,8 @@ createRoot(document.getElementById("root")!).render(
     <App
       initialFixture={DEMO_1}
       urlImport={false}
-      runtimeNote="Preview on claude.ai: evaluations run through your own Claude account and claude.ai will ask your permission the first time. Import from URL is not available here."
+      publicSearch={false}
+      runtimeNote="Preview on claude.ai: evaluations run through your own Claude account and claude.ai will ask your permission the first time. Import from URL and web search are not available here."
     />
   </StrictMode>,
 );

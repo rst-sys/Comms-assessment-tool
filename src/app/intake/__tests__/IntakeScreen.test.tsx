@@ -24,7 +24,7 @@ describe("IntakeScreen", () => {
     expect(button.disabled).toBe(false);
     expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toMatch(/^Rapid growth brought complexity/);
     expect(screen.getByText(/\(demo draft\)/)).toBeTruthy();
-    expect((screen.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
+    expect((screen.getByRole("checkbox", { name: /heightened review/i }) as HTMLInputElement).checked).toBe(true);
     expect(screen.getByText(/typically requires legal, HR, labor, or investor-relations review/)).toBeTruthy();
     fireEvent.click(button);
     expect(onEvaluate).toHaveBeenCalledTimes(1);
@@ -39,7 +39,7 @@ describe("IntakeScreen", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     const type = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
     fireEvent.change(type, { target: { value: "Apology" } });
-    const box = screen.getByRole("checkbox") as HTMLInputElement;
+    const box = screen.getByRole("checkbox", { name: /heightened review/i }) as HTMLInputElement;
     expect(box.checked).toBe(true);
     fireEvent.click(box);
     expect(box.checked).toBe(false);
@@ -75,6 +75,76 @@ describe("IntakeScreen", () => {
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  it("adds a pasted media report and a supporting document and sends them with the request", () => {
+    const onEvaluate = vi.fn();
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
+    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fireEvent.change(screen.getByLabelText("Document kind"), { target: { value: "media_report" } });
+    fireEvent.change(screen.getByPlaceholderText("Employee FAQ"), { target: { value: "Trade press story" } });
+    fireEvent.change(screen.getByLabelText("What the document is"), { target: { value: "Reports layoffs are planned" } });
+    fireEvent.change(screen.getByLabelText("How and when the audience receives or encountered it"), { target: { value: "Published last week" } });
+    fireEvent.change(screen.getByLabelText("Audience reach"), { target: { value: "some" } });
+    fireEvent.change(screen.getByLabelText("Document text"), { target: { value: "Sources say 200 roles will go." } });
+    fireEvent.click(screen.getByRole("button", { name: "Add document" }));
+    expect(screen.getByText("Trade press story")).toBeTruthy();
+    fireEvent.change(screen.getByPlaceholderText("Employee FAQ"), { target: { value: "Employee FAQ" } });
+    fireEvent.change(screen.getByLabelText("Document text"), { target: { value: "Roles were selected by seniority and skills." } });
+    fireEvent.click(screen.getByRole("button", { name: "Add document" }));
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    const request = onEvaluate.mock.calls[0]![0];
+    expect(request.audience_documents).toHaveLength(2);
+    expect(request.audience_documents[0]).toMatchObject({ kind: "media_report", title: "Trade press story", reach: "some", same_time: false });
+    expect(request.audience_documents[1]).toMatchObject({ kind: "supporting", title: "Employee FAQ", reach: "all", same_time: true });
+    expect(request.stance).toBe("proactive");
+    fireEvent.click(screen.getByRole("button", { name: "Remove Trade press story" }));
+    expect(screen.queryByText("Trade press story")).toBeNull();
+  });
+
+  it("requires a description of the trigger when the stance is reactive", () => {
+    const onEvaluate = vi.fn();
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
+    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fireEvent.click(screen.getByLabelText(/Reactive: this responds/));
+    const button = screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement;
+    expect(button.disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText("What is this reacting to"), { target: { value: "A press report claiming 200 roles will go." } });
+    expect(button.disabled).toBe(false);
+    fireEvent.click(button);
+    expect(onEvaluate.mock.calls[0]![0]).toMatchObject({ stance: "reactive", reacting_to: "A press report claiming 200 roles will go." });
+  });
+
+  it("finds public context and adds chosen results as media reports", async () => {
+    const onEvaluate = vi.fn();
+    vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.endsWith("/api/public-context")) return new Response(JSON.stringify({ items: [{ title: "Layoffs planned at Northwind", source: "Trade Daily", url: "https://example.com/a", date: "2026-09-12", summary: "Reports 200 roles will go; employees not yet told." }, { title: "Analyst note", source: "Research Co", url: "", date: null, summary: "Sees margin pressure." }], request_id: "x", usage: {} }), { status: 200 });
+      return new Response("{}", { status: 404 });
+    }));
+    try {
+      render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
+      fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+      fireEvent.change(screen.getByLabelText("Public context search"), { target: { value: "Northwind layoffs" } });
+      fireEvent.click(screen.getByRole("button", { name: "Search the web" }));
+      expect(await screen.findByText("Layoffs planned at Northwind")).toBeTruthy();
+      const boxes = screen.getAllByRole("checkbox", { checked: true }).filter((b) => (b as HTMLInputElement).name !== "stance");
+      fireEvent.click(boxes[boxes.length - 1]!); // deselect the analyst note
+      fireEvent.click(screen.getByRole("button", { name: /Add selected as media reports \(1\)/ }));
+      fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+      const request = onEvaluate.mock.calls[0]![0];
+      expect(request.audience_documents).toHaveLength(1);
+      expect(request.audience_documents[0]).toMatchObject({ kind: "media_report", title: "Layoffs planned at Northwind", reach: "unknown" });
+      expect(request.audience_documents[0].text).toContain("200 roles");
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("refuses to add a document without text", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: "Add document" }));
+    expect(screen.getByRole("alert").textContent).toMatch(/Add the document's text/);
   });
 
   it("shows the plain import error when the page is not readable", async () => {

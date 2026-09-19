@@ -259,3 +259,18 @@ textarea { resize: vertical; }
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* Supporting documents */
+.supporting { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 2); border-top: 1px solid var(--border); }
+.supporting h3 { margin-top: 0; }
+.doc-list { list-style: none; padding: 0; margin: 0 0 calc(var(--space) * 2); display: grid; gap: var(--space); }
+.doc-item { display: flex; justify-content: space-between; gap: var(--space); align-items: flex-start; border: 1px solid var(--border); border-radius: 4px; padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); }
+.doc-form input[type="text"] { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); }
+.doc-form input[type="file"] { font-size: 14px; }
+
+.stance { border: 1px solid var(--border); border-radius: 4px; padding: var(--space) calc(var(--space) * 1.5); margin: calc(var(--space) * 2) 0; }
+.stance legend { padding: 0 4px; }
+.stance .checkbox { margin: 4px 0; }
+.public-context { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 2); border-top: 1px dashed var(--border); }
+.public-context h4 { margin: 0 0 var(--space); font-size: 16px; }
+.public-context input[type="text"] { flex: 1; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); }

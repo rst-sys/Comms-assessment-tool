@@ -1,6 +1,7 @@
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import { DIMENSION_LABELS } from "../../engine/scoring.js";
 import type { EvaluationRequest } from "../../engine/types.js";
+import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { openPanel } from "./Panel.js";
 
 interface Props {
@@ -44,6 +45,22 @@ export function ExecutiveSummary({ result, request }: Props) {
             ) : null}
           </div>
           {request.already_published ? <p className="muted">Retrospective review — already issued</p> : null}
+          {request.stance === "reactive" ? (
+            <>
+              <div className="label">Reacting to</div>
+              <p className="prose" style={{ margin: 0 }}>{request.reacting_to}</p>
+            </>
+          ) : null}
+          {request.audience_documents?.length ? (
+            <>
+              <div className="label">Audience context considered</div>
+              <ul className="tight">
+                {request.audience_documents.map((d, i) => (
+                  <li key={i}><span className="chip">{KIND_LABEL[d.kind]}</span> <strong>{d.title}</strong>{d.description ? ` — ${d.description}` : ""} <span className="muted">({REACH_LABEL[d.reach].toLowerCase()}{d.kind === "supporting" ? (d.same_time ? ", same time" : ", later") : ""})</span></li>
+                ))}
+              </ul>
+            </>
+          ) : null}
           <div className="label">Assessment</div>
           <p className="prose" style={{ margin: 0 }}>{s.assessment}</p>
           <div className="two-col" style={{ marginTop: 16 }}>
