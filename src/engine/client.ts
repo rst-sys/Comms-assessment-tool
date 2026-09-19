@@ -6,7 +6,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createHash, randomUUID } from "node:crypto";
 import { ANALYSIS_SCHEMA } from "./schema.js";
-import type { EngineConfig } from "./config.js";
+import { API_KEY_ENV_VARS, resolveApiKey, type EngineConfig } from "./config.js";
 import type { SystemBlock } from "./prompt.js";
 
 export type EngineErrorKind =
@@ -59,16 +59,17 @@ export interface CallModelOptions {
   requestId?: string;
 }
 
+const NO_CREDENTIAL_MESSAGE = `No provider credential is configured. Set ${API_KEY_ENV_VARS.join(" or ")} (see README).`;
+
 function makeClient(requestId: string): Anthropic {
+  const apiKey = resolveApiKey();
+  if (!apiKey) {
+    throw new EngineError("auth", NO_CREDENTIAL_MESSAGE, requestId);
+  }
   try {
-    return new Anthropic();
+    return new Anthropic({ apiKey });
   } catch (error) {
-    throw new EngineError(
-      "auth",
-      "No provider credential is configured. Set ANTHROPIC_API_KEY (see README).",
-      requestId,
-      error,
-    );
+    throw new EngineError("auth", NO_CREDENTIAL_MESSAGE, requestId, error);
   }
 }
 
@@ -104,7 +105,7 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
     }
     if (error instanceof Error && /Could not resolve authentication method/.test(error.message)) {
       // The SDK resolves credentials lazily and throws a plain Error at call time when none is configured.
-      throw new EngineError("auth", "No provider credential is configured. Set ANTHROPIC_API_KEY (see README).", requestId, error);
+      throw new EngineError("auth", NO_CREDENTIAL_MESSAGE, requestId, error);
     }
     throw new EngineError("api", "The provider call failed.", requestId, error);
   }

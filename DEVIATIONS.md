@@ -23,3 +23,5 @@ Every place the build departs from the prompt, and why. Kept current as steps la
 9. **Provider-side prompt caching of the system prompt.** The system blocks carry an ephemeral cache marker so the verbatim prompt is not re-billed on every call. Only the system prompt sits before the cache breakpoint; the draft is in the user message and is never cached.
 
 10. **No server-side refusal fallback.** The provider offers a server-side fallback that re-runs a declined request on another model. Section 4 forbids a fallback provider or a silent retry to a different model, so it is not enabled. A refusal surfaces as an `EngineError` of kind `refusal`.
+
+11. **Credential variable name.** The SDK's default is `ANTHROPIC_API_KEY`, but hosted Claude Code environments reserve that name for the session's own account auth and refuse to set it. The engine reads `ACR_API_KEY` first and `ANTHROPIC_API_KEY` second (`resolveApiKey` in `config.ts`) and passes the value to the SDK explicitly. There is still one credential and one endpoint; this only changes where the value is read from.

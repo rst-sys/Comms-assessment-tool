@@ -15,7 +15,7 @@ Built in the order PROMPT.md Section 1 requires. Step 1, the evaluation engine (
 | Provider | Anthropic, via the official `@anthropic-ai/sdk` | `src/engine/client.ts` |
 | Model | `claude-opus-5` by default | `ACR_MODEL` environment variable, read in `src/engine/config.ts` |
 | Effort | `high` by default | `ACR_EFFORT` |
-| Credential | `ANTHROPIC_API_KEY` | environment only; never stored by the app |
+| Credential | `ACR_API_KEY`, falling back to `ANTHROPIC_API_KEY` | environment only; never stored by the app |
 
 To change the model, set `ACR_MODEL` to another model id. The UI reads provider and model from `getEngineConfig()`; nothing is hardcoded there. There is one configured endpoint, no fallback provider and no retry to a different model. The provider's retention and training terms shown in the privacy panel come from `ACR_PROCESSING_MODE` and `ACR_TRAINING_TERM`; set them to the actual terms of the endpoint your organization uses.
 
@@ -47,7 +47,7 @@ npm run fixtures       # live run of all demos and calibration tests (7 provider
 npm run fixtures -- demo1 control   # a subset
 ```
 
-The live runner needs `ANTHROPIC_API_KEY`. It writes each raw result to `fixture-runs/` (gitignored) and exits non-zero when an expected finding is missing.
+The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code environments reserve `ANTHROPIC_API_KEY` for session auth and refuse to set it, so set `ACR_API_KEY` there. It writes each raw result to `fixture-runs/` (gitignored) and exits non-zero when an expected finding is missing.
 
 ## Regenerating the prompt text
 

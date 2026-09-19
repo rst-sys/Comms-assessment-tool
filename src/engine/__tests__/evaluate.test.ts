@@ -113,14 +113,15 @@ describe("evaluateDraft", () => {
   });
 
   it("wraps provider construction failures as auth errors", async () => {
-    const saved = process.env.ANTHROPIC_API_KEY;
+    const saved = { ACR_API_KEY: process.env.ACR_API_KEY, ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY };
+    delete process.env.ACR_API_KEY;
     delete process.env.ANTHROPIC_API_KEY;
     try {
       await expect(evaluateDraft(DEMO_1.request, { config })).rejects.toSatisfy(
-        (e: unknown) => e instanceof EngineError && e.kind === "auth",
+        (e: unknown) => e instanceof EngineError && e.kind === "auth" && /ACR_API_KEY/.test(e.message),
       );
     } finally {
-      if (saved !== undefined) process.env.ANTHROPIC_API_KEY = saved;
+      for (const [k, v] of Object.entries(saved)) if (v !== undefined) process.env[k] = v;
     }
   });
 });

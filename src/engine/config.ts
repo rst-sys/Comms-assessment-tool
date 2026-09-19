@@ -25,6 +25,23 @@ export interface EngineConfig {
 
 export const DEFAULT_MODEL = "claude-opus-5";
 
+/**
+ * Environment variable names the engine accepts for the provider credential,
+ * in order of precedence. `ACR_API_KEY` exists because some hosted
+ * environments reserve `ANTHROPIC_API_KEY` for their own session auth and
+ * refuse to set it; `ANTHROPIC_API_KEY` remains for local development.
+ */
+export const API_KEY_ENV_VARS = ["ACR_API_KEY", "ANTHROPIC_API_KEY"] as const;
+
+/** The configured credential, or undefined when neither variable is set. Never log the value. */
+export function resolveApiKey(env: NodeJS.ProcessEnv = process.env): string | undefined {
+  for (const name of API_KEY_ENV_VARS) {
+    const value = env[name]?.trim();
+    if (value) return value;
+  }
+  return undefined;
+}
+
 export function getEngineConfig(env: NodeJS.ProcessEnv = process.env): EngineConfig {
   const effortRaw = (env.ACR_EFFORT ?? "high").toLowerCase();
   if (!(EFFORT_LEVELS as readonly string[]).includes(effortRaw)) {
