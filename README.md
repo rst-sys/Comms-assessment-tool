@@ -12,11 +12,18 @@ Built in the order PROMPT.md Section 1 requires.
 | --- | --- |
 | 1. Evaluation engine (Sections 5–8), tested against the Section 12 fixtures | Done. Live run captured in `fixture-reports/`; 48 of 48 checks pass after hand review (see `DEVIATIONS.md`, item 16). |
 | 2. Results page (Section 9) | Done. `src/app/results/`, rendered from a captured sample until step 3 supplies live results. |
-| 3. Intake screen (Section 3) with the privacy panel (Section 4) | Not started. |
+| 3. Intake screen (Section 3) with the privacy panel (Section 4) | Done. `src/app/intake/`, `src/app/PrivacyPanel.tsx`, and the server in `src/server/` (evaluate, URL import, config). Verified end to end in a browser against the live provider. |
 | 4. Minimal-Risk redraft mode | Not started. |
 | 5. Design polish (Section 11) | Not started. |
 
-Run the app with `npm run dev` and open the printed URL. Until step 3 lands, the header offers the captured sample analyses.
+Run the server and the app:
+
+```
+npm run server     # API on http://localhost:8787 (needs ACR_API_KEY)
+npm run dev        # the app, with /api proxied to the server
+```
+
+Or build once and serve both from the server: `npm run build && npm start`.
 
 ## Provider and model
 
@@ -33,11 +40,17 @@ To change the model, set `ACR_MODEL` to another model id. The UI reads provider 
 
 ```
 src/app/
-  main.tsx, App.tsx   entry point and the step 2 shell (sample picker)
+  main.tsx, App.tsx   entry point; intake → evaluating → results, plus the stub pages
+  intake/             the intake screen and its rules (word range, heightened review,
+                      high-risk warning, demo loader, URL import)
   results/            the results page: summary, top findings, register, scorecard,
                       agency scan, devil's advocate, questions, footer
-  copy.ts             the core principle and the decision-support disclaimer
-  styles.css          design tokens from Section 11 and structural styles
+  PrivacyPanel.tsx    the Section 4 panel, provider and model read from the server
+  ConfidentialityNotice.tsx, stubs.ts, api.ts, copy.ts, styles.css
+src/server/
+  server.ts           POST /api/evaluate, POST /api/import, GET /api/config; serves dist/ in production
+  import.ts           stateless fetch-and-extract for URL import (Readability)
+  requestSchema.ts    validation of the intake request
 src/engine/
   types.ts        intake enumerations and the analysis shape (Sections 3, 6)
   promptText.ts   the verbatim system prompt and layoff block, generated from PROMPT.md
@@ -57,8 +70,10 @@ scripts/
 
 ```
 npm install
-npm run dev            # the web app, on a local port
+npm run dev            # the web app, on a local port (proxies /api to the server)
+npm run server         # the API server, reloading on change
 npm run build          # production build to dist/
+npm start              # the API server also serving dist/
 npm run typecheck      # tsc --noEmit
 npm test               # vitest: engine, results-page helpers, and rendered page (no network)
 npm run fixtures       # live run of all demos and calibration tests (7 provider calls)

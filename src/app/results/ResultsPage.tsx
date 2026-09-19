@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
+import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import { AgencyScan } from "./AgencyScan.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
 import { EscalationChecklist } from "./EscalationChecklist.js";
@@ -14,6 +15,10 @@ import { TopFindings } from "./TopFindings.js";
 interface Props {
   result: EvaluationResult;
   request: EvaluationRequest;
+  /** Provider and model for the privacy panel; null while loading. */
+  config?: PrivacyConfig | null;
+  /** Clears all state and returns to a blank intake (Section 4). */
+  onDiscard?: () => void;
 }
 
 /**
@@ -21,7 +26,7 @@ interface Props {
  * open; the remaining sections are collapsed disclosure panels. Printing
  * expands every panel and restores the previous state afterwards.
  */
-export function ResultsPage({ result, request }: Props) {
+export function ResultsPage({ result, request, config = null, onDiscard }: Props) {
   const a = result.analysis;
 
   useEffect(() => {
@@ -43,8 +48,16 @@ export function ResultsPage({ result, request }: Props) {
   }, []);
 
   return (
-    <main className="page">
-      <ExecutiveSummary result={result} request={request} />
+    <main className="page results">
+      {onDiscard ? (
+        <p className="no-print results-actions">
+          <button type="button" onClick={onDiscard}>Discard and start over</button>
+        </p>
+      ) : null}
+      <div className="results-grid">
+        <ExecutiveSummary result={result} request={request} />
+        <PrivacyPanel config={config} />
+      </div>
       {request.heightened_review ? <EscalationChecklist questions={a.questions_before_publication} /> : null}
       <TopFindings findings={a.findings} />
       <FindingsRegister findings={a.findings} />
