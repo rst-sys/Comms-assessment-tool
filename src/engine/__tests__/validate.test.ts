@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AnalysisValidationError, contextWasSupplied, findVerbatim, validateAnalysis } from "../validate.js";
+import { AnalysisValidationError, contextWasSupplied, decodeStrayEscapes, findVerbatim, validateAnalysis } from "../validate.js";
 import { SAMPLE_DRAFT, sampleAnalysis, sampleFinding } from "./helpers.js";
 
 describe("validateAnalysis", () => {
@@ -172,5 +172,18 @@ describe("contextWasSupplied", () => {
   });
   it("is true when any field has text", () => {
     expect(contextWasSupplied({ desired_tone: "calm" })).toBe(true);
+  });
+});
+
+describe("decodeStrayEscapes", () => {
+  it("turns literal backslash-u sequences into characters, everywhere in the object", () => {
+    const decoded = decodeStrayEscapes({ a: "one \\u2014 two", b: ["x\\u00e9"], c: { d: 1, e: null } });
+    expect(decoded).toEqual({ a: "one \u2014 two", b: ["x\u00e9"], c: { d: 1, e: null } });
+  });
+  it("is applied during validation", () => {
+    const analysis = sampleAnalysis();
+    analysis.executive_summary.assessment = "Name it \\u2014 plainly.";
+    const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
+    expect(out.executive_summary.assessment).toBe("Name it \u2014 plainly.");
   });
 });

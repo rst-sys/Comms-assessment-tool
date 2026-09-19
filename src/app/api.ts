@@ -3,7 +3,8 @@
  * nothing here logs request or response bodies.
  */
 import type { EvaluationResult } from "../engine/evaluate.js";
-import type { CommunicationType, EvaluationRequest } from "../engine/types.js";
+import type { RedraftResult } from "../engine/redraft.js";
+import type { Analysis, CommunicationType, EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
 export interface ImportedPage {
@@ -53,6 +54,10 @@ async function post<T>(path: string, body: unknown, fallback: string): Promise<T
 
 export function evaluate(request: EvaluationRequest): Promise<EvaluationResult> {
   return post<EvaluationResult>("/api/evaluate", request, "The evaluation failed. Try again.");
+}
+
+export function redraft(request: EvaluationRequest, analysis: Analysis): Promise<RedraftResult> {
+  return post<RedraftResult>("/api/redraft", { request, analysis }, "The revision failed. Try again.");
 }
 
 export function importUrl(url: string): Promise<ImportedPage> {

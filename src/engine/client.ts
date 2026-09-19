@@ -57,6 +57,8 @@ export interface CallModelOptions {
   /** Injected in tests; defaults to a client that resolves credentials from the environment. */
   client?: Anthropic;
   requestId?: string;
+  /** Structured-output schema for this call. Defaults to the analysis schema. */
+  schema?: Record<string, unknown>;
 }
 
 const NO_CREDENTIAL_MESSAGE = `No provider credential is configured. Set ${API_KEY_ENV_VARS.join(" or ")} (see README).`;
@@ -93,7 +95,7 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
       messages: [{ role: "user", content: options.user }],
       output_config: {
         effort: config.effort,
-        format: { type: "json_schema", schema: ANALYSIS_SCHEMA },
+        format: { type: "json_schema", schema: options.schema ?? ANALYSIS_SCHEMA },
       },
     });
   } catch (error) {

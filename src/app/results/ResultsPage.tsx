@@ -9,6 +9,7 @@ import { ExecutiveSummary } from "./ExecutiveSummary.js";
 import { FindingsRegister } from "./FindingsRegister.js";
 import { Footer } from "./Footer.js";
 import { Questions } from "./Questions.js";
+import { RedraftPanel } from "./RedraftPanel.js";
 import { Scorecard } from "./Scorecard.js";
 import { TopFindings } from "./TopFindings.js";
 
@@ -65,6 +66,7 @@ export function ResultsPage({ result, request, config = null, onDiscard }: Props
       <AgencyScan draft={request.draft} scan={a.agency_scan} />
       <DevilsAdvocate data={a.devils_advocate} />
       <Questions questions={a.questions_before_publication} />
+      <RedraftPanel result={result} request={request} />
       <Footer />
     </main>
   );

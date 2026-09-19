@@ -14,3 +14,4 @@ export {
   type ValidationAdjustments,
 } from "./validate.js";
 export * from "./fixtures.js";
+export { redraftMinimalRisk, validateRedraft, extractPlaceholders, buildRedraftUserMessage, REDRAFT_SYSTEM_PROMPT, type Redraft, type RedraftResult, type RedraftChange } from "./redraft.js";

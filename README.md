@@ -13,7 +13,7 @@ Built in the order PROMPT.md Section 1 requires.
 | 1. Evaluation engine (Sections 5–8), tested against the Section 12 fixtures | Done. Live run captured in `fixture-reports/`; 48 of 48 checks pass after hand review (see `DEVIATIONS.md`, item 16). |
 | 2. Results page (Section 9) | Done. `src/app/results/`, rendered from a captured sample until step 3 supplies live results. |
 | 3. Intake screen (Section 3) with the privacy panel (Section 4) | Done. `src/app/intake/`, `src/app/PrivacyPanel.tsx`, and the server in `src/server/` (evaluate, URL import, config). Verified end to end in a browser against the live provider. |
-| 4. Minimal-Risk redraft mode | Not started. |
+| 4. Minimal-Risk redraft mode | Done. `src/engine/redraft.ts`, `POST /api/redraft`, and `src/app/results/RedraftPanel.tsx` (side-by-side diff, change log, placeholders). Verified live on Demo 1. |
 | 5. Design polish (Section 11) | Not started. |
 
 Run the server and the app:
@@ -44,11 +44,11 @@ src/app/
   intake/             the intake screen and its rules (word range, heightened review,
                       high-risk warning, demo loader, URL import)
   results/            the results page: summary, top findings, register, scorecard,
-                      agency scan, devil's advocate, questions, footer
+                      agency scan, devil's advocate, questions, minimal-risk redraft, footer
   PrivacyPanel.tsx    the Section 4 panel, provider and model read from the server
   ConfidentialityNotice.tsx, stubs.ts, api.ts, copy.ts, styles.css
 src/server/
-  server.ts           POST /api/evaluate, POST /api/import, GET /api/config; serves dist/ in production
+  server.ts           POST /api/evaluate, /api/redraft, /api/import; GET /api/config; serves dist/ in production
   import.ts           stateless fetch-and-extract for URL import (Readability)
   requestSchema.ts    validation of the intake request
 src/engine/
@@ -61,6 +61,7 @@ src/engine/
   config.ts       provider, model and effort from the environment
   client.ts       the single provider call; errors carry a kind and a hashed request id
   evaluate.ts     build → call → parse → validate → score
+  redraft.ts      the second call: minimal-risk revision with a length budget and placeholders
   fixtures.ts     the three demos, the control draft and their expectations (Section 12)
 scripts/
   run-fixtures.ts live fixture and calibration runner

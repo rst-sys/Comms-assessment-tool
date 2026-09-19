@@ -92,6 +92,22 @@ function escapeRegExp(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/**
+ * The model occasionally double-escapes a character (a literal backslash-u
+ * sequence such as \\u2014 survives JSON parsing as six characters). Decode
+ * those in every string so they never reach the page.
+ */
+export function decodeStrayEscapes<T>(value: T): T {
+  if (typeof value === "string") {
+    return value.replace(/\\u([0-9a-fA-F]{4})/g, (_, hex: string) => String.fromCharCode(Number.parseInt(hex, 16))) as T;
+  }
+  if (Array.isArray(value)) return value.map((v) => decodeStrayEscapes(v)) as T;
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, decodeStrayEscapes(v)])) as T;
+  }
+  return value;
+}
+
 function fail(path: string, message: string): never {
   throw new AnalysisValidationError(path, `${path}: ${message}`);
 }
@@ -102,7 +118,7 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
     fail(path, message);
   }
   // ajv has established the shape; structural checks follow.
-  const input = raw as Analysis;
+  const input = decodeStrayEscapes(raw as Analysis);
 
   // Dimensions: exactly ten, the ten ids, scores in 0.5 steps.
   if (input.dimensions.length !== DIMENSION_IDS.length) {

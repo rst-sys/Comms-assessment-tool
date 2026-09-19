@@ -45,3 +45,13 @@ Every place the build departs from the prompt, and why. Kept current as steps la
 19. **The confidentiality notice shows once per page load.** Section 4 says "shown once on first load, dismissable". Remembering a dismissal would need browser storage, which Section 4 forbids for draft text and which the build avoids entirely, so the notice appears at the start of every page load and is dismissed with one click.
 
 20. **Stub pages and navigation are part of this step.** Section 1 asks for a nav entry and a one-paragraph page for each stubbed area but assigns them to no build step. They ship with the app shell here, as plain text with no forms, tables or toggles. Navigation is component state, not the URL, so nothing about the review reaches the address bar or history.
+
+## Step 4 — Minimal-Risk redraft
+
+21. **The redraft has a length budget.** Section 9 says the redraft must preserve the original's structure and tone and change only what a finding justifies. On Demo 1, whose eleven findings each ask for information the three-sentence draft lacks, the first live revisions grew to five paragraphs and 275 words. The redraft prompt now allows at most twice the original's length or the original plus 120 words, whichever is larger, works through findings from the most severe down, and records any finding it cannot resolve within that budget in the change log with an empty revision and a stated reason. The live Demo 1 revision then came in at 149 words with every finding addressed through placeholders.
+
+22. **Placeholders are recomputed in code.** The model returns a placeholder list, but the engine replaces it with every bracketed phrase found in the revised text, in order of first appearance, so the list the user must fill is always complete.
+
+23. **The redraft prompt is not in PROMPT.md.** Section 9 specifies the call's inputs (the original draft, the findings, the non-invention rule) but no prompt text. `REDRAFT_SYSTEM_PROMPT` in `src/engine/redraft.ts` embeds the verbatim NON-INVENTION paragraph from Section 5 and adds the minimal-change, structure-preserving, retrospective and length-budget rules above.
+
+24. **Stray unicode escapes are decoded.** The model occasionally double-escapes a character, so a literal `\u2014` survived into one live assessment. Every string in a validated analysis is now decoded before it reaches the page.
