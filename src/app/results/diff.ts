@@ -78,8 +78,17 @@ export function diffText(original: string, revised: string): DiffOp[] {
       else inserted += sentenceOps[i]!.item;
       i++;
     }
-    const wordOps = lcsDiff(tokenizeWords(deleted), tokenizeWords(inserted), (x, y) => norm(x) === norm(y));
-    for (const w of wordOps) ops.push({ type: w.type, text: w.item });
+    const dw = tokenizeWords(deleted);
+    const iw = tokenizeWords(inserted);
+    const wordOps = lcsDiff(dw, iw, (x, y) => norm(x) === norm(y));
+    // A wholesale rewrite reads better as one replaced block than as scattered shared words.
+    const shared = wordOps.filter((w) => w.type === "equal").length;
+    if (shared < Math.max(dw.length, iw.length) * 0.5) {
+      if (deleted) ops.push({ type: "delete", text: deleted });
+      if (inserted) ops.push({ type: "insert", text: inserted });
+    } else {
+      for (const w of wordOps) ops.push({ type: w.type, text: w.item });
+    }
   }
   return mergeOps(ops);
 }

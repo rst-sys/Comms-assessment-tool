@@ -14,7 +14,7 @@ Built in the order PROMPT.md Section 1 requires.
 | 2. Results page (Section 9) | Done. `src/app/results/`, rendered from a captured sample until step 3 supplies live results. |
 | 3. Intake screen (Section 3) with the privacy panel (Section 4) | Done. `src/app/intake/`, `src/app/PrivacyPanel.tsx`, and the server in `src/server/` (evaluate, URL import, config). Verified end to end in a browser against the live provider. |
 | 4. Minimal-Risk redraft mode | Done. `src/engine/redraft.ts`, `POST /api/redraft`, and `src/app/results/RedraftPanel.tsx` (side-by-side diff, change log, placeholders). Verified live on Demo 1. |
-| 5. Design polish (Section 11) | Not started. |
+| 5. Design polish (Section 11) | Done. Tokens, type scale, spacing, print stylesheet and responsive layout in `src/app/styles.css`; contrast checked (see `DEVIATIONS.md`, item 25). |
 
 Run the server and the app:
 

@@ -29,6 +29,12 @@ describe("diffText", () => {
     expect(ops.filter((o) => o.type !== "delete").map((o) => o.text).join("")).toBe(revised);
   });
 
+  it("shows a wholesale rewrite as one deleted block and one inserted block", () => {
+    const ops = diffText("Rapid growth brought complexity. We are eliminating roles.", "Rapid growth brought complexity. Leadership decided to cut [number] jobs; we own that choice.");
+    expect(ops.map((o) => o.type)).toEqual(["equal", "delete", "insert"]);
+    expect(ops[1]!.text).toBe("We are eliminating roles.");
+  });
+
   it("handles a pure insertion and a pure deletion", () => {
     const ins = diffText("A. C.", "A. B. C.");
     expect(ins.filter((o) => o.type === "insert").map((o) => o.text).join("")).toBe("B. ");

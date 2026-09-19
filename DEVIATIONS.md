@@ -55,3 +55,11 @@ Every place the build departs from the prompt, and why. Kept current as steps la
 23. **The redraft prompt is not in PROMPT.md.** Section 9 specifies the call's inputs (the original draft, the findings, the non-invention rule) but no prompt text. `REDRAFT_SYSTEM_PROMPT` in `src/engine/redraft.ts` embeds the verbatim NON-INVENTION paragraph from Section 5 and adds the minimal-change, structure-preserving, retrospective and length-budget rules above.
 
 24. **Stray unicode escapes are decoded.** The model occasionally double-escapes a character, so a literal `\u2014` survived into one live assessment. Every string in a validated analysis is now decoded before it reaches the page.
+
+## Step 5 — design polish
+
+25. **Text-safe variants of the amber and sage tokens.** Section 11 says all colour pairs meet WCAG AA and to test the amber on paper specifically. Measured: amber `#B8860B` on paper `#FAF8F3` is 3.07:1 and sage `#6B8F71` is 3.42:1, both below the 4.5:1 required for normal text; muted blue `#4A6FA5` is 4.82:1 and burgundy `#7A1F2B` is 9.61:1. The spec colours are kept for bars, severity squares and borders, where contrast rules for text do not apply, and text in those tones uses darker variants: amber text `#8A6508` (5.01:1), sage text `#4A6B50` (5.64:1), blue text `#3F608F`. Ink on paper is 15.05:1 and neutral slate is 7.09:1.
+
+26. **No third-party font requests.** Section 11 names Source Serif 4 and Inter "or equivalent" with system fallbacks. The stylesheet uses those faces when installed and falls back to system serif and sans faces; it does not load fonts from a font service, so a confidential session makes no request to a third party beyond the configured provider.
+
+27. **Print expands panels by script.** CSS cannot open a native disclosure element, so the results page opens every panel on the browser's beforeprint event and restores the previous state afterwards; the print stylesheet hides controls and breaks pages between sections.
