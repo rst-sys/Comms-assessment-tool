@@ -83,6 +83,24 @@ npm run fixtures -- demo1 control   # a subset
 
 The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code environments reserve `ANTHROPIC_API_KEY` for session auth and refuse to set it, so set `ACR_API_KEY` there. It writes each raw result to `fixture-runs/` (gitignored) and exits non-zero when an expected finding is missing.
 
+## Definition of done (PROMPT.md Section 13)
+
+| Item | Status |
+| --- | --- |
+| All three demos produce every expected finding in Section 12 | Met. Captured live run in `fixture-reports/`; 48 of 48 checks after the hand review recorded in `DEVIATIONS.md` item 16. |
+| All three calibration tests pass, including the control draft | Met. Control scored 83 with zero scan flags; context sensitivity and determinism passed on the same run. |
+| Every rendered score is one click from its rationale and cited excerpt | Met. The score opens the scorecard; each dimension row expands to its rationale and "what would raise this"; findings cite excerpts or omissions. |
+| Schema validation rejects malformed output and the UI never renders a partial analysis | Met. ajv plus code-enforced constraints; failures return the Section 6 message and nothing renders. |
+| Excerpts that do not appear verbatim in the draft are dropped in code | Met. Dropped and counted; the same rule applies to agency-scan phrases. |
+| Readiness cannot show "Ready with minor edits" while any specialist review flag is set | Met. Enforced in code after excerpt drops. |
+| Draft text appears nowhere in storage, URLs, page titles, or console output | Met. No storage or history APIs (tested by source scan); page title fixed; logs carry kinds, hashed ids, domains and status codes only. |
+| The privacy panel shows the real provider and model from config and the planned-controls line | Met. Read from `GET /api/config`. |
+| The confidentiality notice appears on first load | Met. Once per page load, dismissable. |
+| Stubbed areas show a nav entry and a one-paragraph page, nothing more | Met. |
+| Keyboard-only navigation reaches every control; contrast passes AA | Met. Verified by keyboard in a browser; contrast measured, see `DEVIATIONS.md` item 25. |
+| Every results page and print view ends with the core principle and the decision-support disclaimer | Met. |
+| URL import extracts readable text from a public press release, shows a plain error on a paywalled page, sets the retrospective framing, and the proxy logs only domain and status | Met in tests with sample pages (article, paywall, PDF) and in the browser with a stubbed response; a live fetch of a public site could not be exercised from the build sandbox, whose outbound proxy blocks external sites. |
+
 ## Regenerating the prompt text
 
 `src/engine/promptText.ts` is generated from the fenced blocks under Sections 5 and 10 of `PROMPT.md`. After editing those sections, regenerate with:
