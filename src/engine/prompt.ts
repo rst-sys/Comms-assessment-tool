@@ -14,7 +14,7 @@ The JSON object must satisfy these counts and conventions in addition to the sch
 - schema_version is "1.0".
 - dimensions contains exactly ten entries, one per id, in this order: ${DIMENSION_IDS.join(", ")}. Scores are multiples of 0.5 from 0.0 to 5.0.
 - strongest_elements and priority_improvements each contain exactly three strings.
-- findings use ids F-001, F-002, ... in order. excerpt is an exact, character-for-character substring of the draft, or null when the finding is an omission; omission is then a description of what is missing. Never leave both null.
+- findings use ids F-001, F-002, ... in order of materiality: F-001 is the gap a reasonable stakeholder would most need resolved, with High findings before Moderate before Low. Within one severity, order by dimension: accountability_agency, stakeholder_respect_impact, causation_explanation, truthfulness_factual_discipline, corrective_action_proof, listening_employee_voice, verification_follow_through, clarity_plain_language, fairness_independence_conflicts, future_readiness_learning. excerpt is an exact, character-for-character substring of the draft, or null when the finding is an omission; omission is then a description of what is missing. Never leave both null.
 - claim_status is set on findings for accountability_agency, causation_explanation and corrective_action_proof, and null elsewhere.
 - agency_scan phrase is an exact substring of the draft. finding_id names the related finding or is null.
 - devils_advocate.personas contains exactly five personas. The disclaimer is exactly: "These are plausible audience interpretations, not statements of fact."
