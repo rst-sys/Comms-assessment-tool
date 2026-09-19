@@ -48,10 +48,32 @@ function findingText(f: Finding): string {
   return [f.finding, f.omission ?? "", f.excerpt ?? "", f.why_it_matters, f.stakeholder_risk, f.recommended_action].join(" ");
 }
 
+const RETRYABLE_KINDS = new Set(["validation", "invalid_json", "truncated", "no_text"]);
+const retried: string[] = [];
+
+/**
+ * One evaluation. A malformed response is rejected by the engine (Section 6);
+ * the runner then makes one more call to the same model and says so, so a
+ * single malformed response does not abort a seven-call run. Retries are
+ * counted and reported at the end; a second failure aborts the run.
+ */
+async function evaluateOnce(fixture: Fixture, label: string): Promise<EvaluationResult> {
+  const log = (l: string) => console.log(`\n  ${l}`);
+  try {
+    return await evaluateDraft(fixture.request, { log });
+  } catch (error) {
+    const e = error as { kind?: string; requestId?: string };
+    if (!e.kind || !RETRYABLE_KINDS.has(e.kind)) throw error;
+    console.log(`\n  [${e.requestId ?? "?"}] ${e.kind}: malformed response rejected; retrying once ... `);
+    retried.push(label);
+    return await evaluateDraft(fixture.request, { log });
+  }
+}
+
 async function run(fixture: Fixture, label = fixture.key): Promise<EvaluationResult> {
   process.stdout.write(`\n→ ${fixture.name} [${label}] ... `);
   const started = Date.now();
-  const result = await evaluateDraft(fixture.request, { log: (l) => console.log(`\n  ${l}`) });
+  const result = await evaluateOnce(fixture, label);
   const seconds = ((Date.now() - started) / 1000).toFixed(1);
   console.log(`done in ${seconds}s (${result.usage.input_tokens} in / ${result.usage.output_tokens} out)`);
   writeFileSync(`${outDir}/${label}-${stamp}.json`, JSON.stringify(result, null, 2));
@@ -195,6 +217,7 @@ async function main(): Promise<void> {
     });
   }
 
+  if (retried.length > 0) console.log(`\n${retried.length} call(s) needed one retry after a malformed response: ${retried.join(", ")}`);
   console.log(`\n${failures.length === 0 ? "All checks passed." : `${failures.length} check(s) failed:`}`);
   for (const f of failures) console.log(`  - ${f}`);
   console.log(`Raw results: ${outDir}/*-${stamp}.json`);
