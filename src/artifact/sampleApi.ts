@@ -9,6 +9,7 @@ import { ApiError, type ApiImplementation } from "../app/api.js";
 import type { PrivacyConfig } from "../app/PrivacyPanel.js";
 import { finishEvaluation } from "../engine/evaluate.js";
 import { EngineError } from "../engine/client.js";
+import { normalizeAnalysis } from "../engine/normalize.js";
 import { buildSystemBlocks, buildUserMessage } from "../engine/prompt.js";
 import { ANALYSIS_SCHEMA } from "../engine/schema.js";
 
@@ -59,9 +60,10 @@ function viewerMessage(code: string, fallback: string): string {
 }
 
 function toApiError(e: unknown, fallback: string): ApiError {
-  if (e instanceof EngineError) return new ApiError(e.kind === "validation" || e.kind === "invalid_json" ? FORMAT_ERROR : e.message, 502, e.kind, e.requestId);
+  const suffix = ` Technical detail: ${detail(e)}.`;
+  if (e instanceof EngineError) return new ApiError((e.kind === "validation" || e.kind === "invalid_json" ? FORMAT_ERROR : e.message) + suffix, 502, e.kind, e.requestId);
   const code = typeof e === "object" && e !== null && "code" in e ? String((e as { code: unknown }).code) : "upstream_error";
-  return new ApiError(viewerMessage(code, fallback), 502, code);
+  return new ApiError(viewerMessage(code, fallback) + suffix, 502, code);
 }
 
 function requestId(): string {
@@ -69,7 +71,26 @@ function requestId(): string {
 }
 
 function schemaBlock(schema: unknown): string {
-  return `JSON SCHEMA\nReply with exactly one JSON object that satisfies this schema and nothing else:\n${JSON.stringify(schema)}`;
+  return [
+    "JSON SCHEMA",
+    "Reply with exactly one JSON object that satisfies this schema and nothing else. Write compact JSON on one line with no indentation, no line breaks inside strings, and no Markdown fence.",
+    "Keep the answer short enough to finish: at most 8 findings, at most 8 questions, and every string field brief.",
+    JSON.stringify(schema),
+  ].join("\n");
+}
+
+/** A short, safe technical detail for the viewer to report: an error code or a validation path, never content. */
+function detail(e: unknown): string {
+  if (e instanceof EngineError) {
+    const cause = e.cause as { path?: string } | undefined;
+    return `${e.kind}${cause?.path ? ` at ${cause.path}` : ""}`;
+  }
+  if (typeof e === "object" && e !== null && "code" in e) {
+    const err = e as { code: string; message?: string; text?: string };
+    const cut = typeof err.text === "string" ? ` (reply ${err.text.length} characters)` : "";
+    return `${err.code}${cut}`;
+  }
+  return "unknown";
 }
 
 const usage = { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: null, cache_creation_input_tokens: null };
@@ -87,7 +108,7 @@ export const sampleApi: ApiImplementation = {
       throw toApiError(e, "The evaluation failed. Try again.");
     }
     try {
-      return finishEvaluation(raw, request, { requestId: id, provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" }, usage, log: (l) => console.log(l) });
+      return finishEvaluation(normalizeAnalysis(raw), request, { requestId: id, provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" }, usage, log: (l) => console.log(l) });
     } catch (e) {
       throw toApiError(e, "The evaluation failed. Try again.");
     }
