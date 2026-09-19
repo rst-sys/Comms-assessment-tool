@@ -1,0 +1,398 @@
+{
+  "request_id": "f6182bfcf1ef",
+  "analysis": {
+    "schema_version": "1.0",
+    "executive_summary": {
+      "assessment": "No context fields were supplied, so accountability and causation are scored on the draft's language alone and every claim in the draft is treated as ASSERTED rather than confirmed. In three sentences the draft announces an adverse employment action while attributing its basis to \"feedback from employees\", attributing its cause to \"Rapid growth brought complexity\", and omitting who decided, how many people are affected, how roles were selected, what transition support exists, what review or appeal is available, and what prevents the same structure returning. Under heightened review these are material gaps rather than stylistic ones: a reasonable employee could read this as leadership relocating responsibility for job losses onto growth and onto colleagues' own feedback, and the message should not be issued in its current form.",
+      "risk_level": "Critical",
+      "readiness": "Do not issue until material gaps are resolved",
+      "context_supplied": false,
+      "strongest_elements": [
+        "The draft is short and uses plain, readable sentences that an all-employee audience can process quickly.",
+        "\"we are eliminating roles\" uses an active first-person subject rather than the fully passive \"roles were eliminated\", so some organizational agency is visible.",
+        "The message states unambiguously that role eliminations are happening now rather than hedging the action into a possibility."
+      ],
+      "priority_improvements": [
+        "Name the accountable decision-maker and state explicitly that leadership, not employees, made the decision to eliminate roles.",
+        "Disclose scale, affected groups, role-selection criteria, transition support, internal mobility consideration, and the review or questions process available to affected people.",
+        "Replace \"Rapid growth brought complexity\" with an account of the leadership decisions, hiring choices, incentives or governance conditions that produced the structure being removed, and state what prevents it returning."
+      ]
+    },
+    "dimensions": [
+      {
+        "id": "accountability_agency",
+        "score": 0.5,
+        "rationale": "The only agentive clause is \"we are eliminating roles\", and \"we\" is never resolved into a named executive, leadership body, or decision forum, while the stated basis is \"Based on feedback from employees\" — a framing that may leave agency unclear and could read as shifting the origin of the decision onto the affected population. This claim of organizational ownership is ASSERTED; no context field was supplied to confirm who held decision rights, so the score reflects the draft's language only.",
+        "would_raise": "Name the accountable executive or body that made the decision and state plainly that leadership, not employee feedback, decided to eliminate roles."
+      },
+      {
+        "id": "truthfulness_factual_discipline",
+        "score": 1,
+        "rationale": "The draft contains no verifiable specifics — no number of roles, no functions, no locations, no dates, no effective timing — and its one forward claim, \"These changes will help us focus on what matters most\", is presented as certainty without any supporting basis. Under heightened review this unsupported reassurance sits directly beside an adverse employment action and is not distinguished from fact.",
+        "would_raise": "State the scale, functions, locations and dates of the reductions as facts, and label forward-looking benefits as expectations with the reasoning behind them."
+      },
+      {
+        "id": "causation_explanation",
+        "score": 0.5,
+        "rationale": "\"Rapid growth brought complexity\" names a condition of the organization as the actor in the causal sentence and stops there, so the draft identifies a symptom without explaining the leadership choices, hiring decisions, priorities or governance practices that produced the complexity. This causal account is ASSERTED and cannot be confirmed because no context fields were supplied.",
+        "would_raise": "Explain which internal decisions, incentives or governance conditions created the layering being removed, and distinguish external conditions from internal exposure."
+      },
+      {
+        "id": "stakeholder_respect_impact",
+        "score": 0.5,
+        "rationale": "The people losing their jobs are never named, counted or acknowledged; the only reference to them is the phrase \"eliminating roles\", which does not distinguish role redundancy from the capability of the people in those roles. There is no severance, notice, benefits, internal mobility or support information, and no statement of how or when affected individuals will be told.",
+        "would_raise": "Name the affected groups and scale, acknowledge the human impact directly, and set out [employee support information], notice timing, and the selection and review process."
+      },
+      {
+        "id": "listening_employee_voice",
+        "score": 0.5,
+        "rationale": "\"Based on feedback from employees\" places employee voice as the stated basis for a decision that eliminates employees' jobs, with no statement that leadership owns the decision — a use of feedback that may chill future candour and could be read as justification rather than diagnosis. No channel is offered for questions, and no protection is offered to those who gave the feedback.",
+        "would_raise": "Separate what employees said from what leadership decided, state explicitly that the decision was leadership's alone, and open a named channel for questions."
+      },
+      {
+        "id": "corrective_action_proof",
+        "score": 0.5,
+        "rationale": "The only commitment is to \"become leaner and more agile\", which names no action, owner, date, mechanism or measure, and nothing in the draft addresses decision rights, leadership capability or recurrence prevention. This commitment is ASSERTED and, as written, is not verifiable by any reader.",
+        "would_raise": "Commit to specific, dated changes in structure, decision rights and hiring governance with a named owner for each."
+      },
+      {
+        "id": "clarity_plain_language",
+        "score": 1.5,
+        "rationale": "The sentences are short and readable, but the substance is carried by euphemism — \"leaner and more agile\" and \"focus on what matters most\" — so an employee cannot tell from this text whether their own job is affected, when, or what happens next. Under heightened review, euphemism standing in for an adverse impact is a material clarity failure rather than a tone issue.",
+        "would_raise": "Say plainly that jobs are being cut, how many, in which areas, effective when, and what each affected person should expect and do next."
+      },
+      {
+        "id": "verification_follow_through",
+        "score": 0,
+        "rationale": "The draft contains no metric, milestone, update date, owner, review point or falsifiable commitment of any kind; there is nothing a reader could return to and check. Nothing in the text tells employees when they will hear more or from whom.",
+        "would_raise": "Name an owner, a fixed update cadence with dates, and at least one checkable milestone for the restructuring."
+      },
+      {
+        "id": "fairness_independence_conflicts",
+        "score": 1,
+        "rationale": "By resting the action on \"Based on feedback from employees\" while leadership remains unnamed, the draft positions employees as contributors to a decision about their own removal and does not protect them from association with it. There is no disclosure of who assessed the structure, and no independent or third-party review is referenced.",
+        "would_raise": "State that responsibility for the decision rests with named leadership, explicitly shield employees who gave feedback from any association with job losses, and disclose who reviewed the selection process."
+      },
+      {
+        "id": "future_readiness_learning",
+        "score": 0.5,
+        "rationale": "The draft describes a leaner future state but names no change to leadership practice, governance, hiring controls, span-of-control standards or incentives, so nothing addresses why the layering accumulated. The omission means a reader has no basis to believe the same structure will not return.",
+        "would_raise": "Name the governance or operating-model changes — for example headcount approval rights or layer standards — with [accountable executive or team] and [date]."
+      }
+    ],
+    "findings": [
+      {
+        "id": "F-001",
+        "dimension": "accountability_agency",
+        "severity": "High",
+        "excerpt": "Based on feedback from employees, we are eliminating roles",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "Employee feedback is cited as the basis for a headcount reduction without any explicit statement that leadership, not employees, made the decision, and \"we\" is never resolved into a named executive, body or decision forum.",
+        "why_it_matters": "When the stated basis for job losses is what employees said, a reasonable stakeholder could interpret this as responsibility being relocated away from the people who held decision rights.",
+        "stakeholder_risk": "Employees who participated in feedback exercises may feel implicated in colleagues' job losses, and future candour across the organization may be suppressed.",
+        "recommended_action": "Name the accountable decision-maker and state in the same paragraph that the decision was made by leadership alone; use employee feedback, if at all, only as diagnostic input clearly separated from the decision.",
+        "suggested_revision": "[Accountable executive or leadership body] decided to eliminate [number] roles. This decision was made by leadership, not by employees; feedback colleagues gave us described the problem, but the choice to reduce roles and the selection of those roles were ours.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "No context fields were supplied, so the ownership claim is assessed on the draft's language only and cannot be confirmed."
+      },
+      {
+        "id": "F-002",
+        "dimension": "stakeholder_respect_impact",
+        "severity": "High",
+        "excerpt": null,
+        "omission": "No scale, affected functions or locations, no role-selection criteria, no severance, notice or benefits information, no statement of when affected individuals will be told, and no review, appeal or questions process.",
+        "claim_status": null,
+        "finding": "A headcount reduction is announced with none of the information affected people need: how many roles, which areas, how roles were selected, what support is available, and what process exists to raise questions or challenge selection.",
+        "why_it_matters": "Without these elements a reader cannot tell whether they are affected or what happens next, which is the core information need of the primary audience.",
+        "stakeholder_risk": "Affected employees may learn their status informally or externally, and may be unable to access severance, notice or appeal rights they are entitled to.",
+        "recommended_action": "Disclose scale, affected areas, selection criteria, notification sequence, and the full support and review package before issuing; confirm with counsel and HR what must be disclosed in the United States and in any other market touched.",
+        "suggested_revision": "[Number] roles in [functions/locations] are affected. Roles were selected using [selection criteria], reviewed by [reviewer]. Affected colleagues will be notified individually on [date], before any wider announcement, and will receive [employee support information]. If you believe your selection was made in error, you can raise it through [review process] by [date].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "Assessed as an omission; no context field indicated whether such a package exists."
+      },
+      {
+        "id": "F-003",
+        "dimension": "stakeholder_respect_impact",
+        "severity": "High",
+        "excerpt": "we are eliminating roles to become leaner and more agile",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The draft makes no reference to redeployment, reskilling or internal mobility, and does not distinguish the redundancy of a role from the capability of the person holding it.",
+        "why_it_matters": "Describing people only through the roles being eliminated may read as treating individuals as the surplus, and omitting internal mobility leaves unanswered whether affected people were considered for open work.",
+        "stakeholder_risk": "Affected employees may believe they were judged on performance rather than structure, and may lose access to internal openings they could have filled.",
+        "recommended_action": "State whether affected employees were assessed for internal mobility before selection, describe any redeployment or reskilling route, and say explicitly that role elimination is not a judgment on individual capability.",
+        "suggested_revision": "These are role eliminations driven by structure, not judgments about the people in them. Before selection, [accountable team] reviewed affected colleagues against open roles through [internal mobility process]; affected colleagues will have [period] of priority access to internal vacancies and [reskilling or placement support].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "No context field indicated whether an internal mobility review occurred."
+      },
+      {
+        "id": "F-004",
+        "dimension": "causation_explanation",
+        "severity": "High",
+        "excerpt": "Rapid growth brought complexity.",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "Growth and complexity are named as the cause of an internal decision, with no leadership agency in the causal account and no explanation of the choices, incentives or governance conditions that produced the layering being removed.",
+        "why_it_matters": "This identifies a condition of the organization but does not yet explain internal exposure, so readers are left without an account of how the structure came about or why it is now being corrected through job losses.",
+        "stakeholder_risk": "Employees may conclude that no one is accountable for the structure they are now paying for, undermining trust in the leadership making the cuts.",
+        "recommended_action": "Replace the abstraction with the specific decisions — hiring approvals, reporting-line choices, priority-setting, span-of-control practice — that created the complexity, and name who owned them.",
+        "suggested_revision": "As we grew, leadership approved [specific hiring and structural decisions] without [governance control], and management layers accumulated faster than the work required. That was a leadership decision pattern, owned by [accountable executive or team], and it is what we are now correcting.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "No context fields were supplied; the causal claim is assessed from the draft's language alone."
+      },
+      {
+        "id": "F-005",
+        "dimension": "truthfulness_factual_discipline",
+        "severity": "High",
+        "excerpt": "These changes will help us focus on what matters most.",
+        "omission": null,
+        "claim_status": null,
+        "finding": "An unsupported benefit is stated with certainty directly alongside an adverse employment action, with no evidence, measure or reasoning offered and no acknowledgement of uncertainty.",
+        "why_it_matters": "Under heightened review, reassurance that cannot be checked placed next to job losses risks reading as justification rather than explanation.",
+        "stakeholder_risk": "Employees may treat the whole message as corporate framing and discount the factual parts they most need to rely on.",
+        "recommended_action": "Replace the assertion with a stated expectation, the reasoning behind it, and a measure by which employees can judge whether it happened.",
+        "suggested_revision": "We expect these changes to let teams decide faster on [specific priorities]; we will report against [metric] at [update channel] on [date] so you can judge whether that has happened.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "No context field supplied any supporting basis for the claimed benefit."
+      },
+      {
+        "id": "F-006",
+        "dimension": "corrective_action_proof",
+        "severity": "High",
+        "excerpt": "to become leaner and more agile",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "A leaner future organization is described with no plan for decision rights, leadership capability, layer or span standards, or any other mechanism that would prevent the same structure re-forming.",
+        "why_it_matters": "Without a recurrence-prevention mechanism, the commitment is not yet verifiable and the same reduction may be needed again.",
+        "stakeholder_risk": "Remaining employees may anticipate further rounds and disengage or leave, compounding the disruption.",
+        "recommended_action": "Commit to specific, dated structural governance changes — headcount approval rights, maximum layers, span-of-control standards, manager capability requirements — each with a named owner.",
+        "suggested_revision": "To stop this recurring, from [date] all new roles above [level] require approval by [accountable executive or body], we are setting a standard of no more than [number] layers between [role] and [role], and [accountable executive or team] will report compliance at [update channel] every [cadence].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "The commitment is asserted in general terms; no context confirms any planned governance change."
+      },
+      {
+        "id": "F-007",
+        "dimension": "listening_employee_voice",
+        "severity": "High",
+        "excerpt": "Based on feedback from employees",
+        "omission": null,
+        "claim_status": null,
+        "finding": "Employee feedback is cited immediately before an adverse decision, positioning what colleagues said as the justification for eliminating their jobs, and no channel is offered for questions or challenge.",
+        "why_it_matters": "Using voice as justification for harm may deter future participation in surveys and listening sessions and can be read as leadership sheltering behind employees.",
+        "stakeholder_risk": "Employees who contributed feedback may face blame from colleagues; organizational candour and psychological safety may be durably damaged.",
+        "recommended_action": "Either remove the feedback reference or reframe it as diagnosis with an explicit statement that leadership alone made the decision, and add a named channel for questions.",
+        "suggested_revision": "Colleagues told us decision-making had become slow and layered, and they were right about the problem. The decision about how to respond — including these role eliminations — was made by [accountable executive or body], not by employees. Questions can be raised at [update channel] or with [named contact].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "Assessed from the draft's sequencing of feedback and decision; no context clarifies how feedback was used."
+      },
+      {
+        "id": "F-008",
+        "dimension": "clarity_plain_language",
+        "severity": "High",
+        "excerpt": "leaner and more agile",
+        "omission": null,
+        "claim_status": null,
+        "finding": "Euphemism carries the adverse content of the message: an employee reading this cannot tell that people are losing jobs, how many, or whether they are among them.",
+        "why_it_matters": "Under heightened review, euphemism standing in for an adverse impact obscures the very information the audience most needs.",
+        "stakeholder_risk": "Employees may misread their own status, learn the truth secondhand, and lose confidence in future leadership communications.",
+        "recommended_action": "State the action in plain terms in the first sentence and reserve any description of the future operating model until after the impact and support are set out.",
+        "suggested_revision": "We are cutting [number] jobs. This means [number] colleagues in [functions] will leave the company, with their last day on or around [date].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "Assessed from the draft text; no context supplied the underlying figures."
+      },
+      {
+        "id": "F-009",
+        "dimension": "verification_follow_through",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "No named owner, no update date or cadence, no milestone, metric or review point of any kind.",
+        "claim_status": null,
+        "finding": "The draft offers nothing a reader could return to and check, so no part of the restructuring is falsifiable or trackable by employees.",
+        "why_it_matters": "Commitments that cannot be verified tend to be discounted, and a silent period after a job-loss announcement amplifies rumour.",
+        "stakeholder_risk": "Employees are left without a date by which they will know more, increasing anxiety and speculation across affected and remaining teams.",
+        "recommended_action": "Name an accountable owner, a fixed update cadence with dates, and an end point for the restructuring.",
+        "suggested_revision": "[Accountable executive or team] owns this change. We will update all employees at [update channel] on [date] and every [cadence] after that, and the restructuring will be complete by [date].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "Assessed as an omission from the draft; no context indicated any planned update mechanism."
+      },
+      {
+        "id": "F-010",
+        "dimension": "fairness_independence_conflicts",
+        "severity": "Moderate",
+        "excerpt": "Based on feedback from employees, we are eliminating roles",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The framing associates employees with the decision that removes their colleagues while leaving leadership unnamed, and no independent or third-party review of the selection process is disclosed.",
+        "why_it_matters": "Fair representation requires that the party holding authority is visible and that those without authority are not implicated in the outcome.",
+        "stakeholder_risk": "Employees who gave feedback may be scapegoated informally, and affected people have no visible assurance that selection was reviewed impartially.",
+        "recommended_action": "Attribute the decision to named leadership, explicitly protect feedback participants from blame, and disclose who reviewed selection decisions for consistency and fairness.",
+        "suggested_revision": "Responsibility for this decision rests with [accountable executive or body]. No employee who shared feedback had any part in deciding which roles would be eliminated. Selection decisions were reviewed for consistency by [reviewer or independent function].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Labor",
+        "confidence_note": "Assessed from the draft's framing; no context describes the selection or review process."
+      },
+      {
+        "id": "F-011",
+        "dimension": "future_readiness_learning",
+        "severity": "Moderate",
+        "excerpt": "Rapid growth brought complexity.",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The draft identifies a structural condition but names no change to leadership practice, hiring governance or incentives that would stop the same layering returning.",
+        "why_it_matters": "Without a learning mechanism, the same conditions that produced the structure remain in place after the reduction.",
+        "stakeholder_risk": "Remaining employees may reasonably expect a further round, damaging retention and engagement.",
+        "recommended_action": "Name the specific governance, incentive or leadership-capability changes being made, with owners and dates, and state how they will be reviewed.",
+        "suggested_revision": "We are also changing how we grow: from [date], [accountable executive or body] must approve any new management layer, manager effectiveness will be assessed against [metric], and [accountable executive or team] will review adherence at [cadence].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "Assessed as an omission; no context field indicated any planned governance change."
+      }
+    ],
+    "agency_scan": [
+      {
+        "phrase": "Rapid growth brought complexity",
+        "category": "Institutional abstraction",
+        "severity": "High",
+        "assessment": "Potential accountability gap",
+        "why": "Growth and complexity are conditions of the organization, not decision-makers, and here they occupy the causal subject position for an internal decision, leaving readers without an account of the leadership choices, priorities or governance practices that produced the complexity.",
+        "what_would_make_it_credible": "Name the specific hiring, structural or approval decisions that created the layering and the leaders or forums that owned them.",
+        "suggested_edit": "As we grew, leadership approved [specific structural decisions] without [governance control], and management layers accumulated faster than the work required.",
+        "finding_id": "F-004"
+      },
+      {
+        "phrase": "Based on feedback from employees",
+        "category": "Audience displacement",
+        "severity": "High",
+        "assessment": "Potential accountability gap",
+        "why": "Placing employee feedback as the stated basis for eliminating roles relocates the origin of the decision onto the affected population and may leave leadership's decision rights invisible.",
+        "what_would_make_it_credible": "State that leadership made the decision and that feedback described the problem only, with the two kept explicitly separate.",
+        "suggested_edit": "Colleagues described the problem accurately; the decision to eliminate roles was made by [accountable executive or body], not by employees.",
+        "finding_id": "F-007"
+      },
+      {
+        "phrase": "to become leaner and more agile",
+        "category": "Vague action",
+        "severity": "Moderate",
+        "assessment": "Incomplete explanation",
+        "why": "No concrete action, owner, date or mechanism follows, so the phrase stands as a euphemistic description of the intended end state rather than an account of what will change.",
+        "what_would_make_it_credible": "Specify the structural changes, decision-rights changes, owners and dates that constitute the new operating model.",
+        "suggested_edit": "From [date], [accountable executive or body] will hold approval rights for new roles above [level] and we will operate with no more than [number] management layers.",
+        "finding_id": "F-006"
+      },
+      {
+        "phrase": "These changes will help us focus on what matters most",
+        "category": "Values without action",
+        "severity": "Moderate",
+        "assessment": "Incomplete explanation",
+        "why": "The clause offers a benefit without naming the priorities, the mechanism or any measure, and no specific action follows it.",
+        "what_would_make_it_credible": "Name the specific priorities being funded or protected and the measure by which employees can judge the claim.",
+        "suggested_edit": "We expect this to let teams decide faster on [specific priorities], and we will report progress against [metric] at [update channel] on [date].",
+        "finding_id": "F-005"
+      }
+    ],
+    "devils_advocate": {
+      "disclaimer": "These are plausible audience interpretations, not statements of fact.",
+      "personas": [
+        {
+          "persona": "Affected employee",
+          "may_hear": "My job is gone because colleagues gave feedback and because the company grew, and no one will tell me who decided or what I am entitled to.",
+          "may_question": "Am I affected? How was my role selected? What severance, notice and benefits do I get, and can I challenge the decision?",
+          "may_find_missing": "Scale, selection criteria, notification timing, severance and benefits detail, internal mobility consideration, and an appeal or review route.",
+          "would_address_it": "A direct statement of the action, a named decision owner, disclosed selection criteria, a full support package and a stated review process, with individual notification before any wider message.",
+          "suggested_sentence": "If your role is affected, [named contact] will speak with you individually on [date], before any wider communication, and will walk you through [employee support information] and the [review process] available to you."
+        },
+        {
+          "persona": "Remaining employee",
+          "may_hear": "Feedback I give can be used to justify cutting jobs, and there is nothing stopping another round.",
+          "may_question": "Is this finished? Will what I say in the next survey be used the same way? Who is accountable for the structure that got us here?",
+          "may_find_missing": "An end point to the restructuring, a statement that leadership owns the decision, and a mechanism preventing recurrence.",
+          "would_address_it": "An explicit statement that leadership alone decided, a completion date, and named governance changes that stop the layering returning.",
+          "suggested_sentence": "This round is complete as of [date], and from [date] [accountable executive or body] must approve any new management layer so the structure we are removing does not rebuild."
+        },
+        {
+          "persona": "Front-line manager",
+          "may_hear": "I have to deliver this message to my team without knowing who is affected, when, or what support exists.",
+          "may_question": "What am I authorised to say? When are my people told? Where do I send their questions?",
+          "may_find_missing": "Notification sequence, manager talking points, escalation contacts and a questions channel.",
+          "would_address_it": "A stated notification sequence, named HR contacts for managers, and a defined channel for employee questions.",
+          "suggested_sentence": "Managers will receive individual briefings and talking points from [named contact] on [date]; direct any question you cannot answer to [update channel]."
+        },
+        {
+          "persona": "Labor representative",
+          "may_hear": "An employment reduction announced with no selection criteria, no consultation reference and no disclosed process.",
+          "may_question": "Were notice, consultation or local obligations considered in the affected jurisdictions? How were selection criteria applied and reviewed?",
+          "may_find_missing": "Selection criteria, review of adverse-impact risk, and any reference to consultation or notice requirements.",
+          "would_address_it": "Disclosed, reviewed selection criteria and a statement that applicable obligations in each affected market have been confirmed with counsel.",
+          "suggested_sentence": "Selection criteria were [criteria], applied by [decision group] and reviewed by [reviewer]; [legal review] has confirmed the notice and consultation steps applicable in each affected location."
+        },
+        {
+          "persona": "Journalist",
+          "may_hear": "A company cutting jobs and attributing the basis to its own employees' feedback while naming no executive.",
+          "may_question": "How many jobs? Who signed off? Why does the announcement credit employee feedback for a layoff?",
+          "may_find_missing": "Numbers, locations, a named accountable executive, and a plain statement of cause.",
+          "would_address_it": "A factual statement of scale, a named accountable leader, and a plain causal account that does not rest on employee feedback.",
+          "suggested_sentence": "[Accountable executive] made the decision to eliminate [number] roles in [locations], effective [date], to correct management layering that leadership allowed to accumulate."
+        }
+      ],
+      "most_damaging_interpretation": "A reasonable reader could interpret the draft as leadership cutting jobs while declining to appear in its own announcement — assigning the cause to \"Rapid growth\" and the basis to \"feedback from employees\", so that both the blame and the justification for the job losses land on the workforce rather than on the people who held decision rights; if issued unchanged, this interpretation is likely to be repeated internally and externally and to discourage employees from giving honest feedback again."
+    },
+    "questions_before_publication": [
+      "Were affected employees assessed for internal mobility before selection?",
+      "What leadership decisions, incentives, or governance conditions produced the structure being removed?",
+      "What prevents the same layering from returning?",
+      "Is employee feedback being used as diagnosis or as justification?",
+      "What support, transition, and appeals information must be disclosed?",
+      "Are legal, labor, works-council, or local consultation obligations implicated in the selected market? This may be the case in the United States and any other affected location, and counsel must confirm.",
+      "Are affected people being told before any external announcement?",
+      "Who is the named executive or body that made this decision, and will they be identified as the speaker?",
+      "How many roles are affected, in which functions and locations, and on what effective date?",
+      "What criteria were used to select roles, who applied them, and who reviewed them for consistency?",
+      "What is the update cadence and channel after this announcement, and when does the restructuring end?",
+      "On what basis is the claim that these changes will help the company \"focus on what matters most\" made, and what measure will show whether it happened?"
+    ],
+    "specialist_review_summary": [
+      "HR",
+      "Labor"
+    ]
+  },
+  "score": 13,
+  "band": "Serious clarity, accountability, or ethical-risk concerns",
+  "confidence_label": "Scored on draft language only — add known facts and decision details for a substantiated score",
+  "adjustments": {
+    "dropped_findings": 0,
+    "dropped_scan_phrases": 0,
+    "readiness_overridden": false,
+    "context_flag_corrected": false
+  },
+  "provider": {
+    "provider": "Anthropic",
+    "model": "claude-opus-5"
+  },
+  "usage": {
+    "input_tokens": 507,
+    "output_tokens": 12196,
+    "cache_read_input_tokens": 0,
+    "cache_creation_input_tokens": 8523
+  }
+}

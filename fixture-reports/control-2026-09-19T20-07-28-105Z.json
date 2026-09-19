@@ -1,0 +1,270 @@
+{
+  "request_id": "468c66b29184",
+  "analysis": {
+    "schema_version": "1.0",
+    "executive_summary": {
+      "assessment": "No context fields were supplied, so every claim in this draft is evaluated as the draft's own language only; accountability, causation and corrective-action scores reflect asserted statements that nothing in the record confirms or contradicts. On its own terms the draft is unusually well-owned: it names the date, the decision, the decision rights (executive team, on the speaker's recommendation, with board approval), the external shift and the internal misjudgment, the 62 affected colleagues and the support offered, a named transition owner with a monthly cadence and an end date, and a concrete change to forecasting practice. The main gaps are disclosure gaps rather than accountability gaps: the draft does not say what happens to a colleague who accepts neither the Phoenix nor the remote option, does not explain why the old forecast went unchallenged for two quarters, and offers no channel for questions or metric by which placement progress can be judged.",
+      "risk_level": "Low",
+      "readiness": "Revise before issuing",
+      "context_supplied": false,
+      "strongest_elements": [
+        "Names the decision, the date, the decision-makers and the speaker's own role in recommending it, rather than attributing the closure to conditions.",
+        "States the internal exposure plainly ('we kept the center staffed on the old forecast for two quarters longer than we should have') and explicitly shields the Denver team from blame.",
+        "Pairs the impact with named support, a named owner (Maria Chen), a fixed monthly reporting cadence through March, and a specific operating change from annual to quarterly staffing forecasts."
+      ],
+      "priority_improvements": [
+        "State what happens for colleagues who accept neither the Phoenix role nor a remote position, including notice, severance and benefits, after [HR review].",
+        "Explain briefly why the 2024 forecast was not revised sooner - what review or escalation would have caught it - so the root cause is visible, not only the symptom.",
+        "Add a channel and named contact for questions, and one checkable measure Maria Chen's monthly update will report (for example placement status of the 62 colleagues)."
+      ]
+    },
+    "dimensions": [
+      {
+        "id": "accountability_agency",
+        "score": 3.5,
+        "rationale": "The draft names the decision, the date and the decision rights without hedging: 'On 4 September the executive team, on my recommendation and with board approval, decided to close the Denver support center by 31 December', and it attributes the error upward ('That was our misjudgment, not the team's'). Because no context fields were supplied, this ownership is ASSERTED - the draft says it and nothing in the record confirms it - which caps this dimension at 3.5.",
+        "would_raise": "Supply context confirming the decision date, the board approval and the speaker's role so the ownership claim moves from asserted to supported."
+      },
+      {
+        "id": "truthfulness_factual_discipline",
+        "score": 4.5,
+        "rationale": "Figures and dates are specific and checkable as written - '62 affected colleagues', '90-day decision window', 'through March' - and the draft separates what happened from what is planned rather than offering reassurance. It does not, however, disclose any uncertainty in the transition (for example whether every one of the 62 can be placed), which would sharpen the honesty of the offer.",
+        "would_raise": "Add one sentence acknowledging what is not yet settled in the transition, such as [placement outcome for colleagues who decline both options]."
+      },
+      {
+        "id": "causation_explanation",
+        "score": 3.5,
+        "rationale": "The draft distinguishes external condition from internal exposure - 'Demand shifted to chat and self-service faster than we planned for in 2024' is followed immediately by 'we kept the center staffed on the old forecast for two quarters longer than we should have' - which is proportionate causal language. The root cause behind that lag (why no review caught the stale forecast) is not explained, and with no context supplied the causal account is ASSERTED rather than confirmed.",
+        "would_raise": "Name the governance or review condition that allowed the 2024 forecast to stand unchallenged for two quarters, so the explanation reaches the cause rather than the symptom."
+      },
+      {
+        "id": "stakeholder_respect_impact",
+        "score": 4.5,
+        "rationale": "The affected group and its size are named ('All 62 affected colleagues'), the impact is stated without euphemism, and the support is concrete: roles in Phoenix or remote, relocation support, a 90-day decision window and a pointer to the HR portal. One case the support does not spell out is the colleague who accepts neither option, which a reasonable reader in Denver would ask first.",
+        "would_raise": "State the notice, severance and benefits position for colleagues who accept neither the Phoenix nor the remote option, per [HR review]."
+      },
+      {
+        "id": "listening_employee_voice",
+        "score": 4.5,
+        "rationale": "The draft cites no employee feedback near an adverse decision, which avoids the common misuse of stakeholder voice, and it protects the affected team explicitly: 'That was our misjudgment, not the team's'. It does not open a route for colleagues to raise questions or challenge the transition plan.",
+        "would_raise": "Name a question channel and contact - for example [named contact or forum] - where colleagues can ask about their own situation."
+      },
+      {
+        "id": "corrective_action_proof",
+        "score": 3.5,
+        "rationale": "The corrective commitment is specific, proportionate to the stated cause and timed: 'moving from annual to quarterly reviews starting in Q1', paired with a named transition owner in Maria Chen. With no context supplied, the commitment is ASSERTED rather than confirmed, and the forecasting change has no named owner or evidence that it will be applied outside support operations.",
+        "would_raise": "Name who owns the move to quarterly staffing reviews and how colleagues will know the first quarterly review happened."
+      },
+      {
+        "id": "clarity_plain_language",
+        "score": 5,
+        "rationale": "Every sentence is plain, active and attributable - 'we kept the center staffed on the old forecast for two quarters longer than we should have' - with no jargon, euphemism or agency-hiding passive voice. A reader can state without effort what was decided, by whom, by when, who is affected and what happens next.",
+        "would_raise": "No change needed; the draft already meets this dimension in full."
+      },
+      {
+        "id": "verification_follow_through",
+        "score": 4.5,
+        "rationale": "The draft names an owner, a cadence and an end point: 'Maria Chen owns the transition and will report progress to all of us on the first Monday of each month through March', which is a falsifiable commitment with fixed update dates. No measure is named that the monthly update will report against, so readers cannot yet judge whether progress is good or poor.",
+        "would_raise": "Name one checkable measure for the monthly update, such as [placement status of the 62 colleagues] or [relocation acceptances to date]."
+      },
+      {
+        "id": "fairness_independence_conflicts",
+        "score": 4.5,
+        "rationale": "The speaker discloses their own role ('on my recommendation') and directs blame away from the affected team rather than toward it, which is fair representation under pressure. There is no independent check on the transition or on the speaker's account of the misjudgment, though self-assessment alone is not a defect here.",
+        "would_raise": "Note whether any independent party - [internal audit or HR review] - will review the transition outcomes reported in March."
+      },
+      {
+        "id": "future_readiness_learning",
+        "score": 4.5,
+        "rationale": "The draft names a change to operating practice rather than to language: 'changing how we set staffing forecasts, moving from annual to quarterly reviews starting in Q1', which maps directly onto the stated failure. It does not say what will trigger action when a quarterly review shows a gap, so the learning stops at cadence rather than escalation.",
+        "would_raise": "State what happens when a quarterly review shows demand has shifted - who must act and within what period."
+      }
+    ],
+    "findings": [
+      {
+        "id": "F-001",
+        "dimension": "stakeholder_respect_impact",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "The draft does not say what happens to a colleague who accepts neither the Phoenix role nor a remote position within the 90-day window - notice, severance, benefits continuation or re-employment support.",
+        "claim_status": null,
+        "finding": "The support offered is specific for colleagues who accept a new role, but the draft is silent on the path for those who do not, which for some of the 62 is the most material question in the message.",
+        "why_it_matters": "A reasonable reader could interpret the silence as meaning the only alternatives are relocation or nothing, which may cause avoidable anxiety and drive people to the HR portal or to rumour for an answer the message should carry.",
+        "stakeholder_risk": "Colleagues in Denver with caring, housing or visa constraints may make decisions inside the 90-day window without knowing their financial position if they decline.",
+        "recommended_action": "Add one sentence, cleared through [HR review] and [legal review], stating the notice, severance and benefits position for colleagues who accept neither option.",
+        "suggested_revision": "For colleagues for whom neither a Phoenix role nor a remote position works, [severance, notice and benefits terms] apply, and [named contact] will walk you through them individually.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "HR",
+        "confidence_note": "No context fields were supplied, so it cannot be determined whether such terms exist and were simply omitted, or are still unresolved."
+      },
+      {
+        "id": "F-002",
+        "dimension": "causation_explanation",
+        "severity": "Moderate",
+        "excerpt": "we kept the center staffed on the old forecast for two quarters longer than we should have",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "The draft names the internal exposure honestly but stops at the symptom; it does not explain what review, escalation or incentive condition allowed the 2024 forecast to stand unrevised for two quarters.",
+        "why_it_matters": "Without the underlying condition, readers cannot judge whether moving to quarterly reviews actually addresses the failure or only shortens the interval at which the same blind spot recurs.",
+        "stakeholder_risk": "Employees in other functions running on annual forecasts cannot tell whether their own area carries the same exposure.",
+        "recommended_action": "Add a clause naming the condition - for example that demand data was reviewed only at annual planning, or that no trigger existed to reopen a forecast mid-year.",
+        "suggested_revision": "we kept the center staffed on the old forecast for two quarters longer than we should have, because [review or escalation condition] meant no one was required to reopen the 2024 forecast when weekly chat volumes moved.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "With no context supplied, the causal account is assessed on the draft's language only and is asserted, not confirmed."
+      },
+      {
+        "id": "F-003",
+        "dimension": "accountability_agency",
+        "severity": "Low",
+        "excerpt": "On 4 September the executive team, on my recommendation and with board approval, decided to close the Denver support center by 31 December.",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "Decision rights are stated clearly and responsibility is matched to authority, but no context field confirms the date, the board approval or the speaker's recommending role, so the ownership claim is asserted rather than supported.",
+        "why_it_matters": "An asserted ownership claim is credible on its face but cannot be verified by this review, and the dimension is capped accordingly.",
+        "stakeholder_risk": "Minimal for readers; the risk is to the organization if any element of the stated approval sequence is inaccurate once published internally.",
+        "recommended_action": "Confirm the decision date, approval route and speaker role against [board or executive record] before issuing.",
+        "suggested_revision": "No wording change recommended; verify the approval sequence against [board minutes or executive decision log].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "This is a verification gap in the review record, not an indication that the statement is inaccurate."
+      },
+      {
+        "id": "F-004",
+        "dimension": "corrective_action_proof",
+        "severity": "Low",
+        "excerpt": "moving from annual to quarterly reviews starting in Q1",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "The commitment is specific and timed but has no named owner and no stated scope, so readers cannot tell who is accountable for it or whether it applies beyond support operations.",
+        "why_it_matters": "A commitment without an owner is not yet verifiable, and a cadence change without an escalation rule may not change behaviour.",
+        "stakeholder_risk": "Employees elsewhere in the business cannot tell whether this protects their teams from a comparable staffing misjudgment.",
+        "recommended_action": "Name the owner and the scope of the quarterly forecasting review, and state what action a variance triggers.",
+        "suggested_revision": "We are also changing how we set staffing forecasts, moving from annual to quarterly reviews starting in Q1; [accountable executive or team] owns this change across [scope], and a variance above [threshold] will trigger a staffing decision within [period].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "Assessed on the draft's language only; no context confirms that the change has been approved or resourced."
+      },
+      {
+        "id": "F-005",
+        "dimension": "listening_employee_voice",
+        "severity": "Low",
+        "excerpt": null,
+        "omission": "No channel, contact or forum is offered for colleagues to ask questions about the closure or their own situation.",
+        "claim_status": null,
+        "finding": "The draft communicates clearly in one direction and points to the HR portal for details, but does not invite or route questions.",
+        "why_it_matters": "In a sensitive internal message, the absence of a question route can read as a closed decision with no room for individual circumstances.",
+        "stakeholder_risk": "Affected colleagues may raise concerns informally or externally rather than through a channel that can resolve them.",
+        "recommended_action": "Add a named contact and a forum or session where colleagues can ask questions directly.",
+        "suggested_revision": "[Named contact] is available for individual questions, and we will hold [open session] on [date] where you can ask me and Maria Chen anything about this decision.",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "A missing question channel is treated as a Low finding and does not reduce the listening score."
+      },
+      {
+        "id": "F-006",
+        "dimension": "verification_follow_through",
+        "severity": "Low",
+        "excerpt": "will report progress to all of us on the first Monday of each month through March",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The cadence, owner and end date are fixed and falsifiable, but no measure is named against which 'progress' will be judged.",
+        "why_it_matters": "Without a measure, monthly updates can be delivered on time while leaving readers unable to tell whether the transition is succeeding.",
+        "stakeholder_risk": "Colleagues cannot hold the transition to account on outcomes such as how many of the 62 have been placed.",
+        "recommended_action": "Name one or two measures the monthly update will carry.",
+        "suggested_revision": "will report progress to all of us on the first Monday of each month through March, including [placement status of all 62 colleagues] and [open relocation or remote offers].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "The absence of a metric is a would-raise detail on an otherwise verifiable commitment."
+      }
+    ],
+    "agency_scan": [],
+    "devils_advocate": {
+      "disclaimer": "These are plausible audience interpretations, not statements of fact.",
+      "personas": [
+        {
+          "persona": "Affected employee",
+          "may_hear": "The company owns the mistake, but my own options are relocate to Phoenix, go remote, or find out later what happens if neither works for me.",
+          "may_question": "What do I get if I decline both offers, and does the 90-day window run from today or from a formal notice date?",
+          "may_find_missing": "Terms for declining, the start date of the 90-day clock, and who I speak to about my individual circumstances.",
+          "would_address_it": "State the severance, notice and benefits position for those who accept neither option, fix the clock start date, and name a contact.",
+          "suggested_sentence": "Your 90-day window starts on [date]; if neither a Phoenix role nor a remote position works for you, [severance, notice and benefits terms] apply and [named contact] will go through them with you."
+        },
+        {
+          "persona": "Remaining employee",
+          "may_hear": "Leadership admitted a two-quarter staffing misjudgment, and the fix is a meeting cadence change.",
+          "may_question": "Is my team running on the same stale annual forecast, and would we find out any faster?",
+          "may_find_missing": "The scope of the quarterly review change and what happens when a review shows a gap.",
+          "would_address_it": "State the scope of the forecasting change and the action a variance triggers.",
+          "suggested_sentence": "The move to quarterly staffing reviews applies across [scope], and where a review shows demand has moved by more than [threshold], [accountable executive or team] must bring a staffing decision within [period]."
+        },
+        {
+          "persona": "Front-line manager",
+          "may_hear": "I have to explain relocation, remote options and the 90-day window to my team tomorrow with only the HR portal to work from.",
+          "may_question": "What am I authorised to tell people about severance, timing and individual exceptions?",
+          "may_find_missing": "A manager briefing, an FAQ, and clarity on what is decided versus still open.",
+          "would_address_it": "Confirm manager support and a briefing before the message lands.",
+          "suggested_sentence": "Managers will receive [briefing pack and FAQ] on [date] and can escalate individual cases to [named contact]."
+        },
+        {
+          "persona": "HR business partner",
+          "may_hear": "An internal message has gone out describing offers, relocation support and a decision window that we now have to administer consistently.",
+          "may_question": "Have the terms described been reviewed for consistency with policy and applicable employment requirements in Colorado and Arizona?",
+          "may_find_missing": "Confirmation that the offer terms and the declining path have been through HR and legal review.",
+          "would_address_it": "Route the offer and severance language through [HR review] and [legal review] before issuing.",
+          "suggested_sentence": "Full terms for relocation, remote conversion and any alternative outcome are set out in [HR portal document], reviewed by [HR and legal]."
+        },
+        {
+          "persona": "Remote employee",
+          "may_hear": "Remote positions are being used as the landing place for a closed site, which may say something about how remote roles are valued.",
+          "may_question": "Are these newly created remote roles, or existing ones being backfilled, and does the same forecasting logic apply to remote teams?",
+          "may_find_missing": "Whether remote offers are equivalent in level, pay and security to the Denver roles.",
+          "would_address_it": "State how the remote offers compare on role, level and pay.",
+          "suggested_sentence": "Remote offers are at [equivalent level and pay] to current Denver roles, and are covered by the same quarterly staffing review as every other team."
+        }
+      ],
+      "most_damaging_interpretation": "A reasonable reader could interpret the silence on what happens to colleagues who accept neither the Phoenix role nor a remote position as meaning there is no alternative on offer - so that a message which otherwise owns its misjudgment plainly may still be read in Denver as presenting relocate-or-leave under a 90-day clock, with the accountability language landing as tone rather than substance."
+    },
+    "questions_before_publication": [
+      "What are the notice, severance and benefits terms for a colleague who accepts neither the Phoenix role nor a remote position, and have they been through HR and legal review?",
+      "On what date does the 90-day decision window start, and is it the same for every one of the 62 colleagues?",
+      "Are the Phoenix and remote offers equivalent to current roles in level, pay and job security?",
+      "What specifically prevented the 2024 forecast from being revised for two quarters - was demand data reviewed only annually, or was there no trigger to reopen it?",
+      "Who owns the move from annual to quarterly staffing reviews, what is its scope across the business, and what action does a variance trigger?",
+      "What measures will Maria Chen's monthly updates report, so colleagues can judge progress rather than only receive it?",
+      "Where can colleagues ask questions or raise individual circumstances, and will there be a live session with the speaker and Maria Chen?",
+      "Can the decision date, the board approval and the speaker's recommending role be confirmed against the board or executive record?",
+      "Have Denver-specific notification requirements and any applicable state employment rules been checked by [legal review] before this message is issued?",
+      "Has anything been communicated to these colleagues previously about the Denver center, and is this message consistent with it?",
+      "Will any independent party review the transition outcomes reported in March, or is the March update self-assessed?"
+    ],
+    "specialist_review_summary": [
+      "HR"
+    ]
+  },
+  "score": 83,
+  "band": "Credible, with targeted improvements",
+  "confidence_label": "Scored on draft language only — add known facts and decision details for a substantiated score",
+  "adjustments": {
+    "dropped_findings": 0,
+    "dropped_scan_phrases": 0,
+    "readiness_overridden": false,
+    "context_flag_corrected": false
+  },
+  "provider": {
+    "provider": "Anthropic",
+    "model": "claude-opus-5"
+  },
+  "usage": {
+    "input_tokens": 631,
+    "output_tokens": 8741,
+    "cache_read_input_tokens": 7964,
+    "cache_creation_input_tokens": 0
+  }
+}
