@@ -1,0 +1,200 @@
+/**
+ * Validation and code-enforced constraints (PROMPT.md Section 6).
+ *
+ * Order of operations:
+ *   1. ajv validates the raw object against ANALYSIS_SCHEMA. Failure throws;
+ *      the error carries only the instance path, never the response body.
+ *   2. Structural constraints the schema cannot express: exactly ten
+ *      dimensions with the ten ids, scores in 0.5 steps, exactly five
+ *      personas, five to twelve questions, three strongest elements and
+ *      three priority improvements, excerpt and omission never both null.
+ *   3. Findings whose excerpt is not verbatim in the draft are dropped and
+ *      counted. Agency-scan phrases that are not in the draft are dropped
+ *      too, because the results page highlights them in the draft.
+ *   4. Readiness is never "Ready with minor edits" while any finding needs
+ *      specialist review; context_supplied reflects what was actually sent.
+ */
+import { Ajv, type ErrorObject } from "ajv";
+import { ANALYSIS_SCHEMA } from "./schema.js";
+import { isValidDimensionScore } from "./scoring.js";
+import {
+  DIMENSION_IDS,
+  type Analysis,
+  type ContextFields,
+  type SpecialistReviewType,
+} from "./types.js";
+
+export class AnalysisValidationError extends Error {
+  readonly name = "AnalysisValidationError";
+  constructor(
+    /** JSON pointer to the failing element, or a short constraint name. */
+    readonly path: string,
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
+export interface ValidationAdjustments {
+  /** Findings removed because their excerpt was not verbatim in the draft. */
+  dropped_findings: number;
+  /** Agency-scan entries removed because their phrase was not verbatim in the draft. */
+  dropped_scan_phrases: number;
+  /** True when readiness was changed off "Ready with minor edits" because specialist review is flagged. */
+  readiness_overridden: boolean;
+  /** True when the model's context_supplied disagreed with the request and was corrected. */
+  context_flag_corrected: boolean;
+}
+
+export interface ValidatedAnalysis {
+  analysis: Analysis;
+  adjustments: ValidationAdjustments;
+}
+
+const ajv = new Ajv({ allErrors: false, strict: true });
+const validateSchema = ajv.compile(ANALYSIS_SCHEMA);
+
+function describe(error: ErrorObject | undefined): { path: string; message: string } {
+  if (!error) return { path: "/", message: "schema validation failed" };
+  return { path: error.instancePath || "/", message: error.message ?? "invalid" };
+}
+
+export function contextWasSupplied(context: ContextFields): boolean {
+  return Object.values(context).some((v) => typeof v === "string" && v.trim().length > 0);
+}
+
+const QUOTE_CLASS = "[\"'‘’“”«»]";
+
+/**
+ * Returns the exact substring of the draft that the excerpt refers to, or null.
+ * Exact containment wins; otherwise whitespace runs and quote styles are
+ * matched loosely and the draft's own text is returned, so the stored
+ * excerpt is always verbatim.
+ */
+export function findVerbatim(draft: string, excerpt: string): string | null {
+  const trimmed = excerpt.trim();
+  if (trimmed.length === 0) return null;
+  if (draft.includes(trimmed)) return trimmed;
+  const pattern = trimmed
+    .split(/\s+/)
+    .map((token) =>
+      token
+        .split(/(["'‘’“”«»])/)
+        .map((part) => (part.length === 1 && /["'‘’“”«»]/.test(part) ? QUOTE_CLASS : escapeRegExp(part)))
+        .join(""),
+    )
+    .join("\\s+");
+  const match = new RegExp(pattern).exec(draft);
+  return match ? match[0] : null;
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function fail(path: string, message: string): never {
+  throw new AnalysisValidationError(path, `${path}: ${message}`);
+}
+
+export function validateAnalysis(raw: unknown, draft: string, context: ContextFields): ValidatedAnalysis {
+  if (!validateSchema(raw)) {
+    const { path, message } = describe(validateSchema.errors?.[0]);
+    fail(path, message);
+  }
+  // ajv has established the shape; structural checks follow.
+  const input = raw as Analysis;
+
+  // Dimensions: exactly ten, the ten ids, scores in 0.5 steps.
+  if (input.dimensions.length !== DIMENSION_IDS.length) {
+    fail("/dimensions", `expected ${DIMENSION_IDS.length} dimensions, got ${input.dimensions.length}`);
+  }
+  const seenIds = new Set<string>();
+  for (const [i, d] of input.dimensions.entries()) {
+    if (seenIds.has(d.id)) fail(`/dimensions/${i}/id`, `duplicate dimension id ${d.id}`);
+    seenIds.add(d.id);
+    if (!isValidDimensionScore(d.score)) fail(`/dimensions/${i}/score`, `score ${d.score} is not a 0.5 step in 0.0-5.0`);
+  }
+  for (const id of DIMENSION_IDS) {
+    if (!seenIds.has(id)) fail("/dimensions", `missing dimension ${id}`);
+  }
+
+  // Executive summary lists.
+  const summary = input.executive_summary;
+  if (summary.strongest_elements.length !== 3) fail("/executive_summary/strongest_elements", "expected exactly 3");
+  if (summary.priority_improvements.length !== 3) fail("/executive_summary/priority_improvements", "expected exactly 3");
+
+  // Devil's advocate and questions.
+  if (input.devils_advocate.personas.length !== 5) {
+    fail("/devils_advocate/personas", `expected exactly 5 personas, got ${input.devils_advocate.personas.length}`);
+  }
+  const q = input.questions_before_publication.length;
+  if (q < 5 || q > 12) fail("/questions_before_publication", `expected 5-12 questions, got ${q}`);
+
+  // Findings: excerpt/omission rule, unique ids, verbatim excerpts.
+  const findingIds = new Set<string>();
+  for (const [i, f] of input.findings.entries()) {
+    if (f.excerpt === null && f.omission === null) fail(`/findings/${i}`, "excerpt and omission are both null");
+    if (findingIds.has(f.id)) fail(`/findings/${i}/id`, `duplicate finding id ${f.id}`);
+    findingIds.add(f.id);
+  }
+
+  let droppedFindings = 0;
+  const findings = input.findings.flatMap((f) => {
+    if (f.excerpt === null) return [f];
+    const verbatim = findVerbatim(draft, f.excerpt);
+    if (verbatim === null) {
+      droppedFindings += 1;
+      return [];
+    }
+    return [{ ...f, excerpt: verbatim }];
+  });
+  const keptIds = new Set(findings.map((f) => f.id));
+
+  let droppedScan = 0;
+  const agency_scan = input.agency_scan.flatMap((item) => {
+    const verbatim = findVerbatim(draft, item.phrase);
+    if (verbatim === null) {
+      droppedScan += 1;
+      return [];
+    }
+    const finding_id = item.finding_id !== null && keptIds.has(item.finding_id) ? item.finding_id : null;
+    return [{ ...item, phrase: verbatim, finding_id }];
+  });
+
+  // Readiness rule, enforced in code.
+  const specialistNeeded = findings.some((f) => f.specialist_review_needed);
+  let readiness = summary.readiness;
+  let readinessOverridden = false;
+  if (specialistNeeded && readiness === "Ready with minor edits") {
+    readiness = "Escalate for senior or specialist review";
+    readinessOverridden = true;
+  }
+
+  // Context flag reflects what the request actually carried.
+  const contextSupplied = contextWasSupplied(context);
+  const contextCorrected = summary.context_supplied !== contextSupplied;
+
+  // Specialist review summary: the model's list plus every type a kept finding names.
+  const summaryTypes = new Set<SpecialistReviewType>(input.specialist_review_summary);
+  for (const f of findings) {
+    if (f.specialist_review_needed && f.specialist_review_type) summaryTypes.add(f.specialist_review_type);
+  }
+
+  const analysis: Analysis = {
+    ...input,
+    executive_summary: { ...summary, readiness, context_supplied: contextSupplied },
+    findings,
+    agency_scan,
+    specialist_review_summary: [...summaryTypes],
+  };
+
+  return {
+    analysis,
+    adjustments: {
+      dropped_findings: droppedFindings,
+      dropped_scan_phrases: droppedScan,
+      readiness_overridden: readinessOverridden,
+      context_flag_corrected: contextCorrected,
+    },
+  };
+}
