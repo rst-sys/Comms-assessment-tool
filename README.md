@@ -6,7 +6,17 @@ A prototype that evaluates whether a draft communication gives a credible accoun
 
 ## Status
 
-Built in the order PROMPT.md Section 1 requires. Step 1, the evaluation engine (Sections 5–8) with the Section 12 fixture suite, is implemented in `src/engine/`. Later steps (results page, intake, redraft, design polish) are not started.
+Built in the order PROMPT.md Section 1 requires.
+
+| Step | Status |
+| --- | --- |
+| 1. Evaluation engine (Sections 5–8), tested against the Section 12 fixtures | Done. Live run captured in `fixture-reports/`; 48 of 48 checks pass after hand review (see `DEVIATIONS.md`, item 16). |
+| 2. Results page (Section 9) | Done. `src/app/results/`, rendered from a captured sample until step 3 supplies live results. |
+| 3. Intake screen (Section 3) with the privacy panel (Section 4) | Not started. |
+| 4. Minimal-Risk redraft mode | Not started. |
+| 5. Design polish (Section 11) | Not started. |
+
+Run the app with `npm run dev` and open the printed URL. Until step 3 lands, the header offers the captured sample analyses.
 
 ## Provider and model
 
@@ -19,9 +29,15 @@ Built in the order PROMPT.md Section 1 requires. Step 1, the evaluation engine (
 
 To change the model, set `ACR_MODEL` to another model id. The UI reads provider and model from `getEngineConfig()`; nothing is hardcoded there. There is one configured endpoint, no fallback provider and no retry to a different model. The provider's retention and training terms shown in the privacy panel come from `ACR_PROCESSING_MODE` and `ACR_TRAINING_TERM`; set them to the actual terms of the endpoint your organization uses.
 
-## Engine layout
+## Layout
 
 ```
+src/app/
+  main.tsx, App.tsx   entry point and the step 2 shell (sample picker)
+  results/            the results page: summary, top findings, register, scorecard,
+                      agency scan, devil's advocate, questions, footer
+  copy.ts             the core principle and the decision-support disclaimer
+  styles.css          design tokens from Section 11 and structural styles
 src/engine/
   types.ts        intake enumerations and the analysis shape (Sections 3, 6)
   promptText.ts   the verbatim system prompt and layoff block, generated from PROMPT.md
@@ -41,8 +57,10 @@ scripts/
 
 ```
 npm install
+npm run dev            # the web app, on a local port
+npm run build          # production build to dist/
 npm run typecheck      # tsc --noEmit
-npm test               # vitest: scoring, validation, prompt building, evaluate loop (no network)
+npm test               # vitest: engine, results-page helpers, and rendered page (no network)
 npm run fixtures       # live run of all demos and calibration tests (7 provider calls)
 npm run fixtures -- demo1 control   # a subset
 ```
