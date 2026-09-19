@@ -34,3 +34,11 @@ this order, and finish each step completely before starting the next:
   the build order wins.
 - If asked to work on a later step while an earlier step is incomplete, say so
   and return to the earliest unfinished step.
+
+## How to talk to the user
+
+The user is a total novice. Explain everything as you would to a ten-year-old:
+plain words, no jargon, no acronyms, short sentences. Always lead with where
+the build stands (which of the five steps is done, which is in progress) and
+what, if anything, the user needs to do. When something technical went wrong,
+say what it means in everyday terms, not how it works.
