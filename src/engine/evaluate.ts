@@ -35,24 +35,21 @@ export function assertRequest(request: EvaluationRequest): void {
   }
 }
 
-export async function evaluateDraft(request: EvaluationRequest, options: EvaluateOptions = {}): Promise<EvaluationResult> {
-  assertRequest(request);
-  const config = options.config ?? getEngineConfig();
+export interface FinishOptions {
+  requestId: string;
+  provider: { provider: string; model: string };
+  usage: ModelUsage;
+  log?: (line: string) => void;
+}
+
+/**
+ * Everything after the provider call: validate, enforce the code-side
+ * constraints, compute the score. Shared by the API path and any other
+ * runtime that obtains the raw analysis object another way.
+ */
+export function finishEvaluation(raw: unknown, request: EvaluationRequest, options: FinishOptions): EvaluationResult {
+  const { requestId } = options;
   const log = options.log ?? (() => {});
-  const requestId = newRequestId();
-
-  const system = buildSystemBlocks(request);
-  const user = buildUserMessage(request);
-
-  const call = await callModel({ system, user, config, client: options.client, requestId });
-
-  let raw: unknown;
-  try {
-    raw = JSON.parse(call.text);
-  } catch (error) {
-    throw new EngineError("invalid_json", "The analysis did not return in the expected format. Try again.", requestId, error);
-  }
-
   let validated;
   try {
     validated = validateAnalysis(raw, request.draft, request.context);
@@ -83,7 +80,27 @@ export async function evaluateDraft(request: EvaluationRequest, options: Evaluat
     band: scoreBand(score),
     confidence_label: confidenceLabel(analysis.executive_summary.context_supplied),
     adjustments,
-    provider: { provider: config.provider, model: call.model },
-    usage: call.usage,
+    provider: options.provider,
+    usage: options.usage,
   };
+}
+
+export async function evaluateDraft(request: EvaluationRequest, options: EvaluateOptions = {}): Promise<EvaluationResult> {
+  assertRequest(request);
+  const config = options.config ?? getEngineConfig();
+  const log = options.log ?? (() => {});
+  const requestId = newRequestId();
+
+  const system = buildSystemBlocks(request);
+  const user = buildUserMessage(request);
+
+  const call = await callModel({ system, user, config, client: options.client, requestId });
+
+  let raw: unknown;
+  try {
+    raw = JSON.parse(call.text);
+  } catch (error) {
+    throw new EngineError("invalid_json", "The analysis did not return in the expected format. Try again.", requestId, error);
+  }
+  return finishEvaluation(raw, request, { requestId, provider: { provider: config.provider, model: call.model }, usage: call.usage, log });
 }

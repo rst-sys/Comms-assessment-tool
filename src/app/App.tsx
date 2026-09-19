@@ -8,6 +8,16 @@ import { IntakeScreen } from "./intake/IntakeScreen.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 import { ResultsPage } from "./results/ResultsPage.js";
 import { STUB_PAGES, type StubKey } from "./stubs.js";
+import type { Fixture } from "../engine/fixtures.js";
+
+export interface AppOptions {
+  /** A demo to load on first render. */
+  initialFixture?: Fixture;
+  /** Whether Import from URL is available in this runtime. */
+  urlImport?: boolean;
+  /** Extra line for the intake screen describing this runtime, if any. */
+  runtimeNote?: string;
+}
 
 type View = "review" | StubKey;
 
@@ -21,7 +31,7 @@ interface Review {
  * no storage, no URL parameters, no page-title changes. "Discard" remounts
  * the intake screen blank.
  */
-export function App() {
+export function App({ initialFixture, urlImport = true, runtimeNote }: AppOptions = {}) {
   const [view, setView] = useState<View>("review");
   const [config, setConfig] = useState<PrivacyConfig | null>(null);
   const [noticeDismissed, setNoticeDismissed] = useState(false);
@@ -100,7 +110,10 @@ export function App() {
       ) : review ? (
         <ResultsPage result={review.result} request={review.request} config={config} onDiscard={discard} />
       ) : (
-        <IntakeScreen key={intakeKey} config={config} busy={busy} error={error} onEvaluate={runEvaluation} />
+        <>
+          {runtimeNote ? <p className="page muted small" style={{ paddingBottom: 0 }}>{runtimeNote}</p> : null}
+          <IntakeScreen key={intakeKey} config={config} busy={busy} error={error} onEvaluate={runEvaluation} initialFixture={initialFixture} urlImport={urlImport} />
+        </>
       )}
     </>
   );

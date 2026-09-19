@@ -63,3 +63,7 @@ Every place the build departs from the prompt, and why. Kept current as steps la
 26. **No third-party font requests.** Section 11 names Source Serif 4 and Inter "or equivalent" with system fallbacks. The stylesheet uses those faces when installed and falls back to system serif and sans faces; it does not load fonts from a font service, so a confidential session makes no request to a third party beyond the configured provider.
 
 27. **Print expands panels by script.** CSS cannot open a native disclosure element, so the results page opens every panel on the browser's beforeprint event and restores the previous state afterwards; the print stylesheet hides controls and breaks pages between sections.
+
+## Preview on claude.ai
+
+28. **A second runtime for the claude.ai page.** Section 1 fixes the technical shape as one provider called through a zero-retention API endpoint from a server. To give the user a link without hosting, `src/artifact/` builds the same app for a claude.ai page that reaches Claude through the viewer's own account (the page's `sample` capability): no API key, no server, the viewer's usage and consent. The engine's prompt, validation, scoring and redraft rules are reused unchanged; the JSON schema is placed in the prompt because that runtime has no structured-output enforcement. Import from URL is unavailable there (the page has no network) and the privacy panel states the runtime honestly. This is a preview surface; the hosted server remains the product path. Build it with `npm run build:artifact`.

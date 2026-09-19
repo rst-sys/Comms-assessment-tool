@@ -103,6 +103,10 @@ The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code
 | Every results page and print view ends with the core principle and the decision-support disclaimer | Met. |
 | URL import extracts readable text from a public press release, shows a plain error on a paywalled page, sets the retrospective framing, and the proxy logs only domain and status | Met in tests with sample pages (article, paywall, PDF) and in the browser with a stubbed response; a live fetch of a public site could not be exercised from the build sandbox, whose outbound proxy blocks external sites. |
 
+## Preview on claude.ai
+
+`npm run build:artifact` builds the same app for a private claude.ai page (`dist-artifact/`) that asks Claude through the viewer's own account instead of the server. See `DEVIATIONS.md` item 28.
+
 ## Regenerating the prompt text
 
 `src/engine/promptText.ts` is generated from the fenced blocks under Sections 5 and 10 of `PROMPT.md`. After editing those sections, regenerate with:

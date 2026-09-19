@@ -31,6 +31,10 @@ interface Props {
   busy: boolean;
   error: string | null;
   onEvaluate: (request: EvaluationRequest) => void;
+  /** A demo to load on first render, so a preview opens in a working state. */
+  initialFixture?: Fixture;
+  /** Whether Import from URL is available in this runtime. */
+  urlImport?: boolean;
 }
 
 type SourceTab = "paste" | "url";
@@ -49,13 +53,18 @@ const FIELD_OPTIONS: { key: keyof DraftFields; label: string; options: readonly 
  * privacy panel above both. All state lives in this component; nothing is
  * written to storage, the URL or the page title.
  */
-export function IntakeScreen({ config, busy, error, onEvaluate }: Props) {
+export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, urlImport = true }: Props) {
+  const init = initialFixture?.request;
   const [tab, setTab] = useState<SourceTab>("paste");
-  const [draft, setDraft] = useState("");
-  const [fields, setFields] = useState<DraftFields>(EMPTY_FIELDS);
-  const [context, setContext] = useState<ContextFields>({});
-  const [heightened, setHeightened] = useState(false);
-  const [isDemo, setIsDemo] = useState(false);
+  const [draft, setDraft] = useState(init?.draft ?? "");
+  const [fields, setFields] = useState<DraftFields>(
+    init
+      ? { communication_type: init.communication_type, primary_audience: init.primary_audience, setting: init.setting, market: init.market, goal: init.goal, audience_scope: init.audience_scope }
+      : EMPTY_FIELDS,
+  );
+  const [context, setContext] = useState<ContextFields>(init ? { ...init.context } : {});
+  const [heightened, setHeightened] = useState(init?.heightened_review ?? false);
+  const [isDemo, setIsDemo] = useState(Boolean(init));
   const [url, setUrl] = useState("");
   const [imported, setImported] = useState<ImportedPage | null>(null);
   const [importing, setImporting] = useState(false);
@@ -134,9 +143,11 @@ export function IntakeScreen({ config, busy, error, onEvaluate }: Props) {
             <button type="button" role="tab" aria-selected={tab === "paste"} className={tab === "paste" ? "tab tab-active" : "tab"} onClick={() => setTab("paste")}>
               Paste text
             </button>
-            <button type="button" role="tab" aria-selected={tab === "url"} className={tab === "url" ? "tab tab-active" : "tab"} onClick={() => setTab("url")}>
-              Import from URL
-            </button>
+            {urlImport ? (
+              <button type="button" role="tab" aria-selected={tab === "url"} className={tab === "url" ? "tab tab-active" : "tab"} onClick={() => setTab("url")}>
+                Import from URL
+              </button>
+            ) : null}
           </div>
           {tab === "url" ? (
             <div className="url-row">

@@ -183,6 +183,20 @@ export async function redraftMinimalRisk(
   } catch (error) {
     throw new EngineError("invalid_json", "The revision did not return in the expected format. Try again.", requestId, error);
   }
+  return finishRedraft(raw, request, analysis, { requestId, provider: { provider: config.provider, model: call.model }, usage: call.usage, log });
+}
+
+export interface FinishRedraftOptions {
+  requestId: string;
+  provider: { provider: string; model: string };
+  usage: ModelUsage;
+  log?: (line: string) => void;
+}
+
+/** Everything after the provider call, shared with other runtimes. */
+export function finishRedraft(raw: unknown, request: EvaluationRequest, analysis: Analysis, options: FinishRedraftOptions): RedraftResult {
+  const { requestId } = options;
+  const log = options.log ?? (() => {});
   let redraft: Redraft;
   try {
     redraft = validateRedraft(raw, analysis.findings);
@@ -197,7 +211,7 @@ export async function redraftMinimalRisk(
     ...redraft,
     request_id: requestId,
     retrospective: request.already_published,
-    provider: { provider: config.provider, model: call.model },
-    usage: call.usage,
+    provider: options.provider,
+    usage: options.usage,
   };
 }
