@@ -16,6 +16,8 @@ Built in the order PROMPT.md Section 1 requires.
 | 4. Minimal-Risk redraft mode | Done. `src/engine/redraft.ts`, `POST /api/redraft`, and `src/app/results/RedraftPanel.tsx` (side-by-side diff, change log, placeholders). Verified live on Demo 1. |
 | 5. Design polish (Section 11) | Done. Tokens, type scale, spacing, print stylesheet and responsive layout in `src/app/styles.css`; contrast checked (see `DEVIATIONS.md`, item 25). |
 
+New to this? `SETUP.md` explains, without any coding, how to run the app by double-clicking a start file.
+
 Run the server and the app:
 
 ```

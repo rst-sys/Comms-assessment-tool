@@ -17,9 +17,11 @@ import { getEngineConfig } from "../engine/config.js";
 import { evaluateDraft } from "../engine/evaluate.js";
 import { redraftMinimalRisk } from "../engine/redraft.js";
 import { AnalysisValidationError, validateAnalysis } from "../engine/validate.js";
+import { loadEnvFile } from "./env.js";
 import { allowedUrl, extractReadable, fetchPage, IMPORT_ERROR } from "./import.js";
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
 
+loadEnvFile();
 const PORT = Number(process.env.PORT ?? 8787);
 const DIST = join(process.cwd(), "dist");
 const SERVE_STATIC = process.env.ACR_SERVE_STATIC === "1" || process.env.NODE_ENV === "production";
