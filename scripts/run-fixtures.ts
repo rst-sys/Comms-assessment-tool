@@ -99,10 +99,12 @@ function checkFixture(fixture: Fixture, result: EvaluationResult): Check[] {
       detail: a.executive_summary.readiness,
     });
   }
-  const high = a.findings.filter((f) => f.severity === "High");
   for (const exp of expect.high_findings ?? []) {
-    const hit = high.find((f) => exp.pattern.test(findingText(f)));
-    checks.push({ name: `High finding: ${exp.label}`, pass: Boolean(hit), detail: hit ? `${hit.id} (${hit.dimension})` : `no High finding matched ${exp.pattern}` });
+    const floor = exp.min_severity ?? "High";
+    const pool = a.findings.filter((f) => SEVERITY_RANK[f.severity] <= SEVERITY_RANK[floor]);
+    const hit = pool.find((f) => exp.pattern.test(findingText(f)));
+    const label = floor === "High" ? "High finding" : `${floor}-or-higher finding`;
+    checks.push({ name: `${label}: ${exp.label}`, pass: Boolean(hit), detail: hit ? `${hit.id} ${hit.severity} (${hit.dimension})` : `no ${label} matched ${exp.pattern}` });
   }
   for (const exp of expect.scan_flags ?? []) {
     // Several entries can contain the expected text (a whole sentence and the

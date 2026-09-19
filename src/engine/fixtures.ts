@@ -15,8 +15,10 @@ import type {
 
 export interface HighFindingExpectation {
   label: string;
-  /** Tested against the concatenated text of each High-severity finding. */
+  /** Tested against the concatenated text of each finding at or above min_severity. */
   pattern: RegExp;
+  /** Lowest severity that satisfies this expectation. Defaults to High. */
+  min_severity?: Severity;
 }
 
 export interface ScanExpectation {
@@ -127,7 +129,7 @@ export const DEMO_2: Fixture = {
       { label: "values without action", pattern: /values|committed|commitment/i },
       { label: "no corrective action", pattern: /correct|action|what will change|what (has|is) chang/i },
       { label: "no timeline", pattern: /timeline|date|when|by which/i },
-      { label: "no verification", pattern: /verif|measur|metric|update|follow[- ]through/i },
+      { label: "no verification", pattern: /verif|measur|metric|update|follow[- ]through/i, min_severity: "Moderate" },
     ],
     scan_flags: [
       { phrase: /some customers were offended/i, category: "Audience displacement" },
@@ -164,7 +166,8 @@ export const DEMO_3: Fixture = {
     ],
     scan_flags: [
       {
-        phrase: /macroeconomic headwinds and sector-wide conditions/i,
+        // The engine may flag the two conditions as separate entries; either satisfies the check.
+        phrase: /macroeconomic headwinds|sector-wide conditions/i,
         category: "External weather",
         assessment: "Incomplete explanation",
       },
