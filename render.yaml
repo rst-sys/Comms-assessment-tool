@@ -40,11 +40,12 @@ services:
       # restarts and picks it up, with no rebuild.
       #
       # ACR_EFFORT is how deeply the engine thinks before answering:
-      # low | medium | high | xhigh | max. Most of a review's time is thinking,
-      # so this is the largest lever. "high" is the thorough default; "medium"
-      # is markedly quicker and is the first thing to try if reviews feel slow.
+      # low | medium | high | xhigh | max. Most of a review's elapsed time is
+      # thinking rather than writing, so this is the largest lever. Set to
+      # "medium" after the owner found "high" too slow in use; put it back to
+      # "high" if the reviews lose depth, and reach for ACR_SPEED instead.
       - key: ACR_EFFORT
-        value: high
+        value: medium
       # ACR_SPEED: "fast" runs the same model at a higher output rate for
       # roughly double the per-token price. It buys speed without reducing the
       # depth of the review. "standard" is the normal rate.
