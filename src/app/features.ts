@@ -7,6 +7,10 @@
  * control stays visible and disabled with a "Coming soon" note, so a tester
  * can see the tool is meant to do it and knows not to report it missing.
  *
+ * Heightened review stays ON. It costs almost nothing, and it is what makes
+ * the tool stricter on layoffs, safety and privacy; switching it off would
+ * have had testers reviewing with a softer engine than the real one.
+ *
  * To switch one back on, change false to true here and rebuild. That is the
  * only place to change.
  */
@@ -26,7 +30,7 @@ export interface Features {
 export const FEATURES: Features = {
   saveReview: false,
   compareRevisions: false,
-  heightenedReview: false,
+  heightenedReview: true,
   audienceDocuments: false,
   publicContextSearch: false,
 };

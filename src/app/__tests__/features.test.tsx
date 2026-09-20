@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
 import { IntakeScreen } from "../intake/IntakeScreen.js";
@@ -10,21 +10,26 @@ const config = { provider: "Anthropic", model: "claude-opus-5", processing_mode:
 afterEach(cleanup);
 
 describe("features switched off for this round of testing (revision 16)", () => {
-  it("has the five switched off", () => {
+  it("has the four switched off and heightened review left on", () => {
     expect(FEATURES).toEqual({
       saveReview: false,
       compareRevisions: false,
-      heightenedReview: false,
+      heightenedReview: true,
       audienceDocuments: false,
       publicContextSearch: false,
     });
   });
 
-  it("shows the heightened-review box present but inert, never silently missing", () => {
+  it("leaves heightened review usable, because it is part of what testers are testing", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     const box = screen.getByRole("checkbox", { name: /Apply heightened review/ }) as HTMLInputElement;
-    expect(box.disabled).toBe(true);
-    expect(box.checked).toBe(false);
+    expect(box.disabled).toBe(false);
+    fireEvent.click(box);
+    expect(box.checked).toBe(true);
+  });
+
+  it("marks what is switched off as coming soon rather than removing it silently", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     expect(screen.getAllByText(COMING_SOON).length).toBeGreaterThan(0);
   });
 
