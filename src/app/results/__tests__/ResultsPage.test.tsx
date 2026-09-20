@@ -7,6 +7,7 @@ import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
 import { CORE_PRINCIPLE } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
 import { APOLOGY_PROTOCOL } from "../../../engine/protocols.js";
+import { ceilingWithoutContext } from "../../../engine/scoring.js";
 
 function load(prefix: string): EvaluationResult {
   const dir = "fixture-reports";
@@ -130,5 +131,27 @@ describe("the protocol panel (revision 14)", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.queryByRole("heading", { name: APOLOGY_PROTOCOL.name })).toBeNull();
     expect(document.getElementById("protocol-review")).toBeNull();
+  });
+});
+
+describe("the score ceiling when no context was supplied", () => {
+  it("states the cap and the reachable maximum, so a good draft's score is legible", () => {
+    const result = load("demo1");
+    result.analysis.executive_summary.context_supplied = false;
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.getByText(/cannot score above 3.5 of 5/)).toBeTruthy();
+    expect(screen.getByText(new RegExp(`most any draft can score on this run is ${ceilingWithoutContext()} of 100`))).toBeTruthy();
+  });
+
+  it("says nothing of the sort once context is supplied, because the cap is lifted", () => {
+    const result = load("demo1");
+    result.analysis.executive_summary.context_supplied = true;
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.queryByText(/cannot score above 3.5 of 5/)).toBeNull();
+  });
+
+  it("derives the ceiling from the weights rather than a written-down number", () => {
+    // 40 of the 100 weight is capped at 3.5/5; the rest can reach 5/5.
+    expect(ceilingWithoutContext()).toBe(88);
   });
 });

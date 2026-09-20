@@ -1,5 +1,5 @@
 import type { EvaluationResult } from "../../engine/evaluate.js";
-import { DIMENSION_LABELS } from "../../engine/scoring.js";
+import { ceilingWithoutContext, DIMENSION_LABELS } from "../../engine/scoring.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { openPanel } from "./Panel.js";
@@ -29,6 +29,14 @@ export function ExecutiveSummary({ result, request }: Props) {
           </button>
           <span className="score-band">{result.band}</span>
           <p className="muted" style={{ marginTop: 8 }}>{result.confidence_label}</p>
+          {!s.context_supplied ? (
+            <p className="muted small prose" style={{ marginTop: 4 }}>
+              With no context supplied, three dimensions — accountability and agency, causation and explanation, and
+              corrective action and proof — cannot score above 3.5 of 5, because nothing here confirms what the draft
+              claims. The most any draft can score on this run is {ceilingWithoutContext()} of 100. Filling in "Provide
+              additional context" lifts that cap on whatever it confirms.
+            </p>
+          ) : null}
           <div className="label">Risk level</div>
           <div>{s.risk_level}</div>
         </div>

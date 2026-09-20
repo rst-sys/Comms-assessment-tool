@@ -71,6 +71,32 @@ export function confidenceLabel(contextSupplied: boolean): string {
   return contextSupplied ? CONFIDENCE_WITH_CONTEXT : CONFIDENCE_DRAFT_ONLY;
 }
 
+/**
+ * The three dimensions a draft cannot score above 3.5 on while nothing
+ * confirms its claims (the ASSERTED cap in the Section 5 prompt).
+ */
+export const CAPPED_WITHOUT_CONTEXT: DimensionId[] = [
+  "accountability_agency",
+  "causation_explanation",
+  "corrective_action_proof",
+];
+
+/**
+ * The highest score reachable with no context fields supplied: a flawless
+ * draft still loses the top 1.5 points on those three dimensions, because
+ * nothing verifies what it claims.
+ *
+ * Derived from the weights rather than written down, so it cannot drift if a
+ * weight changes. Worth stating on the results page: without it, a good draft
+ * scoring in the sixties reads as a harsh tool rather than as a draft nobody
+ * can yet corroborate.
+ */
+export function ceilingWithoutContext(): number {
+  const total = Object.values(DIMENSION_WEIGHTS).reduce((a, b) => a + b, 0);
+  const capped = CAPPED_WITHOUT_CONTEXT.reduce((a, id) => a + DIMENSION_WEIGHTS[id], 0);
+  return Math.round(((total - capped) * 1 + capped * (3.5 / 5)) * (100 / total));
+}
+
 export const SEVERITY_RANK: Record<Severity, number> = { High: 0, Moderate: 1, Low: 2 };
 
 /** Findings ordered highest severity first; ties keep the model's order (which is also id order). */
