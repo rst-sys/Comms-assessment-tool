@@ -13,6 +13,8 @@
 > 10. **Find public context.** On the hosted app, an intake box lets the user search the public web for a topic they type (a company, event, or issue) through the provider's web search tool; results are shown with sources and the user chooses which to add as media-report documents before evaluating. The draft text is never used as a search query and never leaves the app in a search. The claude.ai page has no network and shows the box as unavailable.
 > 11. **Name, welcome screen and context label.** The product is named "Trust Assessment Assistant". A welcome screen shown on first load states concisely what the tool does, how it works, and what it is not (it does not write, rewrite, edit or copyedit; it is not a writing, grammar or compliance tool), carries a plain-language callout on data security and privacy, and points to a "Tool Overview" nav tab holding the full explanation: the framework (the nine elements of an account, the ten weighted dimensions, the two lenses, the evidence rule), everything the review returns, the value it offers, what it is not, and the privacy callout with the Section 4 confidentiality notice. Tool Overview is a real page, not one of the Section 1 stubs. The context field group is labelled "Provide additional context".
 > 12. **Save a review and compare revisions.** The results page can save a review to the user's own computer as a file. The file holds the score, the dimension scores and rationales, the findings, the agency scan, the executive summary, the intake settings and the context fields. It never holds the draft, and never holds the contents of attached documents; their titles and descriptions are kept so the user knows what to re-attach. A tick-box leaves out the pulled-out quotations; because the findings' own prose quotes the draft, this is a reduction, not a guarantee, and the interface says so. The Compare Revisions tab loads such a file, restores the settings and context, and takes a new version of the draft. The new draft is reviewed on its own terms first, then a second pass judges each earlier finding as Resolved, Partly addressed, Still open or No longer applicable, lists what is newly raised, and gives a two-sentence summary. Findings lead; the score movement follows, with a note that small changes mean little. Settings that changed between the two reviews are named as drift. One saved review at a time, previous versus current; no chain of versions, no server storage, no accounts. Saved Reviews stays a stub.
+> 13. **PDF uploads and the blog post type.** Audience context documents accept `.pdf` in addition to `.txt`, `.md` and `.docx`; the text layer is extracted in the browser, and a PDF with no text layer (a scan) is refused with a plain message. "Blog post" joins the Communication type list, and a blog URL pre-fills it on import.
+> 14. **Standards library and the effective-apology protocol.** The engine carries type-specific protocols alongside the core framework. The first is the structure of an effective apology from Lewicki, Polin and Lount (Negotiation and Conflict Management Research, 2016): expression of regret, explanation of what went wrong, acknowledgment of responsibility, declaration of repentance, offer of repair, request for forgiveness. It applies when the communication type is Apology or the goal is to apologize or repair trust. The engine marks each of the six Present, Partial or Absent in a `protocol_review` field and weights findings by the research: a missing acknowledgment of responsibility or offer of repair is at least High severity, a missing request for forgiveness at most Low. The results page and the PDF show the six element by element with the source named. Standards Library stops being a stub and becomes a real page listing what the engine applies and where each standard comes from, rendered from the same protocol objects the engine sends to the model. Each of the six is mapped to one of the ten scored dimensions, so a protocol is a lens on the existing score and never an eleventh dimension. A saved review carries the protocol check, and Compare Revisions shows the six element by element, before and after, worked out in code rather than by the model.
 
 ## 1. Build mandate
 
@@ -26,7 +28,7 @@ Build a working prototype of one review loop, not a product suite. The loop is: 
 4. ~~The Minimal-Risk redraft mode only.~~ Removed after testing (see revisions above).
 5. Design polish (Section 11).
 
-**Stub, do not build:** Saved Reviews, ~~Compare Revisions~~ (built; see revision 12), Team Workspace, Enterprise Governance Console, Standards Library, Settings. Each gets a nav entry and a one-paragraph page stating what it will do and that it is not in this build. Do not add placeholder forms, fake data tables, or mock toggles for these areas.
+**Stub, do not build:** Saved Reviews, ~~Compare Revisions~~ (built; see revision 12), Team Workspace, Enterprise Governance Console, ~~Standards Library~~ (built; see revision 14), Settings. Each gets a nav entry and a one-paragraph page stating what it will do and that it is not in this build. Do not add placeholder forms, fake data tables, or mock toggles for these areas.
 
 **Out of scope entirely:** authentication, database, user roles, SSO, SCIM, audit logs, data residency, legal hold, export to DOCX, internationalization, collaboration, and Accountability-Forward and Stakeholder-Specific redraft modes. Do not implement any of these even partially.
 
@@ -73,7 +75,7 @@ When the draft came from a URL, set `already_published: true` on the request and
 | Field | Options |
 | --- | --- |
 | Draft text | Free text, 50–5,000 words; show a live word count |
-| Communication type | CEO or executive message · Employee announcement · Layoff or restructuring · Press release · Crisis statement · Holding statement · Apology · Investor communication · Product or service announcement · Policy or public-affairs · Change-management · Social-media post · Talking points · Manager toolkit · FAQ · Other |
+| Communication type | CEO or executive message · Employee announcement · Layoff or restructuring · Press release · Crisis statement · Holding statement · Apology · Investor communication · Product or service announcement · Policy or public-affairs · Change-management · Blog post · Social-media post · Talking points · Manager toolkit · FAQ · Other |
 | Primary audience | All employees · Affected employees · Remaining employees · Managers · Customers · Investors · Analysts · Media · Regulators · Communities · Partners · Government stakeholders · General public · Multiple stakeholders |
 | Setting | Routine · Sensitive · High stakes · Crisis · Material corporate event |
 | Market | United States · United Kingdom · Canada · Australia · New Zealand · European Union · Germany · France · Global or multi-market · Other |
@@ -98,7 +100,7 @@ When the draft came from a URL, set `already_published: true` on the request and
 
 **Stance (revision 9).** Two radio buttons after the required fields: "Proactive: we are initiating this" and "Reactive: this responds to something the audience already knows about." When Reactive is chosen, a free-text field "What is this reacting to?" appears and is required.
 
-**Audience context documents (optional; revision 8).** Below the context fields: "What the audience already has or will receive." Up to eight. Each has a kind (Supporting document provided with this communication · Earlier communication from us · Media report or public commentary · Other background), a title, a file (.txt, .md or .docx; text is extracted in the browser) or pasted text, a one-line description, how and when the audience receives or encountered it, whether it reaches the whole audience, part of it, or unknown, and, for supporting documents, whether it arrives at the same time as the main communication. Documents are sent to the engine with the draft and live in component state only. Each is limited to 20,000 characters.
+**Audience context documents (optional; revision 8).** Below the context fields: "What the audience already has or will receive." Up to eight. Each has a kind (Supporting document provided with this communication · Earlier communication from us · Media report or public commentary · Other background), a title, a file (.txt, .md, .docx or .pdf; text is extracted in the browser) or pasted text, a one-line description, how and when the audience receives or encountered it, whether it reaches the whole audience, part of it, or unknown, and, for supporting documents, whether it arrives at the same time as the main communication. Documents are sent to the engine with the draft and live in component state only. Each is limited to 20,000 characters.
 
 **Find public context (revision 10; hosted app only).** In the same section: a search box for a topic the user types. Results (title, source, date, summary, link) appear with checkboxes; "Add selected" turns each into a media-report document the user can edit or remove. The proxy logs a hashed request id and a result count, never the query.
 
@@ -256,7 +258,12 @@ Validate every response against this schema before rendering. On failure, show "
     "most_damaging_interpretation": "string"
   },
   "questions_before_publication": ["string"],
-  "specialist_review_summary": ["Legal", "HR"]
+  "specialist_review_summary": ["Legal", "HR"],
+  "protocol_review": {
+    "protocol": "string, the protocol's name",
+    "source": "string, the published source",
+    "elements": [{ "name": "string", "status": "Present | Partial | Absent", "note": "string, one sentence" }]
+  }
 }
 ```
 
@@ -394,7 +401,7 @@ Always include these among the questions before publication:
 Set specialist_review_needed to true with type HR or Labor on every finding in this set. Never state whether a consultation obligation applies; state that it may and that counsel must confirm.
 ```
 
-**Other high-risk types.** For Investor communication, Crisis statement, and Apology, no additional prompt block in this build. The heightened thresholds and the market-based warning in Section 4 cover them. Note in the stubbed Standards Library page that type-specific protocols for financial disclosure, privacy incidents, AI and surveillance, and health and safety are planned.
+**Other high-risk types.** Apology now carries its own protocol block (revision 14). For Investor communication and Crisis statement, no additional prompt block in this build. The heightened thresholds and the market-based warning in Section 4 cover them. Note in the stubbed Standards Library page that type-specific protocols for financial disclosure, privacy incidents, AI and surveillance, and health and safety are planned.
 
 ## 11. Design system
 

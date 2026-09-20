@@ -13,6 +13,7 @@ import { EscalationChecklist } from "./EscalationChecklist.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
 import { FindingsRegister } from "./FindingsRegister.js";
 import { Footer } from "./Footer.js";
+import { ProtocolPanel } from "./ProtocolPanel.js";
 import { Questions } from "./Questions.js";
 import { Scorecard } from "./Scorecard.js";
 import { TopFindings } from "./TopFindings.js";
@@ -107,13 +108,14 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
         out the pulled-out quotations, but the written findings may still mention a phrase.
       </p>
       {comparisonError ? <p className="error" role="alert">{comparisonError}</p> : null}
-      {comparison && baseline ? <ComparisonPanel comparison={comparison} baseline={baseline} /> : null}
+      {comparison && baseline ? <ComparisonPanel comparison={comparison} baseline={baseline} protocol={a.protocol_review} /> : null}
       <div className="results-grid">
         <ExecutiveSummary result={result} request={request} />
         <PrivacyPanel config={config} />
       </div>
       {request.heightened_review ? <EscalationChecklist questions={a.questions_before_publication} /> : null}
       <TopFindings findings={a.findings} />
+      {a.protocol_review && a.protocol_review.elements.length > 0 ? <ProtocolPanel review={a.protocol_review} /> : null}
       <FindingsRegister findings={a.findings} />
       <Scorecard dimensions={a.dimensions} />
       <AgencyScan draft={request.draft} scan={a.agency_scan} />

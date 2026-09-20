@@ -2,6 +2,7 @@
  * Builds the system blocks and the user message for the evaluation call
  * (PROMPT.md Sections 3, 5 and 10).
  */
+import { protocolsFor } from "./protocols.js";
 import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "./promptText.js";
 import { CONTEXT_FIELDS, DIMENSION_IDS, DOCUMENT_KINDS, DOCUMENT_REACH, type EvaluationRequest } from "./types.js";
 
@@ -22,6 +23,7 @@ The JSON object must satisfy these counts and conventions in addition to the sch
 - devils_advocate.personas contains exactly five personas, no more and no fewer. Each persona has a headline of at most twelve words stating its key concern, written as a strong, specific line a reader would remember. The disclaimer is exactly: "These are plausible audience interpretations, not statements of fact."
 - questions_before_publication contains between five and twelve questions.
 - specialist_review_summary lists each review type named by any finding with specialist_review_needed true, without duplicates.
+- protocol_review is null unless a protocol block above tells you to fill it; then it carries that protocol's name, its source line, and one entry per element in the order the block gives, each with a status of Present, Partial or Absent and a one-sentence note.
 
 WHAT EACH DIMENSION EVALUATES
 Score each dimension against its own definition, not against a checklist of everything a message could contain. Do not lower a dimension for the absence of information it does not evaluate.
@@ -63,10 +65,13 @@ export interface SystemBlock {
 }
 
 /** System prompt blocks in order: verbatim prompt, optional layoff block, output notes. */
-export function buildSystemBlocks(request: Pick<EvaluationRequest, "communication_type">): SystemBlock[] {
+export function buildSystemBlocks(request: EvaluationRequest): SystemBlock[] {
   const blocks: SystemBlock[] = [{ text: SYSTEM_PROMPT }];
   if (request.communication_type === "Layoff or restructuring") {
     blocks.push({ text: LAYOFF_BLOCK });
+  }
+  for (const protocol of protocolsFor(request)) {
+    blocks.push({ text: protocol.promptBlock });
   }
   blocks.push({ text: OUTPUT_NOTES });
   return blocks;

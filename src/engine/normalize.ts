@@ -10,6 +10,7 @@
 import {
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
+  PROTOCOL_STATUSES,
   SCHEMA_VERSION,
   type Analysis,
 } from "./types.js";
@@ -21,6 +22,12 @@ const nullableStr = (v: unknown): string | null => (typeof v === "string" && v.t
 const bool = (v: unknown): boolean => v === true || v === "true";
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
 const strings = (v: unknown, max: number): string[] => arr(v).map((x) => str(x)).filter((x) => x.trim().length > 0).slice(0, max);
+
+/** Accepts a protocol status in any casing; anything else is left as-is for the validator to reject. */
+function protocolStatus(v: unknown): string {
+  const raw = str(v).trim();
+  return PROTOCOL_STATUSES.find((s) => s.toLowerCase() === raw.toLowerCase()) ?? raw;
+}
 
 function roundHalf(v: unknown): number {
   const n = typeof v === "number" ? v : Number.parseFloat(String(v));
@@ -96,6 +103,15 @@ export function normalizeAnalysis(raw: unknown): unknown {
         })),
       most_damaging_interpretation: str(da.most_damaging_interpretation),
     },
+    protocol_review: isObj(raw.protocol_review)
+      ? {
+          protocol: str(raw.protocol_review.protocol),
+          source: str(raw.protocol_review.source),
+          elements: arr(raw.protocol_review.elements)
+            .filter(isObj)
+            .map((e) => ({ name: str(e.name), status: protocolStatus(e.status), note: str(e.note) })),
+        }
+      : null,
     questions_before_publication: strings(raw.questions_before_publication, 12),
     specialist_review_summary: [...new Set(strings(raw.specialist_review_summary, 20))],
   } satisfies Record<keyof Analysis, unknown>;

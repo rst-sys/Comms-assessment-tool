@@ -31,7 +31,7 @@ describe("extractReadable", () => {
   });
 
   it("does not suggest a type for an ordinary page", () => {
-    const page = extractReadable(articleHtml, "https://example.com/blog/denver-closure");
+    const page = extractReadable(articleHtml, "https://example.com/about/denver-closure");
     expect(page!.suggested_type).toBeNull();
   });
 });
@@ -66,6 +66,10 @@ describe("suggestTypeFromUrl", () => {
     expect(suggestTypeFromUrl("https://corp.example.com/press-releases/q3")).toBe("Press release");
     expect(suggestTypeFromUrl("https://corp.example.com/news/q3")).toBe("Press release");
     expect(suggestTypeFromUrl("https://corp.example.com/ceo-letter")).toBeNull();
+  });
+  it("suggests Blog post for a blog URL", () => {
+    expect(suggestTypeFromUrl("https://corp.example.com/blog/why-we-changed")).toBe("Blog post");
+    expect(suggestTypeFromUrl("https://blog.example.com/why-we-changed")).toBe("Blog post");
   });
 });
 

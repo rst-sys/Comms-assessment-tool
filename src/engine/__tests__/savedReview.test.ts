@@ -4,6 +4,7 @@ import type { EvaluationResult } from "../evaluate.js";
 import { DEMO_1 } from "../fixtures.js";
 import { buildSavedReview, parseSavedReview, savedReviewFilename, SavedReviewError, settingsDrift } from "../savedReview.js";
 import type { AudienceDocument } from "../types.js";
+import { APOLOGY_PROTOCOL } from "../protocols.js";
 
 function load(prefix: string): EvaluationResult {
   const dir = "fixture-reports";
@@ -90,5 +91,31 @@ describe("settingsDrift", () => {
       "Primary audience",
       "Heightened review",
     ]);
+  });
+});
+
+describe("the protocol review in a saved file (revision 14)", () => {
+  it("round-trips the protocol check, and holds null when none applied", () => {
+    const result = load("demo1");
+    result.analysis.protocol_review = {
+      protocol: APOLOGY_PROTOCOL.name,
+      source: APOLOGY_PROTOCOL.source,
+      elements: [
+        { name: "Offer of repair", status: "Absent", note: "No commitment to undo the damage." },
+        { name: "Expression of regret", status: "Present", note: "Opens by saying sorry." },
+      ],
+    };
+    const saved = parseSavedReview(JSON.stringify(buildSavedReview(result, DEMO_1.request)));
+    expect(saved.protocol_review?.protocol).toBe(APOLOGY_PROTOCOL.name);
+    expect(saved.protocol_review?.elements.map((e) => e.status)).toEqual(["Absent", "Present"]);
+
+    const plain = load("demo1");
+    expect(buildSavedReview(plain, DEMO_1.request).protocol_review).toBeNull();
+  });
+
+  it("still reads a file saved before revision 14, which has no protocol review", () => {
+    const old = JSON.parse(JSON.stringify(buildSavedReview(load("demo1"), DEMO_1.request))) as Record<string, unknown>;
+    delete old.protocol_review;
+    expect(parseSavedReview(JSON.stringify(old)).protocol_review).toBeUndefined();
   });
 });

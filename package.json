@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "fixtures": "tsx scripts/run-fixtures.ts",
-    "build:artifact": "vite build --config vite.artifact.config.ts"
+    "build:artifact": "vite build --config vite.artifact.config.ts && node scripts/prepare-artifact.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",
@@ -26,6 +26,7 @@
     "jsdom": "^30.1.0",
     "jspdf": "^4.2.1",
     "mammoth": "^1.12.3",
+    "pdfjs-dist": "^6.3.289",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

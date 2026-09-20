@@ -139,7 +139,7 @@ export function AudienceDocuments({ documents, onChange, publicSearch = true }: 
             </label>
           ) : null}
           <label className="field">
-            <span className="label">File (.txt, .md or .docx)</span>
+            <span className="label">File (.txt, .md, .docx or .pdf)</span>
             <input ref={fileInput} type="file" accept={ACCEPTED_EXTENSIONS.join(",")} onChange={onFile} disabled={reading} aria-label="Document file" />
           </label>
           <label className="field">

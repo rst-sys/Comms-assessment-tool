@@ -16,11 +16,6 @@ export const STUB_PAGES = [
     text: "The Enterprise Governance Console will hold customer-controlled processing, redaction, retention policies, data residency, audit logging, and access controls. It is not in this build; the privacy panel shows only what the code currently enforces.",
   },
   {
-    key: "standards-library",
-    title: "Standards Library",
-    text: "The Standards Library will hold type-specific review protocols: financial disclosure, privacy incidents, AI and surveillance, and health and safety are planned alongside the layoff and restructuring protocol the engine applies today. It is not in this build.",
-  },
-  {
     key: "settings",
     title: "Settings",
     text: "Settings will cover provider and model selection, processing mode, retention choices, and the classification label. It is not in this build; the provider and model are read from the server's configuration and shown in the privacy panel.",

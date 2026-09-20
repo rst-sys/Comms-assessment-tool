@@ -42,9 +42,11 @@ export function allowedUrl(input: string): URL | null {
   return url;
 }
 
-/** A newsroom or press URL suggests a press release. */
+/** A newsroom or press URL suggests a press release; a blog URL suggests a blog post. */
 export function suggestTypeFromUrl(url: string): CommunicationType | null {
-  return /newsroom|press[-_]?release|\/press(\/|$)|\/news(\/|$)|\/media(\/|$)|\/announcements?(\/|$)/i.test(url) ? "Press release" : null;
+  if (/newsroom|press[-_]?release|\/press(\/|$)|\/news(\/|$)|\/media(\/|$)|\/announcements?(\/|$)/i.test(url)) return "Press release";
+  if (/\/blogs?(\/|$)|\/posts?(\/|$)|blog\./i.test(url)) return "Blog post";
+  return null;
 }
 
 const MIN_WORDS = 40;

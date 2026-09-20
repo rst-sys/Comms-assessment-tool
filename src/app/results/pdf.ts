@@ -176,6 +176,16 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.paragraph(`Fact validation: ${f.fact_validation_needed ? "needed" : "not flagged"} · Specialist review: ${f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}`, 9);
   }
 
+  if (a.protocol_review && a.protocol_review.elements.length > 0) {
+    w.pageBreak();
+    w.heading(a.protocol_review.protocol, 15);
+    for (const e of a.protocol_review.elements) {
+      w.paragraph(`${e.name} — ${e.status}`, 10.5, 0, "bold");
+      w.paragraph(e.note, 10, 4);
+    }
+    w.paragraph(`Source: ${a.protocol_review.source}`, 9);
+  }
+
   w.pageBreak();
   w.heading("Scorecard", 15);
   const byId = new Map(a.dimensions.map((d) => [d.id, d]));

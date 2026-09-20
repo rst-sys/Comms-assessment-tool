@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { DEMO_1 } from "../../../engine/fixtures.js";
 import { buildReviewPdf, reviewPdfFilename } from "../pdf.js";
+import { APOLOGY_PROTOCOL } from "../../../engine/protocols.js";
 
 function load(prefix: string): EvaluationResult {
   const dir = "fixture-reports";
@@ -23,5 +24,26 @@ describe("buildReviewPdf", () => {
 
   it("names the file from the communication type and date", () => {
     expect(reviewPdfFilename(DEMO_1.request, new Date("2026-09-19T12:00:00Z"))).toBe("trustability-review-layoff-or-restructuring-2026-09-19.pdf");
+  });
+});
+
+describe("the protocol section in the PDF (revision 14)", () => {
+  it("adds a page for the protocol review and leaves it out when there is none", () => {
+    const plain = load("demo1");
+    const without = buildReviewPdf(plain, DEMO_1.request, new Date("2026-09-19T12:00:00Z")).getNumberOfPages();
+
+    const withProtocol = load("demo1");
+    withProtocol.analysis.protocol_review = {
+      protocol: APOLOGY_PROTOCOL.name,
+      source: APOLOGY_PROTOCOL.source,
+      elements: APOLOGY_PROTOCOL.elements.map((e) => ({
+        name: e.name,
+        status: "Absent" as const,
+        note: `Nothing in the draft covers ${e.name.toLowerCase()}.`,
+      })),
+    };
+    const doc = buildReviewPdf(withProtocol, DEMO_1.request, new Date("2026-09-19T12:00:00Z"));
+    expect(doc.getNumberOfPages()).toBeGreaterThan(without);
+    expect(String.fromCharCode(...new Uint8Array(doc.output("arraybuffer")).slice(0, 5))).toBe("%PDF-");
   });
 });

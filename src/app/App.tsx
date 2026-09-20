@@ -5,6 +5,7 @@ import type { ComparisonResult } from "../engine/compare.js";
 import type { SavedReview } from "../engine/savedReview.js";
 import { ApiError, compare, evaluate, fetchConfig } from "./api.js";
 import { CompareRevisions } from "./compare/CompareRevisions.js";
+import { StandardsLibrary } from "./StandardsLibrary.js";
 import { ToolOverview } from "./ToolOverview.js";
 import { WelcomeScreen } from "./WelcomeScreen.js";
 import { APP_NAME, INTRO } from "./copy.js";
@@ -25,7 +26,7 @@ export interface AppOptions {
   runtimeNote?: string;
 }
 
-type View = "review" | "overview" | "compare" | StubKey;
+type View = "review" | "overview" | "compare" | "standards" | StubKey;
 
 interface Review {
   request: EvaluationRequest;
@@ -136,6 +137,11 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
                   Compare Revisions
                 </button>
               </li>
+              <li>
+                <button type="button" className={view === "standards" ? "nav-link nav-active" : "nav-link"} aria-current={view === "standards" ? "page" : undefined} onClick={() => setView("standards")}>
+                  Standards Library
+                </button>
+              </li>
               {STUB_PAGES.map((s) => (
                 <li key={s.key}>
                   <button type="button" className={view === s.key ? "nav-link nav-active" : "nav-link"} aria-current={view === s.key ? "page" : undefined} onClick={() => setView(s.key)}>
@@ -149,6 +155,8 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
       </header>
       {view === "overview" ? (
         <ToolOverview config={config} runtimeNote={runtimeNote} />
+      ) : view === "standards" ? (
+        <StandardsLibrary />
       ) : view === "compare" ? (
         <CompareRevisions
           baseline={baseline}

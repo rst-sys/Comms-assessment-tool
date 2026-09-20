@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import { buildSystemBlocks, buildUserMessage, OUTPUT_NOTES } from "../prompt.js";
 import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "../promptText.js";
 import { DEMO_1, DEMO_2, DEMO_1_WITH_CONTEXT } from "../fixtures.js";
+import { APOLOGY_PROTOCOL, PROTOCOLS, protocolsFor } from "../protocols.js";
+import { DIMENSION_IDS } from "../types.js";
 
 describe("system prompt text", () => {
   it("carries the verbatim Section 5 prompt", () => {
@@ -25,7 +27,65 @@ describe("buildSystemBlocks", () => {
     expect(layoff).toEqual([SYSTEM_PROMPT, LAYOFF_BLOCK, OUTPUT_NOTES]);
 
     const apology = buildSystemBlocks(DEMO_2.request).map((b) => b.text);
-    expect(apology).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
+    expect(apology).toEqual([SYSTEM_PROMPT, APOLOGY_PROTOCOL.promptBlock, OUTPUT_NOTES]);
+  });
+
+  it("adds the apology protocol for the Apology type, for the repair goal, and for neither otherwise", () => {
+    const byType = buildSystemBlocks({ ...DEMO_1.request, communication_type: "Apology" }).map((b) => b.text);
+    expect(byType).toContain(APOLOGY_PROTOCOL.promptBlock);
+
+    const byGoal = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
+    expect(byGoal).toContain(APOLOGY_PROTOCOL.promptBlock);
+
+    // Named once even when both the type and the goal match.
+    const both = buildSystemBlocks({
+      ...DEMO_1.request,
+      communication_type: "Apology",
+      goal: "Apologize or repair trust",
+    }).map((b) => b.text);
+    expect(both.filter((t) => t === APOLOGY_PROTOCOL.promptBlock).length).toBe(1);
+
+    expect(buildSystemBlocks(DEMO_1.request).map((b) => b.text)).not.toContain(APOLOGY_PROTOCOL.promptBlock);
+  });
+
+  it("puts the protocol block after any type block and before the output notes", () => {
+    const blocks = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
+    expect(blocks).toEqual([SYSTEM_PROMPT, LAYOFF_BLOCK, APOLOGY_PROTOCOL.promptBlock, OUTPUT_NOTES]);
+  });
+});
+
+describe("the effective-apology protocol", () => {
+  it("names the six components in the order the research ranks them, with the research cited", () => {
+    expect(APOLOGY_PROTOCOL.elements.map((e) => e.name)).toEqual([
+      "Expression of regret",
+      "Explanation of what went wrong",
+      "Acknowledgment of responsibility",
+      "Declaration of repentance",
+      "Offer of repair",
+      "Request for forgiveness",
+    ]);
+    expect(APOLOGY_PROTOCOL.source).toContain("Lewicki");
+    expect(APOLOGY_PROTOCOL.source).toContain("2016");
+    expect(APOLOGY_PROTOCOL.source).toContain("Negotiation and Conflict Management Research");
+  });
+
+  it("maps every component to a dimension the engine already scores", () => {
+    for (const element of APOLOGY_PROTOCOL.elements) {
+      expect(DIMENSION_IDS).toContain(element.dimension);
+    }
+  });
+
+  it("tells the model every component and never to supply wording", () => {
+    for (const element of APOLOGY_PROTOCOL.elements) {
+      expect(APOLOGY_PROTOCOL.promptBlock).toContain(element.name);
+    }
+    expect(APOLOGY_PROTOCOL.promptBlock).toContain("never supply wording");
+  });
+
+  it("is the only protocol in the registry, and protocolsFor selects on the request", () => {
+    expect(PROTOCOLS).toEqual([APOLOGY_PROTOCOL]);
+    expect(protocolsFor(DEMO_2.request)).toEqual([APOLOGY_PROTOCOL]);
+    expect(protocolsFor(DEMO_1.request)).toEqual([]);
   });
 });
 

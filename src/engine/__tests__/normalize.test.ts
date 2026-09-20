@@ -44,3 +44,32 @@ describe("normalizeAnalysis", () => {
     expect(normalizeAnalysis("nope")).toBe("nope");
   });
 });
+
+describe("protocol_review normalization", () => {
+  it("keeps a well-formed review, and fixes only the casing of a status", () => {
+    const raw = {
+      protocol_review: {
+        protocol: "Effective apology",
+        source: "Lewicki et al. (2016)",
+        elements: [
+          { name: "Expression of regret", status: "present", note: "Says sorry in the first line." },
+          { name: "Offer of repair", status: "ABSENT", note: "No commitment to undo the damage." },
+          { name: "Request for forgiveness", status: "Partial", note: "Implied only." },
+        ],
+      },
+    };
+    const out = normalizeAnalysis(raw) as { protocol_review: { protocol: string; elements: { status: string }[] } };
+    expect(out.protocol_review.elements.map((e) => e.status)).toEqual(["Present", "Absent", "Partial"]);
+    expect(out.protocol_review.protocol).toBe("Effective apology");
+  });
+
+  it("leaves an unrecognized status alone so the validator rejects it, and nulls a non-object", () => {
+    const out = normalizeAnalysis({
+      protocol_review: { protocol: "p", source: "s", elements: [{ name: "n", status: "Maybe", note: "x" }] },
+    }) as { protocol_review: { elements: { status: string }[] } };
+    expect(out.protocol_review.elements[0]!.status).toBe("Maybe");
+
+    expect((normalizeAnalysis({}) as { protocol_review: unknown }).protocol_review).toBeNull();
+    expect((normalizeAnalysis({ protocol_review: "none" }) as { protocol_review: unknown }).protocol_review).toBeNull();
+  });
+});

@@ -6,6 +6,7 @@ import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
 import { CORE_PRINCIPLE } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
+import { APOLOGY_PROTOCOL } from "../../../engine/protocols.js";
 
 function load(prefix: string): EvaluationResult {
   const dir = "fixture-reports";
@@ -87,5 +88,47 @@ describe("ResultsPage with the captured control analysis", () => {
     expect(screen.queryByText("Resolve with specialists")).toBeNull();
     expect(screen.queryAllByRole("button", { name: /^(External weather|Institutional abstraction|Audience displacement|Passive accountability|Values without action|Vague action): / })).toHaveLength(0);
     expect(screen.getByRole("button", { name: /Score 83 out of 100/ })).toBeTruthy();
+  });
+});
+
+describe("the protocol panel (revision 14)", () => {
+  const result = load("demo1");
+
+  function withProtocol(): EvaluationResult {
+    return {
+      ...result,
+      analysis: {
+        ...result.analysis,
+        protocol_review: {
+          protocol: APOLOGY_PROTOCOL.name,
+          source: APOLOGY_PROTOCOL.source,
+          elements: APOLOGY_PROTOCOL.elements.map((e, i) => ({
+            name: e.name,
+            status: (["Present", "Partial", "Absent"] as const)[i % 3]!,
+            note: `Evidence for ${e.name}.`,
+          })),
+        },
+      },
+    };
+  }
+
+  it("lists every element with its status, the count present and the source", () => {
+    render(<ResultsPage result={withProtocol()} request={DEMO_1.request} />);
+    // The panel is a native <details>; its contents are in the DOM either way.
+    expect(screen.getByRole("heading", { name: APOLOGY_PROTOCOL.name })).toBeTruthy();
+    for (const element of APOLOGY_PROTOCOL.elements) {
+      expect(screen.getByText(element.name)).toBeTruthy();
+      expect(screen.getByText(`Evidence for ${element.name}.`)).toBeTruthy();
+    }
+    // Two of the six were marked Present by the rotation above.
+    expect(screen.getByText(/2 of 6 present/)).toBeTruthy();
+    expect(screen.getByText(/Lewicki/)).toBeTruthy();
+    expect(screen.getByText(/not a separate score/)).toBeTruthy();
+  });
+
+  it("shows no panel when the analysis carries no protocol review", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.queryByRole("heading", { name: APOLOGY_PROTOCOL.name })).toBeNull();
+    expect(document.getElementById("protocol-review")).toBeNull();
   });
 });

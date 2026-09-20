@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
+import { APOLOGY_PROTOCOL } from "../../engine/protocols.js";
 
 function captured(prefix: string): unknown {
   const dir = "fixture-reports";
@@ -109,9 +110,25 @@ describe("App", () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
-    fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
-    expect(screen.getByRole("heading", { name: "Standards Library" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Team Workspace" }));
+    expect(screen.getByRole("heading", { name: "Team Workspace" })).toBeTruthy();
     expect(screen.getByText(/not in this build/)).toBeTruthy();
+    expect(screen.queryByRole("textbox")).toBeNull();
+  });
+
+  it("shows the Standards Library with the core framework and the apology protocol", () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
+    expect(screen.getByRole("heading", { name: "Standards library", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "The core framework" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Effective apology" })).toBeTruthy();
+    // Every element of the protocol the engine sends is on the page.
+    for (const element of APOLOGY_PROTOCOL.elements) {
+      expect(screen.getByText(element.name)).toBeTruthy();
+    }
+    expect(screen.getByText(/Lewicki/)).toBeTruthy();
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 });
