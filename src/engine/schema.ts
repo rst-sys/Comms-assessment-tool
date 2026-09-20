@@ -71,7 +71,6 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
   schema_version: enumOf([SCHEMA_VERSION]),
   executive_summary: obj({
     headline: str,
-    assessment: str,
     risk_level: enumOf(RISK_LEVELS),
     readiness: enumOf(READINESS_VALUES),
     context_supplied: bool,
@@ -95,13 +94,10 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
       omission: nullableStr,
       claim_status: nullableEnum(CLAIM_STATUSES),
       finding: str,
-      why_it_matters: str,
-      stakeholder_risk: str,
       recommended_action: str,
       fact_validation_needed: bool,
       specialist_review_needed: bool,
       specialist_review_type: nullableEnum(SPECIALIST_REVIEW_TYPES),
-      confidence_note: str,
     }),
   ),
   agency_scan: arr(

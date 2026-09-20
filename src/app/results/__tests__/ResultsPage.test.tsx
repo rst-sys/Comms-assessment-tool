@@ -47,7 +47,7 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
 
   it("shows the escalation checklist under heightened review", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.getByText("Resolve with specialists")).toBeTruthy();
+    expect(screen.getByText("Questions for subject matter reviewers")).toBeTruthy();
   });
 
   it("renders the collapsed panels, the highlighted draft, and the footer", () => {
@@ -86,7 +86,7 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
 describe("ResultsPage with the captured control analysis", () => {
   it("shows no highlights and no escalation checklist when heightened review is off", () => {
     render(<ResultsPage result={load("control")} request={CONTROL.request} />);
-    expect(screen.queryByText("Resolve with specialists")).toBeNull();
+    expect(screen.queryByText("Questions for subject matter reviewers")).toBeNull();
     expect(screen.queryAllByRole("button", { name: /^(External weather|Institutional abstraction|Audience displacement|Passive accountability|Values without action|Vague action): / })).toHaveLength(0);
     expect(screen.getByRole("button", { name: /Score 83 out of 100/ })).toBeTruthy();
   });

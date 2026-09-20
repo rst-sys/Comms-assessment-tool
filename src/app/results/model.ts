@@ -10,7 +10,7 @@ export function topFindings(findings: ReadonlyArray<Finding>, count = 5): Findin
   return rankFindings(findings).slice(0, count);
 }
 
-/** Questions whose text names a review function, for the "Resolve with specialists" checklist (Section 10). */
+/** Questions whose text names a review function, for the "Questions for subject matter reviewers" checklist (Section 10). */
 const REVIEW_FUNCTION =
   /\b(legal|counsel|lawyer|attorney|HR|human resources|labou?r|works[- ]council|consultation|union|privacy|investor relations|regulat\w*|compliance|local[- ]market|executive|board|audit|security|finance|tax|disclosure)\b/i;
 

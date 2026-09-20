@@ -21,13 +21,10 @@ const finding = (overrides: Partial<Finding>): Finding => ({
   omission: "x",
   claim_status: null,
   finding: "",
-  why_it_matters: "",
-  stakeholder_risk: "",
   recommended_action: "",
   fact_validation_needed: false,
   specialist_review_needed: false,
   specialist_review_type: null,
-  confidence_note: "",
   ...overrides,
 });
 

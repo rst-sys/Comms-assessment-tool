@@ -200,8 +200,44 @@ describe("decodeStrayEscapes", () => {
   });
   it("is applied during validation", () => {
     const analysis = sampleAnalysis();
-    analysis.executive_summary.assessment = "Name it \\u2014 plainly.";
+    analysis.findings[0]!.finding = "Name it \\u2014 plainly.";
     const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
-    expect(out.executive_summary.assessment).toBe("Name it \u2014 plainly.");
+    expect(out.findings[0]!.finding).toBe("Name it \u2014 plainly.");
+  });
+});
+
+describe("personas with nothing in them", () => {
+  const FIELDS = ["persona", "headline", "may_hear", "may_question", "may_find_missing", "would_address_it"] as const;
+
+  it("rejects a persona whose text field is empty, and names which one", () => {
+    // How the live site came to show empty tiles: the schema types these as
+    // strings, and an empty string used to satisfy every check.
+    for (const field of FIELDS) {
+      const bad = sampleAnalysis();
+      bad.devils_advocate.personas[1]![field] = "";
+      try {
+        validateAnalysis(bad, SAMPLE_DRAFT, {});
+        throw new Error(`${field} was accepted empty`);
+      } catch (error) {
+        expect(error).toBeInstanceOf(AnalysisValidationError);
+        expect((error as AnalysisValidationError).path).toBe(`/devils_advocate/personas/1/${field}`);
+      }
+    }
+  });
+
+  it("rejects whitespace as loudly as an empty string", () => {
+    const bad = sampleAnalysis();
+    bad.devils_advocate.personas[0]!.may_hear = "   \n ";
+    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
+  });
+
+  it("rejects an empty most damaging interpretation", () => {
+    const bad = sampleAnalysis();
+    bad.devils_advocate.most_damaging_interpretation = "";
+    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
+  });
+
+  it("accepts personas that are actually filled in", () => {
+    expect(() => validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, {})).not.toThrow();
   });
 });

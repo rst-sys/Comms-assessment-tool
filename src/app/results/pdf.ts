@@ -137,8 +137,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(s.risk_level);
   w.label("Communications readiness");
   w.paragraph(`${s.readiness}${a.specialist_review_summary.length ? ` — specialist review: ${a.specialist_review_summary.join(", ")}` : ""}${request.already_published ? " — Retrospective review, already issued" : ""}`, 10.5, 0, "bold");
-  w.label("Assessment");
-  w.paragraph(s.assessment);
   if (request.stance === "reactive" && request.reacting_to) {
     w.label("Reacting to");
     w.paragraph(request.reacting_to);
@@ -155,7 +153,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   if (request.heightened_review) {
     const items = specialistQuestions(a.questions_before_publication);
     if (items.length) {
-      w.heading("Resolve with specialists", 13);
+      w.heading("Questions for subject matter reviewers", 13);
       w.bullets(items, true);
     }
   }
@@ -169,9 +167,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     if (f.excerpt !== null) w.paragraph(`“${f.excerpt}”`, 10.5, 4, "italic");
     else if (f.omission) w.paragraph(`Omission: ${f.omission}`, 10.5, 4, "italic");
     w.paragraph(f.finding, 10.5, 0, "bold");
-    w.label("Why it matters");
-    w.paragraph(f.why_it_matters);
-    w.label("What to add or clarify");
+    w.label("Ways this could be rectified");
     w.paragraph(f.recommended_action);
     w.paragraph(`Fact validation: ${f.fact_validation_needed ? "needed" : "not flagged"} · Specialist review: ${f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}`, 9);
   }

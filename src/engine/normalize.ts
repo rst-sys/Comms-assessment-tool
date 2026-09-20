@@ -74,20 +74,16 @@ export function normalizeAnalysis(raw: unknown): unknown {
       omission: nullableStr(f.omission),
       claim_status: oneOfOrNull(f.claim_status, CLAIM_STATUSES),
       finding: str(f.finding),
-      why_it_matters: str(f.why_it_matters),
-      stakeholder_risk: str(f.stakeholder_risk),
       recommended_action: str(f.recommended_action ?? f.what_to_add ?? f.suggested_revision),
       fact_validation_needed: bool(f.fact_validation_needed),
       specialist_review_needed: bool(f.specialist_review_needed),
       specialist_review_type: oneOfOrNull(f.specialist_review_type, SPECIALIST_REVIEW_TYPES),
-      confidence_note: str(f.confidence_note),
     }));
 
   const normalized = {
     schema_version: SCHEMA_VERSION,
     executive_summary: {
       headline: str(summary.headline),
-      assessment: str(summary.assessment),
       risk_level: oneOf(summary.risk_level, RISK_LEVELS),
       readiness: oneOf(summary.readiness, READINESS_VALUES),
       context_supplied: bool(summary.context_supplied),

@@ -45,7 +45,7 @@ const results = new Map<string, EvaluationResult>();
 const failures: string[] = [];
 
 function findingText(f: Finding): string {
-  return [f.finding, f.omission ?? "", f.excerpt ?? "", f.why_it_matters, f.stakeholder_risk, f.recommended_action].join(" ");
+  return [f.finding, f.omission ?? "", f.excerpt ?? "", f.recommended_action].join(" ");
 }
 
 const RETRYABLE_KINDS = new Set(["validation", "invalid_json", "truncated", "no_text"]);

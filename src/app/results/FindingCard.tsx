@@ -18,9 +18,7 @@ export function FindingCard({ finding }: { finding: Finding }) {
         <p className="omission">{f.omission}</p>
       )}
       <h3 id={`finding-${f.id}-title`} style={{ margin: "8px 0 4px" }}>{f.finding}</h3>
-      <div className="label">Why it matters</div>
-      <p style={{ margin: 0 }}>{f.why_it_matters}</p>
-      <div className="label">What to add or clarify</div>
+      <div className="label">Ways this could be rectified</div>
       <p style={{ margin: 0 }}>{f.recommended_action}</p>
       <div className="flags">
         <span className={`flag ${f.fact_validation_needed ? "flag-on" : ""}`}>

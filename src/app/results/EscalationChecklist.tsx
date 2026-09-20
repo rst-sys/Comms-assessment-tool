@@ -6,7 +6,7 @@ export function EscalationChecklist({ questions }: { questions: string[] }) {
   if (items.length === 0) return null;
   return (
     <section className="card" id="escalation" aria-labelledby="escalation-heading">
-      <h2 id="escalation-heading">Resolve with specialists</h2>
+      <h2 id="escalation-heading">Questions for subject matter reviewers</h2>
       <p className="muted" style={{ marginTop: 4 }}>Heightened review is on. These questions name a review function and should be settled before this is issued.</p>
       <ol className="tight">
         {items.map((q, i) => (

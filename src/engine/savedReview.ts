@@ -45,7 +45,6 @@ export interface SavedFinding {
   excerpt: string | null;
   omission: string | null;
   finding: string;
-  why_it_matters: string;
   recommended_action: string;
   specialist_review_needed: boolean;
   specialist_review_type: string | null;
@@ -67,7 +66,6 @@ export interface SavedReview {
   documents: Omit<AudienceDocument, "text">[];
   summary: {
     headline: string;
-    assessment: string;
     risk_level: string;
     readiness: string;
     strongest_elements: string[];
@@ -114,7 +112,6 @@ export function buildSavedReview(
     documents: (request.audience_documents ?? []).map(({ text: _text, ...rest }) => rest),
     summary: {
       headline: a.executive_summary.headline,
-      assessment: a.executive_summary.assessment,
       risk_level: a.executive_summary.risk_level,
       readiness: a.executive_summary.readiness,
       strongest_elements: [...a.executive_summary.strongest_elements],
@@ -128,7 +125,6 @@ export function buildSavedReview(
       excerpt: includeExcerpts ? f.excerpt : null,
       omission: f.omission,
       finding: f.finding,
-      why_it_matters: f.why_it_matters,
       recommended_action: f.recommended_action,
       specialist_review_needed: f.specialist_review_needed,
       specialist_review_type: f.specialist_review_type,

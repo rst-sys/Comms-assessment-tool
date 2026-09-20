@@ -24,6 +24,9 @@ import {
   type SpecialistReviewType,
 } from "./types.js";
 
+/** Every text field a persona must actually carry. */
+const PERSONA_TEXT_FIELDS = ["persona", "headline", "may_hear", "may_question", "may_find_missing", "would_address_it"] as const;
+
 export class AnalysisValidationError extends Error {
   readonly name = "AnalysisValidationError";
   constructor(
@@ -142,6 +145,18 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
   // Devil's advocate and questions.
   if (input.devils_advocate.personas.length !== 5) {
     fail("/devils_advocate/personas", `expected exactly 5 personas, got ${input.devils_advocate.personas.length}`);
+  }
+  // A persona whose fields are blank is not a persona. The schema types them as
+  // strings and the provider's grammar carries no length rule, so an empty
+  // string used to pass every check and render as an empty tile — which is how
+  // the live site came to show personas with nothing in them.
+  for (const [i, p] of input.devils_advocate.personas.entries()) {
+    for (const field of PERSONA_TEXT_FIELDS) {
+      if (p[field].trim().length === 0) fail(`/devils_advocate/personas/${i}/${field}`, "is empty");
+    }
+  }
+  if (input.devils_advocate.most_damaging_interpretation.trim().length === 0) {
+    fail("/devils_advocate/most_damaging_interpretation", "is empty");
   }
   const q = input.questions_before_publication.length;
   if (q < 5 || q > 12) fail("/questions_before_publication", `expected 5-12 questions, got ${q}`);

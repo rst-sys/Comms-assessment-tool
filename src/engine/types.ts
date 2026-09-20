@@ -245,7 +245,6 @@ export const SCHEMA_VERSION = "1.0";
 export interface ExecutiveSummary {
   /** At most twelve words: the key takeaway. */
   headline: string;
-  assessment: string;
   risk_level: RiskLevel;
   readiness: Readiness;
   context_supplied: boolean;
@@ -268,14 +267,11 @@ export interface Finding {
   omission: string | null;
   claim_status: ClaimStatus | null;
   finding: string;
-  why_it_matters: string;
-  stakeholder_risk: string;
-  /** The kind of information to add, remove or clarify; never rewritten text. */
+  /** The kind of information to add, remove or clarify; never rewritten text. Shown as "Ways this could be rectified". */
   recommended_action: string;
   fact_validation_needed: boolean;
   specialist_review_needed: boolean;
   specialist_review_type: SpecialistReviewType | null;
-  confidence_note: string;
 }
 
 export interface AgencyScanItem {

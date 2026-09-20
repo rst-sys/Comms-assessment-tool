@@ -12,13 +12,10 @@ export function sampleFinding(overrides: Partial<Finding> = {}): Finding {
     omission: null,
     claim_status: "Asserted",
     finding: "Growth is named as the cause; no decision-maker is identified.",
-    why_it_matters: "Readers cannot tell who decided.",
-    stakeholder_risk: "Employees may read this as evasive.",
     recommended_action: "The deciding body or role, and the reasons it owned the decision.",
     fact_validation_needed: false,
     specialist_review_needed: true,
     specialist_review_type: "HR",
-    confidence_note: "A context field naming the decision-maker would change this.",
     ...overrides,
   };
 }
@@ -36,7 +33,6 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
     schema_version: "1.0",
     executive_summary: {
       headline: "Job cuts announced with no owner, criteria, or support",
-      assessment: "The draft announces a reduction without naming a decision-maker. It offers no support, verification, or learning.",
       risk_level: "Critical",
       readiness: "Do not issue until material gaps are resolved",
       context_supplied: false,

@@ -70,7 +70,6 @@ export function ExecutiveSummary({ result, request }: Props) {
             </>
           ) : null}
           <div className="label">Assessment</div>
-          <p className="prose" style={{ margin: 0 }}>{s.assessment}</p>
           <div className="two-col" style={{ marginTop: 16 }}>
             <div>
               <div className="label">Strongest elements</div>
