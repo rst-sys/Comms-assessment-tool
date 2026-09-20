@@ -60,9 +60,11 @@ The tool stores nothing, and that stays true. But be straight with them:
 
 ## Putting it online
 
-1. Sign in to Render and click **New** → **Web Service**.
-2. Choose this repository. Render finds `render.yaml` on its own and fills in
-   nearly everything.
+1. Sign in to Render and click **New** → **Blueprint**. (Not "Web Service" —
+   Blueprint is the one that reads the `render.yaml` file in this project and
+   fills in the settings for you.)
+2. Choose this repository, and check the **branch** it offers is the one that
+   holds the app.
 3. Render asks you for the two secrets it does not have:
    - **ACR_API_KEY** — the new key from step 1.
    - **ACR_ACCESS_PASSWORD** — the password from step 3.
