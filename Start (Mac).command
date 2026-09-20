@@ -1,5 +1,5 @@
 #!/bin/bash
-# Double-click this file on a Mac to start Communications Trustability Review.
+# Double-click this file on a Mac to start Trust Assessment Assistant.
 cd "$(dirname "$0")"
 if ! command -v node >/dev/null 2>&1; then
   echo "Node.js is not installed. Download the LTS version from https://nodejs.org, install it, then double-click this file again."

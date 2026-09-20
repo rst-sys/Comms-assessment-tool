@@ -2,7 +2,7 @@
   "name": "accountable-communications-review",
   "version": "0.1.0",
   "private": true,
-  "description": "Communications Trustability Review — does this message give an account?",
+  "description": "Trust Assessment Assistant — does this message give an account?",
   "type": "module",
   "engines": {
     "node": ">=20"

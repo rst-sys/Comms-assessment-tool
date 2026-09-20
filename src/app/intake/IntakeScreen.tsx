@@ -248,7 +248,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
         </section>
 
         <section className="card" aria-labelledby="context-heading">
-          <h2 id="context-heading">What the engine can rely on</h2>
+          <h2 id="context-heading">Provide additional context</h2>
           <p className="muted small">These fields are the engine's only source of ground truth. Everything in the draft is treated as a claim; what you put here is treated as fact. All optional.</p>
           {CONTEXT_FIELDS.map(([key, label]) => (
             <Field key={key} label={label}>

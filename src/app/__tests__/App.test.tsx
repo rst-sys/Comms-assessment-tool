@@ -27,13 +27,16 @@ afterEach(() => {
 });
 
 describe("App", () => {
-  it("shows the confidentiality notice first, then the intake, then results, then a blank intake after discard", async () => {
+  it("shows the welcome screen first, then the intake, then results, then a blank intake after discard", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());
     render(<App />);
-    expect(screen.getByRole("dialog")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "I understand" }));
-    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(screen.getByRole("heading", { name: "Trust Assessment Assistant", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What it is not" })).toBeTruthy();
+    expect(screen.getByText(/Nothing is saved\./)).toBeTruthy();
+    expect(screen.getByText(/does not write for you/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    expect(screen.queryByRole("heading", { name: "What it is not" })).toBeNull();
 
     expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
@@ -54,7 +57,7 @@ describe("App", () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify({ error: "validation", message: "The analysis did not return in the expected format. Try again.", request_id: "abc" }), { status: 502 })));
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: "I understand" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
     expect(await screen.findByRole("alert")).toBeTruthy();
@@ -66,7 +69,7 @@ describe("App", () => {
   it("shows a stub page with one paragraph for each stubbed area", () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
     render(<App />);
-    fireEvent.click(screen.getByRole("button", { name: "I understand" }));
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
     expect(screen.getByRole("heading", { name: "Standards Library" })).toBeTruthy();
     expect(screen.getByText(/not in this build/)).toBeTruthy();

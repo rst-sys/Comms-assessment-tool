@@ -1,5 +1,5 @@
 @echo off
-rem Double-click this file on Windows to start Communications Trustability Review.
+rem Double-click this file on Windows to start Trust Assessment Assistant.
 cd /d "%~dp0"
 where node >nul 2>nul
 if errorlevel 1 (

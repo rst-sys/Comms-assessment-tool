@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { EvaluationResult } from "../engine/evaluate.js";
 import type { EvaluationRequest } from "../engine/types.js";
 import { ApiError, evaluate, fetchConfig } from "./api.js";
-import { ConfidentialityNotice } from "./ConfidentialityNotice.js";
+import { WelcomeScreen } from "./WelcomeScreen.js";
 import { APP_NAME, INTRO } from "./copy.js";
 import { IntakeScreen } from "./intake/IntakeScreen.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
@@ -36,7 +36,7 @@ interface Review {
 export function App({ initialFixture, urlImport = true, publicSearch = true, runtimeNote }: AppOptions = {}) {
   const [view, setView] = useState<View>("review");
   const [config, setConfig] = useState<PrivacyConfig | null>(null);
-  const [noticeDismissed, setNoticeDismissed] = useState(false);
+  const [welcomeDone, setWelcomeDone] = useState(false);
   const [review, setReview] = useState<Review | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,9 +79,12 @@ export function App({ initialFixture, urlImport = true, publicSearch = true, run
 
   const stub = STUB_PAGES.find((s) => s.key === view);
 
+  if (!welcomeDone) {
+    return <WelcomeScreen config={config} runtimeNote={runtimeNote} onStart={() => setWelcomeDone(true)} />;
+  }
+
   return (
     <>
-      {!noticeDismissed ? <ConfidentialityNotice onDismiss={() => setNoticeDismissed(true)} /> : null}
       <header className="site-header no-print">
         <div className="page" style={{ paddingBottom: 0 }}>
           <h1 style={{ marginBottom: 4 }}>{APP_NAME}</h1>

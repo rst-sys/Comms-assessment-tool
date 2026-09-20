@@ -5,7 +5,7 @@ Guidance for Claude Code when working in this repository.
 ## Always read PROMPT.md first
 
 Before doing any work in this repository, read `PROMPT.md` in full. It is the
-build specification for the Communications Trustability Review prototype and is
+build specification for the Trust Assessment Assistant prototype and is
 the source of truth for scope, behavior, schema, scoring, design, and the
 definition of done. Do not start planning, coding, or answering questions about
 the project until you have read it.

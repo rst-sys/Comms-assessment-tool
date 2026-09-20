@@ -1,16 +1,17 @@
-# Communications Trustability Review — Build Prompt v2
+# Trust Assessment Assistant — Build Prompt v2
 
 > **Revisions after testing (2026-09-19).** Four decisions from the owner's first round of testing amend this prompt and take precedence over any conflicting line below:
 > 1. **Brevity.** The executive assessment is two sentences, at most 60 words. Every finding field is at most two sentences.
 > 2. **Agency calibration.** An organization speaking in its own name ("COMPANY_NAME has decided") or as "we", or naming a body such as the executive team or the board, as the subject of an active decision counts as identified agency. Naming an individual is never required; many organizations cannot or will not. Accountability findings are reserved for decisions attributed to conditions, abstractions, outside forces or passive constructions, or where no one at all is shown deciding. "Name the deciding body or role" is a Low-severity suggestion, never a cap on the score.
 > 3. **No rewrites.** The tool never proposes replacement wording, rewritten sentences or a redraft. It highlights the passages that could use rewriting and describes the kind of information to add, remove or clarify. The user is the author and the authority. The Minimal-Risk redraft mode is removed; step 4 of the build order is void.
 > 4. **Devil's Advocate headlines.** Each persona card leads with a strong headline of at most twelve words that states the persona's key concern.
-> 5. **Name and introduction.** The product is named "Communications Trustability Review". The introductory text shown under the title on every screen is: "This tool helps communicators evaluate draft communications and provides objective feedback on how well they build trust and credibility, all based on recognized standards and best practices." It replaces the tagline in the header; the tagline may still be used elsewhere.
+> 5. **Name and introduction.** The product is named "Trust Assessment Assistant". The introductory text shown under the title on every screen is: "This tool helps communicators evaluate draft communications and provides objective feedback on how well they build trust and credibility, all based on recognized standards and best practices." It replaces the tagline in the header; the tagline may still be used elsewhere.
 > 6. **Executive summary headline.** The executive summary opens with a headline of at most twelve words that states the key takeaway, before the score and assessment.
 > 7. **Save as PDF.** The results page has a "Save as PDF" button that produces a text-based PDF of the whole review (summary, findings, scorecard, scan, Devil's Advocate, questions, and the closing principle and disclaimer). PDF export is in scope; DOCX export remains out of scope.
 > 8. **Audience context documents.** The intake accepts optional documents describing what the audience already has or will receive when the communication lands: supporting documents provided with it (an FAQ, a manager toolkit, a benefits summary), earlier communications from the organization on the topic, media reports or public commentary the audience may have seen, and other background. Each has a kind, a title, a short description, how and when the audience receives or encountered it, and how much of the audience it reaches. The engine treats information a supporting document provides to the same audience at the same time as visible; checks the draft for consistency with earlier communications and for acknowledgment of changed positions; expects the draft to address material claims or concerns already in public view; and never treats media claims as fact. Particularly relevant to internal communications.
 > 9. **Proactive or reactive.** The intake asks whether the communication is proactive (the organization is initiating) or reactive (it responds to an event, a report, criticism, or a question already in front of the audience) and, if reactive, what it is reacting to. A reactive draft is judged on whether it names the trigger plainly, answers the specific claims or concerns, and does not present itself as unprompted.
 > 10. **Find public context.** On the hosted app, an intake box lets the user search the public web for a topic they type (a company, event, or issue) through the provider's web search tool; results are shown with sources and the user chooses which to add as media-report documents before evaluating. The draft text is never used as a search query and never leaves the app in a search. The claude.ai page has no network and shows the box as unavailable.
+> 11. **Name, welcome screen and context label.** The product is named "Trust Assessment Assistant". A welcome screen shown on first load explains what the tool does, how it works and the framework behind it, the value it offers, and what it is not (it does not write, rewrite, edit or copyedit; it is not a writing, grammar or compliance tool), and carries a plain-language callout on data security and privacy that includes the Section 4 confidentiality notice. The context field group is labelled "Provide additional context".
 
 ## 1. Build mandate
 
@@ -34,7 +35,7 @@ If a requirement in this prompt conflicts with the build order above, the build 
 
 ## 2. Purpose and core principle
 
-Communications Trustability Review helps a communications professional decide whether a draft message actually gives an account of a decision before it is issued. Tagline: "Does this message give an account?"
+Trust Assessment Assistant helps a communications professional decide whether a draft message actually gives an account of a decision before it is issued. Tagline: "Does this message give an account?"
 
 It is not a grammar checker, a sentiment tool, a readability app, or a compliance certifier. It is decision-support software, and every screen must say so. It is not legal, employment, labor, financial-disclosure, regulatory, privacy, or tax advice, and it does not replace review by counsel, HR, investor relations, or local-market experts.
 
@@ -78,7 +79,7 @@ When the draft came from a URL, set `already_published: true` on the request and
 | Goal | Inform · Explain a decision · Announce a change · Apologize or repair trust · Respond to criticism · Reassure · Seek support · Request action · Announce a difficult employment action · Explain performance or results · Other |
 | Audience scope | Internal · External · Dual |
 
-**Context fields.** These are the engine's only source of ground truth, so give them prominence, not a collapsed "advanced" drawer. Label the group "What the engine can rely on." All optional, all free text:
+**Context fields.** These are the engine's only source of ground truth, so give them prominence, not a collapsed "advanced" drawer. Label the group "Provide additional context" (revision 11). All optional, all free text:
 
 - Organization or sector
 - Speaker role
@@ -129,7 +130,7 @@ Below the card, one line: "Enterprise controls — customer-controlled processin
 - The LLM call goes to one configured endpoint. No fallback provider, no silent retry to a different model.
 - A "Discard" button on the results page clears all state and returns to a blank intake.
 
-**Confidentiality notice, shown once on first load, dismissable:**
+**Confidentiality notice, shown once on first load, dismissable** (revision 11 places it in the privacy callout of the welcome screen)**:**
 
 > This prototype sends your draft to an external AI provider for analysis and stores nothing. Do not submit attorney-client privileged, material nonpublic, or regulated personal information unless your legal, privacy, and security teams have approved this provider and mode. Redaction is not available in this build.
 
@@ -142,7 +143,7 @@ Below the card, one line: "Enterprise controls — customer-controlled processin
 Use the following as the system prompt for the evaluation call, verbatim. Send the draft and every intake field in the user message as labeled blocks. Set temperature to 0.2 or lower. Request JSON output matching Section 6 and validate it before rendering.
 
 ```markdown
-You are the evaluation engine for Communications Trustability Review. You assess whether a draft communication gives a credible account of a decision. You are not a grammar checker, a sentiment tool, or a legal reviewer.
+You are the evaluation engine for Trust Assessment Assistant. You assess whether a draft communication gives a credible account of a decision. You are not a grammar checker, a sentiment tool, or a legal reviewer.
 
 YOUR EVIDENCE
 You have the draft text and the context fields the user supplied. Treat the context fields as the only ground truth. Treat the draft as claims. You know nothing else about this organization, decision, or event.

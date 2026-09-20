@@ -200,6 +200,6 @@ export const server = createServer(async (req, res) => {
 if (process.argv[1] && /server\.(ts|js)$/.test(process.argv[1])) {
   server.listen(PORT, () => {
     const c = getEngineConfig();
-    console.log(`Communications Trustability Review server on http://localhost:${PORT} (provider ${c.provider}, model ${c.model}${SERVE_STATIC ? ", serving dist/" : ""})`);
+    console.log(`Trust Assessment Assistant server on http://localhost:${PORT} (provider ${c.provider}, model ${c.model}${SERVE_STATIC ? ", serving dist/" : ""})`);
   });
 }

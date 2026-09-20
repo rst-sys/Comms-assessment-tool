@@ -5,7 +5,7 @@ import { DEMO_1, DEMO_2, DEMO_1_WITH_CONTEXT } from "../fixtures.js";
 
 describe("system prompt text", () => {
   it("carries the verbatim Section 5 prompt", () => {
-    expect(SYSTEM_PROMPT.startsWith("You are the evaluation engine for Communications Trustability Review.")).toBe(true);
+    expect(SYSTEM_PROMPT.startsWith("You are the evaluation engine for Trust Assessment Assistant.")).toBe(true);
     expect(SYSTEM_PROMPT.trimEnd().endsWith("No prose before or after it.")).toBe(true);
     for (const heading of ["YOUR EVIDENCE", "THE ACCOUNT", "SCORING", "STATED VERSUS SUBSTANTIATED", "HEIGHTENED REVIEW", "AGENCY AND ABSTRACTION SCAN", "DEVIL'S ADVOCATE", "NON-INVENTION", "LANGUAGE", "OUTPUT"]) {
       expect(SYSTEM_PROMPT).toContain(`\n${heading}\n`);
