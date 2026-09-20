@@ -3,21 +3,18 @@ import type { ComparisonResult } from "../../engine/compare.js";
 import { buildSavedReview, savedReviewFilename, type SavedReview } from "../../engine/savedReview.js";
 import { ApiError, saveFile } from "../api.js";
 import { ComparisonPanel } from "./ComparisonPanel.js";
+import { Findings } from "./Findings.js";
 import { COMING_SOON, FEATURES } from "../features.js";
 import { buildReviewPdf, reviewPdfFilename } from "./pdf.js";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
-import { AgencyScan } from "./AgencyScan.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
 import { EscalationChecklist } from "./EscalationChecklist.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
-import { FindingsRegister } from "./FindingsRegister.js";
 import { Footer } from "./Footer.js";
 import { ProtocolPanel } from "./ProtocolPanel.js";
 import { Questions } from "./Questions.js";
-import { Scorecard } from "./Scorecard.js";
-import { TopFindings } from "./TopFindings.js";
 
 interface Props {
   result: EvaluationResult;
@@ -119,11 +116,8 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
         <PrivacyPanel config={config} />
       </div>
       {request.heightened_review ? <EscalationChecklist questions={a.questions_before_publication} /> : null}
-      <TopFindings findings={a.findings} />
       {a.protocol_review && a.protocol_review.elements.length > 0 ? <ProtocolPanel review={a.protocol_review} /> : null}
-      <FindingsRegister findings={a.findings} />
-      <Scorecard dimensions={a.dimensions} />
-      <AgencyScan draft={request.draft} scan={a.agency_scan} />
+      <Findings findings={a.findings} scan={a.agency_scan} />
       <DevilsAdvocate data={a.devils_advocate} />
       <Questions questions={a.questions_before_publication} />
       <Footer />

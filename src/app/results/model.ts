@@ -116,3 +116,31 @@ export function sortFindings(findings: ReadonlyArray<Finding>, sort: RegisterSor
 
 export const FINDING_STATUSES = ["Open", "Accepted risk", "Not applicable", "Resolved", "Needs review"] as const;
 export type FindingStatus = (typeof FINDING_STATUSES)[number];
+
+/**
+ * Flagged phrases grouped by the finding they belong to (revision 19).
+ *
+ * The scan and the findings used to be two sections saying related things in
+ * different places. Nesting a phrase under the finding it evidences makes one
+ * argument out of two lists: here is the problem, and here is the language in
+ * the draft that causes it.
+ */
+export function phrasesByFinding(scan: ReadonlyArray<AgencyScanItem>): Map<string, AgencyScanItem[]> {
+  const byFinding = new Map<string, AgencyScanItem[]>();
+  for (const item of scan) {
+    if (!item.finding_id) continue;
+    const existing = byFinding.get(item.finding_id);
+    if (existing) existing.push(item);
+    else byFinding.set(item.finding_id, [item]);
+  }
+  return byFinding;
+}
+
+/** Phrases the engine flagged without tying them to a finding. They still belong on the page. */
+export function unlinkedPhrases(
+  scan: ReadonlyArray<AgencyScanItem>,
+  findings: ReadonlyArray<Finding>,
+): AgencyScanItem[] {
+  const known = new Set(findings.map((f) => f.id));
+  return scan.filter((s) => !s.finding_id || !known.has(s.finding_id));
+}

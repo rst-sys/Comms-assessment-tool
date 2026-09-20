@@ -1,6 +1,6 @@
 /**
  * A text-based PDF of the whole review (PROMPT.md revision 7): summary,
- * findings, scorecard, agency scan, Devil's Advocate, questions, and the
+ * scorecard, findings with their flagged language, Devil's Advocate, questions, and the
  * closing principle and disclaimer. Built with jsPDF from the analysis
  * data, not from a screenshot, so the text is selectable and searchable.
  */
@@ -10,6 +10,7 @@ import { DIMENSION_IDS, type EvaluationRequest } from "../../engine/types.js";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/scoring.js";
 import { APP_NAME, CORE_PRINCIPLE, DECISION_SUPPORT_DISCLAIMER } from "../copy.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
+import { phrasesByFinding } from "./model.js";
 import { specialistQuestions } from "./model.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
@@ -128,6 +129,9 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(`${request.communication_type} · ${request.primary_audience} · ${request.setting} · ${request.market} · ${now.toISOString().slice(0, 10)}`, 9);
   w.rule();
 
+  const scanByFinding = phrasesByFinding(a.agency_scan);
+  const phrasesFor = (id: string) => scanByFinding.get(id) ?? [];
+
   w.heading("Executive summary", 15);
   if (s.headline) w.heading(s.headline, 13);
   w.label("Accountable Communication Score");
@@ -159,6 +163,17 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   }
 
   w.pageBreak();
+  w.heading("Scorecard", 15);
+  const byId = new Map(a.dimensions.map((d) => [d.id, d]));
+  for (const id of DIMENSION_IDS) {
+    const d = byId.get(id);
+    if (!d) continue;
+    w.paragraph(`${DIMENSION_LABELS[id]} — ${d.score.toFixed(1)} / 5 (weight ${DIMENSION_WEIGHTS[id]})`, 10.5, 0, "bold");
+    w.paragraph(d.rationale, 10, 4);
+    w.paragraph(`What would raise this: ${d.would_raise}`, 10, 4, "italic");
+  }
+
+  w.pageBreak();
   w.heading("Findings", 15);
   w.paragraph(`${a.findings.length} finding${a.findings.length === 1 ? "" : "s"}, highest severity first.`, 9.5);
   for (const f of rankFindings(a.findings)) {
@@ -169,7 +184,20 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.paragraph(f.finding, 10.5, 0, "bold");
     w.label("Ways this could be rectified");
     w.paragraph(f.recommended_action);
+    for (const item of phrasesFor(f.id)) {
+      w.paragraph(`Language in the draft that causes this: “${item.phrase}” — ${item.category} · ${item.assessment}`, 10, 4);
+      w.paragraph(item.why, 10, 8);
+      w.paragraph(`What would make it credible: ${item.what_would_make_it_credible}`, 10, 8, "italic");
+    }
     w.paragraph(`Fact validation: ${f.fact_validation_needed ? "needed" : "not flagged"} · Specialist review: ${f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}`, 9);
+  }
+
+  // Every flagged phrase, including any the engine did not tie to a finding.
+  w.rule();
+  w.label("All flagged phrases");
+  if (a.agency_scan.length === 0) w.paragraph("No phrases were flagged.");
+  for (const item of a.agency_scan) {
+    w.paragraph(`“${item.phrase}” — ${item.category} · ${item.severity} · ${item.assessment}${item.finding_id ? ` · ${item.finding_id}` : ""}`, 10);
   }
 
   if (a.protocol_review && a.protocol_review.elements.length > 0) {
@@ -183,27 +211,9 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   }
 
   w.pageBreak();
-  w.heading("Scorecard", 15);
-  const byId = new Map(a.dimensions.map((d) => [d.id, d]));
-  for (const id of DIMENSION_IDS) {
-    const d = byId.get(id);
-    if (!d) continue;
-    w.paragraph(`${DIMENSION_LABELS[id]} — ${d.score.toFixed(1)} / 5 (weight ${DIMENSION_WEIGHTS[id]})`, 10.5, 0, "bold");
-    w.paragraph(d.rationale, 10, 4);
-    w.paragraph(`What would raise this: ${d.would_raise}`, 10, 4, "italic");
-  }
-
-  w.pageBreak();
-  w.heading("Agency and abstraction scan", 15);
-  if (a.agency_scan.length === 0) w.paragraph("No phrases were flagged.");
-  for (const item of a.agency_scan) {
-    w.paragraph(`“${item.phrase}” — ${item.category} · ${item.severity} · ${item.assessment}`, 10.5, 0, "bold");
-    w.paragraph(item.why, 10, 4);
-    w.paragraph(`What would make it credible: ${item.what_would_make_it_credible}`, 10, 4, "italic");
-  }
-
-  w.pageBreak();
   w.heading("Devil's Advocate: how skeptical audiences may read this", 15);
+  w.label("Most damaging plausible interpretation if issued unchanged");
+  w.paragraph(a.devils_advocate.most_damaging_interpretation, 10.5, 0, "bold");
   w.paragraph(a.devils_advocate.disclaimer, 9.5, 0, "italic");
   for (const p of a.devils_advocate.personas) {
     w.rule();
@@ -214,8 +224,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.paragraph(`May find missing: ${p.may_find_missing}`, 10, 4);
     w.paragraph(`What would address it: ${p.would_address_it}`, 10, 4);
   }
-  w.label("Most damaging plausible interpretation if issued unchanged");
-  w.paragraph(a.devils_advocate.most_damaging_interpretation, 10.5, 0, "bold");
 
   w.pageBreak();
   w.heading("Questions before publication", 15);

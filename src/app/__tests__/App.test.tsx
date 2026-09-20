@@ -66,7 +66,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
 
     expect(await screen.findByText("Communications readiness")).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Score 13 out of 100/ })).toBeTruthy();
+    expect(screen.getByRole("link", { name: /Score 13 out of 100/ })).toBeTruthy();
     // The privacy panel is on the results page too.
     expect(screen.getByText("Anthropic · claude-opus-5")).toBeTruthy();
     expect(document.title).toBe("");

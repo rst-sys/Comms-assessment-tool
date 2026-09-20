@@ -105,11 +105,12 @@ button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link)
 
 /* Executive summary */
 .summary-headline { font-family: var(--serif); font-size: 22px; line-height: 1.3; margin: 0 0 calc(var(--space) * 2); max-width: var(--measure); text-wrap: balance; }
-.summary-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3); }
-@media (min-width: 900px) { .summary-grid { grid-template-columns: 220px 1fr; } }
+.summary-head { display: flex; flex-wrap: wrap; gap: calc(var(--space) * 3); align-items: flex-start; margin-bottom: calc(var(--space) * 2); }
+.summary-head .score-block { flex: 0 0 auto; }
+.summary-facts { display: flex; flex-wrap: wrap; gap: calc(var(--space) * 3); align-items: flex-start; }
 .score-number { font-family: var(--serif); font-size: 56px; line-height: 1; font-weight: 600; background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline dotted; text-decoration-color: var(--neutral); text-underline-offset: 6px; }
 .score-number:hover { text-decoration-color: var(--ink); }
-.score-band { display: block; margin-top: calc(var(--space) * 1.5); font-weight: 600; max-width: 22ch; }
+.score-band { display: block; margin-top: calc(var(--space) * 1.5); font-weight: 600; max-width: 34ch; text-wrap: balance; }
 .readiness-row { display: flex; flex-wrap: wrap; gap: var(--space); align-items: center; }
 .readiness-row strong { font-size: 17px; }
 .chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
@@ -118,7 +119,7 @@ button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link)
 .chip-button:hover { border-color: var(--neutral); }
 .chip-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .two-col { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
-@media (min-width: 900px) { .two-col { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 760px) { .two-col { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); } }
 
 /* Severity: a small filled square plus a text label, never by colour alone. */
 .sev { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
@@ -156,7 +157,7 @@ table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
 .score-row summary > :nth-child(3) { grid-area: bar; }
 .score-row summary > :nth-child(4) { grid-area: score; text-align: right; font-variant-numeric: tabular-nums; }
 @media (min-width: 700px) {
-  .score-row summary { grid-template-columns: minmax(180px, 1fr) 44px minmax(160px, 2fr) 44px; grid-template-areas: "name weight bar score"; }
+  .score-row summary { grid-template-columns: minmax(240px, 1.4fr) 44px minmax(120px, 1fr) 44px; grid-template-areas: "name weight bar score"; }
 }
 .score-row summary:hover > :first-child { text-decoration: underline dotted; text-underline-offset: 3px; }
 .bar { height: 10px; background: var(--paper); border: 1px solid var(--border); border-radius: 5px; overflow: hidden; display: block; }
@@ -225,7 +226,7 @@ textarea { resize: vertical; }
 
 /* Results layout with the privacy panel in the right margin */
 .results-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
-@media (min-width: 1000px) { .results-grid { grid-template-columns: 1fr 300px; align-items: start; } }
+@media (min-width: 1180px) { .results-grid { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; } }
 .results-actions { margin: 0 0 calc(var(--space) * 2); display: flex; flex-wrap: wrap; gap: var(--space); align-items: center; }
 .results-actions .status { color: var(--neutral); font-size: 14px; }
 
@@ -361,3 +362,21 @@ textarea { resize: vertical; }
 @media (prefers-reduced-motion: reduce) {
   .progress-bar { transition: none; }
 }
+
+/* Scorecard, now inline in the executive summary (revision 19). */
+.scorecard { margin-top: calc(var(--space) * 3); }
+.scorecard h3 { margin-bottom: 4px; }
+a.score-number { display: inline-block; text-decoration: underline dotted; text-decoration-color: var(--neutral); }
+a.score-number:hover { text-decoration-color: var(--ink); }
+
+/* Flagged phrases nested under the finding they evidence (revision 19). */
+.finding-phrases { margin-top: calc(var(--space) * 2); }
+.finding-phrases ul { margin-top: 4px; }
+.finding-phrases li + li { margin-top: 8px; }
+.finding-status { display: flex; align-items: center; gap: var(--space); margin: 6px 0 0 calc(var(--space) * 2); }
+.finding-status .label { margin: 0; }
+
+/* Devil's Advocate: interpretations displayed plainly, not tiled (revision 19). */
+.interpretations { margin-top: calc(var(--space) * 2); }
+.interpretation + .interpretation { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 3); border-top: 1px solid var(--border); }
+.interpretation p { margin-bottom: var(--space); }

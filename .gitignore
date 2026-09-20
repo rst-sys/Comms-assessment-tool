@@ -5,3 +5,4 @@ dist/
 !.env.example
 fixture-runs/
 dist-artifact/
+dist-preview/

@@ -16,7 +16,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "fixtures": "tsx scripts/run-fixtures.ts",
-    "build:artifact": "vite build --config vite.artifact.config.ts && node scripts/prepare-artifact.mjs"
+    "build:artifact": "vite build --config vite.artifact.config.ts && node scripts/prepare-artifact.mjs",
+    "preview:results": "vite build --config vite.preview.config.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",
