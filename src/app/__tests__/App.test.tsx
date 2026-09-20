@@ -4,6 +4,14 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
 import { APOLOGY_PROTOCOL } from "../../engine/protocols.js";
+import { FEATURES, type Features } from "../features.js";
+
+/** Switches a feature on for one test; see the note in features.ts. */
+function enable(...keys: (keyof Features)[]) {
+  const before = { ...FEATURES };
+  for (const k of keys) FEATURES[k] = true;
+  return () => Object.assign(FEATURES, before);
+}
 
 function captured(prefix: string): unknown {
   const dir = "fixture-reports";
@@ -22,16 +30,29 @@ function fakeFetch(evaluateResponse: () => Response) {
   });
 }
 
+/**
+ * Renders and waits for the welcome screen. The app holds a blank frame until
+ * /api/config answers, because until then it does not know whether this
+ * deployment asks for a shared password (revision 15).
+ */
+async function renderApp(ui = <App />) {
+  render(ui);
+  await screen.findByRole("heading", { name: "Trust Assessment Assistant", level: 1 });
+}
+
+let restore: (() => void) | null = null;
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
+  restore?.();
+  restore = null;
 });
 
 describe("App", () => {
   it("shows the welcome screen first, then the intake, then results, then a blank intake after discard", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());
-    render(<App />);
+    await renderApp();
     expect(screen.getByRole("heading", { name: "Trust Assessment Assistant", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "What it is not" })).toBeTruthy();
     expect(screen.getByText(/Nothing is saved\./)).toBeTruthy();
@@ -58,7 +79,7 @@ describe("App", () => {
   it("shows the server's plain error and stays on intake when evaluation fails", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify({ error: "validation", message: "The analysis did not return in the expected format. Try again.", request_id: "abc" }), { status: 502 })));
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
-    render(<App />);
+    await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
@@ -68,9 +89,9 @@ describe("App", () => {
     consoleError.mockRestore();
   });
 
-  it("opens the Tool Overview tab from the welcome link and from the nav", () => {
+  it("opens the Tool Overview tab from the welcome link and from the nav", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
-    render(<App />);
+    await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Tool Overview" }));
     expect(screen.getByRole("heading", { name: "Tool overview", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Ten weighted dimensions" })).toBeTruthy();
@@ -82,6 +103,7 @@ describe("App", () => {
   });
 
   it("saves a review and offers Compare Revisions in the nav", async () => {
+    restore = enable("saveReview", "compareRevisions");
     const saves: { filename: string; data: Blob }[] = [];
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());
@@ -91,7 +113,7 @@ describe("App", () => {
       saves.push({ filename: this.download, data: new Blob() });
     });
     try {
-      render(<App />);
+      await renderApp();
       fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
       expect(screen.getByRole("button", { name: "Compare Revisions" })).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
@@ -106,9 +128,9 @@ describe("App", () => {
     }
   });
 
-  it("shows a stub page with one paragraph for each stubbed area", () => {
+  it("shows a stub page with one paragraph for each stubbed area", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
-    render(<App />);
+    await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fireEvent.click(screen.getByRole("button", { name: "Team Workspace" }));
     expect(screen.getByRole("heading", { name: "Team Workspace" })).toBeTruthy();
@@ -116,9 +138,9 @@ describe("App", () => {
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 
-  it("shows the Standards Library with the core framework and the apology protocol", () => {
+  it("shows the Standards Library with the core framework and the apology protocol", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
-    render(<App />);
+    await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
     expect(screen.getByRole("heading", { name: "Standards library", level: 1 })).toBeTruthy();

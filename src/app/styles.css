@@ -316,3 +316,23 @@ textarea { resize: vertical; }
 .verdict-moot { color: var(--neutral); }
 .verdict-new { border-color: var(--sound); background: var(--tint-weather); }
 .score-move { font-family: var(--serif); font-size: 22px; margin: 0 0 4px; }
+
+/* Features switched off for this round of testing (revision 16). Present but
+   plainly inert, so a tester sees the tool is meant to do it and does not
+   report it missing. */
+.disabled-feature {
+  opacity: 0.55;
+}
+.disabled-feature input {
+  cursor: not-allowed;
+}
+.coming-soon {
+  display: block;
+  font-size: 0.85em;
+  font-style: italic;
+  color: var(--muted, #6b6b66);
+}
+.nav-link.nav-soon {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

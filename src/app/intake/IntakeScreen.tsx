@@ -15,6 +15,7 @@ import {
   type Stance,
 } from "../../engine/types.js";
 import { AudienceDocuments } from "./AudienceDocuments.js";
+import { COMING_SOON, FEATURES } from "../features.js";
 import { importUrl, type ImportedPage } from "../api.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import {
@@ -249,9 +250,15 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
             ) : null}
           </fieldset>
 
-          <label className="checkbox">
-            <input type="checkbox" checked={heightened} onChange={(e) => setHeightened(e.target.checked)} />
+          <label className={FEATURES.heightenedReview ? "checkbox" : "checkbox disabled-feature"}>
+            <input
+              type="checkbox"
+              checked={FEATURES.heightenedReview && heightened}
+              disabled={!FEATURES.heightenedReview}
+              onChange={(e) => setHeightened(e.target.checked)}
+            />
             Apply heightened review for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or vulnerable audiences.
+            {FEATURES.heightenedReview ? null : <span className="coming-soon"> {COMING_SOON}</span>}
           </label>
 
           {showHighRiskWarning(fields.communication_type, fields.market) ? (
@@ -273,7 +280,14 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
               <textarea rows={2} value={context[key] ?? ""} onChange={(e) => setContext((prev) => ({ ...prev, [key]: e.target.value }))} />
             </Field>
           ))}
-          <AudienceDocuments documents={documents} onChange={setDocuments} publicSearch={publicSearch} />
+          {FEATURES.audienceDocuments ? (
+            <AudienceDocuments documents={documents} onChange={setDocuments} publicSearch={publicSearch && FEATURES.publicContextSearch} />
+          ) : (
+            <div className="disabled-feature" aria-labelledby="documents-soon">
+              <h3 id="documents-soon" style={{ marginBottom: 4 }}>Attach documents the audience already has</h3>
+              <p className="muted small" style={{ margin: 0 }}>{COMING_SOON}</p>
+            </div>
+          )}
         </section>
       </div>
     </div>

@@ -2,10 +2,27 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { IntakeScreen } from "../IntakeScreen.js";
+import { FEATURES, type Features } from "../../features.js";
+
+/**
+ * Switches a feature on for one test. The features below are off for the
+ * current round of testing (revision 16) but the code behind them is still
+ * here, so the tests that guard it turn it back on.
+ */
+function enable(...keys: (keyof Features)[]) {
+  const before = { ...FEATURES };
+  for (const k of keys) FEATURES[k] = true;
+  return () => Object.assign(FEATURES, before);
+}
 
 const config = { provider: "Anthropic", model: "claude-opus-5", processing_mode: "Zero-retention API", training_term: "Not used to train models" };
 
-afterEach(cleanup);
+let restore: (() => void) | null = null;
+afterEach(() => {
+  cleanup();
+  restore?.();
+  restore = null;
+});
 
 describe("IntakeScreen", () => {
   it("shows the privacy panel with the configured provider and model before anything is typed", () => {
@@ -16,6 +33,7 @@ describe("IntakeScreen", () => {
   });
 
   it("keeps Evaluate disabled until the demo loader fills every required field", () => {
+    restore = enable("heightenedReview");
     const onEvaluate = vi.fn();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
     const button = screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement;
@@ -36,6 +54,7 @@ describe("IntakeScreen", () => {
   });
 
   it("auto-checks heightened review for an apology and lets the user uncheck it", () => {
+    restore = enable("heightenedReview");
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     const type = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
     fireEvent.change(type, { target: { value: "Apology" } });
@@ -78,6 +97,7 @@ describe("IntakeScreen", () => {
   });
 
   it("adds a pasted media report and a supporting document and sends them with the request", () => {
+    restore = enable("audienceDocuments");
     const onEvaluate = vi.fn();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
     fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
@@ -116,6 +136,7 @@ describe("IntakeScreen", () => {
   });
 
   it("finds public context and adds chosen results as media reports", async () => {
+    restore = enable("audienceDocuments", "publicContextSearch");
     const onEvaluate = vi.fn();
     vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
       const url = String(input);
@@ -142,6 +163,7 @@ describe("IntakeScreen", () => {
   });
 
   it("refuses to add a document without text", () => {
+    restore = enable("audienceDocuments");
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: "Add document" }));
     expect(screen.getByRole("alert").textContent).toMatch(/Add the document's text/);

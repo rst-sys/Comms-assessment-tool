@@ -65,6 +65,8 @@ export interface ApiImplementation {
   findPublicContext(query: string): Promise<PublicContextResult>;
   /** Compares a fresh review of the new draft against a saved review. */
   compare(saved: SavedReview, request: EvaluationRequest, fresh: EvaluationResult): Promise<ComparisonResult>;
+  /** Sends the shared password. Resolves on success; throws ApiError otherwise. Hosted app only. */
+  signIn(password: string): Promise<void>;
 }
 
 export const serverApi: ApiImplementation = {
@@ -81,6 +83,9 @@ export const serverApi: ApiImplementation = {
   },
   findPublicContext: (query) => post<PublicContextResult>("/api/public-context", { query }, "The search failed. Try again."),
   compare: (saved, request, fresh) => post<ComparisonResult>("/api/compare", { saved, request, fresh }, "The comparison failed. Try again."),
+  signIn: async (password) => {
+    await post<{ ok: boolean }>("/api/login", { password }, "Could not check the password. Try again.");
+  },
   async saveFile(filename, data) {
     const url = URL.createObjectURL(data);
     try {
@@ -108,4 +113,5 @@ export const importUrl = (url: string) => current.importUrl(url);
 export const fetchConfig = () => current.fetchConfig();
 export const saveFile = (filename: string, data: Blob) => current.saveFile(filename, data);
 export const findPublicContext = (query: string) => current.findPublicContext(query);
+export const signIn = (password: string) => current.signIn(password);
 export const compare = (saved: SavedReview, request: EvaluationRequest, fresh: EvaluationResult) => current.compare(saved, request, fresh);

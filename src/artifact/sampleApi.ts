@@ -114,6 +114,8 @@ function detail(e: unknown): string {
 const usage = { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: null, cache_creation_input_tokens: null };
 
 export const sampleApi: ApiImplementation = {
+  /** No gate on this runtime: the page already runs on the viewer's own Claude account. */
+  async signIn() {},
   async evaluate(request) {
     const sample = await getSample();
     if (!sample) throw new ApiError(viewerMessage("not_granted", ""), 503, "not_granted");

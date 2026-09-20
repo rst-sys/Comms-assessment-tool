@@ -8,6 +8,8 @@ import { CompareRevisions } from "./compare/CompareRevisions.js";
 import { StandardsLibrary } from "./StandardsLibrary.js";
 import { ToolOverview } from "./ToolOverview.js";
 import { WelcomeScreen } from "./WelcomeScreen.js";
+import { SignIn } from "./SignIn.js";
+import { COMING_SOON, FEATURES } from "./features.js";
 import { APP_NAME, INTRO } from "./copy.js";
 import { IntakeScreen } from "./intake/IntakeScreen.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
@@ -49,11 +51,20 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
   const [baseline, setBaseline] = useState<SavedReview | null>(null);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [comparisonError, setComparisonError] = useState<string | null>(null);
+  const [signedIn, setSignedIn] = useState(false);
+  const [configLoaded, setConfigLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     fetchConfig().then((c) => {
-      if (!cancelled) setConfig(c);
+      if (cancelled) return;
+      setConfig(c);
+      // A hosted deployment asks for the shared password before anything that
+      // costs money. If the config call itself failed we let the app through:
+      // the server still refuses every paid call without the password, so the
+      // worst case is a clear refusal rather than a page that never loads.
+      setSignedIn(!(c?.gate_enabled && !c.signed_in));
+      setConfigLoaded(true);
     });
     return () => {
       cancelled = true;
@@ -100,6 +111,11 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
 
   const stub = STUB_PAGES.find((s) => s.key === view);
 
+  // Wait for the config before deciding: showing the password screen to someone
+  // already signed in, or the app to someone who is not, would both be wrong.
+  if (!configLoaded) return <main className="page" aria-busy="true" />;
+  if (!signedIn) return <SignIn onDone={() => setSignedIn(true)} />;
+
   if (!welcomeDone) {
     return (
       <WelcomeScreen
@@ -133,9 +149,15 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
                 </button>
               </li>
               <li>
-                <button type="button" className={view === "compare" ? "nav-link nav-active" : "nav-link"} aria-current={view === "compare" ? "page" : undefined} onClick={() => setView("compare")}>
-                  Compare Revisions
-                </button>
+                {FEATURES.compareRevisions ? (
+                  <button type="button" className={view === "compare" ? "nav-link nav-active" : "nav-link"} aria-current={view === "compare" ? "page" : undefined} onClick={() => setView("compare")}>
+                    Compare Revisions
+                  </button>
+                ) : (
+                  <button type="button" className="nav-link nav-soon" disabled title={COMING_SOON}>
+                    Compare Revisions
+                  </button>
+                )}
               </li>
               <li>
                 <button type="button" className={view === "standards" ? "nav-link nav-active" : "nav-link"} aria-current={view === "standards" ? "page" : undefined} onClick={() => setView("standards")}>
@@ -157,7 +179,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
         <ToolOverview config={config} runtimeNote={runtimeNote} />
       ) : view === "standards" ? (
         <StandardsLibrary />
-      ) : view === "compare" ? (
+      ) : view === "compare" && FEATURES.compareRevisions ? (
         <CompareRevisions
           baseline={baseline}
           onLoad={(saved: SavedReview) => {

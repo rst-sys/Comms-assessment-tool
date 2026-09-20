@@ -22,6 +22,17 @@ import type { EvaluationResult } from "../engine/evaluate.js";
 import { loadEnvFile } from "./env.js";
 import { allowedUrl, extractReadable, fetchPage, IMPORT_ERROR } from "./import.js";
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
+import {
+  chargeOne,
+  clearedCookie,
+  GATE_ENABLED,
+  isAuthorized,
+  passwordMatches,
+  PER_VISITOR_DAILY,
+  sessionCookie,
+  TOTAL_DAILY,
+  usageToday,
+} from "./access.js";
 
 loadEnvFile();
 const PORT = Number(process.env.PORT ?? 8787);
@@ -39,6 +50,42 @@ function send(res: ServerResponse, status: number, body: unknown): void {
     "x-content-type-options": "nosniff",
   });
   res.end(JSON.stringify(body));
+}
+
+/** True when the deployment is behind HTTPS, so the session cookie can be marked Secure. */
+function isSecure(req: IncomingMessage): boolean {
+  return (req.headers["x-forwarded-proto"] as string | undefined) === "https";
+}
+
+async function handleLogin(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  if (!GATE_ENABLED) return send(res, 200, { ok: true });
+  let body: unknown;
+  try {
+    body = await readJson(req);
+  } catch {
+    return send(res, 400, { error: "bad_request", message: "The request could not be read." });
+  }
+  const supplied = typeof body === "object" && body !== null ? (body as { password?: unknown }).password : undefined;
+  if (!passwordMatches(supplied)) {
+    console.log("login result=refused");
+    return send(res, 401, { error: "unauthorized", message: "That password is not right." });
+  }
+  console.log("login result=accepted");
+  res.writeHead(200, {
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+    "set-cookie": sessionCookie(isSecure(req)),
+  });
+  res.end(JSON.stringify({ ok: true }));
+}
+
+function handleLogout(req: IncomingMessage, res: ServerResponse): void {
+  res.writeHead(200, {
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+    "set-cookie": clearedCookie(isSecure(req)),
+  });
+  res.end(JSON.stringify({ ok: true }));
 }
 
 function readJson(req: IncomingMessage): Promise<unknown> {
@@ -203,9 +250,18 @@ async function handleImport(req: IncomingMessage, res: ServerResponse): Promise<
   }
 }
 
-function handleConfig(res: ServerResponse): void {
+function handleConfig(req: IncomingMessage, res: ServerResponse): void {
   const c = getEngineConfig();
-  send(res, 200, { provider: c.provider, model: c.model, processing_mode: c.processingMode, training_term: c.trainingTerm });
+  send(res, 200, {
+    provider: c.provider,
+    model: c.model,
+    processing_mode: c.processingMode,
+    training_term: c.trainingTerm,
+    gate_enabled: GATE_ENABLED,
+    signed_in: isAuthorized(req),
+    daily_limit_per_visitor: PER_VISITOR_DAILY,
+    daily_limit_total: TOTAL_DAILY,
+  });
 }
 
 const MIME: Record<string, string> = {
@@ -230,10 +286,25 @@ function serveStatic(pathname: string, res: ServerResponse): boolean {
   return true;
 }
 
+/** The endpoints that call the provider and therefore cost money. URL import does not. */
+const PAID = new Set(["/api/evaluate", "/api/compare", "/api/public-context"]);
+
 export const server = createServer(async (req, res) => {
   const url = new URL(req.url ?? "/", "http://localhost");
   const method = req.method ?? "GET";
-  if (url.pathname === "/api/config" && method === "GET") return handleConfig(res);
+  if (url.pathname === "/api/config" && method === "GET") return handleConfig(req, res);
+  if (url.pathname === "/api/login" && method === "POST") return handleLogin(req, res);
+  if (url.pathname === "/api/logout" && method === "POST") return handleLogout(req, res);
+
+  // Everything below spends the owner's provider credit, so it is gated and capped.
+  if (url.pathname.startsWith("/api/") && !isAuthorized(req)) {
+    return send(res, 401, { error: "unauthorized", message: "Enter the password to use this tool." });
+  }
+  if (url.pathname === "/api/usage" && method === "GET") return send(res, 200, usageToday());
+  if (PAID.has(url.pathname) && method === "POST") {
+    const decision = chargeOne(req);
+    if (!decision.allowed) return send(res, 429, { error: "rate_limited", message: decision.message });
+  }
   if (url.pathname === "/api/evaluate" && method === "POST") return handleEvaluate(req, res);
   if (url.pathname === "/api/import" && method === "POST") return handleImport(req, res);
   if (url.pathname === "/api/public-context" && method === "POST") return handlePublicContext(req, res);
@@ -247,5 +318,10 @@ if (process.argv[1] && /server\.(ts|js)$/.test(process.argv[1])) {
   server.listen(PORT, () => {
     const c = getEngineConfig();
     console.log(`Trust Assessment Assistant server on http://localhost:${PORT} (provider ${c.provider}, model ${c.model}${SERVE_STATIC ? ", serving dist/" : ""})`);
+    console.log(
+      GATE_ENABLED
+        ? `Access gate on. Limits: ${PER_VISITOR_DAILY} reviews per visitor per day, ${TOTAL_DAILY} in total.`
+        : "Access gate OFF (no ACR_ACCESS_PASSWORD set). Correct on your own computer; never deploy to a public address like this.",
+    );
   });
 }

@@ -3,6 +3,7 @@ import type { ComparisonResult } from "../../engine/compare.js";
 import { buildSavedReview, savedReviewFilename, type SavedReview } from "../../engine/savedReview.js";
 import { ApiError, saveFile } from "../api.js";
 import { ComparisonPanel } from "./ComparisonPanel.js";
+import { COMING_SOON, FEATURES } from "../features.js";
 import { buildReviewPdf, reviewPdfFilename } from "./pdf.js";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
@@ -94,8 +95,12 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
     <main className="page results">
       <div className="no-print results-actions">
         <button type="button" onClick={savePdf} disabled={saving}>{saving ? "Working…" : "Save as PDF"}</button>
-        <button type="button" onClick={saveReview} disabled={saving}>Save this review</button>
-        <label className="checkbox save-option">
+        {FEATURES.saveReview ? (
+          <button type="button" onClick={saveReview} disabled={saving}>Save this review</button>
+        ) : (
+          <button type="button" disabled title={COMING_SOON}>Save this review (coming soon)</button>
+        )}
+        <label className="checkbox save-option" hidden={!FEATURES.saveReview}>
           <input type="checkbox" checked={includeExcerpts} onChange={(e) => setIncludeExcerpts(e.target.checked)} />
           Keep quoted passages in the saved review
         </label>

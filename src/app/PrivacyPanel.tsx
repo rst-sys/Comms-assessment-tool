@@ -3,6 +3,11 @@ export interface PrivacyConfig {
   model: string;
   processing_mode: string;
   training_term: string;
+  /** Hosted deployments ask for a shared password before any paid call (revision 15). */
+  gate_enabled?: boolean;
+  signed_in?: boolean;
+  daily_limit_per_visitor?: number;
+  daily_limit_total?: number;
 }
 
 /**
