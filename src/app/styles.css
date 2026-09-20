@@ -253,7 +253,8 @@ textarea { resize: vertical; }
 .callout-privacy { margin-top: calc(var(--space) * 3); border-left: 4px solid var(--sound); background: var(--tint-weather); }
 .callout-privacy h2 { margin-bottom: calc(var(--space) * 1.5); }
 .callout-privacy .notice-text { margin-top: calc(var(--space) * 2); padding-top: calc(var(--space) * 1.5); border-top: 1px solid var(--border); font-size: 14px; color: var(--neutral); }
-.welcome-runtime { margin-top: calc(var(--space) * 3); }
+.welcome-more { margin-top: calc(var(--space) * 3); }
+.welcome-runtime { margin-top: calc(var(--space) * 2); }
 .welcome-start { margin-top: calc(var(--space) * 3); }
 
 /* Footer */

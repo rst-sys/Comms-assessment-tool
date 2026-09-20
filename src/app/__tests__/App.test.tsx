@@ -34,7 +34,8 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "Trust Assessment Assistant", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "What it is not" })).toBeTruthy();
     expect(screen.getByText(/Nothing is saved\./)).toBeTruthy();
-    expect(screen.getByText(/does not write for you/)).toBeTruthy();
+    expect(screen.getByText(/It does not write for you/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Tool Overview" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     expect(screen.queryByRole("heading", { name: "What it is not" })).toBeNull();
 
@@ -64,6 +65,19 @@ describe("App", () => {
     expect(screen.getByText(/did not return in the expected format/)).toBeTruthy();
     expect(consoleError.mock.calls[0]![0]).not.toContain("Rapid growth");
     consoleError.mockRestore();
+  });
+
+  it("opens the Tool Overview tab from the welcome link and from the nav", () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Tool Overview" }));
+    expect(screen.getByRole("heading", { name: "Tool overview", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Ten weighted dimensions" })).toBeTruthy();
+    expect(screen.getByText("Accountability and agency")).toBeTruthy();
+    expect(screen.getByText(/never invents a metric/)).toBeTruthy();
+    expect(screen.getByText(/attorney-client privileged/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Review" }));
+    expect(screen.getByLabelText("Draft text")).toBeTruthy();
   });
 
   it("shows a stub page with one paragraph for each stubbed area", () => {

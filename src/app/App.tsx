@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { EvaluationResult } from "../engine/evaluate.js";
 import type { EvaluationRequest } from "../engine/types.js";
 import { ApiError, evaluate, fetchConfig } from "./api.js";
+import { ToolOverview } from "./ToolOverview.js";
 import { WelcomeScreen } from "./WelcomeScreen.js";
 import { APP_NAME, INTRO } from "./copy.js";
 import { IntakeScreen } from "./intake/IntakeScreen.js";
@@ -21,7 +22,7 @@ export interface AppOptions {
   runtimeNote?: string;
 }
 
-type View = "review" | StubKey;
+type View = "review" | "overview" | StubKey;
 
 interface Review {
   request: EvaluationRequest;
@@ -80,7 +81,17 @@ export function App({ initialFixture, urlImport = true, publicSearch = true, run
   const stub = STUB_PAGES.find((s) => s.key === view);
 
   if (!welcomeDone) {
-    return <WelcomeScreen config={config} runtimeNote={runtimeNote} onStart={() => setWelcomeDone(true)} />;
+    return (
+      <WelcomeScreen
+        config={config}
+        runtimeNote={runtimeNote}
+        onStart={() => setWelcomeDone(true)}
+        onOverview={() => {
+          setView("overview");
+          setWelcomeDone(true);
+        }}
+      />
+    );
   }
 
   return (
@@ -96,6 +107,11 @@ export function App({ initialFixture, urlImport = true, publicSearch = true, run
                   Review
                 </button>
               </li>
+              <li>
+                <button type="button" className={view === "overview" ? "nav-link nav-active" : "nav-link"} aria-current={view === "overview" ? "page" : undefined} onClick={() => setView("overview")}>
+                  Tool Overview
+                </button>
+              </li>
               {STUB_PAGES.map((s) => (
                 <li key={s.key}>
                   <button type="button" className={view === s.key ? "nav-link nav-active" : "nav-link"} aria-current={view === s.key ? "page" : undefined} onClick={() => setView(s.key)}>
@@ -107,7 +123,9 @@ export function App({ initialFixture, urlImport = true, publicSearch = true, run
           </nav>
         </div>
       </header>
-      {stub ? (
+      {view === "overview" ? (
+        <ToolOverview config={config} runtimeNote={runtimeNote} />
+      ) : stub ? (
         <main className="page">
           <h2>{stub.title}</h2>
           <p className="prose">{stub.text}</p>
