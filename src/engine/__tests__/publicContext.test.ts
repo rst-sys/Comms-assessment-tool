@@ -3,7 +3,7 @@ import type Anthropic from "@anthropic-ai/sdk";
 import type { EngineConfig } from "../config.js";
 import { findPublicContext } from "../publicContext.js";
 
-const config: EngineConfig = { provider: "Anthropic", model: "test-model", effort: "high", maxOutputTokens: 16000, trainingTerm: "x", processingMode: "y" };
+const config: EngineConfig = { provider: "Anthropic", model: "test-model", effort: "high", maxOutputTokens: 16000, speed: "standard", trainingTerm: "x", processingMode: "y" };
 
 function fakeClient(responses: Array<{ text: string; stop: string }>, captured: (p: unknown) => void): Anthropic {
   let i = 0;

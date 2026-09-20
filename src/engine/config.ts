@@ -6,6 +6,14 @@
 export const EFFORT_LEVELS = ["low", "medium", "high", "xhigh", "max"] as const;
 export type Effort = (typeof EFFORT_LEVELS)[number];
 
+/**
+ * Fast mode runs the same model at a higher output rate for a premium price.
+ * It is the one lever that buys speed without touching the depth of the
+ * review, so it is a deployment setting rather than a code decision.
+ */
+export const SPEEDS = ["standard", "fast"] as const;
+export type Speed = (typeof SPEEDS)[number];
+
 export interface EngineConfig {
   /** Provider name shown in the privacy panel. */
   provider: "Anthropic";
@@ -15,6 +23,8 @@ export interface EngineConfig {
   effort: Effort;
   /** Output ceiling for the analysis JSON. */
   maxOutputTokens: number;
+  /** "fast" trades price for output speed on the same model. */
+  speed: Speed;
   /**
    * Provider retention term shown in the privacy panel. Read from config so the
    * UI shows the provider's actual term for the endpoint in use.
@@ -52,11 +62,16 @@ export function getEngineConfig(env: NodeJS.ProcessEnv = process.env): EngineCon
   if (!Number.isInteger(maxOutputTokens) || maxOutputTokens < 4000) {
     throw new Error("ACR_MAX_OUTPUT_TOKENS must be an integer of at least 4000");
   }
+  const speedRaw = (env.ACR_SPEED ?? "standard").toLowerCase();
+  if (!(SPEEDS as readonly string[]).includes(speedRaw)) {
+    throw new Error(`ACR_SPEED must be one of ${SPEEDS.join(", ")}`);
+  }
   return {
     provider: "Anthropic",
     model: env.ACR_MODEL?.trim() || DEFAULT_MODEL,
     effort: effortRaw as Effort,
     maxOutputTokens,
+    speed: speedRaw as Speed,
     trainingTerm: env.ACR_TRAINING_TERM?.trim() || "Not used to train models",
     processingMode: env.ACR_PROCESSING_MODE?.trim() || "Zero-retention API",
   };

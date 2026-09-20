@@ -7,7 +7,7 @@ import type { EvaluationResult } from "../evaluate.js";
 import { DEMO_1 } from "../fixtures.js";
 import { buildSavedReview } from "../savedReview.js";
 
-const config: EngineConfig = { provider: "Anthropic", model: "test-model", effort: "high", maxOutputTokens: 16000, trainingTerm: "x", processingMode: "y" };
+const config: EngineConfig = { provider: "Anthropic", model: "test-model", effort: "high", maxOutputTokens: 16000, speed: "standard", trainingTerm: "x", processingMode: "y" };
 const usage = { input_tokens: 1, output_tokens: 2, cache_read_input_tokens: null, cache_creation_input_tokens: null };
 
 function load(prefix: string): EvaluationResult {

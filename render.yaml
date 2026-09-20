@@ -36,6 +36,20 @@ services:
         value: "10"
       - key: ACR_DAILY_LIMIT_TOTAL
         value: "60"
+      # Speed levers. Change either in the Environment tab; the service
+      # restarts and picks it up, with no rebuild.
+      #
+      # ACR_EFFORT is how deeply the engine thinks before answering:
+      # low | medium | high | xhigh | max. Most of a review's time is thinking,
+      # so this is the largest lever. "high" is the thorough default; "medium"
+      # is markedly quicker and is the first thing to try if reviews feel slow.
+      - key: ACR_EFFORT
+        value: high
+      # ACR_SPEED: "fast" runs the same model at a higher output rate for
+      # roughly double the per-token price. It buys speed without reducing the
+      # depth of the review. "standard" is the normal rate.
+      - key: ACR_SPEED
+        value: standard
       # Shown in the privacy panel. Set these to the provider's actual terms.
       - key: ACR_PROCESSING_MODE
         value: Zero-retention API

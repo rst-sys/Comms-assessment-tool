@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import Anthropic from "@anthropic-ai/sdk";
-import { callModel, isGrammarTooLarge } from "../client.js";
+import { callModel, FAST_MODE_BETA, isGrammarTooLarge } from "../client.js";
 import { getEngineConfig } from "../config.js";
 
 function grammarError() {
@@ -67,5 +67,42 @@ describe("the grammar-too-large fallback", () => {
     const sent = JSON.stringify(create.mock.calls[0]![0].output_config.format.schema);
     expect(sent).not.toContain('"enum"');
     expect(sent).toContain('"properties"');
+  });
+});
+
+describe("fast mode", () => {
+  it("is off by default and uses the ordinary endpoint", async () => {
+    const create = vi.fn().mockResolvedValue(reply());
+    const betaCreate = vi.fn();
+    await callModel({ ...args, client: { messages: { create }, beta: { messages: { create: betaCreate } } } as unknown as Anthropic });
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(betaCreate).not.toHaveBeenCalled();
+    expect(create.mock.calls[0]![0]).not.toHaveProperty("speed");
+  });
+
+  it("goes to the beta endpoint with the flag when switched on", async () => {
+    const create = vi.fn();
+    const betaCreate = vi.fn().mockResolvedValue(reply());
+    const fast = { ...config, speed: "fast" as const };
+    await callModel({
+      ...args,
+      config: fast,
+      client: { messages: { create }, beta: { messages: { create: betaCreate } } } as unknown as Anthropic,
+    });
+    expect(create).not.toHaveBeenCalled();
+    const sent = betaCreate.mock.calls[0]![0];
+    expect(sent.speed).toBe("fast");
+    expect(sent.betas).toEqual([FAST_MODE_BETA]);
+    // Everything else about the request is unchanged: same model, same schema.
+    expect(sent.model).toBe(config.model);
+    expect(sent.output_config.format.type).toBe("json_schema");
+  });
+
+  it("times the call and reports it without any content", async () => {
+    const create = vi.fn().mockResolvedValue(reply());
+    const log = vi.fn();
+    const result = await callModel({ ...args, client: { messages: { create } } as unknown as Anthropic, log });
+    expect(result.durationMs).toBeGreaterThanOrEqual(0);
+    expect(log.mock.calls[0]![0]).toMatch(/provider call \d+s \(20 output tokens, effort high, speed standard\)/);
   });
 });

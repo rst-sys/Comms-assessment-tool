@@ -65,6 +65,8 @@ export interface ModelCallResult {
   model: string;
   usage: ModelUsage;
   requestId: string;
+  /** Wall-clock time spent inside the provider call, for the latency log. */
+  durationMs: number;
 }
 
 /** A short, non-reversible id for logs. */
@@ -105,6 +107,9 @@ export function isGrammarTooLarge(error: unknown): boolean {
   return /grammar is too large/i.test(providerDetail(error));
 }
 
+/** The flag fast mode is served behind. */
+export const FAST_MODE_BETA = "fast-mode-2026-02-01";
+
 export async function callModel(options: CallModelOptions): Promise<ModelCallResult> {
   const requestId = options.requestId ?? newRequestId();
   const client = options.client ?? makeClient(requestId);
@@ -114,23 +119,35 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
   // provider will accept. Strict validation still runs on the reply.
   const schema = relaxForProvider(options.schema ?? ANALYSIS_SCHEMA) as Record<string, unknown>;
 
-  const send = (withFormat: boolean): Promise<Anthropic.Message> =>
-    client.messages.create({
+  const send = (withFormat: boolean): Promise<Anthropic.Message> => {
+    const params = {
       model: config.model,
       max_tokens: config.maxOutputTokens,
       // The verbatim system prompt is stable across requests; cache it. The
       // draft lives in the user message, after the cache breakpoint.
       system: options.system.map((b, i, all) =>
         i === all.length - 1
-          ? { type: "text", text: b.text, cache_control: { type: "ephemeral" } }
-          : { type: "text", text: b.text },
+          ? { type: "text" as const, text: b.text, cache_control: { type: "ephemeral" as const } }
+          : { type: "text" as const, text: b.text },
       ),
-      messages: [{ role: "user", content: options.user }],
+      messages: [{ role: "user" as const, content: options.user }],
       output_config: withFormat
-        ? { effort: config.effort, format: { type: "json_schema", schema } }
+        ? { effort: config.effort, format: { type: "json_schema" as const, schema } }
         : { effort: config.effort },
-    });
+    };
+    // Fast mode is the same model at a higher output rate for a premium price,
+    // and it lives on the beta endpoint behind its own flag.
+    if (config.speed === "fast") {
+      return client.beta.messages.create({
+        ...params,
+        speed: "fast",
+        betas: [FAST_MODE_BETA],
+      }) as unknown as Promise<Anthropic.Message>;
+    }
+    return client.messages.create(params);
+  };
 
+  const startedAt = Date.now();
   let response: Anthropic.Message;
   try {
     try {
@@ -175,8 +192,15 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
     throw new EngineError("no_text", "The provider returned no analysis text.", requestId);
   }
 
+  const durationMs = Date.now() - startedAt;
+  options.log?.(
+    `[${requestId}] provider call ${Math.round(durationMs / 1000)}s ` +
+      `(${response.usage.output_tokens} output tokens, effort ${config.effort}, speed ${config.speed})`,
+  );
+
   return {
     text,
+    durationMs,
     model: response.model,
     usage: {
       input_tokens: response.usage.input_tokens,

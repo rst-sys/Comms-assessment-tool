@@ -11,6 +11,7 @@ const config: EngineConfig = {
   model: "test-model",
   effort: "high",
   maxOutputTokens: 16000,
+  speed: "standard",
   trainingTerm: "Not used to train models",
   processingMode: "Zero-retention API",
 };
@@ -52,7 +53,10 @@ describe("evaluateDraft", () => {
     expect(result.confidence_label).toMatch(/draft language only/);
     expect(result.provider).toEqual({ provider: "Anthropic", model: "test-model-served" });
     expect(result.analysis.findings).toHaveLength(1);
-    expect(logs).toEqual([]);
+    // The only line on a clean run is the latency record, which carries no content.
+    expect(logs).toHaveLength(1);
+    expect(logs[0]).toMatch(/provider call \d+s \(20 output tokens, effort high, speed standard\)/);
+    expect(logs[0]).not.toContain("Rapid growth");
 
     // The request went out with the configured model, the schema, no sampling temperature, and no fallbacks.
     expect(params.model).toBe("test-model");
@@ -84,9 +88,10 @@ describe("evaluateDraft", () => {
       // The path travels with the message: it names the field, never the draft.
       message: "The analysis did not return in the expected format (at /dimensions). Try again.",
     });
-    expect(logs).toHaveLength(1);
-    expect(logs[0]).toMatch(/validation failed at \/dimensions/);
-    expect(logs[0]).not.toContain("Rapid growth");
+    // The latency line, then the validation failure with its path.
+    expect(logs).toHaveLength(2);
+    expect(logs[1]).toMatch(/validation failed at \/dimensions/);
+    expect(logs.join("\n")).not.toContain("Rapid growth");
   });
 
   it("surfaces a refusal and a truncated response as distinct errors", async () => {

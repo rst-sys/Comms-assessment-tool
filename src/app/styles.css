@@ -336,3 +336,28 @@ textarea { resize: vertical; }
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+/* Review progress (revision 17). A review takes a minute or more; a button
+   that only says "Evaluating…" for that long reads as a hung page. */
+.progress {
+  margin-top: 16px;
+}
+.progress-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--accent, #2f5d8a);
+  border-radius: 3px;
+  transition: width 1s linear;
+}
+.progress-stage {
+  margin: 10px 0 4px;
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar { transition: none; }
+}

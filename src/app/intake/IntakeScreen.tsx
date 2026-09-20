@@ -16,6 +16,7 @@ import {
 } from "../../engine/types.js";
 import { AudienceDocuments } from "./AudienceDocuments.js";
 import { COMING_SOON, FEATURES } from "../features.js";
+import { Progress } from "../Progress.js";
 import { importUrl, type ImportedPage } from "../api.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import {
@@ -270,6 +271,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
               {busy ? "Evaluating…" : baseline ? "Evaluate and compare" : "Evaluate draft"}
             </button>
           </p>
+          {busy ? <Progress /> : null}
         </section>
 
         <section className="card" aria-labelledby="context-heading">
