@@ -11,7 +11,7 @@ configureApi(sampleApi);
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App
-      initialFixture={DEMO_1}
+      initialRequest={DEMO_1.request}
       urlImport={false}
       publicSearch={false}
       runtimeNote="Preview on claude.ai: evaluations run through your own Claude account and claude.ai will ask your permission the first time. Import from URL and web search are not available here."

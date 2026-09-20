@@ -295,3 +295,24 @@ textarea { resize: vertical; }
 .public-context { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 2); border-top: 1px dashed var(--border); }
 .public-context h4 { margin: 0 0 var(--space); font-size: 16px; }
 .public-context input[type="text"] { flex: 1; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); }
+
+/* Saved reviews and comparison */
+.save-option { margin: 0; font-size: 13px; color: var(--neutral); }
+.save-note { margin: 0 0 calc(var(--space) * 2); }
+.baseline-banner, .baseline-card { border-left: 4px solid var(--sound); background: var(--tint-weather); }
+.baseline-card { border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space) calc(var(--space) * 1.5); margin: calc(var(--space) * 1.5) 0; }
+.baseline-banner { margin-bottom: calc(var(--space) * 2); }
+.settings-detail { margin: var(--space) 0; font-size: 14px; }
+.settings-detail summary { cursor: pointer; color: var(--neutral); }
+.comparison { margin-bottom: calc(var(--space) * 3); }
+.comparison-summary { font-family: var(--serif); font-size: 17px; }
+.verdict-counts { display: flex; flex-wrap: wrap; gap: 6px; margin: calc(var(--space) * 1.5) 0; }
+.verdict-list { list-style: none; padding: 0; margin: 0 0 calc(var(--space) * 2); display: grid; gap: var(--space); }
+.verdict-item { display: grid; grid-template-columns: 148px 1fr; gap: calc(var(--space) * 1.5); align-items: start; }
+@media (max-width: 620px) { .verdict-item { grid-template-columns: 1fr; gap: 4px; } }
+.verdict-resolved { border-color: var(--strong); background: #eaf2ec; }
+.verdict-partly { border-color: var(--caution); background: #f7f0dc; }
+.verdict-open { border-color: var(--material); background: #f6e7e9; }
+.verdict-moot { color: var(--neutral); }
+.verdict-new { border-color: var(--sound); background: var(--tint-weather); }
+.score-move { font-family: var(--serif); font-size: 22px; margin: 0 0 4px; }

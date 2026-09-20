@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { readdirSync, readFileSync } from "node:fs";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
 
@@ -78,6 +78,31 @@ describe("App", () => {
     expect(screen.getByText(/attorney-client privileged/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Review" }));
     expect(screen.getByLabelText("Draft text")).toBeTruthy();
+  });
+
+  it("saves a review and offers Compare Revisions in the nav", async () => {
+    const saves: { filename: string; data: Blob }[] = [];
+    vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
+    vi.stubGlobal("scrollTo", vi.fn());
+    const createObjectURL = vi.fn(() => "blob:x");
+    vi.stubGlobal("URL", { ...URL, createObjectURL, revokeObjectURL: vi.fn() });
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (this: HTMLAnchorElement) {
+      saves.push({ filename: this.download, data: new Blob() });
+    });
+    try {
+      render(<App />);
+      fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+      expect(screen.getByRole("button", { name: "Compare Revisions" })).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+      fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+      expect(await screen.findByText("Communications readiness")).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Save this review" }));
+      await waitFor(() => expect(saves.length).toBe(1));
+      expect(saves[0]!.filename).toMatch(/^trust-review-layoff-or-restructuring-\d{4}-\d{2}-\d{2}\.json$/);
+      expect(screen.getByText(/Review saved/)).toBeTruthy();
+    } finally {
+      click.mockRestore();
+    }
   });
 
   it("shows a stub page with one paragraph for each stubbed area", () => {

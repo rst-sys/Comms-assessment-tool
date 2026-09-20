@@ -3,12 +3,7 @@ export const STUB_PAGES = [
   {
     key: "saved-reviews",
     title: "Saved Reviews",
-    text: "Saved Reviews will keep a private history of the drafts you have evaluated, with their scores and findings, so a revision can be checked against the earlier version. It is not in this build: nothing is saved, and closing the tab discards everything.",
-  },
-  {
-    key: "compare-revisions",
-    title: "Compare Revisions",
-    text: "Compare Revisions will place two versions of a draft side by side with their scores, showing which findings were resolved, which remain, and which are new. It is not in this build.",
+    text: "Saved Reviews will keep a private history of the reviews you have run, so you can reopen one without keeping track of a file. It is not in this build: the app stores nothing. You can save a review to your own computer from the results page, and load it again under Compare Revisions.",
   },
   {
     key: "team-workspace",

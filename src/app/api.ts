@@ -3,7 +3,9 @@
  * nothing here logs request or response bodies.
  */
 import type { EvaluationResult } from "../engine/evaluate.js";
+import type { ComparisonResult } from "../engine/compare.js";
 import type { PublicContextResult } from "../engine/publicContext.js";
+import type { SavedReview } from "../engine/savedReview.js";
 import type { CommunicationType, EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
@@ -61,6 +63,8 @@ export interface ApiImplementation {
   saveFile(filename: string, data: Blob): Promise<void>;
   /** Searches the public web for a topic the user typed (hosted app only). */
   findPublicContext(query: string): Promise<PublicContextResult>;
+  /** Compares a fresh review of the new draft against a saved review. */
+  compare(saved: SavedReview, request: EvaluationRequest, fresh: EvaluationResult): Promise<ComparisonResult>;
 }
 
 export const serverApi: ApiImplementation = {
@@ -76,6 +80,7 @@ export const serverApi: ApiImplementation = {
     }
   },
   findPublicContext: (query) => post<PublicContextResult>("/api/public-context", { query }, "The search failed. Try again."),
+  compare: (saved, request, fresh) => post<ComparisonResult>("/api/compare", { saved, request, fresh }, "The comparison failed. Try again."),
   async saveFile(filename, data) {
     const url = URL.createObjectURL(data);
     try {
@@ -103,3 +108,4 @@ export const importUrl = (url: string) => current.importUrl(url);
 export const fetchConfig = () => current.fetchConfig();
 export const saveFile = (filename: string, data: Blob) => current.saveFile(filename, data);
 export const findPublicContext = (query: string) => current.findPublicContext(query);
+export const compare = (saved: SavedReview, request: EvaluationRequest, fresh: EvaluationResult) => current.compare(saved, request, fresh);

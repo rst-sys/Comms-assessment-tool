@@ -10,7 +10,9 @@ import type { EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "../app/PrivacyPanel.js";
 import { finishEvaluation } from "../engine/evaluate.js";
 import { EngineError } from "../engine/client.js";
+import { COMPARE_SCHEMA, COMPARE_SYSTEM_PROMPT, buildCompareUserMessage, finishComparison } from "../engine/compare.js";
 import { normalizeAnalysis } from "../engine/normalize.js";
+import { settingsDrift } from "../engine/savedReview.js";
 import { buildSystemBlocks, buildUserMessage } from "../engine/prompt.js";
 import { ANALYSIS_SCHEMA } from "../engine/schema.js";
 
@@ -147,6 +149,28 @@ export const sampleApi: ApiImplementation = {
       if (code === "declined") throw new ApiError("The save was cancelled.", 499, "declined");
       if (code === "rate_limited") throw new ApiError("A save is already waiting for your answer.", 429, "rate_limited");
       throw new ApiError("Saving files is not available in this view.", 501, code);
+    }
+  },
+
+  async compare(saved, request, fresh) {
+    const sample = await getSample();
+    if (!sample) throw new ApiError(viewerMessage("not_granted", ""), 503, "not_granted");
+    const id = requestId();
+    const input = [COMPARE_SYSTEM_PROMPT, buildCompareUserMessage(saved, request, fresh), schemaBlock(COMPARE_SCHEMA)].join("\n\n");
+    let raw: unknown;
+    try {
+      raw = await sample.json(input, { modelTier: "complex" });
+    } catch (e) {
+      throw toApiError(e, "The comparison failed. Try again.");
+    }
+    try {
+      return finishComparison(raw, saved, fresh, settingsDrift(saved.settings, request), {
+        requestId: id,
+        provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" },
+        usage,
+      });
+    } catch (e) {
+      throw toApiError(e, "The comparison failed. Try again.");
     }
   },
 

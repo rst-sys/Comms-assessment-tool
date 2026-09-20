@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { DEMOS, type Fixture } from "../../engine/fixtures.js";
+import type { SavedReview } from "../../engine/savedReview.js";
 import {
   AUDIENCE_SCOPES,
   COMMUNICATION_TYPES,
@@ -34,8 +35,10 @@ interface Props {
   busy: boolean;
   error: string | null;
   onEvaluate: (request: EvaluationRequest) => void;
-  /** A demo to load on first render, so a preview opens in a working state. */
-  initialFixture?: Fixture;
+  /** Settings and context to load on first render (a demo, or a saved review's settings). */
+  initialRequest?: EvaluationRequest;
+  /** A saved review this draft will be compared against. */
+  baseline?: SavedReview | null;
   /** Whether Import from URL is available in this runtime. */
   urlImport?: boolean;
   /** Whether the hosted web search for public context is available. */
@@ -58,8 +61,8 @@ const FIELD_OPTIONS: { key: keyof DraftFields; label: string; options: readonly 
  * privacy panel above both. All state lives in this component; nothing is
  * written to storage, the URL or the page title.
  */
-export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, urlImport = true, publicSearch = true }: Props) {
-  const init = initialFixture?.request;
+export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, baseline = null, urlImport = true, publicSearch = true }: Props) {
+  const init = initialRequest;
   const [tab, setTab] = useState<SourceTab>("paste");
   const [draft, setDraft] = useState(init?.draft ?? "");
   const [fields, setFields] = useState<DraftFields>(
@@ -147,6 +150,21 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
 
   return (
     <div className="page intake">
+      {baseline ? (
+        <div className="card baseline-banner" role="note">
+          <div className="label">Comparing with a saved review</div>
+          <p style={{ margin: 0 }}>
+            Saved {baseline.saved_at.slice(0, 10)} · score <strong>{baseline.score}</strong> of 100 ·{" "}
+            {baseline.findings.length} finding{baseline.findings.length === 1 ? "" : "s"}. The settings below were restored
+            from it. Add the new version of your draft, then evaluate.
+          </p>
+          {baseline.documents.length > 0 ? (
+            <p className="muted small" style={{ margin: "8px 0 0" }}>
+              Re-attach these for a like-for-like comparison: {baseline.documents.map((d) => d.title).join(", ")}.
+            </p>
+          ) : null}
+        </div>
+      ) : null}
       <PrivacyPanel config={config} />
       <div className="intake-grid">
         <section className="card" aria-labelledby="draft-heading">
@@ -242,7 +260,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialFixture, 
           {error ? <p className="error" role="alert">{error}</p> : null}
           <p>
             <button type="button" className="primary" onClick={submit} disabled={!ready} aria-disabled={!ready}>
-              {busy ? "Evaluating…" : "Evaluate draft"}
+              {busy ? "Evaluating…" : baseline ? "Evaluate and compare" : "Evaluate draft"}
             </button>
           </p>
         </section>

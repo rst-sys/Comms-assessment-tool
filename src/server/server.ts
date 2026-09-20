@@ -15,7 +15,10 @@ import { extname, join, normalize } from "node:path";
 import { EngineError } from "../engine/client.js";
 import { getEngineConfig } from "../engine/config.js";
 import { evaluateDraft } from "../engine/evaluate.js";
+import { compareWithSaved } from "../engine/compare.js";
 import { findPublicContext } from "../engine/publicContext.js";
+import { settingsDrift, type SavedReview } from "../engine/savedReview.js";
+import type { EvaluationResult } from "../engine/evaluate.js";
 import { loadEnvFile } from "./env.js";
 import { allowedUrl, extractReadable, fetchPage, IMPORT_ERROR } from "./import.js";
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
@@ -96,6 +99,48 @@ async function handleEvaluate(req: IncomingMessage, res: ServerResponse): Promis
     }
     console.log(`evaluate failed: ${error instanceof Error ? error.name : "unknown"}`);
     send(res, 500, { error: "server_error", message: "The evaluation failed. Try again." });
+  }
+}
+
+async function handleCompare(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  let body: unknown;
+  try {
+    body = await readJson(req);
+  } catch {
+    send(res, 400, { error: "bad_request", message: "The request could not be read." });
+    return;
+  }
+  const b = (typeof body === "object" && body !== null ? body : {}) as { saved?: unknown; request?: unknown; fresh?: unknown };
+  let request;
+  try {
+    request = parseEvaluationRequest(b.request);
+  } catch (error) {
+    const path = error instanceof RequestValidationError ? error.path : "/";
+    console.log(`compare rejected: invalid request at ${path}`);
+    send(res, 400, { error: "bad_request", message: "The request is missing or has an invalid field." });
+    return;
+  }
+  const saved = b.saved as SavedReview | undefined;
+  const fresh = b.fresh as EvaluationResult | undefined;
+  if (!saved?.findings || !Array.isArray(saved.dimensions) || !fresh?.analysis) {
+    send(res, 400, { error: "bad_request", message: "The saved review or the new review is missing." });
+    return;
+  }
+  try {
+    const result = await compareWithSaved(saved, request, fresh, settingsDrift(saved.settings, request), {
+      log: (line) => console.log(line),
+    });
+    console.log(`[${result.request_id}] compare ok (${result.verdicts.length} verdicts)`);
+    send(res, 200, result);
+  } catch (error) {
+    if (error instanceof EngineError) {
+      console.log(`[${error.requestId}] compare failed: ${error.kind}`);
+      const status = error.kind === "auth" ? 503 : error.kind === "refusal" ? 422 : 502;
+      send(res, status, { error: error.kind, message: error.message, request_id: error.requestId });
+      return;
+    }
+    console.log(`compare failed: ${error instanceof Error ? error.name : "unknown"}`);
+    send(res, 500, { error: "server_error", message: "The comparison failed. Try again." });
   }
 }
 
@@ -192,6 +237,7 @@ export const server = createServer(async (req, res) => {
   if (url.pathname === "/api/evaluate" && method === "POST") return handleEvaluate(req, res);
   if (url.pathname === "/api/import" && method === "POST") return handleImport(req, res);
   if (url.pathname === "/api/public-context" && method === "POST") return handlePublicContext(req, res);
+  if (url.pathname === "/api/compare" && method === "POST") return handleCompare(req, res);
   if (url.pathname.startsWith("/api/")) return send(res, 404, { error: "not_found", message: "No such endpoint." });
   if (method === "GET" && serveStatic(url.pathname, res)) return;
   send(res, 404, { error: "not_found", message: "Not found." });

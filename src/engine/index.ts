@@ -14,3 +14,5 @@ export {
   type ValidationAdjustments,
 } from "./validate.js";
 export * from "./fixtures.js";
+export * from "./savedReview.js";
+export * from "./compare.js";
