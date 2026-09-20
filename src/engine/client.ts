@@ -18,6 +18,28 @@ export type EngineErrorKind =
   | "api"
   | "validation";
 
+/**
+ * The provider's own explanation of a rejected request. `error.name` is only
+ * the SDK's class name ("Error"), which tells nobody anything; the useful text
+ * is in the parsed body. A 400 is nearly always a fact about the account or
+ * the request shape — a credit balance, a model the key cannot reach, a
+ * parameter this model no longer takes — so it has to reach the operator. The
+ * draft is never echoed back in these, and the text is capped regardless.
+ */
+export function providerDetail(error: unknown): string {
+  const body = (error as { error?: unknown })?.error;
+  const nested = (body as { error?: { message?: unknown } })?.error?.message;
+  const flat = (body as { message?: unknown })?.message;
+  const raw =
+    typeof nested === "string" ? nested
+    : typeof flat === "string" ? flat
+    : error instanceof Error ? error.message
+    : "";
+  const text = raw.replace(/\s+/g, " ").trim();
+  if (!text) return "no detail given";
+  return text.length > 300 ? `${text.slice(0, 300)}…` : text;
+}
+
 export class EngineError extends Error {
   readonly name = "EngineError";
   constructor(
@@ -103,7 +125,7 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
       throw new EngineError("auth", "The provider rejected the configured credential.", requestId, error);
     }
     if (error instanceof Anthropic.APIError) {
-      throw new EngineError("api", `Provider error ${error.status ?? "unknown"}: ${error.name}`, requestId, error);
+      throw new EngineError("api", `Provider error ${error.status ?? "unknown"}: ${providerDetail(error)}`, requestId, error);
     }
     if (error instanceof Error && /Could not resolve authentication method/.test(error.message)) {
       // The SDK resolves credentials lazily and throws a plain Error at call time when none is configured.

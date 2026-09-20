@@ -135,7 +135,7 @@ async function handleEvaluate(req: IncomingMessage, res: ServerResponse): Promis
     send(res, 200, result);
   } catch (error) {
     if (error instanceof EngineError) {
-      console.log(`[${error.requestId}] evaluate failed: ${error.kind}`);
+      console.log(`[${error.requestId}] evaluate failed: ${error.kind} — ${error.message}`);
       const status = error.kind === "auth" ? 503 : error.kind === "refusal" ? 422 : 502;
       const message =
         error.kind === "validation" || error.kind === "invalid_json" || error.kind === "truncated" || error.kind === "no_text"
@@ -181,7 +181,7 @@ async function handleCompare(req: IncomingMessage, res: ServerResponse): Promise
     send(res, 200, result);
   } catch (error) {
     if (error instanceof EngineError) {
-      console.log(`[${error.requestId}] compare failed: ${error.kind}`);
+      console.log(`[${error.requestId}] compare failed: ${error.kind} — ${error.message}`);
       const status = error.kind === "auth" ? 503 : error.kind === "refusal" ? 422 : 502;
       send(res, status, { error: error.kind, message: error.message, request_id: error.requestId });
       return;
@@ -210,7 +210,7 @@ async function handlePublicContext(req: IncomingMessage, res: ServerResponse): P
     send(res, 200, result);
   } catch (error) {
     if (error instanceof EngineError) {
-      console.log(`[${error.requestId}] public-context failed: ${error.kind}`);
+      console.log(`[${error.requestId}] public-context failed: ${error.kind} — ${error.message}`);
       const status = error.kind === "auth" ? 503 : error.kind === "refusal" ? 422 : 502;
       send(res, status, { error: error.kind, message: error.message, request_id: error.requestId });
       return;
