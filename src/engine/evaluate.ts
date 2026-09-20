@@ -94,7 +94,7 @@ export async function evaluateDraft(request: EvaluationRequest, options: Evaluat
   const system = buildSystemBlocks(request);
   const user = buildUserMessage(request);
 
-  const call = await callModel({ system, user, config, client: options.client, requestId });
+  const call = await callModel({ system, user, config, client: options.client, requestId, log });
 
   let raw: unknown;
   try {

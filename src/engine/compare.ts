@@ -184,6 +184,7 @@ export async function compareWithSaved(
     client: options.client,
     requestId,
     schema: COMPARE_SCHEMA,
+    log: options.log,
   });
   let raw: unknown;
   try {

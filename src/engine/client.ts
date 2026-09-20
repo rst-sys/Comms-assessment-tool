@@ -5,7 +5,7 @@
  */
 import Anthropic from "@anthropic-ai/sdk";
 import { createHash, randomUUID } from "node:crypto";
-import { ANALYSIS_SCHEMA } from "./schema.js";
+import { ANALYSIS_SCHEMA, relaxForProvider } from "./schema.js";
 import { API_KEY_ENV_VARS, resolveApiKey, type EngineConfig } from "./config.js";
 import type { SystemBlock } from "./prompt.js";
 
@@ -81,6 +81,8 @@ export interface CallModelOptions {
   requestId?: string;
   /** Structured-output schema for this call. Defaults to the analysis schema. */
   schema?: Record<string, unknown>;
+  /** Receives operational lines only; never the draft or the reply. */
+  log?: (line: string) => void;
 }
 
 const NO_CREDENTIAL_MESSAGE = `No provider credential is configured. Set ${API_KEY_ENV_VARS.join(" or ")} (see README).`;
@@ -97,14 +99,23 @@ function makeClient(requestId: string): Anthropic {
   }
 }
 
+/** The one provider rejection worth retrying differently rather than surfacing. */
+export function isGrammarTooLarge(error: unknown): boolean {
+  if (!(error instanceof Anthropic.APIError) || error.status !== 400) return false;
+  return /grammar is too large/i.test(providerDetail(error));
+}
+
 export async function callModel(options: CallModelOptions): Promise<ModelCallResult> {
   const requestId = options.requestId ?? newRequestId();
   const client = options.client ?? makeClient(requestId);
   const { config } = options;
 
-  let response: Anthropic.Message;
-  try {
-    response = await client.messages.create({
+  // Relaxed here, not at the call sites, so every caller gets a grammar the
+  // provider will accept. Strict validation still runs on the reply.
+  const schema = relaxForProvider(options.schema ?? ANALYSIS_SCHEMA) as Record<string, unknown>;
+
+  const send = (withFormat: boolean): Promise<Anthropic.Message> =>
+    client.messages.create({
       model: config.model,
       max_tokens: config.maxOutputTokens,
       // The verbatim system prompt is stable across requests; cache it. The
@@ -115,11 +126,26 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
           : { type: "text", text: b.text },
       ),
       messages: [{ role: "user", content: options.user }],
-      output_config: {
-        effort: config.effort,
-        format: { type: "json_schema", schema: options.schema ?? ANALYSIS_SCHEMA },
-      },
+      output_config: withFormat
+        ? { effort: config.effort, format: { type: "json_schema", schema } }
+        : { effort: config.effort },
     });
+
+  let response: Anthropic.Message;
+  try {
+    try {
+      response = await send(true);
+    } catch (error) {
+      // The provider compiles the schema into a grammar with a size ceiling.
+      // If this schema ever outgrows it again, drop the format and ask for the
+      // JSON in prose instead of failing the review: the prompt already
+      // specifies the shape, normalize.ts repairs the usual deviations, and
+      // the strict validator still runs — which is exactly how the claude.ai
+      // page has always worked, so the path is a proven one, not a guess.
+      if (!isGrammarTooLarge(error)) throw error;
+      options.log?.(`[${requestId}] schema grammar too large; retrying without the structured-output format`);
+      response = await send(false);
+    }
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
       throw new EngineError("auth", "The provider rejected the configured credential.", requestId, error);

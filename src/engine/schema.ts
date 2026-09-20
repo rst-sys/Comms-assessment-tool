@@ -1,10 +1,23 @@
 /**
  * JSON schema for the analysis object (PROMPT.md Section 6).
  *
- * This single schema is sent to the provider as the structured-output format
- * and compiled by ajv for validation. The provider's structured-output subset
- * does not allow count, numeric or string constraints, so those live in
- * validate.ts as code-enforced checks.
+ * Two schemas, one source of truth. ANALYSIS_SCHEMA is the strict one: ajv
+ * compiles it and every analysis must satisfy it. `relaxForProvider` derives
+ * the copy that goes to the provider as the structured-output format.
+ *
+ * The provider compiles that copy into a grammar, and the grammar has a size
+ * ceiling — exceed it and the call is rejected outright with "the compiled
+ * grammar is too large". Enumerated values are what cost the most: each list
+ * of allowed strings becomes a set of alternatives in the grammar, and this
+ * schema carries fourteen of them. Dropping them from the provider's copy
+ * leaves the shape intact — every object, property, array and nullable union
+ * still forces the structure we need — while removing the expensive part.
+ *
+ * Nothing is lost by it. The prompt already names the permitted values,
+ * normalize.ts repairs casing, and ajv still checks the real schema before any
+ * analysis is shown, so a wrong value fails loudly rather than slipping
+ * through. This is the same division the count, numeric and string
+ * constraints already use: expressed here, enforced in validate.ts.
  */
 import {
   CLAIM_STATUSES,
@@ -36,6 +49,23 @@ const obj = (properties: Record<string, JsonSchema>): JsonSchema => ({
   required: Object.keys(properties),
   additionalProperties: false,
 });
+
+/**
+ * A copy with every `enum` and `const` removed, at any depth. Structure —
+ * types, properties, required, additionalProperties, items, anyOf — is kept
+ * exactly. Deriving it rather than maintaining a second schema by hand means
+ * the two cannot drift apart.
+ */
+export function relaxForProvider(schema: unknown): unknown {
+  if (Array.isArray(schema)) return schema.map(relaxForProvider);
+  if (!schema || typeof schema !== "object") return schema;
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(schema as Record<string, unknown>)) {
+    if (key === "enum" || key === "const") continue;
+    out[key] = relaxForProvider(value);
+  }
+  return out;
+}
 
 export const ANALYSIS_SCHEMA: JsonSchema = obj({
   schema_version: enumOf([SCHEMA_VERSION]),
