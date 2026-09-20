@@ -81,7 +81,8 @@ describe("evaluateDraft", () => {
     const logs: string[] = [];
     await expect(evaluateDraft(DEMO_1.request, { config, client, log: (l) => logs.push(l) })).rejects.toMatchObject({
       kind: "validation",
-      message: "The analysis did not return in the expected format. Try again.",
+      // The path travels with the message: it names the field, never the draft.
+      message: "The analysis did not return in the expected format (at /dimensions). Try again.",
     });
     expect(logs).toHaveLength(1);
     expect(logs[0]).toMatch(/validation failed at \/dimensions/);

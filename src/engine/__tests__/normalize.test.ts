@@ -73,3 +73,47 @@ describe("protocol_review normalization", () => {
     expect((normalizeAnalysis({ protocol_review: "none" }) as { protocol_review: unknown }).protocol_review).toBeNull();
   });
 });
+
+describe("enum casing, which the provider's grammar used to absorb", () => {
+  it("repairs the ASSERTED/Asserted mismatch the prompt itself causes", () => {
+    const out = normalizeAnalysis({
+      findings: [{ id: "F-001", dimension: "accountability_agency", severity: "HIGH", claim_status: "ASSERTED", specialist_review_type: "hr" }],
+    }) as { findings: { severity: string; claim_status: string; specialist_review_type: string }[] };
+    expect(out.findings[0]!.severity).toBe("High");
+    expect(out.findings[0]!.claim_status).toBe("Asserted");
+    expect(out.findings[0]!.specialist_review_type).toBe("HR");
+  });
+
+  it("repairs the scan, summary and review-summary values too", () => {
+    const out = normalizeAnalysis({
+      executive_summary: { risk_level: "moderate", readiness: "REVISE BEFORE ISSUING" },
+      agency_scan: [{ phrase: "headwinds", category: "external weather", severity: "low", assessment: "legitimate context" }],
+      specialist_review_summary: ["legal", "investor relations"],
+    }) as {
+      executive_summary: { risk_level: string; readiness: string };
+      agency_scan: { category: string; severity: string; assessment: string }[];
+      specialist_review_summary: string[];
+    };
+    expect(out.executive_summary.risk_level).toBe("Moderate");
+    expect(out.executive_summary.readiness).toBe("Revise before issuing");
+    expect(out.agency_scan[0]).toMatchObject({ category: "External weather", severity: "Low", assessment: "Legitimate context" });
+    expect(out.specialist_review_summary).toEqual(["Legal", "Investor relations"]);
+  });
+
+  it("leaves a value it does not recognize alone, so the validator still rejects it", () => {
+    const out = normalizeAnalysis({
+      executive_summary: { risk_level: "Catastrophic" },
+      findings: [{ id: "F-001", severity: "Urgent" }],
+    }) as { executive_summary: { risk_level: string }; findings: { severity: string }[] };
+    expect(out.executive_summary.risk_level).toBe("Catastrophic");
+    expect(out.findings[0]!.severity).toBe("Urgent");
+  });
+
+  it("keeps a null claim_status null rather than turning it into a string", () => {
+    const out = normalizeAnalysis({
+      findings: [{ id: "F-001", claim_status: null, specialist_review_type: null }],
+    }) as { findings: { claim_status: unknown; specialist_review_type: unknown }[] };
+    expect(out.findings[0]!.claim_status).toBeNull();
+    expect(out.findings[0]!.specialist_review_type).toBeNull();
+  });
+});

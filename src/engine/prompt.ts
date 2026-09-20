@@ -4,7 +4,21 @@
  */
 import { protocolsFor } from "./protocols.js";
 import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "./promptText.js";
-import { CONTEXT_FIELDS, DIMENSION_IDS, DOCUMENT_KINDS, DOCUMENT_REACH, type EvaluationRequest } from "./types.js";
+import {
+  CLAIM_STATUSES,
+  CONTEXT_FIELDS,
+  DIMENSION_IDS,
+  DOCUMENT_KINDS,
+  DOCUMENT_REACH,
+  PROTOCOL_STATUSES,
+  READINESS_VALUES,
+  RISK_LEVELS,
+  SCAN_ASSESSMENTS,
+  SCAN_CATEGORIES,
+  SEVERITIES,
+  SPECIALIST_REVIEW_TYPES,
+  type EvaluationRequest,
+} from "./types.js";
 
 /**
  * Structural notes that the provider's structured-output schema cannot carry.
@@ -23,6 +37,15 @@ The JSON object must satisfy these counts and conventions in addition to the sch
 - devils_advocate.personas contains exactly five personas, no more and no fewer. Each persona has a headline of at most twelve words stating its key concern, written as a strong, specific line a reader would remember. The disclaimer is exactly: "These are plausible audience interpretations, not statements of fact."
 - questions_before_publication contains between five and twelve questions.
 - specialist_review_summary lists each review type named by any finding with specialist_review_needed true, without duplicates.
+- Every value below is spelled exactly as given here, including its capital letters. Copy the spelling; do not upper-case it for emphasis even where the guidance above does.
+  severity and agency_scan severity: ${SEVERITIES.join(" | ")}
+  claim_status: ${CLAIM_STATUSES.join(" | ")} (note the initial capital only)
+  executive_summary.risk_level: ${RISK_LEVELS.join(" | ")}
+  executive_summary.readiness: ${READINESS_VALUES.join(" | ")}
+  agency_scan category: ${SCAN_CATEGORIES.join(" | ")}
+  agency_scan assessment: ${SCAN_ASSESSMENTS.join(" | ")}
+  specialist_review_type and every entry of specialist_review_summary: ${SPECIALIST_REVIEW_TYPES.join(" | ")}
+  protocol_review element status: ${PROTOCOL_STATUSES.join(" | ")}
 - protocol_review is null unless a protocol block above tells you to fill it; then it carries that protocol's name, its source line, and one entry per element in the order the block gives, each with a status of Present, Partial or Absent and a one-sentence note.
 
 WHAT EACH DIMENSION EVALUATES

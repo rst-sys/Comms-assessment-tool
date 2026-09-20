@@ -8,10 +8,17 @@
  * still runs afterwards.
  */
 import {
+  CLAIM_STATUSES,
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
   PROTOCOL_STATUSES,
+  READINESS_VALUES,
+  RISK_LEVELS,
+  SCAN_ASSESSMENTS,
+  SCAN_CATEGORIES,
   SCHEMA_VERSION,
+  SEVERITIES,
+  SPECIALIST_REVIEW_TYPES,
   type Analysis,
 } from "./types.js";
 
@@ -23,10 +30,26 @@ const bool = (v: unknown): boolean => v === true || v === "true";
 const arr = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
 const strings = (v: unknown, max: number): string[] => arr(v).map((x) => str(x)).filter((x) => x.trim().length > 0).slice(0, max);
 
-/** Accepts a protocol status in any casing; anything else is left as-is for the validator to reject. */
-function protocolStatus(v: unknown): string {
+/**
+ * Matches a value to its permitted spelling, ignoring case and surrounding
+ * space. Anything with no match is left exactly as it came so the validator
+ * rejects it loudly rather than this quietly inventing a value.
+ *
+ * Casing drift is the common failure, and the prompt causes some of it: the
+ * system prompt writes ASSERTED and SUPPORTED in capitals for emphasis while
+ * the schema spells them Asserted and Supported. The provider's grammar used
+ * to absorb that, but the grammar now carries no value lists (see schema.ts),
+ * so the repair belongs here.
+ */
+function oneOf(v: unknown, allowed: readonly string[]): string {
   const raw = str(v).trim();
-  return PROTOCOL_STATUSES.find((s) => s.toLowerCase() === raw.toLowerCase()) ?? raw;
+  return allowed.find((a) => a.toLowerCase() === raw.toLowerCase()) ?? raw;
+}
+
+/** The nullable form: an absent value stays null rather than becoming "". */
+function oneOfOrNull(v: unknown, allowed: readonly string[]): string | null {
+  const raw = nullableStr(v);
+  return raw === null ? null : oneOf(raw, allowed);
 }
 
 function roundHalf(v: unknown): number {
@@ -45,18 +68,18 @@ export function normalizeAnalysis(raw: unknown): unknown {
     .filter(isObj)
     .map((f, i) => ({
       id: str(f.id, `F-${String(i + 1).padStart(3, "0")}`),
-      dimension: str(f.dimension),
-      severity: str(f.severity),
+      dimension: oneOf(f.dimension, DIMENSION_IDS),
+      severity: oneOf(f.severity, SEVERITIES),
       excerpt: nullableStr(f.excerpt),
       omission: nullableStr(f.omission),
-      claim_status: nullableStr(f.claim_status),
+      claim_status: oneOfOrNull(f.claim_status, CLAIM_STATUSES),
       finding: str(f.finding),
       why_it_matters: str(f.why_it_matters),
       stakeholder_risk: str(f.stakeholder_risk),
       recommended_action: str(f.recommended_action ?? f.what_to_add ?? f.suggested_revision),
       fact_validation_needed: bool(f.fact_validation_needed),
       specialist_review_needed: bool(f.specialist_review_needed),
-      specialist_review_type: nullableStr(f.specialist_review_type),
+      specialist_review_type: oneOfOrNull(f.specialist_review_type, SPECIALIST_REVIEW_TYPES),
       confidence_note: str(f.confidence_note),
     }));
 
@@ -65,8 +88,8 @@ export function normalizeAnalysis(raw: unknown): unknown {
     executive_summary: {
       headline: str(summary.headline),
       assessment: str(summary.assessment),
-      risk_level: str(summary.risk_level),
-      readiness: str(summary.readiness),
+      risk_level: oneOf(summary.risk_level, RISK_LEVELS),
+      readiness: oneOf(summary.readiness, READINESS_VALUES),
       context_supplied: bool(summary.context_supplied),
       strongest_elements: strings(summary.strongest_elements, 3),
       priority_improvements: strings(summary.priority_improvements, 3),
@@ -74,16 +97,16 @@ export function normalizeAnalysis(raw: unknown): unknown {
     dimensions: arr(raw.dimensions)
       .filter(isObj)
       .filter((d, i, all) => all.findIndex((x) => x.id === d.id) === i)
-      .map((d) => ({ id: str(d.id), score: roundHalf(d.score), rationale: str(d.rationale), would_raise: str(d.would_raise) }))
+      .map((d) => ({ id: oneOf(d.id, DIMENSION_IDS), score: roundHalf(d.score), rationale: str(d.rationale), would_raise: str(d.would_raise) }))
       .filter((d) => (DIMENSION_IDS as readonly string[]).includes(d.id)),
     findings,
     agency_scan: arr(raw.agency_scan)
       .filter(isObj)
       .map((s) => ({
         phrase: str(s.phrase),
-        category: str(s.category),
-        severity: str(s.severity),
-        assessment: str(s.assessment),
+        category: oneOf(s.category, SCAN_CATEGORIES),
+        severity: oneOf(s.severity, SEVERITIES),
+        assessment: oneOf(s.assessment, SCAN_ASSESSMENTS),
         why: str(s.why),
         what_would_make_it_credible: str(s.what_would_make_it_credible),
         finding_id: nullableStr(s.finding_id),
@@ -109,11 +132,11 @@ export function normalizeAnalysis(raw: unknown): unknown {
           source: str(raw.protocol_review.source),
           elements: arr(raw.protocol_review.elements)
             .filter(isObj)
-            .map((e) => ({ name: str(e.name), status: protocolStatus(e.status), note: str(e.note) })),
+            .map((e) => ({ name: str(e.name), status: oneOf(e.status, PROTOCOL_STATUSES), note: str(e.note) })),
         }
       : null,
     questions_before_publication: strings(raw.questions_before_publication, 12),
-    specialist_review_summary: [...new Set(strings(raw.specialist_review_summary, 20))],
+    specialist_review_summary: [...new Set(strings(raw.specialist_review_summary, 20).map((t) => oneOf(t, SPECIALIST_REVIEW_TYPES)))],
   } satisfies Record<keyof Analysis, unknown>;
 
   // A finding whose excerpt and omission are both missing: keep whichever text exists as the omission.

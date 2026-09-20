@@ -3,6 +3,7 @@
  * enforce the code-side constraints, compute the score.
  */
 import type Anthropic from "@anthropic-ai/sdk";
+import { normalizeAnalysis } from "./normalize.js";
 import { callModel, EngineError, newRequestId, type ModelUsage } from "./client.js";
 import { getEngineConfig, type EngineConfig } from "./config.js";
 import { buildSystemBlocks, buildUserMessage } from "./prompt.js";
@@ -55,8 +56,16 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
     validated = validateAnalysis(raw, request.draft, request.context);
   } catch (error) {
     if (error instanceof AnalysisValidationError) {
+      // The path names the offending field and nothing from the draft, so it
+      // travels with the message. Without it a validation failure is a dead
+      // end for whoever is trying to fix it.
       log(`[${requestId}] validation failed at ${error.path}`);
-      throw new EngineError("validation", "The analysis did not return in the expected format. Try again.", requestId, error);
+      throw new EngineError(
+        "validation",
+        `The analysis did not return in the expected format (at ${error.path}). Try again.`,
+        requestId,
+        error,
+      );
     }
     throw error;
   }
@@ -102,5 +111,8 @@ export async function evaluateDraft(request: EvaluationRequest, options: Evaluat
   } catch (error) {
     throw new EngineError("invalid_json", "The analysis did not return in the expected format. Try again.", requestId, error);
   }
-  return finishEvaluation(raw, request, { requestId, provider: { provider: config.provider, model: call.model }, usage: call.usage, log });
+  // Normalized on this path too, not only on the claude.ai page. The provider's
+  // grammar no longer carries the permitted values (see schema.ts), so the
+  // casing repair both runtimes need now happens in one place for both.
+  return finishEvaluation(normalizeAnalysis(raw), request, { requestId, provider: { provider: config.provider, model: call.model }, usage: call.usage, log });
 }
