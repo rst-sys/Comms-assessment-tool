@@ -6,7 +6,7 @@ import type { EvaluationResult } from "../engine/evaluate.js";
 import type { ComparisonResult } from "../engine/compare.js";
 import type { PublicContextResult } from "../engine/publicContext.js";
 import type { SavedReview } from "../engine/savedReview.js";
-import type { CommunicationType, EvaluationRequest } from "../engine/types.js";
+import type { CommunicationFormat, EvaluationRequest } from "../engine/types.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
 export interface ImportedPage {
@@ -14,7 +14,7 @@ export interface ImportedPage {
   title: string | null;
   published: string | null;
   text: string;
-  suggested_type: CommunicationType | null;
+  suggested_format: CommunicationFormat | null;
 }
 
 export class ApiError extends Error {

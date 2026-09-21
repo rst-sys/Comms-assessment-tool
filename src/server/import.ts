@@ -7,7 +7,7 @@
  */
 import { Readability } from "@mozilla/readability";
 import { JSDOM, VirtualConsole } from "jsdom";
-import type { CommunicationType } from "../engine/types.js";
+import type { CommunicationFormat } from "../engine/types.js";
 
 export const IMPORT_ERROR = "Couldn't extract readable text from this page. Paste the text instead.";
 
@@ -16,7 +16,7 @@ export interface ImportedPage {
   title: string | null;
   published: string | null;
   text: string;
-  suggested_type: CommunicationType | null;
+  suggested_format: CommunicationFormat | null;
 }
 
 /** Only public http(s) URLs without credentials; loopback, link-local and private ranges are refused. */
@@ -43,7 +43,7 @@ export function allowedUrl(input: string): URL | null {
 }
 
 /** A newsroom or press URL suggests a press release; a blog URL suggests a blog post. */
-export function suggestTypeFromUrl(url: string): CommunicationType | null {
+export function suggestFormatFromUrl(url: string): CommunicationFormat | null {
   if (/newsroom|press[-_]?release|\/press(\/|$)|\/news(\/|$)|\/media(\/|$)|\/announcements?(\/|$)/i.test(url)) return "Press release";
   if (/\/blogs?(\/|$)|\/posts?(\/|$)|blog\./i.test(url)) return "Blog post";
   return null;
@@ -104,7 +104,7 @@ export function extractReadable(html: string, url: string): ImportedPage | null 
     title,
     published: publishedFrom(doc, article.publishedTime),
     text,
-    suggested_type: suggestTypeFromUrl(url),
+    suggested_format: suggestFormatFromUrl(url),
   };
 }
 

@@ -47,17 +47,18 @@ describe("IntakeScreen", () => {
     fireEvent.click(button);
     expect(onEvaluate).toHaveBeenCalledTimes(1);
     const request = onEvaluate.mock.calls[0]![0];
-    expect(request.communication_type).toBe("Layoff or restructuring");
+    expect(request.communication_event).toBe("Workforce reduction or major reorganization");
+    expect(request.communication_format).toBe("Employee announcement");
     expect(request.heightened_review).toBe(true);
     expect(request.already_published).toBe(false);
     expect(request.context).toEqual({});
   });
 
-  it("auto-checks heightened review for an apology and lets the user uncheck it", () => {
+  it("auto-checks heightened review for an exposed event and lets the user uncheck it", () => {
     restore = enable("heightenedReview");
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    const type = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
-    fireEvent.change(type, { target: { value: "Apology" } });
+    const event = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
+    fireEvent.change(event, { target: { value: "Cyberattack or data incident" } });
     const box = screen.getByRole("checkbox", { name: /heightened review/i }) as HTMLInputElement;
     expect(box.checked).toBe(true);
     fireEvent.click(box);
@@ -71,10 +72,10 @@ describe("IntakeScreen", () => {
     expect((screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement).disabled).toBe(true);
   });
 
-  it("imports a page, fills the draft, suggests the type and marks the draft as already published", async () => {
+  it("imports a page, fills the draft, suggests the format and marks the draft as already published", async () => {
     const onEvaluate = vi.fn();
     const text = Array.from({ length: 60 }, (_, i) => `word${i}`).join(" ");
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ source_url: "https://example.com/newsroom/x", title: "A statement", published: "2026-09-01", text, suggested_type: "Press release" }), { status: 200, headers: { "content-type": "application/json" } })));
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ source_url: "https://example.com/newsroom/x", title: "A statement", published: "2026-09-01", text, suggested_format: "Press release" }), { status: 200, headers: { "content-type": "application/json" } })));
     try {
       render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
       fireEvent.click(screen.getByRole("tab", { name: "Import from URL" }));
@@ -82,13 +83,17 @@ describe("IntakeScreen", () => {
       fireEvent.click(screen.getByRole("button", { name: "Fetch text" }));
       expect(await screen.findByText("A statement")).toBeTruthy();
       expect(screen.getByText(/already issued/)).toBeTruthy();
-      expect((screen.getAllByRole("combobox")[0] as HTMLSelectElement).value).toBe("Press release");
+      // The URL suggests a format, never an event: a newsroom page tells you
+      // what the document is, not what happened.
       const selects = screen.getAllByRole("combobox") as HTMLSelectElement[];
-      fireEvent.change(selects[1]!, { target: { value: "Media" } });
-      fireEvent.change(selects[2]!, { target: { value: "Routine" } });
-      fireEvent.change(selects[3]!, { target: { value: "United Kingdom" } });
-      fireEvent.change(selects[4]!, { target: { value: "Inform" } });
-      fireEvent.change(selects[5]!, { target: { value: "External" } });
+      expect(selects[1]!.value).toBe("Press release");
+      expect(selects[0]!.value).toBe("");
+      fireEvent.change(selects[0]!, { target: { value: "None of these" } });
+      fireEvent.change(selects[2]!, { target: { value: "Media" } });
+      fireEvent.change(selects[3]!, { target: { value: "Routine" } });
+      fireEvent.change(selects[4]!, { target: { value: "United Kingdom" } });
+      fireEvent.change(selects[5]!, { target: { value: "Inform" } });
+      fireEvent.change(selects[6]!, { target: { value: "External" } });
       fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
       expect(onEvaluate.mock.calls[0]![0].already_published).toBe(true);
     } finally {

@@ -3,7 +3,8 @@ import { DEMOS, type Fixture } from "../../engine/fixtures.js";
 import type { SavedReview } from "../../engine/savedReview.js";
 import {
   AUDIENCE_SCOPES,
-  COMMUNICATION_TYPES,
+  COMMUNICATION_EVENTS,
+  COMMUNICATION_FORMATS,
   CONTEXT_FIELDS,
   GOALS,
   MARKETS,
@@ -50,7 +51,8 @@ interface Props {
 type SourceTab = "paste" | "url";
 
 const FIELD_OPTIONS: { key: keyof DraftFields; label: string; options: readonly string[] }[] = [
-  { key: "communication_type", label: "Communication type", options: COMMUNICATION_TYPES },
+  { key: "communication_event", label: "Communication event", options: COMMUNICATION_EVENTS },
+  { key: "communication_format", label: "Communication format", options: COMMUNICATION_FORMATS },
   { key: "primary_audience", label: "Primary audience", options: PRIMARY_AUDIENCES },
   { key: "setting", label: "Setting", options: SETTINGS },
   { key: "market", label: "Market", options: MARKETS },
@@ -69,7 +71,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const [draft, setDraft] = useState(init?.draft ?? "");
   const [fields, setFields] = useState<DraftFields>(
     init
-      ? { communication_type: init.communication_type, primary_audience: init.primary_audience, setting: init.setting, market: init.market, goal: init.goal, audience_scope: init.audience_scope }
+      ? { communication_event: init.communication_event, communication_format: init.communication_format, primary_audience: init.primary_audience, setting: init.setting, market: init.market, goal: init.goal, audience_scope: init.audience_scope }
       : EMPTY_FIELDS,
   );
   const [context, setContext] = useState<ContextFields>(init ? { ...init.context } : {});
@@ -83,10 +85,10 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
 
-  // Auto-check heightened review when type or setting calls for it; the user may uncheck afterwards.
+  // Auto-check heightened review when the event or setting calls for it; the user may uncheck afterwards.
   useEffect(() => {
-    if (heightenedByDefault(fields.communication_type, fields.setting)) setHeightened(true);
-  }, [fields.communication_type, fields.setting]);
+    if (heightenedByDefault(fields.communication_event, fields.setting)) setHeightened(true);
+  }, [fields.communication_event, fields.setting]);
 
   const words = wordCount(draft);
   const stanceOk = stance === "proactive" || reactingTo.trim().length > 0;
@@ -101,7 +103,8 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
     setTab("paste");
     setDraft(r.draft);
     setFields({
-      communication_type: r.communication_type,
+      communication_event: r.communication_event,
+      communication_format: r.communication_format,
       primary_audience: r.primary_audience,
       setting: r.setting,
       market: r.market,
@@ -128,7 +131,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       setDraft(page.text);
       setImported(page);
       setIsDemo(false);
-      if (page.suggested_type && fields.communication_type === "") setField("communication_type", page.suggested_type);
+      if (page.suggested_format && fields.communication_format === "") setField("communication_format", page.suggested_format);
     } catch (e) {
       setImportError(e instanceof Error ? e.message : "Couldn't extract readable text from this page. Paste the text instead.");
     } finally {
@@ -262,7 +265,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
             {FEATURES.heightenedReview ? null : <span className="coming-soon"> {COMING_SOON}</span>}
           </label>
 
-          {showHighRiskWarning(fields.communication_type, fields.market) ? (
+          {showHighRiskWarning(fields.communication_event, fields.market) ? (
             <p className="warning" role="note">{HIGH_RISK_WARNING}</p>
           ) : null}
           {error ? <p className="error" role="alert">{error}</p> : null}

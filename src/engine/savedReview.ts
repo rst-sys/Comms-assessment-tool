@@ -24,7 +24,8 @@ export const SAVED_REVIEW_VERSION = 1;
 
 /** The intake settings that must match for two reviews to be comparable. */
 export interface SavedSettings {
-  communication_type: string;
+  communication_event: string;
+  communication_format: string;
   primary_audience: string;
   setting: string;
   market: string;
@@ -93,7 +94,8 @@ export function buildSavedReview(
     band: result.band,
     confidence_label: result.confidence_label,
     settings: {
-      communication_type: request.communication_type,
+      communication_event: request.communication_event,
+      communication_format: request.communication_format,
       primary_audience: request.primary_audience,
       setting: request.setting,
       market: request.market,
@@ -136,7 +138,8 @@ export function buildSavedReview(
 
 /** The settings a later review must match for the comparison to be like-for-like. */
 export const COMPARABLE_SETTINGS: (keyof SavedSettings)[] = [
-  "communication_type",
+  "communication_event",
+  "communication_format",
   "primary_audience",
   "setting",
   "market",
@@ -146,7 +149,8 @@ export const COMPARABLE_SETTINGS: (keyof SavedSettings)[] = [
 ];
 
 export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
-  communication_type: "Communication type",
+  communication_event: "Communication event",
+  communication_format: "Communication format",
   primary_audience: "Primary audience",
   setting: "Setting",
   market: "Market",
@@ -161,7 +165,8 @@ export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
 /** Settings that differ between the saved review and the current request. */
 export function settingsDrift(saved: SavedSettings, request: EvaluationRequest): string[] {
   const current: SavedSettings = {
-    communication_type: request.communication_type,
+    communication_event: request.communication_event,
+    communication_format: request.communication_format,
     primary_audience: request.primary_audience,
     setting: request.setting,
     market: request.market,
@@ -225,6 +230,6 @@ export function parseSavedReview(text: string): SavedReview {
 }
 
 export function savedReviewFilename(saved: SavedReview): string {
-  const type = saved.settings.communication_type.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const type = saved.settings.communication_event.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   return `trust-review-${type}-${saved.saved_at.slice(0, 10)}.json`;
 }

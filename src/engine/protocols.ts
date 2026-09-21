@@ -64,10 +64,10 @@ export const APOLOGY_PROTOCOL: ProtocolSpec = {
   name: "Effective apology",
   source: "Lewicki, R. J., Polin, B., & Lount, R. B. (2016). An Exploration of the Structure of Effective Apologies. Negotiation and Conflict Management Research, 9(2), 177–196.",
   basis: "Two studies with 755 participants rated apologies containing one to six components for how effective, credible and adequate they were.",
-  appliesTo: 'Communication type "Apology", or the goal "Apologize or repair trust".',
+  appliesTo: 'The goal "Apologize or repair trust".',
   elements: APOLOGY_ELEMENTS,
   promptBlock: APOLOGY_PROMPT,
-  applies: (r) => r.communication_type === "Apology" || r.goal === "Apologize or repair trust",
+  applies: (r) => r.goal === "Apologize or repair trust",
 };
 
 /** The layoff protocol already carried in PROMPT.md Section 10; listed here so the library is complete. */

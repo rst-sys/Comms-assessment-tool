@@ -121,7 +121,7 @@ describe("App", () => {
       expect(await screen.findByText("Risk level")).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Save this review" }));
       await waitFor(() => expect(saves.length).toBe(1));
-      expect(saves[0]!.filename).toMatch(/^trust-review-layoff-or-restructuring-\d{4}-\d{2}-\d{2}\.json$/);
+      expect(saves[0]!.filename).toMatch(/^trust-review-workforce-reduction-or-major-reorganization-\d{4}-\d{2}-\d{2}\.json$/);
       expect(screen.getByText(/Review saved/)).toBeTruthy();
     } finally {
       click.mockRestore();

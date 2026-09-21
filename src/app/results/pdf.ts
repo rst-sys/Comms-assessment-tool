@@ -126,7 +126,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   const w = new Writer();
 
   w.heading(APP_NAME, 12);
-  w.paragraph(`${request.communication_type} · ${request.primary_audience} · ${request.setting} · ${request.market} · ${now.toISOString().slice(0, 10)}`, 9);
+  w.paragraph(`${request.communication_event} · ${request.communication_format} · ${request.primary_audience} · ${request.setting} · ${request.market} · ${now.toISOString().slice(0, 10)}`, 9);
   w.rule();
 
   w.heading("Executive summary", 15);
@@ -211,6 +211,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
 }
 
 export function reviewPdfFilename(request: EvaluationRequest, now = new Date()): string {
-  const type = request.communication_type.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  const type = request.communication_event.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   return `trustability-review-${type}-${now.toISOString().slice(0, 10)}.pdf`;
 }

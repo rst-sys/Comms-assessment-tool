@@ -6,7 +6,8 @@
 import { Ajv } from "ajv";
 import {
   AUDIENCE_SCOPES,
-  COMMUNICATION_TYPES,
+  COMMUNICATION_EVENTS,
+  COMMUNICATION_FORMATS,
   CONTEXT_FIELDS,
   GOALS,
   MARKETS,
@@ -26,7 +27,8 @@ export const REQUEST_SCHEMA = {
   type: "object",
   properties: {
     draft: { type: "string", minLength: 1, maxLength: 60_000 },
-    communication_type: enumOf(COMMUNICATION_TYPES),
+    communication_event: enumOf(COMMUNICATION_EVENTS),
+    communication_format: enumOf(COMMUNICATION_FORMATS),
     primary_audience: enumOf(PRIMARY_AUDIENCES),
     setting: enumOf(SETTINGS),
     market: enumOf(MARKETS),
@@ -62,7 +64,8 @@ export const REQUEST_SCHEMA = {
   },
   required: [
     "draft",
-    "communication_type",
+    "communication_event",
+    "communication_format",
     "primary_audience",
     "setting",
     "market",

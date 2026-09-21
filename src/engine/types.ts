@@ -6,26 +6,77 @@
  * text and these fields.
  */
 
-export const COMMUNICATION_TYPES = [
-  "CEO or executive message",
-  "Employee announcement",
-  "Layoff or restructuring",
+/**
+ * What happened. The thirteen high-stakes events a communications team meets,
+ * named by the owner, plus an explicit "none of these" so a routine or
+ * positive announcement is not forced to claim a disaster.
+ *
+ * This is the axis the protocol library is organised on. It replaces half of
+ * the old COMMUNICATION_TYPES list, which mixed events with formats: a
+ * workforce reduction is not a kind of document, and it arrives as a press
+ * release, an employee memo and a manager toolkit in the same week, needing
+ * the same accountability checks in all three.
+ */
+export const COMMUNICATION_EVENTS = [
+  "CEO or senior-leader departure",
+  "Workforce reduction or major reorganization",
+  "Cyberattack or data incident",
+  "Workplace safety event or facility emergency",
+  "Service outage, product defect, recall or quality failure",
+  "Regulatory investigation, litigation or ethics allegation",
+  "Acquisition, divestiture or major integration",
+  "Poor financial results, site closure or strategic retreat",
+  "Employee-relations controversy or union escalation",
+  "Public backlash — values, culture, DEI or political pressure",
+  "Supply-chain disruption affecting customers or employees",
+  "Community or environmental incident at a facility",
+  "Geopolitical event affecting operations or employee welfare",
+  "None of these",
+] as const;
+export type CommunicationEvent = (typeof COMMUNICATION_EVENTS)[number];
+
+/** No event: the draft is judged on the ten dimensions alone, with no protocol. */
+export const NO_EVENT: CommunicationEvent = "None of these";
+
+/**
+ * Events where something failed or the organization is answerable for the
+ * decision. Drives Part B of the event core: what changes so it does not
+ * recur, which is meaningless for an acquisition or a planned retirement.
+ */
+export const FAILURE_EVENTS: ReadonlySet<CommunicationEvent> = new Set<CommunicationEvent>([
+  "Workforce reduction or major reorganization",
+  "Cyberattack or data incident",
+  "Workplace safety event or facility emergency",
+  "Service outage, product defect, recall or quality failure",
+  "Regulatory investigation, litigation or ethics allegation",
+  "Poor financial results, site closure or strategic retreat",
+  "Employee-relations controversy or union escalation",
+  "Public backlash — values, culture, DEI or political pressure",
+  "Supply-chain disruption affecting customers or employees",
+  "Community or environmental incident at a facility",
+]);
+
+/**
+ * What the document is. Changes what the draft should contain, not the
+ * standard it is held to: a holding statement is allowed to be thin where a
+ * press release is not.
+ */
+export const COMMUNICATION_FORMATS = [
   "Press release",
-  "Crisis statement",
+  "Public statement",
   "Holding statement",
-  "Apology",
+  "Employee announcement",
+  "CEO or executive message",
   "Investor communication",
-  "Product or service announcement",
-  "Policy or public-affairs",
-  "Change-management",
+  "Customer, partner or supplier notice",
+  "Manager toolkit",
+  "Talking points",
+  "FAQ",
   "Blog post",
   "Social-media post",
-  "Talking points",
-  "Manager toolkit",
-  "FAQ",
   "Other",
 ] as const;
-export type CommunicationType = (typeof COMMUNICATION_TYPES)[number];
+export type CommunicationFormat = (typeof COMMUNICATION_FORMATS)[number];
 
 export const PRIMARY_AUDIENCES = [
   "All employees",
@@ -148,7 +199,10 @@ export type Stance = (typeof STANCES)[number];
 
 export interface EvaluationRequest {
   draft: string;
-  communication_type: CommunicationType;
+  /** What happened. Selects the protocols that apply. */
+  communication_event: CommunicationEvent;
+  /** What the document is. Changes what it should contain, not the standard. */
+  communication_format: CommunicationFormat;
   primary_audience: PrimaryAudience;
   setting: Setting;
   market: Market;

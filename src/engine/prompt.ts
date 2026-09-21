@@ -86,7 +86,7 @@ export interface SystemBlock {
 /** System prompt blocks in order: verbatim prompt, optional layoff block, output notes. */
 export function buildSystemBlocks(request: EvaluationRequest): SystemBlock[] {
   const blocks: SystemBlock[] = [{ text: SYSTEM_PROMPT }];
-  if (request.communication_type === "Layoff or restructuring") {
+  if (request.communication_event === "Workforce reduction or major reorganization") {
     blocks.push({ text: LAYOFF_BLOCK });
   }
   for (const protocol of protocolsFor(request)) {
@@ -112,7 +112,8 @@ export function buildUserMessage(request: EvaluationRequest): string {
     block(
       "INTAKE",
       [
-        `Communication type: ${request.communication_type}`,
+        `Communication event: ${request.communication_event}`,
+        `Communication format: ${request.communication_format}`,
         `Primary audience: ${request.primary_audience}`,
         `Setting: ${request.setting}`,
         `Market: ${request.market}`,

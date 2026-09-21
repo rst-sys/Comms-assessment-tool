@@ -31,7 +31,7 @@ export function ComparisonPanel({ comparison, baseline }: Props) {
     <section className="card comparison" id="comparison" aria-labelledby="comparison-heading">
       <h2 id="comparison-heading">Compared with your saved review</h2>
       <p className="muted small" style={{ marginTop: "-8px" }}>
-        Saved {baseline.saved_at.slice(0, 10)} · {baseline.settings.communication_type}
+        Saved {baseline.saved_at.slice(0, 10)} · {baseline.settings.communication_event}
       </p>
 
       {comparison.drift.length > 0 ? (

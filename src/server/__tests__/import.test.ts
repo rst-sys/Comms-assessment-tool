@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { allowedUrl, extractReadable, fetchPage, suggestTypeFromUrl } from "../import.js";
+import { allowedUrl, extractReadable, fetchPage, suggestFormatFromUrl } from "../import.js";
 
 const paragraph = (n: number) =>
   `<p>Paragraph ${n}. On 4 September the executive team decided to close the Denver support center by 31 December, after demand shifted to chat and self-service faster than planned. Maria Chen owns the transition and will report progress monthly.</p>`;
@@ -22,7 +22,7 @@ describe("extractReadable", () => {
     expect(page!.text).toContain("Paragraph 6.");
     expect(page!.text).not.toContain("We use cookies");
     expect(page!.text).not.toContain("Great news!");
-    expect(page!.suggested_type).toBe("Press release");
+    expect(page!.suggested_format).toBe("Press release");
   });
 
   it("returns null for a paywalled or script-only page with no readable body", () => {
@@ -32,7 +32,7 @@ describe("extractReadable", () => {
 
   it("does not suggest a type for an ordinary page", () => {
     const page = extractReadable(articleHtml, "https://example.com/about/denver-closure");
-    expect(page!.suggested_type).toBeNull();
+    expect(page!.suggested_format).toBeNull();
   });
 });
 
@@ -60,16 +60,16 @@ describe("allowedUrl", () => {
   });
 });
 
-describe("suggestTypeFromUrl", () => {
+describe("suggestFormatFromUrl", () => {
   it("suggests Press release for newsroom and press URLs only", () => {
-    expect(suggestTypeFromUrl("https://corp.example.com/newsroom/2026/statement")).toBe("Press release");
-    expect(suggestTypeFromUrl("https://corp.example.com/press-releases/q3")).toBe("Press release");
-    expect(suggestTypeFromUrl("https://corp.example.com/news/q3")).toBe("Press release");
-    expect(suggestTypeFromUrl("https://corp.example.com/ceo-letter")).toBeNull();
+    expect(suggestFormatFromUrl("https://corp.example.com/newsroom/2026/statement")).toBe("Press release");
+    expect(suggestFormatFromUrl("https://corp.example.com/press-releases/q3")).toBe("Press release");
+    expect(suggestFormatFromUrl("https://corp.example.com/news/q3")).toBe("Press release");
+    expect(suggestFormatFromUrl("https://corp.example.com/ceo-letter")).toBeNull();
   });
   it("suggests Blog post for a blog URL", () => {
-    expect(suggestTypeFromUrl("https://corp.example.com/blog/why-we-changed")).toBe("Blog post");
-    expect(suggestTypeFromUrl("https://blog.example.com/why-we-changed")).toBe("Blog post");
+    expect(suggestFormatFromUrl("https://corp.example.com/blog/why-we-changed")).toBe("Blog post");
+    expect(suggestFormatFromUrl("https://blog.example.com/why-we-changed")).toBe("Blog post");
   });
 });
 

@@ -228,7 +228,8 @@ function baselineRequest(saved: SavedReview, fallback?: Req): Req {
   return {
     ...(fallback ?? ({} as Req)),
     draft: "",
-    communication_type: s.communication_type as Req["communication_type"],
+    communication_event: s.communication_event as Req["communication_event"],
+    communication_format: s.communication_format as Req["communication_format"],
     primary_audience: s.primary_audience as Req["primary_audience"],
     setting: s.setting as Req["setting"],
     market: s.market as Req["market"],

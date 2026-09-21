@@ -40,7 +40,7 @@ describe("buildSavedReview", () => {
   it("keeps the score, settings, context and findings so the next review is like-for-like", () => {
     const saved = buildSavedReview(result, request);
     expect(saved.score).toBe(result.score);
-    expect(saved.settings.communication_type).toBe("Layoff or restructuring");
+    expect(saved.settings.communication_event).toBe("Workforce reduction or major reorganization");
     expect(saved.settings.heightened_review).toBe(true);
     expect(saved.context.known_facts).toBe("The executive team decided.");
     expect(saved.dimensions).toHaveLength(10);
@@ -68,7 +68,7 @@ describe("buildSavedReview", () => {
     const reloaded = parseSavedReview(JSON.stringify(saved));
     expect(reloaded.score).toBe(saved.score);
     expect(reloaded.findings).toHaveLength(saved.findings.length);
-    expect(savedReviewFilename(saved)).toBe("trust-review-layoff-or-restructuring-2026-09-20.json");
+    expect(savedReviewFilename(saved)).toBe("trust-review-workforce-reduction-or-major-reorganization-2026-09-20.json");
   });
 });
 

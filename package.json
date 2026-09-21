@@ -2,7 +2,7 @@
   "name": "accountable-communications-review",
   "version": "0.1.0",
   "private": true,
-  "description": "Trust Assessment Assistant \u2014 does this message give an account?",
+  "description": "Trust Assessment Assistant — does this message give an account?",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -41,6 +41,7 @@
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
-    "vitest": "^5.0.1"
+    "vitest": "^5.0.1",
+    "yaml": "^2.9.1"
   }
 }

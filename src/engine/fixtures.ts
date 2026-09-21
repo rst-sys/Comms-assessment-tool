@@ -51,7 +51,8 @@ export interface Fixture {
 const demo1Request: EvaluationRequest = {
   draft:
     "Rapid growth brought complexity. Based on feedback from employees, we are eliminating roles to become leaner and more agile. These changes will help us focus on what matters most.",
-  communication_type: "Layoff or restructuring",
+  communication_event: "Workforce reduction or major reorganization",
+  communication_format: "Employee announcement",
   primary_audience: "All employees",
   setting: "High stakes",
   market: "United States",
@@ -107,7 +108,8 @@ export const DEMO_2: Fixture = {
   request: {
     draft:
       "Some customers were offended by content that did not reflect our values. We are committed to learning from this.",
-    communication_type: "Apology",
+    communication_event: "Public backlash — values, culture, DEI or political pressure",
+    communication_format: "Public statement",
     primary_audience: "Customers",
     setting: "Sensitive",
     market: "Global or multi-market",
@@ -142,7 +144,8 @@ export const DEMO_3: Fixture = {
   request: {
     draft:
       "Macroeconomic headwinds and sector-wide conditions affected performance. We remain confident in our strategy.",
-    communication_type: "Investor communication",
+    communication_event: "Poor financial results, site closure or strategic retreat",
+    communication_format: "Investor communication",
     primary_audience: "Investors",
     setting: "Material corporate event",
     market: "United States",
@@ -180,7 +183,8 @@ export const CONTROL: Fixture = {
   request: {
     draft:
       "On 4 September the executive team, on my recommendation and with board approval, decided to close the Denver support center by 31 December. Demand shifted to chat and self-service faster than we planned for in 2024, and we kept the center staffed on the old forecast for two quarters longer than we should have. That was our misjudgment, not the team's. All 62 affected colleagues have been offered roles in Phoenix or remote positions, with relocation support and a 90-day decision window; details are in the HR portal. Maria Chen owns the transition and will report progress to all of us on the first Monday of each month through March. We are also changing how we set staffing forecasts, moving from annual to quarterly reviews starting in Q1.",
-    communication_type: "CEO or executive message",
+    communication_event: "Workforce reduction or major reorganization",
+    communication_format: "CEO or executive message",
     primary_audience: "All employees",
     setting: "Sensitive",
     market: "United States",

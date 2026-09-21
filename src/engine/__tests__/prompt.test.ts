@@ -22,7 +22,7 @@ describe("system prompt text", () => {
 });
 
 describe("buildSystemBlocks", () => {
-  it("adds the layoff block only for Layoff or restructuring", () => {
+  it("adds the layoff block only for a workforce reduction", () => {
     const layoff = buildSystemBlocks(DEMO_1.request).map((b) => b.text);
     expect(layoff).toEqual([SYSTEM_PROMPT, LAYOFF_BLOCK, OUTPUT_NOTES]);
 
@@ -30,20 +30,18 @@ describe("buildSystemBlocks", () => {
     expect(apology).toEqual([SYSTEM_PROMPT, APOLOGY_PROTOCOL.promptBlock, OUTPUT_NOTES]);
   });
 
-  it("adds the apology protocol for the Apology type, for the repair goal, and for neither otherwise", () => {
-    const byType = buildSystemBlocks({ ...DEMO_1.request, communication_type: "Apology" }).map((b) => b.text);
-    expect(byType).toContain(APOLOGY_PROTOCOL.promptBlock);
-
+  it("adds the apology protocol for the repair goal, and not otherwise", () => {
+    // An apology is a posture, not an event: it can sit on top of any of the
+    // thirteen, so the goal decides and the event does not.
     const byGoal = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
-    expect(byGoal).toContain(APOLOGY_PROTOCOL.promptBlock);
+    expect(byGoal.filter((t) => t === APOLOGY_PROTOCOL.promptBlock).length).toBe(1);
 
-    // Named once even when both the type and the goal match.
-    const both = buildSystemBlocks({
+    const otherEvent = buildSystemBlocks({
       ...DEMO_1.request,
-      communication_type: "Apology",
+      communication_event: "Cyberattack or data incident",
       goal: "Apologize or repair trust",
     }).map((b) => b.text);
-    expect(both.filter((t) => t === APOLOGY_PROTOCOL.promptBlock).length).toBe(1);
+    expect(otherEvent).toContain(APOLOGY_PROTOCOL.promptBlock);
 
     expect(buildSystemBlocks(DEMO_1.request).map((b) => b.text)).not.toContain(APOLOGY_PROTOCOL.promptBlock);
   });
@@ -93,7 +91,8 @@ describe("buildUserMessage", () => {
   it("includes the draft and every intake field as labeled blocks", () => {
     const msg = buildUserMessage(DEMO_1.request);
     expect(msg).toContain("DRAFT\n<<<\nRapid growth brought complexity.");
-    expect(msg).toContain("Communication type: Layoff or restructuring");
+    expect(msg).toContain("Communication event: Workforce reduction or major reorganization");
+    expect(msg).toContain("Communication format: Employee announcement");
     expect(msg).toContain("Primary audience: All employees");
     expect(msg).toContain("Setting: High stakes");
     expect(msg).toContain("Market: United States");
