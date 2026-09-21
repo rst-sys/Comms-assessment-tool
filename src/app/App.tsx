@@ -126,6 +126,10 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
           setView("overview");
           setWelcomeDone(true);
         }}
+        onStandards={() => {
+          setView("standards");
+          setWelcomeDone(true);
+        }}
       />
     );
   }

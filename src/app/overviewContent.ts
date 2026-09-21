@@ -26,13 +26,14 @@ export const WHAT_YOU_GET: string[] = [
   "Specific findings, each naming the gap and the kind of information that would close it.",
   "One line from each of five audiences, in their own words, saying what the draft leaves them asking.",
   "Questions worth asking before you publish, tagged where a named reviewer should see them.",
+  "The most damaging way the draft could reasonably be read, if it went out unchanged.",
   "A PDF of the whole review to keep or to share with colleagues.",
 ];
 
 export const NOT_THIS: [string, string][] = [
   [
     "It does not write for you.",
-    "No drafting, no rewriting, no suggested wording. You are the author and the authority; the tool points at passages and names the kind of information that would strengthen them.",
+    "No drafting, no rewriting, no suggested wording. You are the author and the authority; the tool names the kind of information that would strengthen the draft and leaves the writing to you.",
   ],
   ["It is not an editor or copyeditor.", "Grammar, spelling, house style and readability scores are outside its scope."],
   [
@@ -55,7 +56,7 @@ export const NOT_THIS_SHORT: string[] = [
 export const VALUE_POINTS: [string, string][] = [
   ["A second opinion before you issue,", "when the people who could give one are unavailable or too close to the decision."],
   ["The same standard every time,", "across drafts, teams and months, rather than whoever happens to review it."],
-  ["Specific, not vague.", "It names the passage and the missing information, so you know what to go and find out."],
+  ["Specific, not vague.", "It names the gap and the kind of information that would close it, so you know what to go and find out."],
   ["A record you can share.", "The PDF gives counsel, HR or leadership a common reference for what is still unresolved."],
 ];
 

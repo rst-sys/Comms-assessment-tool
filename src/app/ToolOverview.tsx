@@ -21,11 +21,12 @@ export function ToolOverview({ config, runtimeNote }: { config: PrivacyConfig | 
       <section className="card welcome-card" aria-labelledby="what-heading">
         <h2 id="what-heading">What it does</h2>
         <p className="prose">
-          You paste a draft message, say who it is for and what it is trying to do, and {APP_NAME} reads it the way a
-          thoughtful, skeptical member of that audience would. It asks one question throughout: does this message give an
-          account of the decision behind it, or does it only sound reassuring?
+          You paste a draft message and answer three questions: what happened, what kind of document this is, and who it
+          is for. {APP_NAME} then reads it the way a thoughtful, skeptical member of that audience would. It asks one
+          question throughout: does this message give an account of the decision behind it, or does it only sound
+          reassuring?
         </p>
-        <p className="prose">You get back, in about two minutes:</p>
+        <p className="prose">You get back, in about a minute:</p>
         <ul className="tight prose">
           {WHAT_YOU_GET.map((item) => (
             <li key={item}>{item}</li>
@@ -65,12 +66,27 @@ export function ToolOverview({ config, runtimeNote }: { config: PrivacyConfig | 
           ))}
         </ul>
 
+        <h3>The standard for what happened</h3>
+        <p className="prose">
+          The event you name brings in a further set of checks. Every high-stakes event shares a core — who decided and
+          who owns the response, who is affected, what is confirmed against what is assumed, what the reader should do,
+          when the next update comes, and whether the hard fact is said plainly. Some events also have a standard of
+          their own, written from published research or regulation.
+        </p>
+        <p className="prose">
+          These are a lens on the ten dimensions above, never an eleventh score, and they never produce a section of
+          their own: what they find appears as an ordinary finding or question. Every one of them is set out in the
+          Standards Library, with its source and its limits. Choose "None of these" and the draft is judged on the ten
+          dimensions alone.
+        </p>
+
         <h3>Two lenses on top</h3>
         <ul className="tight prose">
           <li>
             <strong>Agency and abstraction scan.</strong> Six categories of language that hide who decided: external
             weather, institutional abstraction, audience displacement, passive accountability, values without action, and
-            vague action. A phrase is flagged only when it is doing the explaining, never because a word appears.
+            vague action. A phrase is flagged only when it is doing the explaining, never because a word appears. The
+            scan shapes the findings and the scores; its flagged phrases are no longer printed back at you.
           </li>
           <li>
             <strong>Devil's advocate.</strong> Five audience perspectives chosen for your message type, each stating what a

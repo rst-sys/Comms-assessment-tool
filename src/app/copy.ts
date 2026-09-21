@@ -21,4 +21,4 @@ export const APP_NAME = "Trust Assessment Assistant";
 export const TAGLINE = "Does this message give an account?";
 
 export const INTRO =
-  "This tool helps communicators evaluate draft communications and provides objective feedback on how well they build trust and credibility, all based on recognized standards and best practices.";
+  "Paste a draft and say what happened. The tool scores how well the message accounts for the decision behind it, names what is missing, and tells you which published standards it judged you against.";

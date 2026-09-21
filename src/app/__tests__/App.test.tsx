@@ -89,6 +89,27 @@ describe("App", () => {
     consoleError.mockRestore();
   });
 
+  it("describes on the welcome screen what the tool now actually does", async () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
+    await renderApp();
+    // The three questions, and the standard the event brings in: the whole
+    // point of the protocol library, and invisible if the first screen
+    // describes the tool as it was before.
+    expect(screen.getByRole("heading", { name: "What it judges against" })).toBeTruthy();
+    expect(screen.getByText(/which high-stakes event the message is about/)).toBeTruthy();
+    expect(screen.getByText(/decides which standard\s+applies/)).toBeTruthy();
+    // Claims the redesign made false.
+    expect(screen.queryByText(/two minutes/)).toBeNull();
+    expect(screen.queryByText(/tied to specific passages/)).toBeNull();
+  });
+
+  it("opens the Standards Library from the welcome screen, not the Tool Overview", async () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
+    expect(screen.getByRole("heading", { name: "Standards library", level: 1 })).toBeTruthy();
+  });
+
   it("opens the Tool Overview tab from the welcome link and from the nav", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
     await renderApp();

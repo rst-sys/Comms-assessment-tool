@@ -9,6 +9,7 @@ interface Props {
   runtimeNote?: string;
   onStart: () => void;
   onOverview: () => void;
+  onStandards: () => void;
 }
 
 /**
@@ -16,7 +17,7 @@ interface Props {
  * page, in one screen, with the privacy callout and a link to the fuller
  * explanation.
  */
-export function WelcomeScreen({ config, runtimeNote, onStart, onOverview }: Props) {
+export function WelcomeScreen({ config, runtimeNote, onStart, onOverview, onStandards }: Props) {
   const privacy = privacyPoints(config ? `${config.provider} (${config.model})` : null, null);
   return (
     <main className="page welcome" aria-labelledby="welcome-heading">
@@ -26,22 +27,40 @@ export function WelcomeScreen({ config, runtimeNote, onStart, onOverview }: Prop
       <section className="card welcome-card" aria-labelledby="what-heading">
         <h2 id="what-heading">What it does</h2>
         <p className="prose">
-          You paste a draft; {APP_NAME} reads it the way a thoughtful, skeptical member of your audience would, asking one
-          question: does this message give an account of the decision behind it, or does it only sound reassuring?
+          {APP_NAME} reads your draft the way a thoughtful, skeptical member of your audience would, asking one question
+          throughout: does this message give an account of the decision behind it, or does it only sound reassuring?
         </p>
         <p className="prose">
-          In about two minutes you get a trust score out of 100, a headline takeaway, findings tied to specific passages, a
-          scan of language that hides responsibility, five audience perspectives, questions to settle before publishing,
-          and a PDF of it all.
+          In about a minute you get a score out of 100, a headline takeaway, the findings that matter with ways to fix
+          each one, the most damaging way the draft could reasonably be read, what five audiences might say, questions
+          worth settling before you publish, and a PDF of it all.
+        </p>
+      </section>
+
+      <section className="card welcome-card" aria-labelledby="standard-heading">
+        <h2 id="standard-heading">What it judges against</h2>
+        <p className="prose">
+          Every draft is scored on the same ten weighted dimensions, so two messages reviewed a month apart are held to
+          the same standard.
+        </p>
+        <p className="prose">
+          You also say which high-stakes event the message is about — a workforce reduction, a data incident, a recall, a
+          departure, and ten more. Naming it brings in the checks that any serious event needs, and where a standard has
+          been written for that particular event, that too. More are being added.
+        </p>
+        <p className="prose">
+          Nothing is applied that the tool will not show you. The{" "}
+          <button type="button" className="linklike" onClick={onStandards}>Standards Library</button> lists every standard
+          in use, what each one checks, the research or regulation it rests on, and what it cannot judge.
         </p>
       </section>
 
       <section className="card welcome-card" aria-labelledby="how-heading">
-        <h2 id="how-heading">How it works</h2>
+        <h2 id="how-heading">What you tell it</h2>
         <p className="prose">
-          One consistent framework every time: the nine things a reader should be able to see (decision, agency, context,
-          exposure, impact, correction, ownership, verification, learning), scored across ten weighted dimensions, plus a
-          scan for language that hides who decided and five skeptical audience perspectives.
+          Three questions, each doing one job. <strong>The event</strong> — what happened — decides which standard
+          applies. <strong>The format</strong> — press release, employee announcement, manager toolkit — decides what the
+          document should contain. <strong>The audience</strong> decides who the harm lands on.
         </p>
         <p className="prose">
           Your draft is treated as claims; the context you supply is treated as fact. It never invents a metric, a date or
