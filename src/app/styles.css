@@ -67,7 +67,7 @@ ul.tight li, ol.tight li { margin-bottom: calc(var(--space) / 2); text-wrap: pre
 q { quotes: "“" "”"; }
 
 .page { max-width: 1100px; margin: 0 auto; padding: calc(var(--space) * 3) calc(var(--space) * 2) calc(var(--space) * 6); }
-.page > section, .page > .panel, .page > .results-grid { margin-top: calc(var(--space) * 6); }
+.page > section, .page > .panel, .page > aside, .page > .results-grid { margin-top: calc(var(--space) * 6); }
 .page > :first-child { margin-top: 0; }
 .prose { max-width: var(--measure); }
 .muted { color: var(--neutral); }
@@ -274,7 +274,7 @@ textarea { resize: vertical; }
   body { background: #fff; font-size: 12pt; }
   .no-print { display: none !important; }
   .page { max-width: none; padding: 0; }
-  .page > section, .page > .panel { break-before: page; margin-top: 0; }
+  .page > section, .page > .panel, .page > aside { break-before: page; margin-top: 0; }
   .page > :first-child, .page > .results-grid { break-before: auto; }
   .card, .panel { box-shadow: none; }
   .panel > summary::before { content: none; }
@@ -444,3 +444,26 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 .scoring-note { margin-top: calc(var(--space) * 2); }
 .scoring-note h3 { margin: 0 0 4px; }
 .copyright { margin-top: calc(var(--space) * 1.5); }
+
+/* The stakeholder voices sit behind an expander; the damaging interpretation
+   above them is always visible (revision 24). */
+.stakeholders { margin-top: calc(var(--space) * 3); }
+.stakeholders > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space);
+  font-weight: 600;
+  padding: var(--space) 0;
+}
+.stakeholders > summary::-webkit-details-marker { display: none; }
+.stakeholders > summary::before {
+  content: "▸";
+  color: var(--neutral);
+  font-size: 14px;
+  transition: transform var(--fast);
+  display: inline-block;
+}
+.stakeholders[open] > summary::before { transform: rotate(90deg); }
+.stakeholders > summary:hover { color: var(--sound-text); }

@@ -103,8 +103,9 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
   it("renders the remaining collapsed panels and the footer", () => {
     const { container } = render(<ResultsPage result={result} request={DEMO_1.request} />);
     const panels = Array.from(container.querySelectorAll("details.panel"));
-    // The register, the scorecard and the scan are no longer panels of their own.
-    expect(panels.map((p) => p.id)).toEqual(["devils-advocate", "questions"]);
+    // Devil's Advocate is no longer a panel: its damaging interpretation shows
+    // on load, with only the stakeholder voices behind an expander.
+    expect(panels.map((p) => p.id)).toEqual(["questions"]);
     expect(panels.every((p) => !(p as HTMLDetailsElement).open)).toBe(true);
     expect(screen.getByText(CORE_PRINCIPLE)).toBeTruthy();
     expect(screen.getByText("© 2026 Richard Thompson")).toBeTruthy();
@@ -197,5 +198,38 @@ describe("the Devil's Advocate, cut back (revision 21)", () => {
     expect(screen.getByText("Ask yourself")).toBeTruthy();
     // It is fixed copy, so it can carry no analysis and no quotation.
     expect(REPORTER_QUESTION.endsWith("?")).toBe(true);
+  });
+});
+
+describe("the Devil's Advocate, opened up (revision 24)", () => {
+  const result = load("demo1");
+
+  it("shows the most damaging interpretation without a click", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    const callout = document.querySelector("#devils-advocate .callout-material")!;
+    expect(callout).toBeTruthy();
+    // Not inside any collapsed disclosure.
+    expect(callout.closest("details")).toBeNull();
+    expect(callout.textContent).toContain(result.analysis.devils_advocate.most_damaging_interpretation);
+  });
+
+  it("uses the shorter heading", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.getByText("Most damaging interpretation if issued as is")).toBeTruthy();
+    expect(screen.queryByText(/plausible interpretation if issued unchanged/)).toBeNull();
+  });
+
+  it("keeps the stakeholder voices behind a closed expander", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    const expander = document.querySelector("#devils-advocate details.stakeholders") as HTMLDetailsElement;
+    expect(expander.open).toBe(false);
+    expect(expander.querySelectorAll(".might-say li")).toHaveLength(result.analysis.devils_advocate.personas.length);
+    expect(screen.getByText(/What each audience might say/)).toBeTruthy();
+  });
+
+  it("leaves the reporter question visible beneath it", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    const reflect = document.querySelector("#devils-advocate .callout-reflect")!;
+    expect(reflect.closest("details")).toBeNull();
   });
 });
