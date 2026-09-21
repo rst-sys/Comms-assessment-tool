@@ -1,0 +1,99 @@
+# PUBLIC APOLOGY REVIEW
+
+## 1. Name
+
+Public Apology Review
+
+## 2. Applies when
+
+Apply this protocol when the communication type is Apology.
+
+Also apply it to CEO or executive message, Employee announcement, Press release, Crisis statement, Investor communication, Blog post, Social-media post, Talking points, Manager toolkit or FAQ when either of these is true:
+
+- The draft contains "sorry", "apologize", "apology" or "regret" in reference to the organization's own conduct.
+- The author states that the goal is to apologize or repair trust after a failure.
+
+Do not apply it to a Holding statement that contains no apology language. Where the draft is also a Layoff or restructuring communication, or a breach notification, run this protocol alongside that one. Keep whichever finding is more severe when the two overlap.
+
+## 3. Source
+
+- **Published research (Elements 1, 2 and 12 only):** Lewicki, R. J., Polin, B., & Lount, R. B. (2016). "An Exploration of the Structure of Effective Apologies." *Negotiation and Conflict Management Research*, 9(2), 177–196. doi:10.1111/ncmr.12073. https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073
+- **Secondary account, read in full:** Ohio State University (written by Jeff Grabmeier), "Six elements of an effective apology, according to science," ScienceDaily, 12 April 2016. https://www.sciencedaily.com/releases/2016/04/160412091111.htm
+- **Not read:** the article itself, which is paywalled. Study details in this protocol come from the press account, which quotes the lead author.
+- **Professional judgement (everything else):** the 12-standard audit key supplied by the tool's author. It has no published source.
+
+## 4. Basis
+
+Two experiments with 755 participants: 333 online adults and 422 undergraduates. Each read a scenario in which a job candidate apologizes for an incorrect tax return. They then rated the apology on effectiveness, credibility and adequacy, from 1 to 5. Apologies contained between one and six components. Study 1 told participants which components were present, and Study 2 showed them actual statements. The evidence covers written apologies by an individual to an individual, judged by hypothetical readers. It did not test organizations, public audiences or real trust outcomes.
+
+## 5. Elements
+
+Importance labels: Core, Supporting, Minor. "Research" means Lewicki et al. supports the ranking. "Judgement" means it rests on the audit key.
+
+| Element | What it means | Importance | Dimensions |
+|---|---|---|---|
+| Acknowledged responsibility | The organization or a named leader says it is responsible for the conduct, decision or failure. | Core (research) | accountability_agency, fairness_independence_conflicts |
+| Repair offered | A remedy for the people affected, such as restitution, correction, recall, support or access. | Core (research) | corrective_action_proof, stakeholder_respect_impact |
+| Offense named | The conduct, decision, product or omission is identified in ordinary words a reader new to the story can follow. | Core (judgement) | accountability_agency, clarity_plain_language |
+| Organizational agency | The organization's own role in making, approving, enabling or failing to prevent the conduct is stated, not left in passive or abstract wording. | Core (judgement) | accountability_agency |
+| Impact recognized | The affected groups and the concrete harm to them are named before the organization's own discomfort. | Core (judgement) | stakeholder_respect_impact |
+| System change | Operational, policy, governance, staffing or oversight changes that address why the failure could happen. | Core (judgement) | future_readiness_learning, corrective_action_proof |
+| Owner and follow-up | A named role or body owns the work, with a date or an external standard by which progress can be checked. | Core (judgement) | verification_follow_through, accountability_agency |
+| Explanation | A brief, fact-grounded account of how the failure happened. It separates confirmed facts from what is still under investigation, and it explains rather than excuses. | Supporting (research: tied third) | causation_explanation, truthfulness_factual_discipline |
+| Direct regret | An unconditional statement of apology for the organization's own conduct. | Supporting (research: tied third) | stakeholder_respect_impact, clarity_plain_language |
+| Conduct rejected | The draft says the conduct was wrong, not only that the reaction was unfortunate. | Supporting (research: tied third) | accountability_agency, future_readiness_learning |
+| Timely care information | If people are still at risk, the draft tells them what to do and whom to contact, and says what is confirmed now. | Supporting (judgement) | stakeholder_respect_impact, clarity_plain_language |
+| Restraint in the ask | The draft does not demand forgiveness, understanding or moving on. | Minor (research: forgiveness ranked lowest) | fairness_independence_conflicts, stakeholder_respect_impact |
+
+The rankings marked "research" rest on the Lewicki study, but the study did not test corporate apologies. Treat "Core (research)" as the best available evidence, not as proof for this setting. The tie between regret, explanation and repentance means the protocol should not raise a finding because one of the three is stronger than another.
+
+## 6. High-severity triggers
+
+**Watchlist.** Treat these as prompts in addition to the vague-action list: "mistakes were made", "we regret that this happened", "sorry if", "any inconvenience", "the situation", "recent events", "the incident", "the content was posted", "not who we are", "never our intention", "we hear your concerns", "we are conducting a review", "we take this seriously", "we ask for your understanding", "committed to doing better". A watchlist term alone is not a finding. Raise one only when the term stands in place of an element from Section 5.
+
+Raise a High-severity finding when any of these is true:
+
+- No sentence says the organization or a named leader is responsible for the conduct, decision or failure. The draft offers only regret, sympathy or concern. *(accountability_agency; Legal)*
+- The draft never says what the conduct or failure was. The only references are "the situation", "the incident", "mistakes" or similar. *(accountability_agency, clarity_plain_language)*
+- The cause is placed only on an individual employee, a vendor, a miscommunication, circumstances or the audience's reaction, and the draft does not state the organization's own supervisory or control role. *(accountability_agency, fairness_independence_conflicts; Legal, plus HR if an employee is named)*
+- The only apology sentence is conditional on the audience's reaction, for example "if", "to anyone who felt", or "that concerns were raised". *(stakeholder_respect_impact; Legal)*
+- The draft names no affected group and no concrete harm. Alternatively, it states that no one was harmed with no stated basis. *(stakeholder_respect_impact; add Privacy or Information security where data is involved, and HR or Labor where employees are affected)*
+- The draft describes harm to identifiable people and offers neither a repair nor any corrective action. *(corrective_action_proof; Executive)*
+- The only forward commitment is a review, an investigation, training or "doing better", and it has no named owner and no date. *(corrective_action_proof, verification_follow_through; Executive)*
+- The draft, or context the author supplied, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication. *(truthfulness_factual_discipline, accountability_agency; Legal.)* This trigger rests on professional judgement, not on the study. The study found the components worked the same for competence and integrity failures, so do not cite research for it.
+- The draft describes an ongoing risk to people (safety, money, data, access) and gives them no action to take or contact to use. *(stakeholder_respect_impact, clarity_plain_language; Privacy or Information security where data is involved)*
+
+**Raise Moderate when:**
+
+- Explanation comes before the first statement of responsibility.
+- The explanation names external context, third parties or audience misreading and names no internal decision or control.
+- The only apology is conditional but responsibility is stated elsewhere.
+- Values language stands in for a statement that the conduct was wrong.
+- The draft asks for understanding or patience before any repair is stated.
+- The impact passage leads with reputation, criticism or intent before the affected group.
+- An owner is named by department only, or a follow-up has no date.
+- Facts are still developing and the draft does not separate confirmed from unconfirmed or give an update date.
+
+**Raise Low when** the draft requests forgiveness after repair has been stated.
+
+## 7. Questions before publication
+
+Always include these:
+
+- Who approved the decision or conduct being apologized for, and does the draft say so?
+- Who is affected, and have they been told directly before or at the same time as the public release?
+- Is the repair proportionate to the harm, and does the named owner have authority to commit to it? *(Executive)*
+- Which statements in the draft are confirmed today, and which are still under investigation? When is the next update?
+- Does the draft blame a person or vendor who has not been told or given a chance to respond? *(HR, Legal)*
+- Does any statement of responsibility carry legal consequences that counsel should review before publication? *(Legal)*
+- Do notification, disclosure or consultation obligations apply in the markets where people are affected? These may apply, and counsel must confirm. *(Legal, Privacy, Information security, Investor relations, Local market, or HR and Labor, depending on the case)*
+
+## 8. What this protocol does not cover
+
+- **It cannot judge sincerity or whether the apology will land.** It reads for the presence of information, not for feeling.
+- **It cannot verify facts.** It can see whether the draft separates confirmed from unconfirmed, not whether the confirmed statements are true.
+- **It cannot see timing.** Timeliness can only be checked against dates and care information the draft itself states.
+- **It makes no legal call.** It never says a draft is compliant or non-compliant. Whether an admission of responsibility creates liability is for counsel. The protocol never advises softening responsibility to manage that risk.
+- **Its evidence base is thin.** Only the responsibility, repair and forgiveness rankings rest on a published study, known here through a press account. It used written hypothetical scenarios, student and online participants, and perceived effectiveness as the outcome. Everything else is one author's professional standard.
+- **It does not adjust for the kind of failure.** The study found apologies were less accepted when the failure involved integrity, and component value did not change. The protocol applies the same checks either way. Whether a deliberate breach needs consequences or independent review is for a human to decide, because the draft cannot show it.
+- **Two dimensions get little coverage.** listening_employee_voice has no element here, because nothing in the supplied material supports one. fairness_independence_conflicts is checked only through blame-shifting and the ask.
