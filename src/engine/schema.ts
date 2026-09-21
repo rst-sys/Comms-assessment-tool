@@ -114,14 +114,7 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
   devils_advocate: obj({
     disclaimer: enumOf([DEVILS_ADVOCATE_DISCLAIMER]),
     personas: arr(
-      obj({
-        persona: str,
-        headline: str,
-        may_hear: str,
-        may_question: str,
-        may_find_missing: str,
-        would_address_it: str,
-      }),
+      obj({ persona: str, might_say: str }),
     ),
     most_damaging_interpretation: str,
   }),

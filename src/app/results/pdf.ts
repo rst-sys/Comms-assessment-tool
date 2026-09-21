@@ -8,10 +8,9 @@ import { jsPDF } from "jspdf";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import { DIMENSION_IDS, type EvaluationRequest } from "../../engine/types.js";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/scoring.js";
-import { APP_NAME, CORE_PRINCIPLE, DECISION_SUPPORT_DISCLAIMER } from "../copy.js";
+import { APP_NAME, CORE_PRINCIPLE, DECISION_SUPPORT_DISCLAIMER, REPORTER_QUESTION } from "../copy.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
-import { phrasesByFinding } from "./model.js";
-import { specialistQuestions } from "./model.js";
+import { reviewTagsFor } from "./model.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
 const TEXT_WIDTH = PAGE.width - PAGE.margin * 2;
@@ -129,9 +128,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(`${request.communication_type} · ${request.primary_audience} · ${request.setting} · ${request.market} · ${now.toISOString().slice(0, 10)}`, 9);
   w.rule();
 
-  const scanByFinding = phrasesByFinding(a.agency_scan);
-  const phrasesFor = (id: string) => scanByFinding.get(id) ?? [];
-
   w.heading("Executive summary", 15);
   if (s.headline) w.heading(s.headline, 13);
   w.label("Accountable Communication Score");
@@ -154,14 +150,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.label("Priority improvements");
   w.bullets(s.priority_improvements);
 
-  if (request.heightened_review) {
-    const items = specialistQuestions(a.questions_before_publication);
-    if (items.length) {
-      w.heading("Questions for subject matter reviewers", 13);
-      w.bullets(items, true);
-    }
-  }
-
   w.pageBreak();
   w.heading("Scorecard", 15);
   const byId = new Map(a.dimensions.map((d) => [d.id, d]));
@@ -179,25 +167,10 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   for (const f of rankFindings(a.findings)) {
     w.rule();
     w.paragraph(`${f.id} · ${f.severity} · ${DIMENSION_LABELS[f.dimension]}${f.claim_status ? ` · ${f.claim_status}` : ""}`, 9.5, 0, "bold");
-    if (f.excerpt !== null) w.paragraph(`“${f.excerpt}”`, 10.5, 4, "italic");
-    else if (f.omission) w.paragraph(`Omission: ${f.omission}`, 10.5, 4, "italic");
     w.paragraph(f.finding, 10.5, 0, "bold");
-    w.label("Ways this could be rectified");
+    w.label("Ways to fix this");
     w.paragraph(f.recommended_action);
-    for (const item of phrasesFor(f.id)) {
-      w.paragraph(`Language in the draft that causes this: “${item.phrase}” — ${item.category} · ${item.assessment}`, 10, 4);
-      w.paragraph(item.why, 10, 8);
-      w.paragraph(`What would make it credible: ${item.what_would_make_it_credible}`, 10, 8, "italic");
-    }
     w.paragraph(`Fact validation: ${f.fact_validation_needed ? "needed" : "not flagged"} · Specialist review: ${f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}`, 9);
-  }
-
-  // Every flagged phrase, including any the engine did not tie to a finding.
-  w.rule();
-  w.label("All flagged phrases");
-  if (a.agency_scan.length === 0) w.paragraph("No phrases were flagged.");
-  for (const item of a.agency_scan) {
-    w.paragraph(`“${item.phrase}” — ${item.category} · ${item.severity} · ${item.assessment}${item.finding_id ? ` · ${item.finding_id}` : ""}`, 10);
   }
 
   if (a.protocol_review && a.protocol_review.elements.length > 0) {
@@ -216,18 +189,21 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(a.devils_advocate.most_damaging_interpretation, 10.5, 0, "bold");
   w.paragraph(a.devils_advocate.disclaimer, 9.5, 0, "italic");
   for (const p of a.devils_advocate.personas) {
-    w.rule();
-    w.label(p.persona);
-    if (p.headline) w.paragraph(p.headline, 11.5, 0, "bold");
-    w.paragraph(`May hear: ${p.may_hear}`, 10, 4);
-    w.paragraph(`May question: ${p.may_question}`, 10, 4);
-    w.paragraph(`May find missing: ${p.may_find_missing}`, 10, 4);
-    w.paragraph(`What would address it: ${p.would_address_it}`, 10, 4);
+    w.paragraph(`${p.persona} might say: “${p.might_say}”`, 10.5, 4);
   }
+  w.label("Ask yourself");
+  w.paragraph(REPORTER_QUESTION, 10.5, 0, "italic");
 
   w.pageBreak();
-  w.heading("Questions before publication", 15);
-  w.bullets(a.questions_before_publication, true);
+  w.heading("Questions worth asking", 15);
+  // Tagged in place rather than repeated in a separate specialist checklist.
+  w.bullets(
+    a.questions_before_publication.map((q) => {
+      const tags = reviewTagsFor(q);
+      return tags.length ? `${q}  [${tags.join(", ")}]` : q;
+    }),
+    true,
+  );
 
   w.space(6);
   w.rule();

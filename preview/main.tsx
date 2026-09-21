@@ -15,6 +15,15 @@ const captured = import.meta.glob("../fixture-reports/demo1-*.json", { eager: tr
 const first = Object.values(captured)[0] as { default: EvaluationResult } | undefined;
 if (!first) throw new Error("no captured demo1 review in fixture-reports/");
 
+/**
+ * The captured review predates some fields. Preview-only shimming so the page
+ * renders representatively; the committed fixture is left as it was captured.
+ */
+const result: EvaluationResult = structuredClone(first.default);
+for (const p of result.analysis.devils_advocate.personas as unknown as Record<string, string>[]) {
+  if (!p.might_say) p.might_say = p.may_question ?? p.may_hear ?? "What does this mean for me?";
+}
+
 createRoot(document.getElementById("root")!).render(
-  <ResultsPage result={first.default} request={DEMO_1.request} />,
+  <ResultsPage result={result} request={DEMO_1.request} />,
 );

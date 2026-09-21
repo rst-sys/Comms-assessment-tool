@@ -22,12 +22,8 @@ export function sampleFinding(overrides: Partial<Finding> = {}): Finding {
 
 export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
   const persona = {
-    persona: "Affected employee",
-    headline: "My job is gone and no one says who decided",
-    may_hear: "My role is gone because of feedback.",
-    may_question: "Who decided?",
-    may_find_missing: "Selection criteria.",
-    would_address_it: "State who decided and how roles were selected.",
+    persona: "An affected employee",
+    might_say: "Why my role, and what exactly will I get?",
   };
   return {
     schema_version: "1.0",

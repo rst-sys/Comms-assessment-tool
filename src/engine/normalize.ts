@@ -112,14 +112,7 @@ export function normalizeAnalysis(raw: unknown): unknown {
       personas: arr(da.personas)
         .filter(isObj)
         .slice(0, 5)
-        .map((p) => ({
-          persona: str(p.persona),
-          headline: str(p.headline),
-          may_hear: str(p.may_hear),
-          may_question: str(p.may_question),
-          may_find_missing: str(p.may_find_missing),
-          would_address_it: str(p.would_address_it),
-        })),
+        .map((p) => ({ persona: str(p.persona), might_say: str(p.might_say) })),
       most_damaging_interpretation: str(da.most_damaging_interpretation),
     },
     protocol_review: isObj(raw.protocol_review)

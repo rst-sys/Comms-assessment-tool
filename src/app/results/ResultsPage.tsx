@@ -10,7 +10,6 @@ import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
-import { EscalationChecklist } from "./EscalationChecklist.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
 import { Footer } from "./Footer.js";
 import { ProtocolPanel } from "./ProtocolPanel.js";
@@ -104,20 +103,21 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
         {onDiscard ? <button type="button" onClick={onDiscard}>Discard and start over</button> : null}
         {saveStatus ? <span className="status" role="status">{saveStatus}</span> : null}
       </div>
-      <p className="no-print muted small prose save-note">
-        A saved review holds the score, the findings and your settings, not your draft and not the contents of any
-        documents you attached. The findings themselves quote short passages of your draft; unticking the box above leaves
-        out the pulled-out quotations, but the written findings may still mention a phrase.
-      </p>
+      {FEATURES.saveReview ? (
+        <p className="no-print muted small prose save-note">
+          A saved review holds the score, the findings and your settings, not your draft and not the contents of any
+          documents you attached. The findings themselves quote short passages of your draft; unticking the box above
+          leaves out the pulled-out quotations, but the written findings may still mention a phrase.
+        </p>
+      ) : null}
       {comparisonError ? <p className="error" role="alert">{comparisonError}</p> : null}
       {comparison && baseline ? <ComparisonPanel comparison={comparison} baseline={baseline} protocol={a.protocol_review} /> : null}
       <div className="results-grid">
         <ExecutiveSummary result={result} request={request} />
         <PrivacyPanel config={config} />
       </div>
-      {request.heightened_review ? <EscalationChecklist questions={a.questions_before_publication} /> : null}
       {a.protocol_review && a.protocol_review.elements.length > 0 ? <ProtocolPanel review={a.protocol_review} /> : null}
-      <Findings findings={a.findings} scan={a.agency_scan} />
+      <Findings findings={a.findings} />
       <DevilsAdvocate data={a.devils_advocate} />
       <Questions questions={a.questions_before_publication} />
       <Footer />

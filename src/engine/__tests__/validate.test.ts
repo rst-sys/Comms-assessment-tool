@@ -207,7 +207,7 @@ describe("decodeStrayEscapes", () => {
 });
 
 describe("personas with nothing in them", () => {
-  const FIELDS = ["persona", "headline", "may_hear", "may_question", "may_find_missing", "would_address_it"] as const;
+  const FIELDS = ["persona", "might_say"] as const;
 
   it("rejects a persona whose text field is empty, and names which one", () => {
     // How the live site came to show empty tiles: the schema types these as
@@ -227,7 +227,7 @@ describe("personas with nothing in them", () => {
 
   it("rejects whitespace as loudly as an empty string", () => {
     const bad = sampleAnalysis();
-    bad.devils_advocate.personas[0]!.may_hear = "   \n ";
+    bad.devils_advocate.personas[0]!.might_say = "   \n ";
     expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
   });
 

@@ -150,3 +150,33 @@ describe("audience context documents and stance in the user message", () => {
     expect(reactive).toContain("reacting_to: A press report claiming 200 roles will go.");
   });
 });
+
+describe("the language rule (revision 21)", () => {
+  it("no longer mandates the hedged register the owner found pompous", () => {
+    // The old rule literally instructed this phrasing, and it was producing
+    // "a reasonable affected employee could not tell ..." in every review.
+    expect(SYSTEM_PROMPT).not.toContain("a reasonable stakeholder could interpret this as");
+    expect(SYSTEM_PROMPT).not.toContain("consider identifying the deciding body or role");
+  });
+
+  it("tells the model to state plainly what is and is not in the draft", () => {
+    expect(SYSTEM_PROMPT).toContain("with no hedging preamble");
+    expect(SYSTEM_PROMPT).toContain("affected employees cannot tell");
+    expect(SYSTEM_PROMPT).toMatch(/"Says", not "announces"/);
+  });
+
+  it("keeps calibration for the one case that needs it: how an audience may read something", () => {
+    expect(SYSTEM_PROMPT).toContain("how an audience might read something");
+    expect(SYSTEM_PROMPT).toContain("could be read as");
+  });
+
+  it("carries the owner's worked example, so the target register is not a matter of taste", () => {
+    expect(SYSTEM_PROMPT).toContain("The draft says who is leaving but not how roles were chosen or how to challenge the outcome.");
+  });
+
+  it("still forbids the accusations and motive-reading it always did", () => {
+    for (const rule of ["lied", "acted in bad faith", "Never state a motive"]) {
+      expect(SYSTEM_PROMPT).toContain(rule);
+    }
+  });
+});

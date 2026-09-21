@@ -285,13 +285,14 @@ export interface AgencyScanItem {
 }
 
 export interface Persona {
+  /** The audience, named: "An affected employee", "A journalist". */
   persona: string;
-  /** At most twelve words: the persona's key concern. */
-  headline: string;
-  may_hear: string;
-  may_question: string;
-  may_find_missing: string;
-  would_address_it: string;
+  /**
+   * What that audience might say, in their own voice and one sentence
+   * (revision 21). Replaces the four-field breakdown, which the owner found
+   * far heavier than the insight in it warranted.
+   */
+  might_say: string;
 }
 
 export interface DevilsAdvocate {

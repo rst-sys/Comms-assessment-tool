@@ -1,15 +1,16 @@
 import type { DevilsAdvocate as DevilsAdvocateData } from "../../engine/types.js";
+import { REPORTER_QUESTION } from "../copy.js";
 import { Panel } from "./Panel.js";
 
 /**
- * How skeptical audiences may read the draft (revision 19).
+ * How skeptical audiences may read the draft (revision 21).
  *
- * Two changes on the owner's instruction. The most damaging plausible
- * interpretation leads: it was the most useful thing in the section and it
- * used to sit at the bottom, after five cards. And the per-audience tiles are
- * gone — the interpretations are simply displayed, one audience after another,
- * rather than boxed into a grid that made five short paragraphs look like a
- * dashboard.
+ * Cut to what the owner found useful. The most damaging plausible
+ * interpretation leads. Each audience gets one line in its own voice, rather
+ * than the four-paragraph breakdown that made five short insights look like a
+ * dashboard. The closing question is not answered by the tool: it is put to
+ * the reader, because deciding what a journalist would lift is the author's
+ * judgement and nobody else's.
  */
 export function DevilsAdvocate({ data }: { data: DevilsAdvocateData }) {
   return (
@@ -21,17 +22,17 @@ export function DevilsAdvocate({ data }: { data: DevilsAdvocateData }) {
 
       <p className="muted prose" style={{ marginTop: 16 }}>{data.disclaimer}</p>
 
-      <div className="interpretations">
+      <ul className="might-say">
         {data.personas.map((p) => (
-          <section key={p.persona} className="interpretation" aria-label={p.persona}>
-            <div className="label">{p.persona}</div>
-            <h3 className="persona-headline">{p.headline}</h3>
-            <p className="prose"><strong>May hear:</strong> {p.may_hear}</p>
-            <p className="prose"><strong>May question:</strong> {p.may_question}</p>
-            <p className="prose"><strong>May find missing:</strong> {p.may_find_missing}</p>
-            <p className="prose"><strong>What would address it:</strong> {p.would_address_it}</p>
-          </section>
+          <li key={p.persona}>
+            <strong>{p.persona}</strong> might say: “{p.might_say}”
+          </li>
         ))}
+      </ul>
+
+      <div className="callout-reflect" role="note">
+        <div className="label">Ask yourself</div>
+        <p style={{ margin: 0 }}>{REPORTER_QUESTION}</p>
       </div>
     </Panel>
   );

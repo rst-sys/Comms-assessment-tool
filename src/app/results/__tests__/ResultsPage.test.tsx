@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it } from "vitest";
 import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
-import { CORE_PRINCIPLE } from "../../copy.js";
+import { CORE_PRINCIPLE, REPORTER_QUESTION } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
 import { APOLOGY_PROTOCOL } from "../../../engine/protocols.js";
 import { ceilingWithoutContext } from "../../../engine/scoring.js";
@@ -47,29 +47,52 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
     expect(screen.queryByRole("table")).toBeNull();
   });
 
-  it("nests a flagged phrase under the finding it evidences", () => {
+  it("prints no text from the draft anywhere in the findings", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     const section = screen.getByRole("region", { name: /^Findings/ });
-    // The scan is no longer its own panel, and the draft is not reprinted.
-    expect(within(section).getAllByText("Language in the draft that causes this").length).toBeGreaterThan(0);
-    expect(within(section).getByText(/^All flagged phrases/)).toBeTruthy();
+    // The quotation, the nested phrases and the flagged-phrase list are all gone.
+    expect(within(section).queryByText("Language in the draft that causes this")).toBeNull();
+    expect(within(section).queryByText(/All flagged phrases/)).toBeNull();
+    expect(section.querySelector("blockquote")).toBeNull();
     expect(document.querySelector(".draft-view")).toBeNull();
+
+    // The engine still produced quotations; the page simply never shows them.
+    const quoted = result.analysis.findings.find((f) => f.excerpt !== null);
+    expect(quoted, "fixture should contain a quoting finding").toBeTruthy();
+    expect(section.textContent).not.toContain(quoted!.excerpt);
   });
 
-  it("filters the findings and keeps status in component state", () => {
+  it("renames the fix label and drops the status dropdowns", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    const section = screen.getByRole("region", { name: /^Findings/ });
+    expect(within(section).getAllByText("Ways to fix this").length).toBeGreaterThan(0);
+    expect(within(section).queryByText("Ways this could be rectified")).toBeNull();
+    expect(within(section).queryAllByRole("combobox")).toHaveLength(0);
+  });
+
+  it("still filters the findings", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     const section = screen.getByRole("region", { name: /^Findings/ });
     expect(within(section).getAllByRole("article")).toHaveLength(11);
     fireEvent.click(screen.getByRole("button", { name: "High only" }));
     expect(within(section).getAllByRole("article")).toHaveLength(8);
-    const select = within(section).getAllByRole("combobox")[0] as HTMLSelectElement;
-    fireEvent.change(select, { target: { value: "Accepted risk" } });
-    expect(select.value).toBe("Accepted risk");
   });
 
-  it("shows the escalation checklist under heightened review", () => {
+  it("shows one merged question section, with review functions tagged in place", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.getByText("Questions for subject matter reviewers")).toBeTruthy();
+    // The separate specialist checklist is gone: it was these same questions.
+    expect(screen.queryByText("Questions for subject matter reviewers")).toBeNull();
+    expect(screen.getByText("Questions worth asking")).toBeTruthy();
+
+    const panel = document.getElementById("questions")!;
+    expect(panel.querySelectorAll("ol > li")).toHaveLength(result.analysis.questions_before_publication.length);
+    const tags = panel.querySelectorAll(".question-tag");
+    expect(tags.length).toBeGreaterThan(0);
+    expect(screen.getByText(/name a review function\. Settle those before this is issued\./)).toBeTruthy();
+
+    // No question appears twice anywhere on the page.
+    const first = result.analysis.questions_before_publication[0]!;
+    expect(document.body.textContent!.split(first).length - 1).toBe(1);
   });
 
   it("renders the remaining collapsed panels and the footer", () => {
@@ -96,9 +119,7 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
 describe("ResultsPage with the captured control analysis", () => {
   it("shows no highlights and no escalation checklist when heightened review is off", () => {
     render(<ResultsPage result={load("control")} request={CONTROL.request} />);
-    expect(screen.queryByText("Questions for subject matter reviewers")).toBeNull();
-    expect(screen.queryByText(/^All flagged phrases/)).toBeTruthy();
-    expect(screen.getByText("No phrases flagged.")).toBeTruthy();
+    expect(screen.queryByText(/All flagged phrases/)).toBeNull();
     expect(screen.getByRole("link", { name: /Score 83 out of 100/ })).toBeTruthy();
   });
 });
@@ -164,5 +185,36 @@ describe("the score ceiling when no context was supplied", () => {
   it("derives the ceiling from the weights rather than a written-down number", () => {
     // 40 of the 100 weight is capped at 3.5/5; the rest can reach 5/5.
     expect(ceilingWithoutContext()).toBe(88);
+  });
+});
+
+describe("the Devil's Advocate, cut back (revision 21)", () => {
+  const result = load("demo1");
+
+  it("gives each audience one line in its own voice, and no four-field breakdown", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    for (const label of ["May hear:", "May question:", "May find missing:", "What would address it:"]) {
+      expect(screen.queryByText(label, { exact: false })).toBeNull();
+    }
+    const said = document.querySelectorAll(".might-say li");
+    expect(said).toHaveLength(result.analysis.devils_advocate.personas.length);
+    expect(said[0]!.textContent).toMatch(/might say:/);
+  });
+
+  it("leads with the most damaging interpretation", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    const panel = document.getElementById("devils-advocate")!;
+    const damaging = panel.querySelector(".callout-material");
+    const first = panel.querySelector(".callout-material, .might-say");
+    expect(damaging).toBeTruthy();
+    expect(first).toBe(damaging);
+  });
+
+  it("puts the reporter question to the reader without answering it", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.getByText(REPORTER_QUESTION)).toBeTruthy();
+    expect(screen.getByText("Ask yourself")).toBeTruthy();
+    // It is fixed copy, so it can carry no analysis and no quotation.
+    expect(REPORTER_QUESTION.endsWith("?")).toBe(true);
   });
 });

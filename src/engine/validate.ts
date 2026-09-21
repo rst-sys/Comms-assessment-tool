@@ -25,7 +25,7 @@ import {
 } from "./types.js";
 
 /** Every text field a persona must actually carry. */
-const PERSONA_TEXT_FIELDS = ["persona", "headline", "may_hear", "may_question", "may_find_missing", "would_address_it"] as const;
+const PERSONA_TEXT_FIELDS = ["persona", "might_say"] as const;
 
 export class AnalysisValidationError extends Error {
   readonly name = "AnalysisValidationError";

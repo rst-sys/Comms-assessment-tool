@@ -3,19 +3,38 @@
  * without a DOM.
  */
 import { rankFindings } from "../../engine/scoring.js";
-import type { AgencyScanItem, DimensionId, Finding, ScanCategory, Severity } from "../../engine/types.js";
+import type { AgencyScanItem, DimensionId, Finding, ScanCategory, Severity, SpecialistReviewType } from "../../engine/types.js";
 
 /** The five highest-severity findings, in display order. */
 export function topFindings(findings: ReadonlyArray<Finding>, count = 5): Finding[] {
   return rankFindings(findings).slice(0, count);
 }
 
-/** Questions whose text names a review function, for the "Questions for subject matter reviewers" checklist (Section 10). */
-const REVIEW_FUNCTION =
-  /\b(legal|counsel|lawyer|attorney|HR|human resources|labou?r|works[- ]council|consultation|union|privacy|investor relations|regulat\w*|compliance|local[- ]market|executive|board|audit|security|finance|tax|disclosure)\b/i;
+/**
+ * Which review function a question names, if any (revision 21).
+ *
+ * The specialist questions were never a separate list: they are these same
+ * questions, filtered. Showing them in their own section meant a reader under
+ * heightened review met some questions twice. Now there is one list, and a
+ * question that needs a named reviewer says which.
+ */
+const REVIEW_FUNCTIONS: [SpecialistReviewType, RegExp][] = [
+  ["Legal", /\b(legal|counsel|lawyer|attorney|litigation)\b/i],
+  ["HR", /\b(HR|human resources|personnel)\b/i],
+  ["Labor", /\b(labou?r|works[- ]council|consultation|union|collective)\b/i],
+  ["Privacy", /\b(privacy|data protection|personal data)\b/i],
+  ["Investor relations", /\b(investor relations|investors|shareholders?|disclosure|securities)\b/i],
+  ["Local market", /\b(local[- ]market|jurisdiction|each market|country)\b/i],
+  ["Executive", /\b(executive|board|leadership team)\b/i],
+];
+
+/** Every review function a question names. Empty when it names none. */
+export function reviewTagsFor(question: string): SpecialistReviewType[] {
+  return REVIEW_FUNCTIONS.filter(([, re]) => re.test(question)).map(([name]) => name);
+}
 
 export function specialistQuestions(questions: ReadonlyArray<string>): string[] {
-  return questions.filter((q) => REVIEW_FUNCTION.test(q));
+  return questions.filter((q) => reviewTagsFor(q).length > 0);
 }
 
 // ---------------------------------------------------------------------------

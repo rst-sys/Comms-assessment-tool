@@ -5,6 +5,14 @@ export const CORE_PRINCIPLE =
 export const DECISION_SUPPORT_DISCLAIMER =
   "Trust Assessment Assistant is decision-support software. It is not legal, employment, labor, financial-disclosure, regulatory, privacy, or tax advice, and it does not replace review by counsel, HR, investor relations, or local-market experts.";
 
+/**
+ * Put to the reader at the close of the Devil's Advocate, never answered by
+ * the tool (revision 21). It is a self-reflective device: choosing the line a
+ * journalist would lift is the author's judgement, not the engine's.
+ */
+export const REPORTER_QUESTION =
+  "What phrase or sentence would a reporter or critic be most likely to pull out?";
+
 export const APP_NAME = "Trust Assessment Assistant";
 
 export const TAGLINE = "Does this message give an account?";

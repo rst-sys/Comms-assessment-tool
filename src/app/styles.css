@@ -36,6 +36,10 @@
 }
 
 * { box-sizing: border-box; }
+/* A class that sets display beats the browser's rule for [hidden], which is
+   how the "keep quoted passages" tick-box stayed on screen while saving was
+   switched off. Nothing marked hidden should ever render. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
@@ -402,3 +406,36 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 }
 .code-entry h3, .grounding-entry h3 { margin-top: 0; }
 .welcome-card a { word-break: break-word; }
+
+/* Devil's Advocate: one line per audience, and the closing self-check (revision 21). */
+.might-say { list-style: none; padding: 0; margin: calc(var(--space) * 2) 0 0; }
+.might-say li { padding: calc(var(--space) * 1.5) 0; border-bottom: 1px solid var(--border); max-width: var(--measure); }
+.might-say li:last-child { border-bottom: 0; }
+.callout-reflect {
+  margin-top: calc(var(--space) * 3);
+  padding: calc(var(--space) * 2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--sound);
+  border-radius: var(--radius);
+  background: var(--paper);
+  max-width: var(--measure);
+}
+
+/* Review-function tags on merged questions (revision 21). */
+.question-tag { margin-left: 6px; font-size: 12px; vertical-align: 1px; }
+
+/* Results: containers sized to the text, not the window (revision 21).
+
+   The previous round capped running text at the measure but left it inside
+   cards spanning the full 1100px page, so every section had a wide empty
+   right-hand side and the page ran longer than its content needed. The fix is
+   to bring the containers in to meet the text rather than let the text stretch
+   back out: 68 characters is a readable line, 170 is not.
+
+   The privacy panel moves below the summary instead of sitting in a sidebar,
+   which is what forced the page that wide in the first place. */
+.page.results { max-width: calc(var(--measure) + var(--space) * 10); }
+.results .results-grid { grid-template-columns: 1fr; }
+@media (min-width: 1180px) {
+  .results .results-grid { grid-template-columns: 1fr; }
+}
