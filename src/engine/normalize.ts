@@ -12,7 +12,6 @@ import {
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
   PROTOCOL_STATUSES,
-  READINESS_VALUES,
   RISK_LEVELS,
   SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
@@ -85,7 +84,6 @@ export function normalizeAnalysis(raw: unknown): unknown {
     executive_summary: {
       headline: str(summary.headline),
       risk_level: oneOf(summary.risk_level, RISK_LEVELS),
-      readiness: oneOf(summary.readiness, READINESS_VALUES),
       context_supplied: bool(summary.context_supplied),
       strongest_elements: strings(summary.strongest_elements, 3),
       priority_improvements: strings(summary.priority_improvements, 3),

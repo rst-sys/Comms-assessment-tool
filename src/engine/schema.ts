@@ -23,7 +23,6 @@ import {
   CLAIM_STATUSES,
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
-  READINESS_VALUES,
   RISK_LEVELS,
   SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
@@ -72,7 +71,6 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
   executive_summary: obj({
     headline: str,
     risk_level: enumOf(RISK_LEVELS),
-    readiness: enumOf(READINESS_VALUES),
     context_supplied: bool,
     strongest_elements: arr(str),
     priority_improvements: arr(str),

@@ -27,23 +27,20 @@ describe("buildReviewPdf", () => {
   });
 });
 
-describe("the protocol section in the PDF (revision 14)", () => {
-  it("adds a page for the protocol review and leaves it out when there is none", () => {
+describe("the apology protocol in the PDF (revision 23)", () => {
+  it("adds no section, because the panel was removed from the review", () => {
     const plain = load("demo1");
-    const without = buildReviewPdf(plain, DEMO_1.request, new Date("2026-09-19T12:00:00Z")).getNumberOfPages();
+    const without = buildReviewPdf(plain, DEMO_1.request, new Date("2026-09-21T12:00:00Z")).getNumberOfPages();
 
     const withProtocol = load("demo1");
     withProtocol.analysis.protocol_review = {
       protocol: APOLOGY_PROTOCOL.name,
       source: APOLOGY_PROTOCOL.source,
-      elements: APOLOGY_PROTOCOL.elements.map((e) => ({
-        name: e.name,
-        status: "Absent" as const,
-        note: `Nothing in the draft covers ${e.name.toLowerCase()}.`,
-      })),
+      elements: APOLOGY_PROTOCOL.elements.map((e) => ({ name: e.name, status: "Absent" as const, note: "n" })),
     };
-    const doc = buildReviewPdf(withProtocol, DEMO_1.request, new Date("2026-09-19T12:00:00Z"));
-    expect(doc.getNumberOfPages()).toBeGreaterThan(without);
+    const doc = buildReviewPdf(withProtocol, DEMO_1.request, new Date("2026-09-21T12:00:00Z"));
+    // Same length: the engine still applies the research, the export no longer prints it.
+    expect(doc.getNumberOfPages()).toBe(without);
     expect(String.fromCharCode(...new Uint8Array(doc.output("arraybuffer")).slice(0, 5))).toBe("%PDF-");
   });
 });

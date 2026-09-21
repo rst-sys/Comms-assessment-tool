@@ -8,9 +8,10 @@ import { jsPDF } from "jspdf";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import { DIMENSION_IDS, type EvaluationRequest } from "../../engine/types.js";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/scoring.js";
-import { APP_NAME, CORE_PRINCIPLE, DECISION_SUPPORT_DISCLAIMER, REPORTER_QUESTION } from "../copy.js";
+import { APP_NAME, COPYRIGHT, CORE_PRINCIPLE, REPORTER_QUESTION } from "../copy.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { reviewTagsFor } from "./model.js";
+import { scoringNoteText } from "./ScoringNote.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
 const TEXT_WIDTH = PAGE.width - PAGE.margin * 2;
@@ -132,11 +133,12 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   if (s.headline) w.heading(s.headline, 13);
   w.label("Accountable Communication Score");
   w.paragraph(`${result.score} / 100 — ${result.band}`, 12, 0, "bold");
-  w.paragraph(result.confidence_label, 9.5);
   w.label("Risk level");
   w.paragraph(s.risk_level);
-  w.label("Communications readiness");
-  w.paragraph(`${s.readiness}${a.specialist_review_summary.length ? ` — specialist review: ${a.specialist_review_summary.join(", ")}` : ""}${request.already_published ? " — Retrospective review, already issued" : ""}`, 10.5, 0, "bold");
+  if (request.already_published) {
+    w.label("Retrospective");
+    w.paragraph("Already issued", 10.5, 0, "bold");
+  }
   if (request.stance === "reactive" && request.reacting_to) {
     w.label("Reacting to");
     w.paragraph(request.reacting_to);
@@ -149,6 +151,9 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.bullets(s.strongest_elements);
   w.label("Priority improvements");
   w.bullets(s.priority_improvements);
+
+  w.label("How the scoring works");
+  w.paragraph(scoringNoteText(result, s.context_supplied), 9.5);
 
   w.pageBreak();
   w.heading("Scorecard", 15);
@@ -171,16 +176,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.label("Ways to fix this");
     w.paragraph(f.recommended_action);
     w.paragraph(`Fact validation: ${f.fact_validation_needed ? "needed" : "not flagged"} · Specialist review: ${f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}`, 9);
-  }
-
-  if (a.protocol_review && a.protocol_review.elements.length > 0) {
-    w.pageBreak();
-    w.heading(a.protocol_review.protocol, 15);
-    for (const e of a.protocol_review.elements) {
-      w.paragraph(`${e.name} — ${e.status}`, 10.5, 0, "bold");
-      w.paragraph(e.note, 10, 4);
-    }
-    w.paragraph(`Source: ${a.protocol_review.source}`, 9);
   }
 
   w.pageBreak();
@@ -208,7 +203,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.space(6);
   w.rule();
   w.paragraph(CORE_PRINCIPLE, 10.5, 0, "italic");
-  w.paragraph(DECISION_SUPPORT_DISCLAIMER, 9);
+  w.paragraph(COPYRIGHT, 9);
   w.paragraph(`Evaluated by ${result.provider.provider} (${result.provider.model}). Request ${result.request_id}.`, 8.5);
 
   w.footerOnEveryPage(`${APP_NAME} · Confidential · decision support only`);

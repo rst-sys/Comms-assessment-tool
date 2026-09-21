@@ -92,13 +92,6 @@ function checkFixture(fixture: Fixture, result: EvaluationResult): Check[] {
   if (expect.min_score !== undefined) {
     checks.push({ name: `score ≥ ${expect.min_score}`, pass: result.score >= expect.min_score, detail: `score ${result.score}` });
   }
-  if (expect.readiness) {
-    checks.push({
-      name: `readiness in [${expect.readiness.join(" | ")}]`,
-      pass: expect.readiness.includes(a.executive_summary.readiness),
-      detail: a.executive_summary.readiness,
-    });
-  }
   for (const exp of expect.high_findings ?? []) {
     const floor = exp.min_severity ?? "High";
     const pool = a.findings.filter((f) => SEVERITY_RANK[f.severity] <= SEVERITY_RANK[floor]);
@@ -161,10 +154,10 @@ function report(title: string, checks: Check[]): void {
 
 function summarize(label: string, r: EvaluationResult): void {
   const a = r.analysis;
-  console.log(`  ${label}: score ${r.score} (${r.band}); risk ${a.executive_summary.risk_level}; readiness "${a.executive_summary.readiness}"; ${a.findings.length} findings (${a.findings.filter((f) => f.severity === "High").length} High); ${a.agency_scan.length} scan flags; specialist: ${a.specialist_review_summary.join(", ") || "none"}`);
+  console.log(`  ${label}: score ${r.score} (${r.band}); risk ${a.executive_summary.risk_level}; ${a.findings.length} findings (${a.findings.filter((f) => f.severity === "High").length} High); ${a.agency_scan.length} scan flags; specialist: ${a.specialist_review_summary.join(", ") || "none"}`);
   const dims = a.dimensions.map((d) => `${d.id.split("_")[0]} ${d.score.toFixed(1)}`).join(", ");
   console.log(`    dimensions: ${dims}`);
-  if (r.adjustments.dropped_findings || r.adjustments.dropped_scan_phrases || r.adjustments.readiness_overridden) {
+  if (r.adjustments.dropped_findings || r.adjustments.dropped_scan_phrases) {
     console.log(`    adjustments: ${JSON.stringify(r.adjustments)}`);
   }
 }

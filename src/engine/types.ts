@@ -185,13 +185,6 @@ export type DimensionId = (typeof DIMENSION_IDS)[number];
 export const RISK_LEVELS = ["Low", "Moderate", "High", "Critical"] as const;
 export type RiskLevel = (typeof RISK_LEVELS)[number];
 
-export const READINESS_VALUES = [
-  "Ready with minor edits",
-  "Revise before issuing",
-  "Escalate for senior or specialist review",
-  "Do not issue until material gaps are resolved",
-] as const;
-export type Readiness = (typeof READINESS_VALUES)[number];
 
 export const SEVERITIES = ["Low", "Moderate", "High"] as const;
 export type Severity = (typeof SEVERITIES)[number];
@@ -247,7 +240,6 @@ export interface ExecutiveSummary {
   /** At most twelve words: the key takeaway. */
   headline: string;
   risk_level: RiskLevel;
-  readiness: Readiness;
   context_supplied: boolean;
   strongest_elements: string[];
   priority_improvements: string[];

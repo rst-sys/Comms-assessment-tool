@@ -77,9 +77,6 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   if (adjustments.dropped_scan_phrases > 0) {
     log(`[${requestId}] dropped ${adjustments.dropped_scan_phrases} agency-scan phrase(s) not found in the draft`);
   }
-  if (adjustments.readiness_overridden) {
-    log(`[${requestId}] readiness moved off "Ready with minor edits" because specialist review is flagged`);
-  }
 
   const score = computeScore(analysis.dimensions);
   return {

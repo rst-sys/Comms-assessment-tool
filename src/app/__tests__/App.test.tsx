@@ -65,7 +65,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
 
-    expect(await screen.findByText("Communications readiness")).toBeTruthy();
+    expect(await screen.findByText("Risk level")).toBeTruthy();
     expect(screen.getByRole("link", { name: /Score 13 out of 100/ })).toBeTruthy();
     // The privacy panel is on the results page too.
     expect(screen.getByText("Anthropic · claude-opus-5")).toBeTruthy();
@@ -73,7 +73,7 @@ describe("App", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Discard and start over" }));
     expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toBe("");
-    expect(screen.queryByText("Communications readiness")).toBeNull();
+    expect(screen.queryByText("Risk level")).toBeNull();
   });
 
   it("shows the server's plain error and stays on intake when evaluation fails", async () => {
@@ -118,7 +118,7 @@ describe("App", () => {
       expect(screen.getByRole("button", { name: "Compare Revisions" })).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
       fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
-      expect(await screen.findByText("Communications readiness")).toBeTruthy();
+      expect(await screen.findByText("Risk level")).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Save this review" }));
       await waitFor(() => expect(saves.length).toBe(1));
       expect(saves[0]!.filename).toMatch(/^trust-review-layoff-or-restructuring-\d{4}-\d{2}-\d{2}\.json$/);

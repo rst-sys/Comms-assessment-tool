@@ -12,7 +12,6 @@ import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
 import { Footer } from "./Footer.js";
-import { ProtocolPanel } from "./ProtocolPanel.js";
 import { Questions } from "./Questions.js";
 
 interface Props {
@@ -112,14 +111,12 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
       ) : null}
       {comparisonError ? <p className="error" role="alert">{comparisonError}</p> : null}
       {comparison && baseline ? <ComparisonPanel comparison={comparison} baseline={baseline} protocol={a.protocol_review} /> : null}
-      <div className="results-grid">
-        <ExecutiveSummary result={result} request={request} />
-        <PrivacyPanel config={config} />
-      </div>
-      {a.protocol_review && a.protocol_review.elements.length > 0 ? <ProtocolPanel review={a.protocol_review} /> : null}
+      <ExecutiveSummary result={result} request={request} />
       <Findings findings={a.findings} />
       <DevilsAdvocate data={a.devils_advocate} />
       <Questions questions={a.questions_before_publication} />
+      {/* Reference material, below the analysis rather than between the reader and it. */}
+      <PrivacyPanel config={config} />
       <Footer />
     </main>
   );

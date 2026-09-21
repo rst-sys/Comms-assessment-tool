@@ -11,7 +11,6 @@ import {
   DOCUMENT_KINDS,
   DOCUMENT_REACH,
   PROTOCOL_STATUSES,
-  READINESS_VALUES,
   RISK_LEVELS,
   SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
@@ -41,7 +40,6 @@ The JSON object must satisfy these counts and conventions in addition to the sch
   severity and agency_scan severity: ${SEVERITIES.join(" | ")}
   claim_status: ${CLAIM_STATUSES.join(" | ")} (note the initial capital only)
   executive_summary.risk_level: ${RISK_LEVELS.join(" | ")}
-  executive_summary.readiness: ${READINESS_VALUES.join(" | ")}
   agency_scan category: ${SCAN_CATEGORIES.join(" | ")}
   agency_scan assessment: ${SCAN_ASSESSMENTS.join(" | ")}
   specialist_review_type and every entry of specialist_review_summary: ${SPECIALIST_REVIEW_TYPES.join(" | ")}
@@ -67,7 +65,6 @@ SCORE CALIBRATION
 - Do not withhold 4.5 or 5.0 because a specific claim is unconfirmed by context. That is what the ASSERTED cap is for, and it applies only to accountability_agency, causation_explanation and corrective_action_proof. A capped dimension scores 3.5, not lower, when the draft names the actor and the action and only context confirmation is missing.
 - Severity is proportionate. High means a reasonable stakeholder could not tell what was decided, who decided, who is affected and how, what will change, or who owns it, or a HEIGHTENED REVIEW or LAYOFF AND RESTRUCTURING threshold was met. On a draft that names all of these, findings are Low or Moderate.
 - Context moves scores. A context field that confirms a claim in the draft makes it SUPPORTED and lifts the ASSERTED cap on that dimension. A context field that supplies a fact the draft omits (who made the decision, a redeployment or support program, a review process, a prior commitment) turns an unknown into an undisclosed fact: the gap becomes a disclosure gap, which is less severe, so score that dimension at least 0.5 higher than the same draft would receive with no context, and have the finding and suggested revision state the confirmed fact instead of a placeholder. A draft with confirming context never scores the same as or lower than the same draft without it on the dimensions the context bears on.
-- Readiness follows risk_level. Low: "Ready with minor edits" when no finding has specialist_review_needed true, otherwise "Revise before issuing". Moderate: "Revise before issuing", or "Escalate for senior or specialist review" when a High finding needs specialist review. High: "Escalate for senior or specialist review". Critical: "Do not issue until material gaps are resolved". Never return "Ready with minor edits" while any finding has specialist_review_needed true.
 
 AGENCY AND ABSTRACTION SCAN WATCHLIST
 Flag a phrase only when it is on this watchlist, or is a close equivalent in the same category, AND it is doing causal or explanatory work as described in AGENCY AND ABSTRACTION SCAN.

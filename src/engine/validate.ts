@@ -43,8 +43,6 @@ export interface ValidationAdjustments {
   dropped_findings: number;
   /** Agency-scan entries removed because their phrase was not verbatim in the draft. */
   dropped_scan_phrases: number;
-  /** True when readiness was changed off "Ready with minor edits" because specialist review is flagged. */
-  readiness_overridden: boolean;
   /** True when the model's context_supplied disagreed with the request and was corrected. */
   context_flag_corrected: boolean;
 }
@@ -194,12 +192,6 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
 
   // Readiness rule, enforced in code.
   const specialistNeeded = findings.some((f) => f.specialist_review_needed);
-  let readiness = summary.readiness;
-  let readinessOverridden = false;
-  if (specialistNeeded && readiness === "Ready with minor edits") {
-    readiness = "Escalate for senior or specialist review";
-    readinessOverridden = true;
-  }
 
   // Context flag reflects what the request actually carried.
   const contextSupplied = contextWasSupplied(context);
@@ -213,7 +205,7 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
 
   const analysis: Analysis = {
     ...input,
-    executive_summary: { ...summary, readiness, context_supplied: contextSupplied },
+    executive_summary: { ...summary, context_supplied: contextSupplied },
     findings,
     agency_scan,
     specialist_review_summary: [...summaryTypes],
@@ -224,7 +216,6 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
     adjustments: {
       dropped_findings: droppedFindings,
       dropped_scan_phrases: droppedScan,
-      readiness_overridden: readinessOverridden,
       context_flag_corrected: contextCorrected,
     },
   };

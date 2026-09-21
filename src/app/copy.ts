@@ -13,6 +13,9 @@ export const DECISION_SUPPORT_DISCLAIMER =
 export const REPORTER_QUESTION =
   "What phrase or sentence would a reporter or critic be most likely to pull out?";
 
+/** Shown in the footer of the results page and the PDF. */
+export const COPYRIGHT = "\u00a9 2026 Richard Thompson";
+
 export const APP_NAME = "Trust Assessment Assistant";
 
 export const TAGLINE = "Does this message give an account?";

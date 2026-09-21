@@ -10,7 +10,6 @@ describe("validateAnalysis", () => {
     expect(adjustments).toEqual({
       dropped_findings: 0,
       dropped_scan_phrases: 0,
-      readiness_overridden: false,
       context_flag_corrected: false,
     });
   });
@@ -113,29 +112,8 @@ describe("validateAnalysis", () => {
     expect(out.findings[0]!.excerpt).toBe('We said “we take this seriously”\nand moved on.');
   });
 
-  it("never lets readiness be 'Ready with minor edits' while specialist review is flagged", () => {
-    const analysis = sampleAnalysis();
-    analysis.executive_summary.readiness = "Ready with minor edits";
-    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
-    expect(out.executive_summary.readiness).toBe("Escalate for senior or specialist review");
-    expect(adjustments.readiness_overridden).toBe(true);
-  });
 
-  it("leaves 'Ready with minor edits' alone when no finding needs specialist review", () => {
-    const analysis = sampleAnalysis({ findings: [sampleFinding({ specialist_review_needed: false, specialist_review_type: null })] });
-    analysis.executive_summary.readiness = "Ready with minor edits";
-    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
-    expect(out.executive_summary.readiness).toBe("Ready with minor edits");
-    expect(adjustments.readiness_overridden).toBe(false);
-  });
 
-  it("re-applies the readiness rule after dropping findings", () => {
-    // The only specialist-flagged finding has a bad excerpt, so it is dropped and readiness may stay.
-    const analysis = sampleAnalysis({ findings: [sampleFinding({ excerpt: "not in draft" })] });
-    analysis.executive_summary.readiness = "Ready with minor edits";
-    const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
-    expect(out.executive_summary.readiness).toBe("Ready with minor edits");
-  });
 
   it("sets context_supplied from the request, not the model", () => {
     const analysis = sampleAnalysis();

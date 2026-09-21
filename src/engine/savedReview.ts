@@ -67,7 +67,6 @@ export interface SavedReview {
   summary: {
     headline: string;
     risk_level: string;
-    readiness: string;
     strongest_elements: string[];
     priority_improvements: string[];
   };
@@ -113,7 +112,6 @@ export function buildSavedReview(
     summary: {
       headline: a.executive_summary.headline,
       risk_level: a.executive_summary.risk_level,
-      readiness: a.executive_summary.readiness,
       strongest_elements: [...a.executive_summary.strongest_elements],
       priority_improvements: [...a.executive_summary.priority_improvements],
     },

@@ -86,16 +86,15 @@ describe("enum casing, which the provider's grammar used to absorb", () => {
 
   it("repairs the scan, summary and review-summary values too", () => {
     const out = normalizeAnalysis({
-      executive_summary: { risk_level: "moderate", readiness: "REVISE BEFORE ISSUING" },
+      executive_summary: { risk_level: "moderate" },
       agency_scan: [{ phrase: "headwinds", category: "external weather", severity: "low", assessment: "legitimate context" }],
       specialist_review_summary: ["legal", "investor relations"],
     }) as {
-      executive_summary: { risk_level: string; readiness: string };
+      executive_summary: { risk_level: string };
       agency_scan: { category: string; severity: string; assessment: string }[];
       specialist_review_summary: string[];
     };
     expect(out.executive_summary.risk_level).toBe("Moderate");
-    expect(out.executive_summary.readiness).toBe("Revise before issuing");
     expect(out.agency_scan[0]).toMatchObject({ category: "External weather", severity: "Low", assessment: "Legitimate context" });
     expect(out.specialist_review_summary).toEqual(["Legal", "Investor relations"]);
   });

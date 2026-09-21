@@ -30,7 +30,6 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
     executive_summary: {
       headline: "Job cuts announced with no owner, criteria, or support",
       risk_level: "Critical",
-      readiness: "Do not issue until material gaps are resolved",
       context_supplied: false,
       strongest_elements: ["Short", "Direct", "Names a change"],
       priority_improvements: ["Name the decision owner", "State selection criteria", "Add verification"],

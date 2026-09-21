@@ -1,5 +1,5 @@
 import type { EvaluationResult } from "../../engine/evaluate.js";
-import { ceilingWithoutContext, DIMENSION_LABELS } from "../../engine/scoring.js";
+import { ScoringNote } from "./ScoringNote.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { Scorecard } from "./Scorecard.js";
@@ -23,7 +23,6 @@ interface Props {
  */
 export function ExecutiveSummary({ result, request }: Props) {
   const s = result.analysis.executive_summary;
-  const chips = result.analysis.specialist_review_summary;
   return (
     <section className="card" id="executive-summary" aria-labelledby="summary-heading">
       <h2 id="summary-heading">Executive summary</h2>
@@ -46,34 +45,16 @@ export function ExecutiveSummary({ result, request }: Props) {
             <div className="label">Risk level</div>
             <div>{s.risk_level}</div>
           </div>
-          <div>
-            <div className="label">Communications readiness</div>
-            <div className="readiness-row">
-              <strong>{s.readiness}</strong>
-              {chips.length > 0 ? (
-                <span className="chips" aria-label="Specialist review required">
-                  {chips.map((c) => (
-                    <span key={c} className="chip">{c}</span>
-                  ))}
-                </span>
-              ) : null}
+          {request.already_published ? (
+            <div>
+              <div className="label">Retrospective</div>
+              <div>Already issued</div>
             </div>
-            {request.already_published ? (
-              <p className="muted" style={{ margin: "4px 0 0" }}>Retrospective review — already issued</p>
-            ) : null}
-          </div>
+          ) : null}
         </div>
       </div>
 
-      <p className="muted prose">{result.confidence_label}</p>
-      {!s.context_supplied ? (
-        <p className="muted small prose">
-          With no context supplied, three dimensions — accountability and agency, causation and explanation, and
-          corrective action and proof — cannot score above 3.5 of 5, because nothing here confirms what the draft
-          claims. The most any draft can score on this run is {ceilingWithoutContext()} of 100. Filling in "Provide
-          additional context" lifts that cap on whatever it confirms.
-        </p>
-      ) : null}
+      <ScoringNote result={result} contextSupplied={s.context_supplied} />
 
       {request.stance === "reactive" ? (
         <>
@@ -120,10 +101,6 @@ export function ExecutiveSummary({ result, request }: Props) {
         </div>
       </div>
 
-      <p className="muted small prose" style={{ marginTop: 16 }}>
-        Evaluated across {Object.keys(DIMENSION_LABELS).length} dimensions by {result.provider.provider} ({result.provider.model}).
-        Decision support only; not legal, employment, labor, financial-disclosure, regulatory, privacy, or tax advice.
-      </p>
     </section>
   );
 }

@@ -21,21 +21,26 @@ afterEach(cleanup);
 describe("ResultsPage with the captured Demo 1 analysis", () => {
   const result = load("demo1");
 
-  it("renders the executive summary with score, band, confidence label and readiness", () => {
+  it("renders the executive summary with score, band and risk level", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.getByRole("link", { name: /Score 13 out of 100/ })).toBeTruthy();
     expect(screen.getByText(result.band)).toBeTruthy();
-    expect(screen.getByText(result.confidence_label)).toBeTruthy();
-    expect(screen.getByText("Communications readiness")).toBeTruthy();
-    expect(screen.getByText("Do not issue until material gaps are resolved")).toBeTruthy();
+    expect(screen.getByText("Risk level")).toBeTruthy();
     expect(screen.queryByText(/\bApproval\b|\bCleared\b/)).toBeNull();
   });
 
-  it("shows specialist review chips beside readiness", () => {
+  it("no longer carries communications readiness anywhere", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    const chips = screen.getByLabelText("Specialist review required");
-    expect(within(chips).getByText("HR")).toBeTruthy();
-    expect(within(chips).getByText("Labor")).toBeTruthy();
+    expect(screen.queryByText("Communications readiness")).toBeNull();
+    expect(screen.queryByText("Do not issue until material gaps are resolved")).toBeNull();
+    expect(screen.queryByText("Escalate for senior or specialist review")).toBeNull();
+  });
+
+  it("drops the specialist chips, which lived inside the readiness row", () => {
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.queryByLabelText("Specialist review required")).toBeNull();
+    // Still named on the findings themselves, so the information is not lost.
+    expect(screen.getAllByText(/Specialist review: HR/).length).toBeGreaterThan(0);
   });
 
   it("shows every finding in one merged section, most serious first", () => {
@@ -102,7 +107,7 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
     expect(panels.map((p) => p.id)).toEqual(["devils-advocate", "questions"]);
     expect(panels.every((p) => !(p as HTMLDetailsElement).open)).toBe(true);
     expect(screen.getByText(CORE_PRINCIPLE)).toBeTruthy();
-    expect(screen.getByText(/decision-support software/)).toBeTruthy();
+    expect(screen.getByText("© 2026 Richard Thompson")).toBeTruthy();
   });
 
   it("shows the ten scorecard rows with rationale on expand", () => {
@@ -124,45 +129,19 @@ describe("ResultsPage with the captured control analysis", () => {
   });
 });
 
-describe("the protocol panel (revision 14)", () => {
-  const result = load("demo1");
-
-  function withProtocol(): EvaluationResult {
-    return {
-      ...result,
-      analysis: {
-        ...result.analysis,
-        protocol_review: {
-          protocol: APOLOGY_PROTOCOL.name,
-          source: APOLOGY_PROTOCOL.source,
-          elements: APOLOGY_PROTOCOL.elements.map((e, i) => ({
-            name: e.name,
-            status: (["Present", "Partial", "Absent"] as const)[i % 3]!,
-            note: `Evidence for ${e.name}.`,
-          })),
-        },
-      },
+describe("the apology protocol, off the page but still in the engine", () => {
+  it("renders no protocol panel, even when the analysis carries one", () => {
+    const withProtocol = load("demo1");
+    withProtocol.analysis.protocol_review = {
+      protocol: APOLOGY_PROTOCOL.name,
+      source: APOLOGY_PROTOCOL.source,
+      elements: APOLOGY_PROTOCOL.elements.map((e) => ({ name: e.name, status: "Absent" as const, note: "n" })),
     };
-  }
-
-  it("lists every element with its status, the count present and the source", () => {
-    render(<ResultsPage result={withProtocol()} request={DEMO_1.request} />);
-    // The panel is a native <details>; its contents are in the DOM either way.
-    expect(screen.getByRole("heading", { name: APOLOGY_PROTOCOL.name })).toBeTruthy();
-    for (const element of APOLOGY_PROTOCOL.elements) {
-      expect(screen.getByText(element.name)).toBeTruthy();
-      expect(screen.getByText(`Evidence for ${element.name}.`)).toBeTruthy();
-    }
-    // Two of the six were marked Present by the rotation above.
-    expect(screen.getByText(/2 of 6 present/)).toBeTruthy();
-    expect(screen.getByText(/Lewicki/)).toBeTruthy();
-    expect(screen.getByText(/not a separate score/)).toBeTruthy();
-  });
-
-  it("shows no panel when the analysis carries no protocol review", () => {
-    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    render(<ResultsPage result={withProtocol} request={DEMO_1.request} />);
     expect(screen.queryByRole("heading", { name: APOLOGY_PROTOCOL.name })).toBeNull();
     expect(document.getElementById("protocol-review")).toBeNull();
+    // The engine still produced it: it shapes the dimension scores.
+    expect(withProtocol.analysis.protocol_review).toBeTruthy();
   });
 });
 
@@ -171,15 +150,17 @@ describe("the score ceiling when no context was supplied", () => {
     const result = load("demo1");
     result.analysis.executive_summary.context_supplied = false;
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.getByText(/cannot score above 3.5 of 5/)).toBeTruthy();
-    expect(screen.getByText(new RegExp(`most any draft can score on this run is ${ceilingWithoutContext()} of 100`))).toBeTruthy();
+    expect(screen.getByText("How the scoring works")).toBeTruthy();
+    expect(screen.getByText(/holds three dimensions/)).toBeTruthy();
+    expect(screen.getByText(new RegExp(`caps this review at ${ceilingWithoutContext()} out of 100`))).toBeTruthy();
   });
 
   it("says nothing of the sort once context is supplied, because the cap is lifted", () => {
     const result = load("demo1");
     result.analysis.executive_summary.context_supplied = true;
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.queryByText(/cannot score above 3.5 of 5/)).toBeNull();
+    expect(screen.getByText(/weighed the draft against the context you supplied/)).toBeTruthy();
+    expect(screen.queryByText(/holds three dimensions/)).toBeNull();
   });
 
   it("derives the ceiling from the weights rather than a written-down number", () => {

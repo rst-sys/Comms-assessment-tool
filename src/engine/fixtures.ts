@@ -6,7 +6,6 @@
  */
 import type {
   EvaluationRequest,
-  Readiness,
   ScanAssessment,
   ScanCategory,
   Severity,
@@ -31,7 +30,6 @@ export interface ScanExpectation {
 export interface FixtureExpectation {
   max_score?: number;
   min_score?: number;
-  readiness?: Readiness[];
   high_findings?: HighFindingExpectation[];
   scan_flags?: ScanExpectation[];
   /** Upper bound on agency-scan entries (the false-positive ceiling). */
@@ -70,7 +68,6 @@ export const DEMO_1: Fixture = {
   request: demo1Request,
   expect: {
     max_score: 39,
-    readiness: ["Do not issue until material gaps are resolved"],
     high_findings: [
       { label: "growth as a nonhuman cause", pattern: /growth|complexity/i },
       { label: "employee feedback near an adverse decision", pattern: /feedback/i },
@@ -197,7 +194,6 @@ export const CONTROL: Fixture = {
     min_score: 80,
     max_scan_flags: 1,
     max_scan_severity: "Low",
-    readiness: ["Ready with minor edits", "Revise before issuing"],
   },
 };
 

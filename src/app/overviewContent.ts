@@ -21,12 +21,11 @@ export const ACCOUNT_ELEMENTS: [string, string][] = [
 ];
 
 export const WHAT_YOU_GET: string[] = [
-  "A trust score out of 100 with a band, and a readiness recommendation.",
-  "A short headline and summary stating the key takeaway.",
-  "Specific findings, each tied to a passage or a gap, with the kind of information that would close it.",
-  "A scan of language that lets responsibility disappear into abstractions, highlighted in your draft.",
-  "Five audience perspectives, each with the concern it would raise.",
-  "Questions to settle before you publish, and the specialist reviews the draft appears to need.",
+  "A trust score out of 100, with a band and a risk level.",
+  "A headline stating the key takeaway, and the ten dimension scores behind it.",
+  "Specific findings, each naming the gap and the kind of information that would close it.",
+  "One line from each of five audiences, in their own words, saying what the draft leaves them asking.",
+  "Questions worth asking before you publish, tagged where a named reviewer should see them.",
   "A PDF of the whole review to keep or to share with colleagues.",
 ];
 
