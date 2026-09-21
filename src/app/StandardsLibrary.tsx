@@ -2,21 +2,113 @@ import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
 import { PROTOCOLS, LAYOFF_PROTOCOL_SUMMARY } from "../engine/protocols.js";
 import { DIMENSION_IDS } from "../engine/types.js";
 import { ACCOUNT_ELEMENTS } from "./overviewContent.js";
+import { CODES, CODES_BY_ID, GROUNDING, OWNER_S_OWN } from "./standardsContent.js";
 
 /**
- * The Standards Library (revision 14): what the engine actually applies, and
- * where each standard comes from. The protocol entries are rendered from the
- * same objects the engine sends to the model, so the page cannot claim a
- * standard the tool does not apply.
+ * The Standards Library (revision 20).
+ *
+ * Two kinds of claim, kept apart on purpose.
+ *
+ * What the engine applies: the protocols, rendered from the same objects the
+ * engine sends to the model, so the page cannot claim a standard the tool does
+ * not use.
+ *
+ * What the framework rests on: the published codes below. These are not sent
+ * to the model and change no review. Saying otherwise — "based on PRSA" on a
+ * tool that never references it — would be the unsubstantiated claim this tool
+ * marks other people down for. So the page states the distinction, cites each
+ * source, and labels what the owner devised as the owner's own.
  */
 export function StandardsLibrary() {
   return (
     <main className="page welcome" aria-labelledby="standards-heading">
       <h1 id="standards-heading">Standards library</h1>
       <p className="welcome-intro">
-        What this tool measures against, and where each standard comes from. Everything listed here is applied by the
-        review engine, not aspiration.
+        What this tool measures against, where each standard comes from, and — just as important — which parts are our
+        own judgement rather than anyone's published code.
       </p>
+
+      <section className="card welcome-card" aria-labelledby="how-heading">
+        <h2 id="how-heading">How to read this page</h2>
+        <p className="prose">
+          There are two different kinds of claim here, and conflating them would be the sort of thing this tool exists
+          to catch.
+        </p>
+        <dl className="account-list">
+          <div className="account-item">
+            <dt>Applied</dt>
+            <dd>
+              Rules the review engine actually runs: the ten dimensions, the agency scan, and the protocols below. These
+              determine your score.
+            </dd>
+          </div>
+          <div className="account-item">
+            <dt>Grounded in</dt>
+            <dd>
+              Published codes the framework was built from. These are <strong>not</strong> sent to the engine and change
+              no review. They are cited so you can check the framework against codes you already know.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section className="card welcome-card" aria-labelledby="codes-heading">
+        <h2 id="codes-heading">The codes this framework rests on</h2>
+        <p className="prose">
+          Established standards in professional communication and public relations. Each is linked; read them yourself
+          rather than taking our summary for it.
+        </p>
+        {CODES.map((c) => (
+          <div key={c.id} className="code-entry">
+            <h3>
+              {c.body} — {c.name}
+              {c.year ? ` (${c.year})` : ""}
+            </h3>
+            <p className="prose">{c.summary}</p>
+            <p className="muted small">
+              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.url}</a>
+            </p>
+          </div>
+        ))}
+      </section>
+
+      <section className="card welcome-card" aria-labelledby="grounding-heading">
+        <h2 id="grounding-heading">Each dimension, and the principle behind it</h2>
+        <p className="prose">
+          The ten dimensions the engine scores, with the published principle each one rests on. A dimension nobody can
+          trace to an established principle has no business carrying weight in a score.
+        </p>
+        {DIMENSION_IDS.map((id) => (
+          <div key={id} className="grounding-entry">
+            <h3>
+              {DIMENSION_LABELS[id]} <span className="muted">— weight {DIMENSION_WEIGHTS[id]}</span>
+            </h3>
+            <ul className="tight">
+              {GROUNDING[id].map((g, i) => (
+                <li key={i}>
+                  {g.principle} <span className="muted">— {CODES_BY_ID[g.code]?.body ?? g.code}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </section>
+
+      <section className="card welcome-card" aria-labelledby="own-heading">
+        <h2 id="own-heading">What is our own judgement</h2>
+        <p className="prose">
+          No published code supplies the following. They are this tool's construction — informed by the codes above, not
+          dictated by them. If you disagree with one, you are disagreeing with us, not with PRSA.
+        </p>
+        <dl className="account-list">
+          {OWNER_S_OWN.map(([name, meaning]) => (
+            <div key={name} className="account-item">
+              <dt>{name}</dt>
+              <dd>{meaning}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
 
       <section className="card welcome-card" aria-labelledby="core-heading">
         <h2 id="core-heading">The core framework</h2>
@@ -46,7 +138,6 @@ export function StandardsLibrary() {
           audience displacement, passive accountability, values without action, and vague action. A phrase is flagged only
           where it is doing the explaining.
         </p>
-        <p className="muted small">Source: the build specification for this tool.</p>
       </section>
 
       {PROTOCOLS.map((protocol) => (

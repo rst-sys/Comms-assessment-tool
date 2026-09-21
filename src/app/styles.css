@@ -393,3 +393,12 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 .results ol.tight li {
   max-width: var(--measure);
 }
+
+/* Standards library: codes and the dimension grounding (revision 20). */
+.code-entry + .code-entry, .grounding-entry + .grounding-entry {
+  margin-top: calc(var(--space) * 3);
+  padding-top: calc(var(--space) * 3);
+  border-top: 1px solid var(--border);
+}
+.code-entry h3, .grounding-entry h3 { margin-top: 0; }
+.welcome-card a { word-break: break-word; }
