@@ -11,6 +11,7 @@ describe("validateAnalysis", () => {
       dropped_findings: 0,
       dropped_scan_phrases: 0,
       context_flag_corrected: false,
+      trimmed_findings: 0,
     });
   });
 

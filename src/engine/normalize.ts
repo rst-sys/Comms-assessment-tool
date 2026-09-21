@@ -7,6 +7,7 @@
  * missing finding ids. It never invents content, and the strict validator
  * still runs afterwards.
  */
+import { MAX_QUESTIONS } from "./limits.js";
 import {
   CLAIM_STATUSES,
   DEVILS_ADVOCATE_DISCLAIMER,
@@ -112,7 +113,7 @@ export function normalizeAnalysis(raw: unknown): unknown {
         .map((p) => ({ persona: str(p.persona), might_say: str(p.might_say) })),
       most_damaging_interpretation: str(da.most_damaging_interpretation),
     },
-    questions_before_publication: strings(raw.questions_before_publication, 12),
+    questions_before_publication: strings(raw.questions_before_publication, MAX_QUESTIONS),
     specialist_review_summary: [...new Set(strings(raw.specialist_review_summary, 20).map((t) => oneOf(t, SPECIALIST_REVIEW_TYPES)))],
   } satisfies Record<keyof Analysis, unknown>;
 

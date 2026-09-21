@@ -8,6 +8,7 @@ import { callModel, EngineError, newRequestId, type ModelUsage } from "./client.
 import { getEngineConfig, type EngineConfig } from "./config.js";
 import { buildSystemBlocks, buildUserMessage } from "./prompt.js";
 import { computeScore, confidenceLabel, scoreBand, type BandName } from "./scoring.js";
+import { MAX_FINDINGS } from "./limits.js";
 import type { Analysis, EvaluationRequest } from "./types.js";
 import { AnalysisValidationError, validateAnalysis, type ValidationAdjustments } from "./validate.js";
 
@@ -73,6 +74,9 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   const { analysis, adjustments } = validated;
   if (adjustments.dropped_findings > 0) {
     log(`[${requestId}] dropped ${adjustments.dropped_findings} finding(s) with non-verbatim excerpts`);
+  }
+  if (adjustments.trimmed_findings > 0) {
+    log(`[${requestId}] trimmed ${adjustments.trimmed_findings} finding(s) past the ${MAX_FINDINGS}-finding cap`);
   }
   if (adjustments.dropped_scan_phrases > 0) {
     log(`[${requestId}] dropped ${adjustments.dropped_scan_phrases} agency-scan phrase(s) not found in the draft`);

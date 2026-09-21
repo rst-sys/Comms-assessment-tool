@@ -15,6 +15,7 @@
  *      specialist review; context_supplied reflects what was actually sent.
  */
 import { Ajv, type ErrorObject } from "ajv";
+import { MAX_FINDINGS } from "./limits.js";
 import { ANALYSIS_SCHEMA } from "./schema.js";
 import { isValidDimensionScore } from "./scoring.js";
 import {
@@ -45,6 +46,8 @@ export interface ValidationAdjustments {
   dropped_scan_phrases: number;
   /** True when the model's context_supplied disagreed with the request and was corrected. */
   context_flag_corrected: boolean;
+  /** Findings beyond MAX_FINDINGS, trimmed from the end of an already-ranked list. */
+  trimmed_findings: number;
 }
 
 export interface ValidatedAnalysis {
@@ -168,7 +171,7 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
   }
 
   let droppedFindings = 0;
-  const findings = input.findings.flatMap((f) => {
+  const verified = input.findings.flatMap((f) => {
     if (f.excerpt === null) return [f];
     const verbatim = findVerbatim(draft, f.excerpt);
     if (verbatim === null) {
@@ -177,6 +180,16 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
     }
     return [{ ...f, excerpt: verbatim }];
   });
+
+  // The output budget. The list is already ordered by materiality, High before
+  // Moderate before Low, so anything past the ceiling is the least material.
+  // Enforced here as well as asked for in the prompt: a protocol must never be
+  // able to lengthen the page, or the wait, by talking the model past the cap.
+  // Applied before everything downstream, so a trimmed finding cannot leave a
+  // scan phrase pointing at nothing or name a specialist review with no
+  // finding behind it.
+  const trimmedFindings = Math.max(0, verified.length - MAX_FINDINGS);
+  const findings = trimmedFindings > 0 ? verified.slice(0, MAX_FINDINGS) : verified;
   const keptIds = new Set(findings.map((f) => f.id));
 
   let droppedScan = 0;
@@ -217,6 +230,7 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
       dropped_findings: droppedFindings,
       dropped_scan_phrases: droppedScan,
       context_flag_corrected: contextCorrected,
+      trimmed_findings: trimmedFindings,
     },
   };
 }

@@ -2,6 +2,7 @@
  * Builds the system blocks and the user message for the evaluation call
  * (PROMPT.md Sections 3, 5 and 10).
  */
+import { MAX_FINDINGS, MAX_QUESTIONS, MIN_QUESTIONS } from "./limits.js";
 import { protocolsFor } from "./protocols.js";
 import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "./promptText.js";
 import {
@@ -28,12 +29,13 @@ The JSON object must satisfy these counts and conventions in addition to the sch
 - dimensions contains exactly ten entries, one per id, in this order: ${DIMENSION_IDS.join(", ")}. Scores are multiples of 0.5 from 0.0 to 5.0.
 - executive_summary.headline is at most twelve words and states the key takeaway as a strong, specific line, for example "Owns the decision, but affected people are told nothing". strongest_elements and priority_improvements each contain exactly three strings of at most 25 words.
 - Every string field in a finding, a scan entry and a persona is at most two sentences. finding states the gap and is the diagnosis: say what is missing or unsupported, not why it matters in the abstract. recommended_action names the kind of information to add, remove or clarify, and is shown to the reader as "Ways this could be rectified". Never write rewritten sentences or replacement wording anywhere in the output.
+- findings contains at most ${MAX_FINDINGS} entries. This is a ceiling, not a target: a clean draft may have two. When more than ${MAX_FINDINGS} gaps are real, report the ${MAX_FINDINGS} that most change what a reasonable stakeholder would understand, and drop the rest rather than compressing them all. A protocol block above tells you what to look for; it never raises the ceiling.
 - findings use ids F-001, F-002, ... in order of materiality: F-001 is the gap a reasonable stakeholder would most need resolved, with High findings before Moderate before Low. Within one severity, order by dimension: accountability_agency, stakeholder_respect_impact, causation_explanation, truthfulness_factual_discipline, corrective_action_proof, listening_employee_voice, verification_follow_through, clarity_plain_language, fairness_independence_conflicts, future_readiness_learning. excerpt is an exact, character-for-character substring of the draft, or null when the finding is an omission; omission is then a description of what is missing. Never leave both null.
 - claim_status is set on findings for accountability_agency, causation_explanation and corrective_action_proof, and null elsewhere.
 - recommended_action and what_would_make_it_credible describe information ("the deciding body or role", "a date for the first update", "the selection criteria"), not text to paste. would_raise on each dimension does the same.
 - agency_scan phrase is an exact substring of the draft. finding_id names the related finding or is null.
 - devils_advocate.personas contains exactly five personas, no more and no fewer. Each carries persona (the audience, named as a person) and might_say (one sentence in their own voice, at most 25 words). Neither may be empty: a persona with a blank field is worse than no persona at all, and the review is rejected when one is. The disclaimer is exactly: "These are plausible audience interpretations, not statements of fact."
-- questions_before_publication contains between five and twelve questions.
+- questions_before_publication contains between ${MIN_QUESTIONS} and ${MAX_QUESTIONS} questions. Where a protocol block above lists questions, they are candidates and not obligations: include one only where this draft leaves it genuinely open, and let it compete with the questions the draft itself raises. A question the draft already answers is noise.
 - specialist_review_summary lists each review type named by any finding with specialist_review_needed true, without duplicates.
 - Every value below is spelled exactly as given here, including its capital letters. Copy the spelling; do not upper-case it for emphasis even where the guidance above does.
   severity and agency_scan severity: ${SEVERITIES.join(" | ")}

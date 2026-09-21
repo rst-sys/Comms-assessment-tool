@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { MAX_QUESTIONS } from "../limits.js";
 import { normalizeAnalysis } from "../normalize.js";
 import { validateAnalysis } from "../validate.js";
 import { SAMPLE_DRAFT, sampleAnalysis } from "./helpers.js";
@@ -30,7 +31,7 @@ describe("normalizeAnalysis", () => {
     expect(analysis.findings[0]!.id).toBe("F-001");
     expect(analysis.findings[0]!.claim_status).toBeNull();
     expect(analysis.devils_advocate.personas).toHaveLength(5);
-    expect(analysis.questions_before_publication).toHaveLength(12);
+    expect(analysis.questions_before_publication).toHaveLength(MAX_QUESTIONS);
     expect(analysis.specialist_review_summary).toEqual(["HR"]);
   });
 
