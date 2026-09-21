@@ -1,4 +1,4 @@
-# Writing a protocol for Trust Assessment Assistant
+# Step 2 — Writing a protocol for Trust Assessment Assistant
 
 A protocol is the extra set of rules the review engine follows for one kind of
 event. It is how the tool knows that a data breach should be judged differently
@@ -7,21 +7,27 @@ from a layoff.
 This file is the prompt you paste into Claude, in a separate conversation, to
 write one. Everything Claude needs to know about the tool is in it.
 
+## Do step 1 first
+
+**`RESEARCH-PROMPT.md` comes before this one.** It goes and finds the standards
+and research for your event, checks that each source actually exists, and says
+plainly what it could not verify. What it gives you back is what you paste into
+the second blank at the bottom of this file.
+
+Skipping it means writing a protocol from whatever Claude half-remembers, and a
+protocol that cannot name a real source cannot go in the library — the page
+would be claiming something the tool cannot support, and the checker rejects it.
+
 ## How to use it
 
-1. Copy everything from the line `---- COPY FROM HERE ----` to the end.
-2. Paste it into a new Claude conversation.
-3. At the bottom, fill in the two blanks: which event, and the research it
-   should rest on.
-4. Claude replies with a finished file.
-5. Save the reply as `protocols/<name>.md`, upload it to GitHub, and tell me.
+1. Run `RESEARCH-PROMPT.md` first and keep the reply.
+2. Copy everything below from the line `---- COPY FROM HERE ----` to the end.
+3. Paste it into a new Claude conversation.
+4. At the bottom, fill in the two blanks: which event, and the research from
+   step 1.
+5. Claude replies with a finished file.
+6. Save the reply as `protocols/<name>.md`, upload it to GitHub, and tell me.
    I run the checker and switch it on.
-
-## Before you start
-
-Have your sources to hand. A protocol that cannot name its source cannot go in
-the library — the page would be claiming something the tool cannot support, and
-the checker rejects it.
 
 ---- COPY FROM HERE ----
 
@@ -215,4 +221,6 @@ protocol, ask me first.
 
 **The research and standards it should rest on:**
 
-[ PASTE OR DESCRIBE YOUR SOURCES HERE ]
+[ PASTE THE WHOLE REPLY FROM RESEARCH-PROMPT.md HERE — including its "could not
+verify" and "what nobody has established" sections. Do not trim those out: a
+source it could not open must not end up cited as though it had been read. ]

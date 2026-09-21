@@ -5,9 +5,12 @@ lines; the prose below it is what the Standards Library page shows.
 
 ## Adding one
 
-1. Write it with `PROTOCOL-PROMPT.md`, in a separate Claude conversation.
-2. Save the reply here as `<event-name>.md`.
-3. Upload it to GitHub and say so.
+1. Find the sources with `RESEARCH-PROMPT.md`, in its own Claude conversation,
+   with web search on.
+2. Write the protocol with `PROTOCOL-PROMPT.md`, in a second conversation,
+   pasting in what step 1 returned.
+3. Save the reply here as `<event-name>.md`.
+4. Upload it to GitHub and say so.
 
 The file is checked before it goes anywhere near a review: a dimension that
 does not exist, a misspelled review type, too many triggers, two protocols
