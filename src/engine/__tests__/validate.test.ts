@@ -14,24 +14,6 @@ describe("validateAnalysis", () => {
     });
   });
 
-  it("accepts a protocol review and rejects an invalid status", () => {
-    const ok = sampleAnalysis();
-    ok.protocol_review = {
-      protocol: "Effective apology",
-      source: "Lewicki et al. (2016)",
-      elements: [{ name: "Offer of repair", status: "Absent", note: "No commitment to undo the damage." }],
-    };
-    expect(validateAnalysis(ok, SAMPLE_DRAFT, {}).analysis.protocol_review?.elements).toHaveLength(1);
-
-    const bad = sampleAnalysis();
-    bad.protocol_review = {
-      protocol: "Effective apology",
-      source: "Lewicki et al. (2016)",
-      elements: [{ name: "Offer of repair", status: "Maybe" as never, note: "x" }],
-    };
-    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
-  });
-
   it("rejects a schema violation and reports only the path", () => {
     const bad = sampleAnalysis();
     (bad.executive_summary as { risk_level: string }).risk_level = "Severe";

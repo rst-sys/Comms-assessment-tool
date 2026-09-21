@@ -51,7 +51,7 @@ The six components, and what the research found about each:
 
 The research also found that the more of the six an apology contains, the more effective readers judge it, and that apologies for failures of integrity are accepted less readily than apologies for failures of competence. Where the draft concerns an integrity failure, say so in the relevant finding.
 
-Fill protocol_review with all six components in the order above. For each, give a status of Present, Partial or Absent judged only on what the draft says, and one sentence of evidence citing the draft or naming what is missing.
+Judge each of the six against what the draft says. Where one is absent or merely gestural, raise it through the ordinary findings, on the dimension named below. Produce no separate section for this protocol: a protocol changes what you look for, never what you output.
 
 Weight your findings to match the evidence: an absent or merely gestural acknowledgment of responsibility, or an absent offer of repair, is at least a High-severity finding in an apology; an absent request for forgiveness is at most Low, and often no finding at all. Never tell the author to add a component the facts do not support, and never supply wording.
 

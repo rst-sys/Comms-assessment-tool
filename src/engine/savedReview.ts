@@ -15,7 +15,6 @@ import type {
   AudienceDocument,
   ContextFields,
   EvaluationRequest,
-  ProtocolReview,
   Severity,
 } from "./types.js";
 import type { EvaluationResult } from "./evaluate.js";
@@ -73,8 +72,6 @@ export interface SavedReview {
   dimensions: { id: string; score: number; rationale: string; would_raise: string }[];
   findings: SavedFinding[];
   agency_scan: { phrase: string | null; category: string; severity: Severity; assessment: string }[];
-  /** The type-specific protocol check, when one applied. Absent in files saved before revision 14. */
-  protocol_review?: ProtocolReview | null;
   specialist_review_summary: string[];
 }
 
@@ -133,13 +130,6 @@ export function buildSavedReview(
       severity: s.severity,
       assessment: s.assessment,
     })),
-    protocol_review: a.protocol_review
-      ? {
-          protocol: a.protocol_review.protocol,
-          source: a.protocol_review.source,
-          elements: a.protocol_review.elements.map((e) => ({ name: e.name, status: e.status, note: e.note })),
-        }
-      : null,
     specialist_review_summary: [...a.specialist_review_summary],
   };
 }
@@ -204,7 +194,6 @@ const SAVED_REVIEW_SCHEMA = {
     dimensions: { type: "array" },
     findings: { type: "array" },
     agency_scan: { type: "array" },
-    protocol_review: { type: ["object", "null"] },
     specialist_review_summary: { type: "array" },
   },
   required: ["format", "format_version", "score", "settings", "summary", "dimensions", "findings"],

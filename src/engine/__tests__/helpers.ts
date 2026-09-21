@@ -59,7 +59,6 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
     },
     questions_before_publication: ["Q1?", "Q2?", "Q3?", "Q4?", "Q5?"],
     specialist_review_summary: ["HR"],
-    protocol_review: null,
     ...overrides,
   };
 }

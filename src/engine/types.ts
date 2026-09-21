@@ -224,16 +224,6 @@ export type ScanAssessment = (typeof SCAN_ASSESSMENTS)[number];
 export const DEVILS_ADVOCATE_DISCLAIMER =
   "These are plausible audience interpretations, not statements of fact.";
 
-export const PROTOCOL_STATUSES = ["Present", "Partial", "Absent"] as const;
-export type ProtocolStatus = (typeof PROTOCOL_STATUSES)[number];
-
-/** A type-specific protocol check, present only when a protocol applies (revision 14). */
-export interface ProtocolReview {
-  protocol: string;
-  source: string;
-  elements: { name: string; status: ProtocolStatus; note: string }[];
-}
-
 export const SCHEMA_VERSION = "1.0";
 
 export interface ExecutiveSummary {
@@ -303,5 +293,4 @@ export interface Analysis {
   devils_advocate: DevilsAdvocate;
   questions_before_publication: string[];
   specialist_review_summary: SpecialistReviewType[];
-  protocol_review: ProtocolReview | null;
 }

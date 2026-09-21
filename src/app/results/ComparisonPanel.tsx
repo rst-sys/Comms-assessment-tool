@@ -1,6 +1,5 @@
 import type { ComparisonResult, Verdict } from "../../engine/compare.js";
 import type { SavedReview } from "../../engine/savedReview.js";
-import type { ProtocolReview, ProtocolStatus } from "../../engine/types.js";
 
 const VERDICT_CLASS: Record<Verdict, string> = {
   Resolved: "verdict-resolved",
@@ -14,36 +13,6 @@ const ORDER: Verdict[] = ["Still open", "Partly addressed", "Resolved", "No long
 interface Props {
   comparison: ComparisonResult;
   baseline: SavedReview;
-  /** The protocol check on this version, when one applied. */
-  protocol?: ProtocolReview | null;
-}
-
-const PROTOCOL_CLASS: Record<ProtocolStatus, string> = {
-  Present: "verdict-resolved",
-  Partial: "verdict-partly",
-  Absent: "verdict-open",
-};
-
-/**
- * Element-by-element movement in a protocol check. Compared in code, not by
- * the model: the statuses line up by name, so there is nothing to judge.
- * Returns null unless both versions ran the same protocol.
- */
-function protocolMovement(baseline: SavedReview, current: ProtocolReview | null | undefined) {
-  const before = baseline.protocol_review;
-  if (!before || !current || before.protocol !== current.protocol) return null;
-  const was = new Map(before.elements.map((e) => [e.name, e.status]));
-  const rows = current.elements
-    .map((e) => ({ name: e.name, before: was.get(e.name), after: e.status }))
-    .filter((r): r is { name: string; before: ProtocolStatus; after: ProtocolStatus } => r.before !== undefined);
-  if (rows.length === 0) return null;
-  const count = (s: ProtocolStatus[]) => s.filter((x) => x === "Present").length;
-  return {
-    name: current.protocol,
-    rows,
-    presentBefore: count(rows.map((r) => r.before)),
-    presentAfter: count(rows.map((r) => r.after)),
-  };
 }
 
 /**
@@ -51,8 +20,7 @@ function protocolMovement(baseline: SavedReview, current: ProtocolReview | null 
  * lead; the score movement follows, with a note that small changes mean
  * little.
  */
-export function ComparisonPanel({ comparison, baseline, protocol }: Props) {
-  const protocolMoved = protocolMovement(baseline, protocol);
+export function ComparisonPanel({ comparison, baseline }: Props) {
   const byId = new Map(baseline.findings.map((f) => [f.id, f]));
   const counts = ORDER.map((v) => [v, comparison.verdicts.filter((x) => x.verdict === v).length] as const).filter(([, n]) => n > 0);
   const delta = comparison.score_after - comparison.score_before;
@@ -107,33 +75,6 @@ export function ComparisonPanel({ comparison, baseline, protocol }: Props) {
         <p className="muted small">
           Newly raised in this version: {comparison.new_concerns.join(", ")}. They are in the findings below.
         </p>
-      ) : null}
-
-      {protocolMoved ? (
-        <>
-          <div className="label">{protocolMoved.name}</div>
-          <p className="score-move">
-            <span>{protocolMoved.presentBefore}</span>
-            <span aria-hidden="true" className="muted"> → </span>
-            <span><strong>{protocolMoved.presentAfter}</strong></span>
-            <span className="muted"> of {protocolMoved.rows.length} elements present</span>
-          </p>
-          <ul className="verdict-list">
-            {protocolMoved.rows.map((r) => (
-              <li key={r.name} className="verdict-item">
-                <span className={`chip ${PROTOCOL_CLASS[r.after]}`}>{r.after}</span>
-                <div>
-                  <div>{r.name}</div>
-                  {r.before !== r.after ? (
-                    <div className="muted small">Was {r.before.toLowerCase()} in the saved review.</div>
-                  ) : (
-                    <div className="muted small">Unchanged.</div>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
       ) : null}
 
       <div className="label">Score</div>

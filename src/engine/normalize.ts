@@ -11,7 +11,6 @@ import {
   CLAIM_STATUSES,
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
-  PROTOCOL_STATUSES,
   RISK_LEVELS,
   SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
@@ -113,15 +112,6 @@ export function normalizeAnalysis(raw: unknown): unknown {
         .map((p) => ({ persona: str(p.persona), might_say: str(p.might_say) })),
       most_damaging_interpretation: str(da.most_damaging_interpretation),
     },
-    protocol_review: isObj(raw.protocol_review)
-      ? {
-          protocol: str(raw.protocol_review.protocol),
-          source: str(raw.protocol_review.source),
-          elements: arr(raw.protocol_review.elements)
-            .filter(isObj)
-            .map((e) => ({ name: str(e.name), status: oneOf(e.status, PROTOCOL_STATUSES), note: str(e.note) })),
-        }
-      : null,
     questions_before_publication: strings(raw.questions_before_publication, 12),
     specialist_review_summary: [...new Set(strings(raw.specialist_review_summary, 20).map((t) => oneOf(t, SPECIALIST_REVIEW_TYPES)))],
   } satisfies Record<keyof Analysis, unknown>;

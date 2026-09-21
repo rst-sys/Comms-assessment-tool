@@ -10,7 +10,6 @@ import {
   DIMENSION_IDS,
   DOCUMENT_KINDS,
   DOCUMENT_REACH,
-  PROTOCOL_STATUSES,
   RISK_LEVELS,
   SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
@@ -43,8 +42,6 @@ The JSON object must satisfy these counts and conventions in addition to the sch
   agency_scan category: ${SCAN_CATEGORIES.join(" | ")}
   agency_scan assessment: ${SCAN_ASSESSMENTS.join(" | ")}
   specialist_review_type and every entry of specialist_review_summary: ${SPECIALIST_REVIEW_TYPES.join(" | ")}
-  protocol_review element status: ${PROTOCOL_STATUSES.join(" | ")}
-- protocol_review is null unless a protocol block above tells you to fill it; then it carries that protocol's name, its source line, and one entry per element in the order the block gives, each with a status of Present, Partial or Absent and a one-sentence note.
 
 WHAT EACH DIMENSION EVALUATES
 Score each dimension against its own definition, not against a checklist of everything a message could contain. Do not lower a dimension for the absence of information it does not evaluate.

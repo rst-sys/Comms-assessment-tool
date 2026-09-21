@@ -6,7 +6,6 @@ import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
 import { CORE_PRINCIPLE, REPORTER_QUESTION } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
-import { APOLOGY_PROTOCOL } from "../../../engine/protocols.js";
 import { ceilingWithoutContext } from "../../../engine/scoring.js";
 
 function load(prefix: string): EvaluationResult {
@@ -127,22 +126,6 @@ describe("ResultsPage with the captured control analysis", () => {
     render(<ResultsPage result={load("control")} request={CONTROL.request} />);
     expect(screen.queryByText(/All flagged phrases/)).toBeNull();
     expect(screen.getByRole("link", { name: /Score 83 out of 100/ })).toBeTruthy();
-  });
-});
-
-describe("the apology protocol, off the page but still in the engine", () => {
-  it("renders no protocol panel, even when the analysis carries one", () => {
-    const withProtocol = load("demo1");
-    withProtocol.analysis.protocol_review = {
-      protocol: APOLOGY_PROTOCOL.name,
-      source: APOLOGY_PROTOCOL.source,
-      elements: APOLOGY_PROTOCOL.elements.map((e) => ({ name: e.name, status: "Absent" as const, note: "n" })),
-    };
-    render(<ResultsPage result={withProtocol} request={DEMO_1.request} />);
-    expect(screen.queryByRole("heading", { name: APOLOGY_PROTOCOL.name })).toBeNull();
-    expect(document.getElementById("protocol-review")).toBeNull();
-    // The engine still produced it: it shapes the dimension scores.
-    expect(withProtocol.analysis.protocol_review).toBeTruthy();
   });
 });
 

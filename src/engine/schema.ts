@@ -27,7 +27,6 @@ import {
   SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
   SCHEMA_VERSION,
-  PROTOCOL_STATUSES,
   SEVERITIES,
   SPECIALIST_REVIEW_TYPES,
 } from "./types.js";
@@ -118,14 +117,4 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
   }),
   questions_before_publication: arr(str),
   specialist_review_summary: arr(enumOf(SPECIALIST_REVIEW_TYPES)),
-  protocol_review: {
-    anyOf: [
-      obj({
-        protocol: str,
-        source: str,
-        elements: arr(obj({ name: str, status: enumOf(PROTOCOL_STATUSES), note: str })),
-      }),
-      { type: "null" },
-    ],
-  },
 });

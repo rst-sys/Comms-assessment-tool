@@ -110,7 +110,7 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
         </p>
       ) : null}
       {comparisonError ? <p className="error" role="alert">{comparisonError}</p> : null}
-      {comparison && baseline ? <ComparisonPanel comparison={comparison} baseline={baseline} protocol={a.protocol_review} /> : null}
+      {comparison && baseline ? <ComparisonPanel comparison={comparison} baseline={baseline} /> : null}
       <ExecutiveSummary result={result} request={request} />
       <Findings findings={a.findings} />
       <DevilsAdvocate data={a.devils_advocate} />
