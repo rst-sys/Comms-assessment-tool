@@ -3,14 +3,7 @@ id: event-core
 name: High-stakes event core
 layer: core
 version: 1
-status: draft
-
-# Fires on any communication event except "None of these".
-# Part B additionally requires the event to be marked as a failure.
-
-applies:
-  events: all
-  except: [None of these]
+status: active
 
 elements:
   - name: Decision and response owner
@@ -48,7 +41,6 @@ elements:
     weight: core
     dimension: clarity_plain_language
 
-  # Part B. Failure events only.
   - name: What changes
     means: The draft names what will change in practice, governance or incentives so the failure is less likely to recur, with an owner.
     weight: core
@@ -89,6 +81,37 @@ Part A (the first seven elements and all five triggers) fires on any event.
 Part B (the eighth element, "What changes") fires only on events marked as a
 failure, because recurrence has no meaning for an acquisition or a planned
 retirement.
+
+## Source
+
+No published standard governs high-stakes event communication as a whole, and
+this protocol does not claim one. It is an extraction, not a discovery: the
+checks below are the ones three separately written protocols in this folder —
+cyber incident, workforce restructuring and public apology — each arrived at
+independently, from their own sources.
+
+Those three name their own sources, and the evidence behind any one check is
+the evidence in the protocol it came from. Which check came from where is set
+out in the table under "Where it came from".
+
+The decision about what is common to all thirteen events, and the demotion of
+"what changes" to failure events only, is professional judgement. It rests on
+no published source.
+
+## Basis
+
+The three source protocols rest on regulator guidance (NIST, the SEC, HHS, the
+FTC, the EEOC, the US Department of Labor, the Fair Work Ombudsman), two
+professional bodies (CIPD, the Arthur W. Page Society) and four studies of
+varying weight, the strongest of which is a systematic review of eight earlier
+reviews whose own authors call its conclusions tentative. None of that evidence
+was produced by testing which communications work better; it is consensus about
+good practice, not measured effect.
+
+An extraction from three protocols is no stronger than the three, and this one
+is weaker in one way worth stating plainly: all three describe failures, so what
+they share over-represents what failures need. That is exactly the fault the
+test against all thirteen events was designed to catch, and it caught one.
 
 ## Where it came from
 

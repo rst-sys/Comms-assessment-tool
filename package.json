@@ -2,7 +2,7 @@
   "name": "accountable-communications-review",
   "version": "0.1.0",
   "private": true,
-  "description": "Trust Assessment Assistant — does this message give an account?",
+  "description": "Trust Assessment Assistant \u2014 does this message give an account?",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -11,13 +11,14 @@
     "dev": "vite",
     "server": "tsx watch src/server/server.ts",
     "start": "ACR_SERVE_STATIC=1 tsx src/server/server.ts",
-    "build": "vite build",
+    "build": "npm run protocols && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "fixtures": "tsx scripts/run-fixtures.ts",
     "build:artifact": "vite build --config vite.artifact.config.ts && node scripts/prepare-artifact.mjs",
-    "preview:results": "vite build --config vite.preview.config.ts"
+    "preview:results": "vite build --config vite.preview.config.ts",
+    "protocols": "tsx scripts/compile-protocols.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

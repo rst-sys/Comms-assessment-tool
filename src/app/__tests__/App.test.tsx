@@ -3,7 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
-import { APOLOGY_PROTOCOL } from "../../engine/protocols.js";
+import { PROTOCOLS } from "../../engine/protocols.js";
 import { FEATURES, type Features } from "../features.js";
 
 /** Switches a feature on for one test; see the note in features.ts. */
@@ -145,10 +145,14 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
     expect(screen.getByRole("heading", { name: "Standards library", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "The core framework" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Effective apology" })).toBeTruthy();
-    // Every element of the protocol the engine sends is on the page.
-    for (const element of APOLOGY_PROTOCOL.elements) {
-      expect(screen.getByText(element.name)).toBeTruthy();
+    // Every protocol the engine can send is on the page, with every element it
+    // checks: the library must not claim a standard the tool does not apply,
+    // nor apply one it does not show.
+    for (const protocol of PROTOCOLS) {
+      expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
+      for (const element of protocol.elements) {
+        expect(screen.getByText(element.name)).toBeTruthy();
+      }
     }
     expect(screen.getByText(/Lewicki/)).toBeTruthy();
     expect(screen.queryByRole("textbox")).toBeNull();

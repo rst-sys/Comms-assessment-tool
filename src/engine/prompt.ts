@@ -3,8 +3,8 @@
  * (PROMPT.md Sections 3, 5 and 10).
  */
 import { MAX_FINDINGS, MAX_QUESTIONS, MIN_QUESTIONS } from "./limits.js";
-import { protocolsFor } from "./protocols.js";
-import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "./promptText.js";
+import { protocolBlocksFor } from "./protocols.js";
+import { SYSTEM_PROMPT } from "./promptText.js";
 import {
   CLAIM_STATUSES,
   CONTEXT_FIELDS,
@@ -83,14 +83,23 @@ export interface SystemBlock {
   text: string;
 }
 
-/** System prompt blocks in order: verbatim prompt, optional layoff block, output notes. */
+/**
+ * System prompt blocks, in order: the framework, then whatever protocols the
+ * event and goal bring in, then the output notes.
+ *
+ * The order is deliberate. The framework is identical on every review and the
+ * core protocol is identical on every high-stakes review, so both sit ahead of
+ * the part that varies by event; the provider caches the stable prefix and
+ * only the tail is new work.
+ *
+ * The layoff block that used to live here is gone: protocols/workforce-restructuring.md
+ * now carries its euphemism list and its triggers, so there is one source for
+ * that standard rather than two saying nearly the same thing.
+ */
 export function buildSystemBlocks(request: EvaluationRequest): SystemBlock[] {
   const blocks: SystemBlock[] = [{ text: SYSTEM_PROMPT }];
-  if (request.communication_event === "Workforce reduction or major reorganization") {
-    blocks.push({ text: LAYOFF_BLOCK });
-  }
-  for (const protocol of protocolsFor(request)) {
-    blocks.push({ text: protocol.promptBlock });
+  for (const text of protocolBlocksFor(request)) {
+    blocks.push({ text });
   }
   blocks.push({ text: OUTPUT_NOTES });
   return blocks;

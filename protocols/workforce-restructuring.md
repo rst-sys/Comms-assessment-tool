@@ -1,28 +1,96 @@
-# Workforce Restructuring: Status, Scope and Support Review
-
-Protocol for the Trust Assessment Assistant. Draft for review, 21 September 2026.
-
 ---
+id: workforce-restructuring
+name: Workforce reduction and restructuring
+layer: event
+event: Workforce reduction or major reorganization
+version: 1
+status: active
 
-## 1. Name
+elements:
+  - name: Decision status
+    means: Whether the decision is final, proposed, or in consultation.
+    weight: core
+    dimension: accountability_agency
 
-Workforce Restructuring: Status, Scope and Support Review
+  - name: Scope of impact
+    means: How many are affected, in which functions, sites and countries, or that the group is still being set.
+    weight: core
+    dimension: stakeholder_respect_impact
 
-## 2. Applies when
+  - name: Selection basis and alternatives
+    means: How roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.
+    weight: core
+    dimension: fairness_independence_conflicts
 
-Run this protocol when the draft is any of these types: Layoff or restructuring, Employee announcement, CEO or executive message, Change-management, Manager toolkit, Talking points, FAQ, Press release, Investor communication, or Crisis statement. It also has to announce or refer to at least one of these:
+  - name: Individual notice, timing and terms
+    means: How and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.
+    weight: core
+    dimension: stakeholder_respect_impact
 
-- Elimination of roles, or a reduction in headcount.
-- A site or team closure.
-- A merger of teams that changes reporting lines or role content.
-- A voluntary exit or separation programme.
-- A hiring freeze presented as part of a workforce action.
+  - name: Support for those leaving
+    means: Named support for people whose roles end, with a provider, owner and date.
+    weight: core
+    dimension: corrective_action_proof
 
-The tool should also run it when the stated goal is to reassure staff about a reduction, calm rumours about one, or prepare managers to discuss one. The type and the content test both matter. A Press release that mentions job cuts in one line triggers it. A Blog post about company culture does not.
+  - name: The remaining workforce
+    means: What work stops, moves or changes owner for the people who stay, and who decides.
+    weight: supporting
+    dimension: corrective_action_proof
 
-It does not apply to a single-person termination, routine attrition, or a performance-management message.
+  - name: Voice and what can still change
+    means: What employees or their representatives can still influence, kept separate from what leadership has already decided.
+    weight: core
+    dimension: listening_employee_voice
 
-This protocol runs alongside the existing Layoff and restructuring protocol. It reuses that protocol's euphemism watchlist by reference and does not repeat its three High triggers. Where both raise the same gap, merge the findings.
+  - name: Leadership exposure
+    means: Whether leadership roles, pay or incentives are affected by the same decision.
+    weight: supporting
+    dimension: fairness_independence_conflicts
+
+triggers:
+  - check: The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation.
+    dimension: accountability_agency
+    review: [HR, Labor]
+
+  - check: The draft calls the decision final and also invites employee input, feedback or consultation, without saying what remains open to change.
+    dimension: listening_employee_voice
+    review: [HR, Labor]
+
+  - check: The draft reaches a wider audience than the affected group without saying how or when affected people are told individually.
+    dimension: stakeholder_respect_impact
+    review: [HR]
+
+  - check: The draft gives no notice date, last working day or date by which dates will come, no pay terms, and no place to find either.
+    dimension: clarity_plain_language
+    review: [HR, Labor]
+
+  - check: >-
+      The draft never says in plain terms that roles or employment end, reaching
+      instead for rightsizing, workforce optimization, simplification, efficiency,
+      synergies, realignment, organizational health, agile or leaner organization,
+      fewer layers, streamlining, cost discipline, transition, impacted or exit.
+    dimension: stakeholder_respect_impact
+
+  - check: >-
+      Employee feedback, an engagement survey or consultation is cited as a reason
+      for the reduction without an explicit statement that leadership, not
+      employees, made the decision.
+    dimension: listening_employee_voice
+    review: [HR]
+
+questions:
+  - ask: Which entities, countries, states or agreements may require notice, consultation or a filing?
+    review: [Legal, Labor, Local market]
+  - ask: Has anyone reviewed whether the affected group is uneven across protected groups, and who?
+    review: [HR, Legal]
+  - ask: What leadership decisions, incentives or governance conditions produced the structure being removed?
+  - ask: Can you support any statement about future reductions or job security, and who approved it?
+    review: [Executive]
+  - ask: What can managers confirm today, what can they not, and where do their questions go?
+    review: [HR]
+  - ask: Were affected employees assessed for internal mobility or redeployment before selection?
+    review: [HR]
+---
 
 ## 3. Source
 

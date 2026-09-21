@@ -4,7 +4,6 @@ import type { EvaluationResult } from "../evaluate.js";
 import { DEMO_1 } from "../fixtures.js";
 import { buildSavedReview, parseSavedReview, savedReviewFilename, SavedReviewError, settingsDrift } from "../savedReview.js";
 import type { AudienceDocument } from "../types.js";
-import { APOLOGY_PROTOCOL } from "../protocols.js";
 
 function load(prefix: string): EvaluationResult {
   const dir = "fixture-reports";
@@ -97,7 +96,7 @@ describe("settingsDrift", () => {
 describe("a saved file from before the protocol section was removed", () => {
   it("still parses, ignoring the protocol_review key it carries", () => {
     const old = JSON.parse(JSON.stringify(buildSavedReview(load("demo1"), DEMO_1.request))) as Record<string, unknown>;
-    old.protocol_review = { protocol: APOLOGY_PROTOCOL.name, source: APOLOGY_PROTOCOL.source, elements: [] };
+    old.protocol_review = { protocol: "Effective apology", source: "Lewicki et al. (2016)", elements: [] };
     const parsed = parseSavedReview(JSON.stringify(old));
     expect(parsed.score).toBe((old as { score: number }).score);
     expect(parsed).not.toHaveProperty("protocol_review.elements.0");

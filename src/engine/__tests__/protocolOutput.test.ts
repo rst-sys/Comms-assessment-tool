@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { DEMO_2 } from "../fixtures.js";
 import { buildSystemBlocks } from "../prompt.js";
 import { PROTOCOLS, protocolsFor } from "../protocols.js";
+import { buildProtocolBlock } from "../protocolPrompt.js";
 import { ANALYSIS_SCHEMA } from "../schema.js";
 
 /**
@@ -22,18 +23,19 @@ describe("protocols add instructions, never output", () => {
 
   it("asks no protocol to fill a field of its own", () => {
     for (const protocol of PROTOCOLS) {
-      expect(protocol.promptBlock, protocol.id).not.toMatch(/\bfill\b[^.]*\bprotocol_review\b/i);
-      expect(protocol.promptBlock, protocol.id).not.toContain("protocol_review");
+      const block = buildProtocolBlock(protocol, true);
+      expect(block, protocol.id).not.toContain("protocol_review");
+      expect(JSON.stringify(protocol), protocol.id).not.toContain("protocol_review");
     }
   });
 
   it("still applies the apology protocol, routing it through the ordinary findings", () => {
     const applied = protocolsFor(DEMO_2.request);
-    expect(applied.map((p) => p.id)).toContain("effective-apology");
+    expect(applied.map((p) => p.id)).toContain("public-apology");
 
     const blocks = buildSystemBlocks(DEMO_2.request).map((b) => b.text).join("\n");
-    expect(blocks).toContain("EFFECTIVE APOLOGY REVIEW");
-    expect(blocks).toContain("raise it through the ordinary findings");
+    expect(blocks).toContain("PUBLIC APOLOGY");
+    expect(blocks).toContain("raise what you find through the ordinary findings");
     expect(blocks).not.toContain("protocol_review");
   });
 });

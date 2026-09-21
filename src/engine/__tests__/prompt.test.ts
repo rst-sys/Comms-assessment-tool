@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { buildSystemBlocks, buildUserMessage, OUTPUT_NOTES } from "../prompt.js";
-import { LAYOFF_BLOCK, SYSTEM_PROMPT } from "../promptText.js";
+import { SYSTEM_PROMPT } from "../promptText.js";
 import { DEMO_1, DEMO_2, DEMO_1_WITH_CONTEXT } from "../fixtures.js";
-import { APOLOGY_PROTOCOL, PROTOCOLS, protocolsFor } from "../protocols.js";
+import { PROTOCOLS, protocolsFor } from "../protocols.js";
+import { PROTOCOL_RULES } from "../protocolPrompt.js";
 import { DIMENSION_IDS } from "../types.js";
 
 describe("system prompt text", () => {
@@ -14,76 +15,93 @@ describe("system prompt text", () => {
     }
   });
 
-  it("carries the verbatim Section 10 layoff block", () => {
-    expect(LAYOFF_BLOCK.startsWith("LAYOFF AND RESTRUCTURING REVIEW")).toBe(true);
-    expect(LAYOFF_BLOCK).toContain("Were affected employees assessed for internal mobility before selection?");
-    expect(LAYOFF_BLOCK.trimEnd().endsWith("counsel must confirm.")).toBe(true);
-  });
 });
 
 describe("buildSystemBlocks", () => {
-  it("adds the layoff block only for a workforce reduction", () => {
-    const layoff = buildSystemBlocks(DEMO_1.request).map((b) => b.text);
-    expect(layoff).toEqual([SYSTEM_PROMPT, LAYOFF_BLOCK, OUTPUT_NOTES]);
-
-    const apology = buildSystemBlocks(DEMO_2.request).map((b) => b.text);
-    expect(apology).toEqual([SYSTEM_PROMPT, APOLOGY_PROTOCOL.promptBlock, OUTPUT_NOTES]);
+  it("sends the framework, then the core, then the event, then the rules, then the output notes", () => {
+    const blocks = buildSystemBlocks(DEMO_1.request).map((b) => b.text);
+    expect(blocks[0]).toBe(SYSTEM_PROMPT);
+    expect(blocks[1]).toContain("HIGH-STAKES EVENT CORE");
+    expect(blocks[2]).toContain("WORKFORCE REDUCTION AND RESTRUCTURING");
+    expect(blocks[3]).toBe(PROTOCOL_RULES);
+    expect(blocks[blocks.length - 1]).toBe(OUTPUT_NOTES);
   });
 
-  it("adds the apology protocol for the repair goal, and not otherwise", () => {
-    // An apology is a posture, not an event: it can sit on top of any of the
-    // thirteen, so the goal decides and the event does not.
-    const byGoal = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
-    expect(byGoal.filter((t) => t === APOLOGY_PROTOCOL.promptBlock).length).toBe(1);
+  it("sends no protocol at all when the draft is about none of the thirteen events", () => {
+    const routine = buildSystemBlocks({ ...DEMO_1.request, communication_event: "None of these", goal: "Inform" }).map((b) => b.text);
+    expect(routine).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
+  });
 
-    const otherEvent = buildSystemBlocks({
+  it("adds a posture on top of any event, chosen by the goal and not the event", () => {
+    const onEvent = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
+    expect(onEvent.some((t) => t.startsWith("PUBLIC APOLOGY"))).toBe(true);
+    expect(onEvent.some((t) => t.includes("WORKFORCE REDUCTION"))).toBe(true);
+
+    const elsewhere = buildSystemBlocks({
       ...DEMO_1.request,
       communication_event: "Cyberattack or data incident",
       goal: "Apologize or repair trust",
     }).map((b) => b.text);
-    expect(otherEvent).toContain(APOLOGY_PROTOCOL.promptBlock);
+    expect(elsewhere.some((t) => t.startsWith("PUBLIC APOLOGY"))).toBe(true);
+    expect(elsewhere.some((t) => t.includes("CYBER INCIDENT"))).toBe(true);
 
-    expect(buildSystemBlocks(DEMO_1.request).map((b) => b.text)).not.toContain(APOLOGY_PROTOCOL.promptBlock);
+    // No goal, no posture.
+    expect(buildSystemBlocks(DEMO_1.request).map((b) => b.text).some((t) => t.startsWith("PUBLIC APOLOGY"))).toBe(false);
   });
 
-  it("puts the protocol block after any type block and before the output notes", () => {
+  it("sends the shared rules once however many protocols apply", () => {
     const blocks = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
-    expect(blocks).toEqual([SYSTEM_PROMPT, LAYOFF_BLOCK, APOLOGY_PROTOCOL.promptBlock, OUTPUT_NOTES]);
+    expect(protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" })).toHaveLength(3);
+    expect(blocks.filter((t) => t === PROTOCOL_RULES)).toHaveLength(1);
   });
 });
 
-describe("the effective-apology protocol", () => {
-  it("names the six components in the order the research ranks them, with the research cited", () => {
-    expect(APOLOGY_PROTOCOL.elements.map((e) => e.name)).toEqual([
-      "Expression of regret",
-      "Explanation of what went wrong",
-      "Acknowledgment of responsibility",
-      "Declaration of repentance",
-      "Offer of repair",
-      "Request for forgiveness",
-    ]);
-    expect(APOLOGY_PROTOCOL.source).toContain("Lewicki");
-    expect(APOLOGY_PROTOCOL.source).toContain("2016");
-    expect(APOLOGY_PROTOCOL.source).toContain("Negotiation and Conflict Management Research");
+describe("the protocol library", () => {
+  it("selects one core, one event and one posture from the intake, never by reading the draft", () => {
+    const applied = protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((p) => p.id);
+    expect(applied).toEqual(["event-core", "workforce-restructuring", "public-apology"]);
+
+    expect(protocolsFor({ ...DEMO_1.request, communication_event: "None of these", goal: "Inform" })).toEqual([]);
   });
 
-  it("maps every component to a dimension the engine already scores", () => {
-    for (const element of APOLOGY_PROTOCOL.elements) {
-      expect(DIMENSION_IDS).toContain(element.dimension);
+  it("carries a protocol for an event that has no file yet, using the core alone", () => {
+    const applied = protocolsFor({ ...DEMO_1.request, communication_event: "CEO or senior-leader departure", goal: "Inform" });
+    expect(applied.map((p) => p.id)).toEqual(["event-core"]);
+  });
+
+  it("fires the core's recurrence element only where something failed", () => {
+    const failure = buildSystemBlocks(DEMO_1.request).map((b) => b.text).join("\n");
+    expect(failure).toContain("What changes");
+
+    const notAFailure = buildSystemBlocks({
+      ...DEMO_1.request,
+      communication_event: "Acquisition, divestiture or major integration",
+    }).map((b) => b.text).join("\n");
+    expect(notAFailure).toContain("HIGH-STAKES EVENT CORE");
+    expect(notAFailure).not.toContain("What changes");
+  });
+
+  it("maps every element and trigger in the library to a dimension the engine scores", () => {
+    for (const p of PROTOCOLS) {
+      for (const e of p.elements) expect(DIMENSION_IDS, `${p.id}/${e.name}`).toContain(e.dimension);
+      for (const t of p.triggers) expect(DIMENSION_IDS, `${p.id}/${t.check.slice(0, 30)}`).toContain(t.dimension);
     }
   });
 
-  it("tells the model every component and never to supply wording", () => {
-    for (const element of APOLOGY_PROTOCOL.elements) {
-      expect(APOLOGY_PROTOCOL.promptBlock).toContain(element.name);
-    }
-    expect(APOLOGY_PROTOCOL.promptBlock).toContain("never supply wording");
+  it("keeps the workforce protocol carrying what the old layoff block did", () => {
+    const block = buildSystemBlocks(DEMO_1.request).map((b) => b.text).join("\n");
+    // The euphemism list and the feedback trigger moved into the file rather
+    // than living in a second, overlapping instruction.
+    expect(block).toContain("rightsizing");
+    expect(block).toContain("synergies");
+    expect(block).toMatch(/feedback[^.]*without an explicit statement that leadership/i);
+    expect(block).toContain("internal mobility");
   });
 
-  it("is the only protocol in the registry, and protocolsFor selects on the request", () => {
-    expect(PROTOCOLS).toEqual([APOLOGY_PROTOCOL]);
-    expect(protocolsFor(DEMO_2.request)).toEqual([APOLOGY_PROTOCOL]);
-    expect(protocolsFor(DEMO_1.request)).toEqual([]);
+  it("never supplies wording and never asks for a section of its own", () => {
+    const block = buildSystemBlocks(DEMO_2.request).map((b) => b.text).join("\n");
+    expect(block).toContain("never supply wording");
+    expect(block).not.toContain("protocol_review");
   });
 });
 

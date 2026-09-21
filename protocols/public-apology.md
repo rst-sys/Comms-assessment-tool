@@ -1,19 +1,68 @@
-# PUBLIC APOLOGY REVIEW
+---
+id: public-apology
+name: Public apology
+layer: posture
+goals:
+  - Apologize or repair trust
+version: 1
+status: active
 
-## 1. Name
+elements:
+  - name: Acknowledged responsibility
+    means: The organization or a named leader says it is responsible for the conduct, decision or failure — not merely that the outcome is regrettable.
+    weight: core
+    dimension: accountability_agency
 
-Public Apology Review
+  - name: Repair offered
+    means: A remedy for the people affected — restitution, correction, recall, support or access — proportionate to the harm.
+    weight: core
+    dimension: corrective_action_proof
 
-## 2. Applies when
+  - name: Direct regret
+    means: An unconditional apology for the organization's own conduct, not conditional on how anyone reacted.
+    weight: core
+    dimension: stakeholder_respect_impact
 
-Apply this protocol when the communication type is Apology.
+  - name: Conduct rejected
+    means: The draft says the conduct was wrong, not only that the reaction was unfortunate.
+    weight: supporting
+    dimension: accountability_agency
 
-Also apply it to CEO or executive message, Employee announcement, Press release, Crisis statement, Investor communication, Blog post, Social-media post, Talking points, Manager toolkit or FAQ when either of these is true:
+  - name: Restraint in the ask
+    means: The draft does not demand forgiveness, understanding or moving on, and does not ask before repair is stated.
+    weight: supporting
+    dimension: fairness_independence_conflicts
 
-- The draft contains "sorry", "apologize", "apology" or "regret" in reference to the organization's own conduct.
-- The author states that the goal is to apologize or repair trust after a failure.
+triggers:
+  - check: No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern.
+    dimension: accountability_agency
+    review: [Legal]
 
-Do not apply it to a Holding statement that contains no apology language. Where the draft is also a Layoff or restructuring communication, or a breach notification, run this protocol alongside that one. Keep whichever finding is more severe when the two overlap.
+  - check: The only apology sentence is conditional on the audience's reaction — "if", "to anyone who felt", "that concerns were raised".
+    dimension: stakeholder_respect_impact
+    review: [Legal]
+
+  - check: The cause is placed on an individual employee, a vendor, a miscommunication or the audience's reaction, and the draft does not state the organization's own supervisory or control role.
+    dimension: fairness_independence_conflicts
+    review: [Legal, HR]
+
+  - check: The draft describes harm to identifiable people and offers neither a repair nor any corrective action.
+    dimension: corrective_action_proof
+    review: [Executive]
+
+  - check: The draft, or the context supplied with it, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication.
+    dimension: truthfulness_factual_discipline
+    review: [Legal]
+
+questions:
+  - ask: Who approved the decision or conduct being apologized for, and does the draft say so?
+  - ask: Is the repair proportionate to the harm, and does the named owner have authority to commit to it?
+    review: [Executive]
+  - ask: Does the draft blame a person or vendor who has not been told or given a chance to respond?
+    review: [HR, Legal]
+  - ask: Does any statement of responsibility carry legal consequences counsel should review before publication?
+    review: [Legal]
+---
 
 ## 3. Source
 

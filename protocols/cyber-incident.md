@@ -1,23 +1,78 @@
-# CYBER INCIDENT AND DATA BREACH REVIEW
+---
+id: cyber-incident
+name: Cyber incident and data breach
+layer: event
+event: Cyberattack or data incident
+version: 1
+status: active
 
-## 1. Name
-Cyber Incident and Data Breach Review
+elements:
+  - name: What and when
+    means: The draft gives the discovery date, the incident period if known, and time zones.
+    weight: core
+    dimension: truthfulness_factual_discipline
 
-## 2. Applies when
-The draft is any of these types: Crisis statement, Holding statement, Press release, Apology, Investor communication, Employee announcement, CEO or executive message, Product or service announcement, Blog post, Social-media post, Talking points, Manager toolkit, FAQ, Policy or public-affairs, Other.
+  - name: Nature of exposure
+    means: The draft says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined, and names the data categories involved.
+    weight: core
+    dimension: truthfulness_factual_discipline
 
-It also has to be about a suspected or confirmed security event. Trigger on any of these in the draft:
+  - name: Present response
+    means: The draft describes what is being done now, specific enough to check, including containment and who is investigating.
+    weight: core
+    dimension: corrective_action_proof
 
-- unauthorized access
-- a breach or exposure of personal or confidential data
-- ransomware or extortion
-- credential or account compromise
-- a vendor or third-party compromise
-- a service outage the draft attributes to a security event
+  - name: Support matched to harm
+    means: Any support offered fits the data involved, with its terms, its duration and how to claim it.
+    weight: supporting
+    dimension: stakeholder_respect_impact
 
-Also apply it when the draft's goal is to notify affected individuals, customers, employees, partners, regulators or investors of such an event.
+  - name: Authenticity
+    means: The draft tells recipients how to confirm the notice is genuine, and how the organization will and will not contact them.
+    weight: supporting
+    dimension: verification_follow_through
 
-Do not apply it to routine security-awareness messages, security feature announcements, or outages the draft attributes to non-security causes.
+  - name: Attribution discipline
+    means: Any claim about who was responsible, or that a vendor was at fault, carries a stated basis and does not displace the organization's own role.
+    weight: core
+    dimension: fairness_independence_conflicts
+
+triggers:
+  - check: The draft states a categorical outcome — no data was compromised, the incident is contained, systems are secure — while also saying the investigation is ongoing, or with no basis given.
+    dimension: truthfulness_factual_discipline
+    review: [Information security, Legal]
+
+  - check: The draft says data was involved but does not name the categories, and does not say the categories are not yet known.
+    dimension: truthfulness_factual_discipline
+    review: [Privacy, Legal]
+
+  - check: The draft attributes the incident to a named attacker, a nation-state, a sophisticated actor, or a vendor, with no stated basis; or attributes it to a vendor without stating the organization's own selection, oversight or data-sharing role.
+    dimension: fairness_independence_conflicts
+    review: [Information security]
+
+  - check: The draft states that notification is or is not legally required, or that the organization is compliant with applicable laws.
+    dimension: truthfulness_factual_discipline
+    review: [Legal, Privacy]
+
+  - check: The draft gives affected people no way to confirm the notice is genuine, in a message that asks them to act, click or call.
+    dimension: verification_follow_through
+
+  - check: An investor communication states that the incident is or is not material, or gives an impact figure, without saying who determined it and when.
+    dimension: truthfulness_factual_discipline
+    review: [Investor relations, Legal]
+
+questions:
+  - ask: Which state, national, sector, contract and cross-border notification duties may apply, and what is the earliest deadline?
+    review: [Legal, Privacy]
+  - ask: Has law enforcement asked for a delay, and does the law allow one here?
+    review: [Legal]
+  - ask: Does publishing this change containment, evidence preservation or the investigation?
+    review: [Information security]
+  - ask: Does the support offered match the data actually involved?
+  - ask: Do the website, customer letter, call-centre script, employee talking points and regulator notice agree on facts, dates and scope?
+  - ask: If employees are affected, have they been told before external release?
+    review: [HR]
+---
 
 ## 3. Source
 Professional judgement, informed by the following. Each was read as a fetched summary, not full text.

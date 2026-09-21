@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { PROTOCOLS } from "../../engine/protocols.js";
 import { StandardsLibrary } from "../StandardsLibrary.js";
 import { CODES, CODES_BY_ID, GROUNDING, OWNER_S_OWN } from "../standardsContent.js";
 import { DIMENSION_IDS } from "../../engine/types.js";
@@ -76,9 +77,18 @@ describe("the page, and the line it must not cross", () => {
     expect(screen.getAllByText(GROUNDING.listening_employee_voice[0]!.principle, { exact: false }).length).toBeGreaterThan(0);
   });
 
-  it("still lists the protocols the engine really does apply", () => {
+  it("still lists the protocols the engine really does apply, and what each rests on", () => {
     render(<StandardsLibrary />);
-    expect(screen.getByRole("heading", { name: "Effective apology" })).toBeTruthy();
-    expect(screen.getByText(/Lewicki/)).toBeTruthy();
+    for (const protocol of PROTOCOLS) {
+      expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
+      // Its own words for when it applies, built from the fields that select it.
+      expect(screen.getAllByText(new RegExp(`Applied when:.*Version ${protocol.version}`)).length).toBeGreaterThan(0);
+    }
+    // The sources survive the trip from the file to the page.
+    expect(screen.getAllByText(/Lewicki/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/NIST SP 800-61r3/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Equal Employment Opportunity Commission/).length).toBeGreaterThan(0);
+    // And so does what each one admits it cannot do.
+    expect(screen.getAllByText(/cannot|does not|assumes/i).length).toBeGreaterThan(0);
   });
 });

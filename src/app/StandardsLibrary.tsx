@@ -1,5 +1,6 @@
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
-import { PROTOCOLS, LAYOFF_PROTOCOL_SUMMARY } from "../engine/protocols.js";
+import { PROTOCOLS } from "../engine/protocols.js";
+import { appliesTo, proseBlocks, protocolSection } from "./protocolProse.js";
 import { DIMENSION_IDS } from "../engine/types.js";
 import { ACCOUNT_ELEMENTS } from "./overviewContent.js";
 import { CODES, CODES_BY_ID, GROUNDING, OWNER_S_OWN } from "./standardsContent.js";
@@ -143,15 +144,22 @@ export function StandardsLibrary() {
       {PROTOCOLS.map((protocol) => (
         <section key={protocol.id} className="card welcome-card" aria-labelledby={`${protocol.id}-heading`}>
           <h2 id={`${protocol.id}-heading`}>{protocol.name}</h2>
-          <p className="muted small">Applied when: {protocol.appliesTo}</p>
-          <p className="prose">{protocol.basis}</p>
+          <p className="muted small">
+            Applied when: {appliesTo(protocol)} · Version {protocol.version}
+          </p>
+
+          <div className="label">What it checks</div>
           <dl className="account-list not-list">
             {protocol.elements.map((e) => (
               <div key={e.name} className="account-item">
                 <dt>{e.name}</dt>
                 <dd>
-                  {e.meaning} <span className="muted">{e.importance}</span>
-                  <div className="muted small">Scored under: {DIMENSION_LABELS[e.dimension]}</div>
+                  {e.means}
+                  <div className="muted small">
+                    Scored under: {DIMENSION_LABELS[e.dimension]}
+                    {e.weight === "supporting" ? " · supporting" : ""}
+                    {e.only_when === "failure" ? " · only where something failed" : ""}
+                  </div>
                 </dd>
               </div>
             ))}
@@ -160,28 +168,57 @@ export function StandardsLibrary() {
             These elements are a lens on the ten dimensions above, not an eleventh score. A missing element shows up in
             the dimension it belongs to.
           </p>
-          <p className="muted small prose">Source: {protocol.source}</p>
+
+          {["Source", "Basis"].map((heading) => {
+            const blocks = proseBlocks(protocolSection(protocol.prose, heading));
+            if (blocks.length === 0) return null;
+            return (
+              <div key={heading}>
+                <div className="label">{heading}</div>
+                {blocks.map((b, i) =>
+                  b.kind === "list" ? (
+                    <ul key={i} className="tight prose">
+                      {(b.items ?? []).map((item, j) => (
+                        <li key={j}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p key={i} className="prose small">{b.text}</p>
+                  ),
+                )}
+              </div>
+            );
+          })}
+
+          {(() => {
+            const limits = proseBlocks(protocolSection(protocol.prose, "What this protocol does not cover") || protocolSection(protocol.prose, "Limits"));
+            if (limits.length === 0) return null;
+            return (
+              <>
+                <div className="label">What it cannot do</div>
+                {limits.map((b, i) =>
+                  b.kind === "list" ? (
+                    <ul key={i} className="tight prose">
+                      {(b.items ?? []).map((item, j) => (
+                        <li key={j}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p key={i} className="prose small">{b.text}</p>
+                  ),
+                )}
+              </>
+            );
+          })()}
         </section>
       ))}
-
-      <section className="card welcome-card" aria-labelledby="layoff-heading">
-        <h2 id="layoff-heading">{LAYOFF_PROTOCOL_SUMMARY.name}</h2>
-        <p className="muted small">Applied when: {LAYOFF_PROTOCOL_SUMMARY.appliesTo}</p>
-        <p className="prose">{LAYOFF_PROTOCOL_SUMMARY.basis}</p>
-        <p className="prose">Each of these raises a High-severity finding, and every finding in the set is marked for HR or labour review:</p>
-        <ul className="tight prose">
-          {LAYOFF_PROTOCOL_SUMMARY.checks.map((c) => (
-            <li key={c}>{c}</li>
-          ))}
-        </ul>
-        <p className="muted small prose">Source: {LAYOFF_PROTOCOL_SUMMARY.source}</p>
-      </section>
 
       <section className="card welcome-card" aria-labelledby="planned-heading">
         <h2 id="planned-heading">Planned</h2>
         <p className="prose">
-          Type-specific protocols for financial disclosure, privacy incidents, AI and surveillance, and health and safety
-          are planned and not in this build. A draft of those types is still reviewed against the core framework.
+          The library covers thirteen high-stakes events. Protocols for the rest are planned and not in this build: a
+          draft about an event with no protocol is still judged against the core framework above, and against the
+          high-stakes event core where an event is named.
         </p>
       </section>
     </main>
