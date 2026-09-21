@@ -50,7 +50,7 @@ h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; l
 h1 { font-size: 32px; margin: 0 0 var(--space); }
 h2 { font-size: 24px; margin: 0 0 calc(var(--space) * 2); }
 h3 { font-size: 18px; font-weight: 600; margin: calc(var(--space) * 3) 0 var(--space); }
-p { margin: 0 0 calc(var(--space) * 1.5); }
+p { margin: 0 0 calc(var(--space) * 1.5); text-wrap: pretty; }
 p:last-child { margin-bottom: 0; }
 a { color: var(--sound-text); text-underline-offset: 2px; }
 a:hover { color: var(--ink); }
@@ -59,7 +59,7 @@ button { cursor: pointer; transition: background-color var(--fast), border-color
 :focus-visible { outline: 3px solid var(--sound); outline-offset: 2px; border-radius: 2px; }
 code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; background: var(--paper); padding: 1px 4px; border-radius: 3px; }
 ul.tight, ol.tight { margin: 0; padding-left: 20px; }
-ul.tight li, ol.tight li { margin-bottom: calc(var(--space) / 2); }
+ul.tight li, ol.tight li { margin-bottom: calc(var(--space) / 2); text-wrap: pretty; }
 q { quotes: "“" "”"; }
 
 .page { max-width: 1100px; margin: 0 auto; padding: calc(var(--space) * 3) calc(var(--space) * 2) calc(var(--space) * 6); }
@@ -260,7 +260,10 @@ textarea { resize: vertical; }
 
 /* Footer */
 .site-footer { margin-top: calc(var(--space) * 6); border-top: 1px solid var(--border); padding-top: calc(var(--space) * 3); color: var(--neutral); font-size: 14px; }
-.site-footer blockquote { margin: 0 0 calc(var(--space) * 1.5); padding-left: calc(var(--space) * 1.5); border-left: 3px solid var(--border); color: var(--ink); font-family: var(--serif); font-size: 16px; max-width: var(--measure); }
+/* The disclaimer had no measure at all and ran the full width of the page —
+   around 170 characters a line. Everything in the footer gets a measure. */
+.site-footer > * { max-width: var(--measure); }
+.site-footer blockquote { margin: 0 0 calc(var(--space) * 1.5); padding-left: calc(var(--space) * 1.5); border-left: 3px solid var(--border); color: var(--ink); font-family: var(--serif); font-size: 16px; max-width: var(--measure); text-wrap: balance; }
 
 /* Print: every panel expanded (done in script), page breaks between sections, no controls. */
 @media print {
@@ -380,3 +383,13 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 .interpretations { margin-top: calc(var(--space) * 2); }
 .interpretation + .interpretation { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 3); border-top: 1px solid var(--border); }
 .interpretation p { margin-bottom: var(--space); }
+
+/* A readable measure for body copy in the results sections (revision 19).
+   Sections that span the full page were letting intro paragraphs and list
+   items run to ~1050px — roughly 170 characters a line. Cards, score rows and
+   the flagged-phrase chips keep their own widths; only running text is capped. */
+.results section > p,
+.results ul.tight li,
+.results ol.tight li {
+  max-width: var(--measure);
+}
