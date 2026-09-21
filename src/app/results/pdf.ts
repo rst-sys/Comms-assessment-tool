@@ -11,7 +11,7 @@ import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/
 import { APP_NAME, COPYRIGHT, CORE_PRINCIPLE, REPORTER_QUESTION } from "../copy.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { reviewTagsFor } from "./model.js";
-import { scoringNoteText } from "./ScoringNote.js";
+import { scoringNoteParagraphs } from "./ScoringNote.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
 const TEXT_WIDTH = PAGE.width - PAGE.margin * 2;
@@ -153,7 +153,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.bullets(s.priority_improvements);
 
   w.label("How the scoring works");
-  w.paragraph(scoringNoteText(result, s.context_supplied), 9.5);
+  for (const text of scoringNoteParagraphs(result, s.context_supplied)) w.paragraph(text, 9.5);
 
   w.pageBreak();
   w.heading("Scorecard", 15);

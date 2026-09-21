@@ -152,16 +152,19 @@ describe("the score ceiling when no context was supplied", () => {
     result.analysis.executive_summary.context_supplied = false;
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.getByText("How the scoring works")).toBeTruthy();
-    expect(screen.getByText(/holds three dimensions/)).toBeTruthy();
+    expect(screen.getByText(/the maximum score for three dimensions/)).toBeTruthy();
     expect(screen.getByText(new RegExp(`caps this review at ${ceilingWithoutContext()} out of 100`))).toBeTruthy();
+    // The caveat is its own paragraph, and says the same thing either way.
+    expect(screen.getByText(/^NB: This is decision support, not advice/)).toBeTruthy();
   });
 
   it("says nothing of the sort once context is supplied, because the cap is lifted", () => {
     const result = load("demo1");
     result.analysis.executive_summary.context_supplied = true;
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.getByText(/weighed the draft against the context you supplied/)).toBeTruthy();
-    expect(screen.queryByText(/holds three dimensions/)).toBeNull();
+    expect(screen.getByText(/The context you supplied was weighed against the draft/)).toBeTruthy();
+    expect(screen.queryByText(/the maximum score for three dimensions/)).toBeNull();
+    expect(screen.getByText(/^NB: This is decision support, not advice/)).toBeTruthy();
   });
 
   it("derives the ceiling from the weights rather than a written-down number", () => {

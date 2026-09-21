@@ -2,28 +2,31 @@ import type { EvaluationResult } from "../../engine/evaluate.js";
 import { ceilingWithoutContext, DIMENSION_LABELS } from "../../engine/scoring.js";
 
 /**
- * How the scoring works (revision 23).
+ * How the scoring works (revision 25, wording by the owner).
  *
- * One paragraph in place of three separate disclaimers: the confidence line,
- * the paragraph explaining the cap when no context was supplied, and the
- * provider-and-advice footnote. Between them they said much the same thing
- * three times, in three registers, and two were written in exactly the stiff
- * style the owner objected to in the engine's own output.
+ * One place for what used to be three disclaimers: the confidence line, the
+ * paragraph explaining the cap when no context was supplied, and the
+ * provider-and-advice footnote.
  *
- * It cannot be fixed text — whether context was supplied changes what is true
- * about the score, and so does the model that ran the review — but it can be
- * short and plain. The page and the PDF render the same string, so the two
- * cannot drift apart.
+ * The numbers are computed, not written down — the dimension count from the
+ * labels and the ceiling from the weights — so the sentence cannot come to
+ * claim something the scoring no longer does.
+ *
+ * Returned as paragraphs so the page and the PDF render the same words in the
+ * same order and cannot drift apart.
  */
-export function scoringNoteText(result: EvaluationResult, contextSupplied: boolean): string {
+export function scoringNoteParagraphs(result: EvaluationResult, contextSupplied: boolean): string[] {
   const dimensions = Object.keys(DIMENSION_LABELS).length;
-  const who = `${result.provider.provider} (${result.provider.model}) scored this draft across ${dimensions} weighted dimensions, out of 100.`;
-  const context = contextSupplied
-    ? "It weighed the draft against the context you supplied, so what that context confirms counts as established rather than merely claimed."
-    : `You supplied no context, so nothing here confirms what the draft claims. That holds three dimensions — accountability, causation and corrective action — to 3.5 out of 5, and caps this review at ${ceilingWithoutContext()} out of 100. Fill in "Provide additional context" to lift it.`;
-  const advice =
-    "This is decision support, not advice. It does not replace review by counsel, HR, investor relations, security or your local-market experts.";
-  return `${who} ${context} ${advice}`;
+  const opening = `${result.provider.provider} (${result.provider.model}) scored this draft across ${dimensions} weighted dimensions, out of 100.`;
+
+  const scoring = contextSupplied
+    ? `${opening} The context you supplied was weighed against the draft, so what it confirms counts as established rather than claimed. Add more under "Provide additional context" to enhance the depth of the scoring.`
+    : `${opening} As no context was supplied, the maximum score for three dimensions — accountability, causation and corrective action — is restricted to 3.5 out of 5, which caps this review at ${ceilingWithoutContext()} out of 100. Fill in "Provide additional context" to enhance the depth of the scoring.`;
+
+  const caveat =
+    "NB: This is decision support, not advice. It does not replace review by key partners such as legal counsel, HR, investor relations, security, subject-matter experts or local-market experts.";
+
+  return [scoring, caveat];
 }
 
 export function ScoringNote({
@@ -36,7 +39,9 @@ export function ScoringNote({
   return (
     <section className="scoring-note" aria-labelledby="scoring-note-heading">
       <h3 id="scoring-note-heading" className="label">How the scoring works</h3>
-      <p className="prose small muted">{scoringNoteText(result, contextSupplied)}</p>
+      {scoringNoteParagraphs(result, contextSupplied).map((text, i) => (
+        <p key={i} className="prose small muted">{text}</p>
+      ))}
     </section>
   );
 }
