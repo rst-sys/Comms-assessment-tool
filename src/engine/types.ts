@@ -204,6 +204,7 @@ export const SPECIALIST_REVIEW_TYPES = [
   "HR",
   "Labor",
   "Privacy",
+  "Information security",
   "Investor relations",
   "Local market",
   "Executive",

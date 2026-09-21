@@ -22,7 +22,11 @@ const REVIEW_FUNCTIONS: [SpecialistReviewType, RegExp][] = [
   ["Legal", /\b(legal|counsel|lawyer|attorney|litigation)\b/i],
   ["HR", /\b(HR|human resources|personnel)\b/i],
   ["Labor", /\b(labou?r|works[- ]council|consultation|union|collective)\b/i],
-  ["Privacy", /\b(privacy|data protection|personal data)\b/i],
+  ["Privacy", /\b(privacy|data protection|personal data|data subjects?)\b/i],
+  // Restored and given a real category. The previous filter matched the bare
+  // word "security" with nothing behind it, so a breach question was flagged as
+  // needing "a specialist" without ever naming which one.
+  ["Information security", /\b(information security|infosec|cyber\w*|breach|intrusion|attacker|threat actor|malware|ransomware|vulnerabilit\w*|forensics?|containment|exfiltrat\w*|credentials?)\b/i],
   ["Investor relations", /\b(investor relations|investors|shareholders?|disclosure|securities)\b/i],
   ["Local market", /\b(local[- ]market|jurisdiction|each market|country)\b/i],
   ["Executive", /\b(executive|board|leadership team)\b/i],
