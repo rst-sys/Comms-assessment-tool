@@ -47,10 +47,10 @@ export const NOT_THIS: [string, string][] = [
 ];
 
 export const NOT_THIS_SHORT: string[] = [
-  "It does not write for you. No drafting, no rewriting, no suggested wording.",
-  "It is not an editor or copyeditor. Grammar, style and readability are outside its scope.",
-  "It does not certify compliance, and it is not legal, HR or investor-relations advice.",
-  "It does not judge motives. It distinguishes missing information from false information.",
+  "It doesn't write for you. No drafting, no rewriting, no suggested wording.",
+  "It isn't an editor. Grammar, style and readability are outside its scope.",
+  "It isn't legal, HR or investor-relations advice, and it doesn't certify compliance.",
+  "It doesn't judge motives. It separates information that's missing from information that's false.",
 ];
 
 export const VALUE_POINTS: [string, string][] = [
@@ -63,10 +63,10 @@ export const VALUE_POINTS: [string, string][] = [
 /** Plain-language privacy points; `provider` is filled from the live configuration. */
 export function privacyPoints(provider: string | null, training: string | null): [string, string][] {
   return [
-    ["Nothing is saved.", "Your draft, your context and the results live in this browser tab only. Close the tab and they are gone. There is no account, no history and no database."],
-    ["Your draft is sent to one place, once.", `It goes to ${provider ?? "the configured AI provider"} to be analysed, and nowhere else.${training ? ` Training: ${training.toLowerCase()}.` : ""}`],
-    ["Nobody is watching you use it.", "No analytics, no tracking, no session recording. Errors are logged as a code and a random reference, never as your text."],
+    ["Nothing is saved.", "Your draft, context and results exist only in this browser tab. Close it and they're gone. No account, no history, no database."],
+    ["Your draft goes to one place, once.", `It's sent to ${provider ?? "the configured AI provider"} for analysis, and nowhere else.${training ? ` Training: ${training.toLowerCase()}.` : ""}`],
+    ["No one is watching.", "No analytics, no tracking, no session recording. Errors are logged as a code and a random reference, never as your text."],
     ["Your draft never becomes a web search.", "If you search for public coverage, only the topic you type is sent."],
-    ["Redaction is not available yet.", "Nothing is removed from your text before it is sent."],
+    ["Redaction isn't available yet.", "Nothing is removed from your text before it's sent."],
   ];
 }

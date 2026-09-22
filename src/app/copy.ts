@@ -18,7 +18,7 @@ export const COPYRIGHT = "\u00a9 2026 Richard Thompson";
 
 export const APP_NAME = "Trust Assessment Assistant";
 
-export const TAGLINE = "Does this message give an account?";
+export const TAGLINE = "Know whether your message will be trusted before your audience decides.";
 
 export const INTRO =
-  "Paste a draft and say what happened. The tool scores how well the message accounts for the decision behind it, names what is missing, and tells you which published standards it judged you against.";
+  "Paste your draft, add the context, and in about a minute see how well your message explains the decision behind it, where it falls short, and which published standards and best practices it was measured against.";

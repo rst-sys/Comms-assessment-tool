@@ -239,7 +239,11 @@ textarea { resize: vertical; }
 
 /* Welcome screen */
 .welcome { max-width: 820px; }
-.welcome h1 { margin-bottom: calc(var(--space) * 1.5); }
+.welcome h1 { margin-bottom: calc(var(--space) * 0.75); }
+/* The promise, between the name and the explanation: larger than body text,
+   quieter than the heading, and on its own measure so it breaks cleanly. */
+.welcome-tagline { font-family: var(--serif); font-size: 22px; line-height: 1.35; max-width: var(--measure);
+  margin: 0 0 calc(var(--space) * 2); color: var(--ink); }
 .welcome-intro { font-family: var(--serif); font-size: 19px; line-height: 1.5; max-width: var(--measure); margin-bottom: calc(var(--space) * 4); }
 .welcome-card { margin-top: calc(var(--space) * 3); }
 .welcome-card h2 { margin-bottom: calc(var(--space) * 1.5); }

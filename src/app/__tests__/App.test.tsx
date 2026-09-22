@@ -54,12 +54,12 @@ describe("App", () => {
     vi.stubGlobal("scrollTo", vi.fn());
     await renderApp();
     expect(screen.getByRole("heading", { name: "Trust Assessment Assistant", level: 1 })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "What it is not" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What it won't do" })).toBeTruthy();
     expect(screen.getByText(/Nothing is saved\./)).toBeTruthy();
-    expect(screen.getByText(/It does not write for you/)).toBeTruthy();
+    expect(screen.getByText(/It doesn't write for you/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Tool Overview" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
-    expect(screen.queryByRole("heading", { name: "What it is not" })).toBeNull();
+    expect(screen.queryByRole("heading", { name: "What it won't do" })).toBeNull();
 
     expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
@@ -95,9 +95,10 @@ describe("App", () => {
     // The three questions, and the standard the event brings in: the whole
     // point of the protocol library, and invisible if the first screen
     // describes the tool as it was before.
-    expect(screen.getByRole("heading", { name: "What it judges against" })).toBeTruthy();
-    expect(screen.getByText(/which high-stakes event the message is about/)).toBeTruthy();
-    expect(screen.getByText(/decides which standard\s+applies/)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Consistent, tailored and transparent" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "How it works: three questions" })).toBeTruthy();
+    expect(screen.getByText(/what kind of event you're communicating about/)).toBeTruthy();
+    expect(screen.getByText(/The event determines which standards apply/)).toBeTruthy();
     // Claims the redesign made false.
     expect(screen.queryByText(/two minutes/)).toBeNull();
     expect(screen.queryByText(/tied to specific passages/)).toBeNull();
