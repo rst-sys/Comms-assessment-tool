@@ -29,8 +29,9 @@ on the strength of the title alone.
 ---- COPY FROM HERE ----
 
 You are doing source research for a tool called Trust Assessment Assistant. I
-need an authoritative, honest list of the standards and research that govern how
-an organization should communicate about one kind of high-stakes event.
+need an authoritative, honest list of the standards, research and recognized
+best practices that govern how an organization should communicate about one kind
+of high-stakes event.
 
 **Search the web. Do not answer from memory.** If you cannot search in this
 conversation, say so and stop rather than working from recall — a citation from
