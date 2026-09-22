@@ -78,10 +78,15 @@ and produces the same finding twice.
 Your job is **only what is distinctive to this event.** If you find yourself
 writing "names who decided", stop: the core has it.
 
-You may **narrow** one of the core checks if this event genuinely requires it —
-for example, vagueness about a location may be a staff-safety decision rather
-than evasion. Say so explicitly in the `narrows` field and explain it in the
-prose.
+You may **narrow** one core check if this event genuinely requires it. Exactly
+one is open to it: **`plain-naming`** — the check that the central fact is
+stated in ordinary words rather than euphemism. Narrow it when vagueness may be
+a deliberate safety or legal decision the draft cannot evidence, name it by that
+id in the `narrows` field, and explain why in the prose.
+
+Nothing else in the core can be narrowed, and the checker will refuse a file
+that tries. The core is the floor: if an event seems to need a lower one, that
+is worth arguing before it is worth writing.
 
 ## The thirteen events
 
@@ -127,6 +132,12 @@ A checker rejects the file if it breaks these.
   serious, nothing is.
 - **At most 6 questions** — and a review shows at most 8 in total, so yours
   compete with the core's and with the draft's own.
+
+**Keep the whole file under about 450 words of `means`, `check` and `ask` text.**
+Counts alone are not enough: eight elements of forty words each blows a
+library-wide budget that also has to fit the shared core and a posture
+protocol. One clean sentence per element. A trigger is a condition, not a
+paragraph.
 
 ## Rules
 
@@ -177,7 +188,7 @@ questions:
     review: [Legal]              # optional
 
 narrows:                          # optional; only if you are softening a core check
-  - The exact core check you are softening.
+  - plain-naming                  # the id of the core check, not its wording
 ---
 
 ## Source
@@ -199,9 +210,11 @@ Its limits. What it cannot judge, what it assumes, where a human must decide.
 This goes on the page, so users know what they are getting.
 ```
 
-Watch for one trap: in the settings block, a colon followed by a space inside a
-sentence breaks the file. Write "what was tried first — voluntary exit" rather
-than "what was tried first: voluntary exit".
+Two traps in the settings block. A colon followed by a space inside a sentence
+breaks the file — write "what was tried first — voluntary exit" rather than
+"what was tried first: voluntary exit". And every question needs a question
+mark; a caveat after it is fine, so "Does the timing fit? Counsel must confirm."
+passes.
 
 ## Before you answer
 

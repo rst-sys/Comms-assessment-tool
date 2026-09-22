@@ -65,7 +65,11 @@ describe("the protocol library", () => {
   });
 
   it("carries a protocol for an event that has no file yet, using the core alone", () => {
-    const applied = protocolsFor({ ...DEMO_1.request, communication_event: "CEO or senior-leader departure", goal: "Inform" });
+    const applied = protocolsFor({
+      ...DEMO_1.request,
+      communication_event: "Workplace safety event or facility emergency",
+      goal: "Inform",
+    });
     expect(applied.map((p) => p.id)).toEqual(["event-core"]);
   });
 

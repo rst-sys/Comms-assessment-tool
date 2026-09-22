@@ -81,8 +81,33 @@ describe("the checker", () => {
     expect(messages(bad)).toContain("A protocol adds instructions, never output");
   });
 
-  it("insists a question is a question", () => {
-    expect(messages({ ...good, questions: [{ ask: "Not a question." }] })).toContain("does not end in a question mark");
+  it("insists a question is a question, but lets one carry a caveat after the mark", () => {
+    expect(messages({ ...good, questions: [{ ask: "Not a question." }] })).toContain("contains no question mark");
+    // PROTOCOL-PROMPT.md tells authors to write "counsel must confirm" after a
+    // legal question, so requiring the mark at the very end rejected exactly
+    // the phrasing the prompt asks for.
+    expect(checkProtocol("f.md", { ...good, questions: [{ ask: "Does the timing fit? Counsel must confirm." }] }, prose)).toEqual([]);
+  });
+
+  it("refuses a protocol that narrows a core check the core does not allow to be narrowed", () => {
+    const core = {
+      file: "EVENT-CORE.md",
+      data: {
+        ...good, id: "event-core", layer: "core", event: undefined,
+        triggers: [
+          { id: "plain-naming", check: "C.", dimension: "clarity_plain_language", may_be_narrowed_by: "event" },
+          { check: "D.", dimension: "accountability_agency" },
+        ],
+        prose,
+      } as never,
+    };
+    const ok = { file: "a.md", data: { ...good, narrows: ["plain-naming"], prose } as never };
+    expect(checkLibrary([core, ok])).toEqual([]);
+
+    const sneaky = { file: "b.md", data: { ...good, id: "b", narrows: ["Who decided"], prose } as never };
+    const message = checkLibrary([core, sneaky]).map((e) => e.message).join(" | ");
+    expect(message).toContain("not a core check that may be narrowed");
+    expect(message).toContain("The core allows: plain-naming");
   });
 
   it("refuses two protocols claiming the same event, or the same id", () => {

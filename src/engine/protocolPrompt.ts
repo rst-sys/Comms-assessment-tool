@@ -15,50 +15,37 @@ import type { ProtocolFile } from "./protocolFormat.js";
 
 function reviewNote(review: string[] | undefined): string {
   if (!review || review.length === 0) return "";
-  return ` Set specialist_review_needed true, type ${review.join(" or ")}.`;
+  return `; review ${review.join(" or ")}`;
 }
 
 export function buildProtocolBlock(p: ProtocolFile, failureEvent: boolean): string {
-  const heading = p.name.toUpperCase();
-  const lines: string[] = [heading];
-
-  if (p.layer === "core") {
-    lines.push(
-      "This draft is about a high-stakes event, so the checks below apply whatever the event is. The protocol that follows adds what is distinctive to this one; it does not repeat these.",
-    );
-  } else if (p.layer === "posture") {
-    lines.push("This draft takes a stance the following checks apply to, on top of whatever event it concerns.");
-  }
+  const lines: string[] = [`${p.name.toUpperCase()} (${p.layer} protocol)`];
 
   const elements = p.elements.filter((e) => e.only_when !== "failure" || failureEvent);
   if (elements.length > 0) {
-    lines.push("", "What a credible communication of this kind contains, and the dimension each bears on:");
+    lines.push("", "ELEMENTS");
     for (const e of elements) {
-      const weight = e.weight === "core" ? "" : " (supporting)";
-      lines.push(`- ${e.name}${weight}: ${e.means} Bears on ${e.dimension}.`);
+      const weight = e.weight === "core" ? "" : ", supporting";
+      lines.push(`- ${e.name} (${e.dimension}${weight}). ${e.means}`);
     }
   }
 
   if (p.triggers.length > 0) {
-    lines.push("", "Raise a High-severity finding when any of these is true:");
+    lines.push("", "HIGH-SEVERITY TRIGGERS");
     for (const t of p.triggers) {
-      lines.push(`- ${t.check} (${t.dimension})${reviewNote(t.review)}`);
+      lines.push(`- ${t.check} (${t.dimension}${reviewNote(t.review)})`);
     }
   }
 
   if (p.questions.length > 0) {
-    lines.push(
-      "",
-      "Consider these among the questions before publication. They are candidates, not obligations: include one only where this draft leaves it genuinely open.",
-    );
+    lines.push("", "QUESTIONS");
     for (const q of p.questions) {
-      const who = q.review && q.review.length > 0 ? ` (${q.review.join(", ")})` : "";
-      lines.push(`- ${q.ask}${who}`);
+      lines.push(`- ${q.ask}${q.review && q.review.length > 0 ? ` (${q.review.join(", ")})` : ""}`);
     }
   }
 
   if (p.narrows && p.narrows.length > 0) {
-    lines.push("", "This event narrows the following core check. Raise it as a question rather than a finding:");
+    lines.push("", "NARROWS THIS CORE CHECK");
     for (const n of p.narrows) lines.push(`- ${n}`);
   }
 
@@ -66,15 +53,26 @@ export function buildProtocolBlock(p: ProtocolFile, failureEvent: boolean): stri
 }
 
 /**
- * The rules every protocol obeys, sent once however many protocols apply.
+ * What the sections above mean, and the rules every protocol obeys. Sent once,
+ * however many protocols apply.
  *
- * Repeating them inside each block cost ninety words per protocol and said the
- * same thing twice to a reader who had already agreed. Once is also safer:
- * there is one copy to keep correct, and no way for a protocol file to ship a
- * softened version of a rule that is not negotiable.
+ * Everything here used to be repeated inside each block: the framing sentence
+ * before each list, the candidates-not-obligations rule, the closing rules.
+ * That was around ninety words per protocol saying the same thing to a reader
+ * who had already agreed, and with a core, an event and a posture all applying
+ * it was the difference between fitting the budget and not. Once is also
+ * safer: there is one copy to keep correct, and no way for a protocol file to
+ * ship a softened version of a rule that is not negotiable.
  */
 export const PROTOCOL_RULES = `HOW TO APPLY THE PROTOCOLS ABOVE
-They are a lens on the ten dimensions you already score, never an eleventh score and never a section of their own: raise what you find through the ordinary findings, on the dimension each check names. Name the kind of information missing — a date, a named owner, the selection criteria — and never supply wording. Where a legal, consultation or disclosure obligation may apply, say that it may and that counsel must confirm; never state that a draft is compliant or non-compliant. A protocol tells you what to look for. It does not raise the finding or question caps.`;
+A protocol applies to this draft because of the event or the goal the author selected. Where more than one applies, the core comes first and covers every high-stakes event; the others add only what is distinctive and do not repeat it.
+
+ELEMENTS are what a credible communication of that kind contains. The dimension in brackets is the one each bears on.
+HIGH-SEVERITY TRIGGERS are gaps to raise as High-severity findings when the draft meets them, on the dimension named. Where a review type is named, set specialist_review_needed true with that type.
+QUESTIONS are candidates for questions_before_publication, not obligations: include one only where this draft leaves it genuinely open, and let it compete with the questions the draft itself raises. A question the draft already answers is noise.
+NARROWS THIS CORE CHECK means that event makes the named core check unsafe to assert; raise it as a question rather than a finding.
+
+The protocols are a lens on the ten dimensions you already score, never an eleventh score and never a section of their own: raise what you find through the ordinary findings. Name the kind of information missing — a date, a named owner, the selection criteria — and never supply wording. Where a legal, consultation or disclosure obligation may apply, say that it may and that counsel must confirm; never state that a draft is compliant or non-compliant. A protocol tells you what to look for. It does not raise the finding or question caps.`;
 
 export function protocolWordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;

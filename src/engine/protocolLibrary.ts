@@ -84,6 +84,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "dimension": "verification_follow_through"
         },
         {
+          "id": "plain-naming",
           "check": "The central fact is never stated in ordinary words. The draft refers to it only as \"the situation\", \"recent events\", \"the incident\" or similar.",
           "dimension": "clarity_plain_language",
           "may_be_narrowed_by": "event"
@@ -104,6 +105,155 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
         }
       ],
       "prose": "## What this is\n\nThe checks that apply to every high-stakes communication event, whatever the\nevent is. Each event protocol adds only what is distinctive to that event and\ndoes not repeat anything here.\n\nPart A (the first seven elements and all five triggers) fires on any event.\nPart B (the eighth element, \"What changes\") fires only on events marked as a\nfailure, because recurrence has no meaning for an acquisition or a planned\nretirement.\n\n## Source\n\nNo published standard governs high-stakes event communication as a whole, and\nthis protocol does not claim one. It is an extraction, not a discovery: the\nchecks below are the ones three separately written protocols in this folder —\ncyber incident, workforce restructuring and public apology — each arrived at\nindependently, from their own sources.\n\nThose three name their own sources, and the evidence behind any one check is\nthe evidence in the protocol it came from. Which check came from where is set\nout in the table under \"Where it came from\".\n\nThe decision about what is common to all thirteen events, and the demotion of\n\"what changes\" to failure events only, is professional judgement. It rests on\nno published source.\n\n## Basis\n\nThe three source protocols rest on regulator guidance (NIST, the SEC, HHS, the\nFTC, the EEOC, the US Department of Labor, the Fair Work Ombudsman), two\nprofessional bodies (CIPD, the Arthur W. Page Society) and four studies of\nvarying weight, the strongest of which is a systematic review of eight earlier\nreviews whose own authors call its conclusions tentative. None of that evidence\nwas produced by testing which communications work better; it is consensus about\ngood practice, not measured effect.\n\nAn extraction from three protocols is no stronger than the three, and this one\nis weaker in one way worth stating plainly: all three describe failures, so what\nthey share over-represents what failures need. That is exactly the fault the\ntest against all thirteen events was designed to catch, and it caught one.\n\n## Where it came from\n\nDerived from the three protocols in this folder, then tested against all\nthirteen events rather than kept on the strength of appearing in all three.\n\n| Core element | Breach | Restructuring | Apology |\n|---|---|---|---|\n| Decision and response owner | Decision and owner | Named decision owner | Organizational agency; Owner and follow-up |\n| Who is affected, and how | Who and what is affected | Scope of impact | Impact recognized |\n| Claim status | Claim status | Limited promises | Explanation |\n| Reader action | Reader action | Individual notice; Timing and terms | Timely care information |\n| Next update and route for questions | Update commitment; Reporting channel | Follow-up channel | Owner and follow-up |\n| Own role separated from outside causes | Cause and own exposure | Stated reason | Organizational agency |\n| Plain naming | (implicit) | Plain statement of job loss | Offense named |\n| What changes (Part B) | Post-incident account | Change to practice | System change |\n\n## What was considered and left out\n\n**What changes — demoted to Part B, not dropped.** It appears in all three\nsource protocols, but all three describe failures. Tested against the full\nthirteen it fails: an acquisition is not a failure, and a planned retirement\nhas nothing to recur. Keeping it in Part A would have produced a finding on\nevery merger announcement telling the author to explain how they will prevent\nanother merger.\n\nThis is the clearest evidence that \"common to the three files we happen to have\"\nis not the same test as \"true of all thirteen events\".\n\n**Cross-audience consistency — left out for now.** True of every event, but the\ntool can only compare documents it is given, and the feature that supplies them\nis switched off. It would be a check that almost never fires. Revisit when\naudience documents are switched back on.\n\n**Support offered, authenticity of the notice, individual notice before public\nrelease.** Each is real but belongs to a subset of events, not all thirteen.\nThey stay with the events that need them.\n\n## Narrowing\n\nAn event protocol may narrow a core trigger, and must say so explicitly. One\ncase is already known: the plain-naming trigger. In a geopolitical event,\nvagueness about a country, a conflict or the location of staff may be a\ndeliberate safety decision rather than evasion, and the draft cannot show which.\nThat protocol will turn the trigger into a question instead of a finding.\n\nNo event protocol may weaken a core element, add a core check of its own, or\nintroduce an output section. It adds what is distinctive and nothing else.\n\n## Budget\n\nThis block fires on every event review, so it stays short: eight elements, five\ntriggers, four questions. The four questions leave room for an event protocol's\nown within the eight-question cap."
+    },
+    {
+      "id": "ceo-departure",
+      "name": "CEO or senior-leader departure",
+      "layer": "event",
+      "event": "CEO or senior-leader departure",
+      "version": 1,
+      "status": "active",
+      "elements": [
+        {
+          "name": "Character of the departure",
+          "means": "The draft says whether the leader chose to go, was asked to go, left by negotiated agreement or was removed, or says plainly that this is not being disclosed.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline"
+        },
+        {
+          "name": "Reason, or declared withholding of it",
+          "means": "The draft either gives the reason for the departure or states that the reason is not being given, rather than leaving the gap unacknowledged or filling it with a stock phrase.",
+          "weight": "core",
+          "dimension": "causation_explanation"
+        },
+        {
+          "name": "Decision date and effective date",
+          "means": "The draft distinguishes when the decision was taken or notice given from when the departure takes effect.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline"
+        },
+        {
+          "name": "Who holds the authority now",
+          "means": "The draft names who holds the departing leader's authority from the departure date, whether that arrangement is interim, and how and roughly when a permanent appointment will be made.",
+          "weight": "core",
+          "dimension": "accountability_agency"
+        },
+        {
+          "name": "The organisation's own voice",
+          "means": "The account of the departure comes from the body that made or accepted the decision, not only from a quotation attributed to the departing leader.",
+          "weight": "supporting",
+          "dimension": "accountability_agency"
+        },
+        {
+          "name": "Separation terms acknowledged",
+          "means": "Where there is a separation agreement, payment, consultancy or continuing role, the draft says it exists and where its terms are or will be disclosed.",
+          "weight": "supporting",
+          "dimension": "fairness_independence_conflicts"
+        },
+        {
+          "name": "Continuity of the leader's commitments",
+          "means": "The draft says whether strategies, commitments or relationships closely tied to the departing leader continue, are under review, or end.",
+          "weight": "supporting",
+          "dimension": "stakeholder_respect_impact"
+        },
+        {
+          "name": "A clean channel",
+          "means": "The departure is not announced in the same document as unrelated significant news that would draw attention away from it.",
+          "weight": "supporting",
+          "dimension": "fairness_independence_conflicts"
+        }
+      ],
+      "triggers": [
+        {
+          "check": "The departure is described as a retirement, a personal choice or a mutual decision, yet the same draft says it takes effect immediately, names an interim leader with no transition period, or refers to an investigation, review or board inquiry — and does not reconcile the two.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "Executive"
+          ]
+        },
+        {
+          "check": "The departure shares the draft with unrelated significant news — results, an acquisition, a restructuring, a major product launch — and the draft does not explain any connection between them.",
+          "dimension": "fairness_independence_conflicts",
+          "review": [
+            "Investor relations"
+          ]
+        },
+        {
+          "check": "No one is named as holding the departing leader's authority from the departure date, or an interim leader is named with no indication of how or when a permanent appointment will be made.",
+          "dimension": "accountability_agency",
+          "review": [
+            "Executive"
+          ]
+        },
+        {
+          "check": "The only explanation of why the leader is leaving appears in a quotation attributed to the departing leader, and the organisation says nothing in its own voice about the decision.",
+          "dimension": "accountability_agency"
+        },
+        {
+          "check": "The draft gives an effective date on or before the publication date but no date for when the decision was taken or notice given.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "check": "A departing board member is said to be leaving over differences, a disagreement or a divergence of views on direction, and the draft does not say what the disagreement was about.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Was this departure the leader's decision, the board's, or negotiated between them — and would the draft's description still stand if the separation terms were published?",
+          "review": [
+            "Legal",
+            "Executive"
+          ]
+        },
+        {
+          "ask": "Is there a separation agreement with non-disparagement, confidentiality or agreed-statement terms, and has the draft been checked against it and against what later remuneration or proxy disclosures will show?",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "ask": "If the organisation is listed, when did any regulatory disclosure clock start — on notice of the decision, or on the governing body's decision — and does the planned publication time fit it? Counsel must confirm which rules apply.",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "ask": "In what order will employees, the leader's direct reports, key customers and the market learn of this, and could telling any group early amount to selective disclosure? Counsel must confirm.",
+          "review": [
+            "HR",
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "ask": "Which strategies, commitments or relationships depended most on the departing leader, and what does the organisation intend for each?",
+          "review": [
+            "Executive"
+          ]
+        },
+        {
+          "ask": "If this account is later contradicted — by an investigation, litigation, a filing or the departing leader — what will the organisation do and how quickly?",
+          "review": [
+            "Legal",
+            "Executive"
+          ]
+        }
+      ],
+      "narrows": [
+        "plain-naming"
+      ],
+      "prose": "## What this protocol narrows\n\nThe core asks for the central fact in ordinary words rather than euphemism. For a\ndeparture, the central fact is *that* the leader is leaving and *how* — not\nnecessarily *why*. There are legitimate reasons not to give a reason: the\nleader's health or family circumstances, an agreement both sides signed, legal\nexposure, or an investigation still running. In US securities law, the regulator\nconsidered requiring reasons for officer departures in 2004 and decided against\nit, partly to spare departing officers embarrassment and partly because of the\nrisk of defamation claims.\n\nSo this protocol treats **saying plainly that the reason is not being given** as\nan acceptable account. What it still flags is a stock phrase — \"to spend more\ntime with family\", \"to pursue other opportunities\", \"has decided to retire\" —\nused where other facts in the draft suggest it is not the whole story. Silence\nthat is declared is honest. A reassuring phrase standing in for the reason is\nthe thing to catch.\n\n## Source\n\nThis protocol rests on three different kinds of basis. The tool should not\nblend them, and each is labelled here.\n\n**1. Binding law — applies only to listed companies in the US and EU.**\n\n- US Securities and Exchange Commission, *Form 8-K*, Item 5.02 and General\n  Instruction B.1 (form revision SEC 873, February 2025).\n  https://www.sec.gov/files/form8-k.pdf\n- US SEC, Release 33-8400 / 34-49424, *Additional Form 8-K Disclosure\n  Requirements and Acceleration of Filing Date* (2004).\n  https://www.sec.gov/rules/2004/03/additional-form-8-k-disclosure-requirements-and-acceleration-filing-date\n  — the Commission's reasons for not requiring officers' reasons, and for\n  requiring a description of a director's disagreement.\n- US SEC, Division of Corporation Finance, *Compliance & Disclosure\n  Interpretations, Exchange Act Form 8-K*, Q117.01 (last updated 24 June 2024)\n  — the four-business-day clock runs from notice of the decision, not the\n  effective date. Staff guidance, not a Commission rule.\n  https://www.sec.gov/rules-regulations/staff-guidance/compliance-disclosure-interpretations/exchange-act-form-8-k\n- US SEC, Regulation FD, 17 CFR Part 243.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-243\n- US SEC, Rule 10b-5(b), 17 CFR 240.10b-5 — no material omission that makes\n  what is said misleading.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR7dcc9448077bb0f/section-240.10b-5\n- US SEC, Regulation S-K Item 402(j), 17 CFR 229.402(j) — severance and its\n  conditions, including non-disparagement, disclosed in the proxy.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-229/subject-group-ECFR6a1ef9c5c8e3e8a/section-229.402\n- Commission Delegated Regulation (EU) 2026/789 of 8 April 2026, Annex I row 13\n  — the governing body's decision on appointment or removal is the final event\n  that triggers disclosure. https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AL_202600789\n- Commission Implementing Regulation (EU) 2016/1055, Articles 2 and 3 — named\n  sender, date and time, permanent chronological web record.\n  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R1055\n- Directive 2007/36/EC as amended by Directive (EU) 2017/828, Article 9b —\n  remuneration reporting covering former directors and termination payments.\n  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02007L0036-20170609\n- NYSE Regulation, *2026 Annual Listed Company Compliance Guidance Letter*\n  (27 January 2026). https://www.nyse.com/publicdocs/nyse/markets/nyse/NYSE_2026_Annual_Guidance_Letter.pdf\n\n**2. Documented behaviour — justifies suspicion, not a standard.**\n\n- Graffin, S. D., Carpenter, M. A., & Boivie, S. (2011). \"What's all that\n  (strategic) noise? Anticipatory impression management in CEO succession.\"\n  *Strategic Management Journal*, 32(7), 748–770.\n  https://terry.uga.edu/sites/default/files/inline-files/Graffin_Carpenter__Boivie_2011.pdf\n  — basis for the clean-channel element and the second trigger.\n- Tayan, B., with Gow, I. D., & Larcker, D. F. (2017). \"Retired or Fired: How\n  Can Investors Tell If the CEO Left Voluntarily?\" Harvard Law School Forum on\n  Corporate Governance, 8 June 2017.\n  https://corpgov.law.harvard.edu/2017/06/08/retired-or-fired-how-can-investors-tell-if-the-ceo-left-voluntarily\n  — a summary of Stanford GSB Working Paper No. 3547; basis for the stock\n  phrases and the first trigger.\n- Independent Directors of the Board of Wells Fargo & Company, *Sales Practices\n  Investigation Report* (10 April 2017).\n  https://www.sec.gov/Archives/edgar/data/72971/000119312517118654/d375947ddefa14a.htm\n  — a documented gap between a board's own finding and its public statement;\n  basis for the last question.\n\n**3. Declared professional judgement — no published source.**\n\nThe elements *character of the departure*, *reason or declared withholding*,\n*who holds the authority now*, *the organisation's own voice* and *continuity of\nthe leader's commitments* are the protocol author's position. No law, standard\nor professional code requires them. The PRSA Code of Ethics (which names \"lying\nby omission\" as improper) and the IABC Code of Ethics are consistent with them\nbut do not address departures and should not be cited as their authority.\n\n## Basis\n\n**The law** is binding and unambiguous, but narrow. It governs the fact, timing,\nmoney and channel of a departure for listed companies. It does not require a\nreason for an officer's departure, does not require naming who decided, and\ncreates no duty to tell employees anything. It was written to protect\nsecurities markets, not to secure an account for the people affected. Several\npoints were read only in part or through secondary instruments — in particular,\nthe operative text of Article 17 of the EU Market Abuse Regulation was not\nopened, and the Nasdaq listing rules and the full Form 8-K Item 5.02 text were\nnot verified.\n\n**The research** is thin. Graffin et al. is the strongest source: 601 Fortune\n1000 CEO successions from 1999 to 2004, finding unrelated self-controlled news\nannounced within a day of 20% of successions against an 11.4% baseline. The\nauthors say they infer intent from that gap rather than observe it. The\nvoluntary-versus-forced finding — published estimates of forced departures\nranging from 3% to 40% — comes from a summary of a working paper that has not\nbeen peer-reviewed, and the paper itself was not read. The Wells Fargo report\nwas read in part.\n\n**What no one has measured** is whether a more candid departure announcement\nproduces more trust, less rumour, better retention or any other outcome. This\nprotocol's central position — that an account should give a reason or say it is\nwithholding one — is judgement, not evidence.\n\n## What this protocol does not cover\n\n- **It cannot tell from the draft whether a departure was forced.** It flags\n  contradictions inside the draft, not suspicions about the facts behind it.\n- **It cannot check against documents it has not seen** — the separation\n  agreement, the board minutes, the regulatory filing, or the next proxy. The\n  questions ask the author to make those checks.\n- **It does not judge legal compliance.** Where it mentions disclosure\n  clocks or selective disclosure, an obligation *may* apply; counsel must\n  confirm.\n- **Its legal grounding covers only listed companies in the US and EU**, and in\n  the EU only the instruments named above; national codes and regulator\n  practice in most member states were not reviewed. For private companies,\n  nonprofits, arts organisations, public bodies, and US-listed foreign\n  issuers, the protocol applies reasoning borrowed from securities law by\n  analogy, with no authority behind the transfer. The UK is not covered.\n- **Sector rules are not covered** — banking, insurance, broker-dealer and\n  similar regimes may impose different requirements, including on reasons.\n- **It does not decide what should be said when an agreement limits what can be\n  said.** It asks whether the draft is consistent with that agreement; it does\n  not resolve the tension between confidentiality and candour. A human must.\n- **A departure caused by death** is not what this protocol was written for and\n  should be reviewed with care."
     },
     {
       "id": "cyber-incident",
@@ -229,6 +379,154 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
         }
       ],
       "prose": "## 3. Source\nProfessional judgement, informed by the following. Each was read as a fetched summary, not full text.\n\n- Nelson, A., Rekhi, S., Souppaya, M., Scarfone, K. *Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile* (NIST SP 800-61r3). NIST, April 2025. https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-61r3.pdf\n- U.S. Securities and Exchange Commission. *Cybersecurity Risk Management, Strategy, Governance, and Incident Disclosure: Small Entity Compliance Guide* (Form 8-K Item 1.05). August 2023. https://www.sec.gov/resources-small-businesses/small-business-compliance-guides/cybersecurity-risk-management-strategy-governance-incident-disclosure\n- U.S. Department of Health and Human Services. *Breach Notification Rule*, 45 CFR §§ 164.400–414. https://www.hhs.gov/hipaa/for-professionals/breach-notification/index.html\n- Federal Trade Commission. *Data Breach Response: A Guide for Business*. August 2023, updated June 2025. https://www.ftc.gov/business-guidance/resources/data-breach-response-guide-business\n\nThe distinction between confirmed fact, current assessment, unknown and commitment, and the list of over-assurance phrases, come from a research brief supplied by the tool's owner. They are professional judgement, not a published standard.\n\nNot cited because not read: the CISA/FBI \"Communicating Under Pressure\" guidance (retrieval returned a 403; by the owner's description it covers IT/OT service outages, not data breaches), ISO/IEC 27035, and NIST CSF 2.0.\n\n## 4. Basis\nNIST SP 800-61r3 is a federal technical guidance document. It sets recommendations, not binding rules. The SEC rule and the HIPAA rule are binding regulation, applying only to SEC registrants and HIPAA covered entities or business associates respectively. The FTC guide is regulator business guidance and is not binding. None of these was produced from an empirical study of which notices work better. Those judgements are consensus, not measured effect.\n\n## 5. Elements\n\n| Element | What it means | Importance | Dimensions |\n|---|---|---|---|\n| Claim status | Each material claim is marked, by wording or structure, as confirmed, assessed, unknown, or a commitment. | Essential | truthfulness_factual_discipline |\n| What and when | It gives the discovery date, the incident period if known, and time zones. | Essential | truthfulness_factual_discipline, clarity_plain_language |\n| Who and what is affected | It names the affected groups, systems, services and specific data categories, or says these are not yet known. | Essential | stakeholder_respect_impact |\n| Nature of exposure | It says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined. | High | truthfulness_factual_discipline |\n| Reader action | It gives a concrete action for the reader, or says none is needed now. | Essential | stakeholder_respect_impact, clarity_plain_language |\n| Decision and owner | It names who decided what, such as the notification, the timing, and public statements, and who owns the response and questions. | High | accountability_agency |\n| Cause and own exposure | It separates the attacker's actions from the organization's own control gaps, without claiming a cause it cannot support. | High | causation_explanation, fairness_independence_conflicts |\n| Present response | It describes what is being done now, specific enough to check. | High | corrective_action_proof |\n| Support matched to harm | Any support offered fits the data involved, with terms, duration and how to claim it. | Medium | stakeholder_respect_impact, corrective_action_proof |\n| Update commitment | It gives a next update time or cadence and one place where updates appear. | High | verification_follow_through |\n| Authenticity | It tells recipients how to confirm the notice is real and how the organization will and won't contact them. | Medium | verification_follow_through, clarity_plain_language |\n| Reporting channel | It gives a way for affected people to report problems or ask questions, with hours. | Medium | listening_employee_voice |\n| Post-incident account | It commits to a review of what failed, names who owns it and when it will be reported, and says whether it is independent. | Medium | future_readiness_learning, verification_follow_through |\n| Cross-audience consistency | Facts, dates and scope agree with any other communications supplied for the same incident. | High | truthfulness_factual_discipline, accountability_agency |\n\n## 6. High-severity triggers\nRaise a High-severity finding when any of these is true:\n\n- The draft states a categorical outcome (\"no data was compromised\", \"the incident is contained\", \"systems are secure\", or similar) while also saying the investigation is ongoing, or gives no basis for the claim.\n- The draft uses \"no evidence of misuse\", \"out of an abundance of caution\" or \"we take security seriously\" in place of stating what was exposed and what is being done.\n- The draft says data was involved but does not name the categories, and does not say they are not yet known.\n- The draft is addressed to affected individuals and gives neither an action nor a statement that no action is currently needed.\n- The draft does not say who is affected (customers, employees, partners, patients or another group).\n- The draft gives no discovery date, or gives dates that conflict with each other or with supplied related communications.\n- A holding statement or ongoing-incident update gives no next update time or cadence and names no place where updates will appear.\n- The draft attributes the incident to a named attacker, a nation-state, or a \"sophisticated\" actor, or to a vendor or third party, and gives no stated basis.\n- The draft attributes the incident to a vendor and does not state the organization's own role, such as its selection, oversight or data-sharing decisions.\n- The draft states that notification is or is not legally required, or that it is \"compliant with all applicable laws\", with no acknowledgement that counsel has confirmed it. Never accept such a statement as a finding of compliance.\n- The draft names no owner for the response, no decision-maker, and no contact for questions.\n- The draft gives affected people no way to confirm the notice is genuine (a verified site, the organization's stated contact method, or how the organization will and will not contact them).\n- An Investor communication states that the incident is or is not material, or gives an impact figure, and says nothing about who made the determination or when.\n- The draft describes support as protecting people (\"monitoring will keep you safe\") without saying what it covers and for how long.\n\nSet specialist_review_needed to true on the following findings:\n\n- **Legal and Privacy:** the legal-conclusion finding, any finding about notification content or timing, and any finding about data categories.\n- **Investor relations and Legal:** the materiality finding.\n- **Information security:** any finding about attribution, containment claims, or the nature of exposure.\n- **HR or Labor:** any finding where the affected group is employees.\n- **Local market:** any finding where affected people are in more than one country.\n\n## 7. Questions before publication\nAlways include these:\n\n- What is confirmed, and who owns each confirmed fact? (Information security)\n- Which statements in the draft are assessments or unknowns rather than confirmed facts?\n- Which state, national, sector, contract and cross-border notification duties may apply, and what is the earliest deadline? Counsel must confirm; the review does not state whether any obligation applies. (Legal, Privacy)\n- Has law enforcement asked for a delay, and does the law allow one in this case? (Legal)\n- For a public company: who made the materiality determination, when, and how does the draft agree with the filing? (Investor relations, Legal)\n- Do the website, customer letter, call-centre script, employee talking points, regulator notice and executive statement agree on facts, dates and scope?\n- Does publishing this change containment, evidence preservation or an investigation? (Information security)\n- Who owns the next update, and can the organization meet the time it names?\n- What did the organization's own decisions or controls contribute, separate from the attacker's actions?\n- Does the support offered match the data involved?\n- Have language, accessibility and technology needs been considered for the affected people?\n- Who owns the post-incident account, and will any part of it be independent?\n- If employees are affected: have they been told before external release? (HR, Labor)\n\n## 8. What this protocol does not cover\n\n- **Speed of notice.** The draft shows whether dates are stated, not whether the organization was fast. Timeliness has no dimension among the ten, so the protocol cannot score it. A human must judge it against the earliest applicable deadline.\n- **Operational preparedness.** Out-of-band channels, tabletop exercises, and named incident roles before an incident are outside what a draft reveals.\n- **Legal conclusions.** It cannot say whether a notice is required, adequate or compliant. State and country laws, GDPR, sector rules and contracts are not covered here, and the sources are U.S.-centred. Counsel decides.\n- **Whether a claim is true.** It checks whether claims are supported in the text, not against the facts. Information security must verify them.\n- **Materiality.** It flags a materiality claim without a stated determination. It cannot judge the determination.\n- **Cross-audience consistency.** It can compare only what it is given.\n- **Sources.** The evidence is guidance and consensus, not effectiveness studies. It assumes the four sources were correctly summarized and are current."
+    },
+    {
+      "id": "geopolitical-operations-employee-welfare",
+      "name": "Geopolitical event affecting operations or employee welfare",
+      "layer": "event",
+      "event": "Geopolitical event affecting operations or employee welfare",
+      "version": 1,
+      "status": "active",
+      "elements": [
+        {
+          "name": "Basis for speaking",
+          "means": "The draft says what connects this organization to this event — its people, its sites, its supply, its obligations — rather than speaking because others are speaking.",
+          "weight": "core",
+          "dimension": "fairness_independence_conflicts"
+        },
+        {
+          "name": "Discretion inside compliance",
+          "means": "Where the organization was compelled by law, sanctions or government direction, and where it chose — whether to exit, when, on what terms, and what happens to local staff.",
+          "weight": "core",
+          "dimension": "accountability_agency"
+        },
+        {
+          "name": "Exposure separated from event",
+          "means": "What follows from the event itself and what follows from the organization's own prior positioning — where it sited operations, how concentrated its suppliers or staff are.",
+          "weight": "core",
+          "dimension": "causation_explanation"
+        },
+        {
+          "name": "Danger and protective steps",
+          "means": "For people in or near the affected area, the risk as currently assessed, the protective steps taken or planned, and who is responsible for them.",
+          "weight": "core",
+          "dimension": "corrective_action_proof"
+        },
+        {
+          "name": "Status of open decisions",
+          "means": "What has been decided, what is under consideration, and what would cause the next decision to be made.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline"
+        },
+        {
+          "name": "Divided workforce",
+          "means": "The draft is written for a workforce holding different relationships to the conflict, and is clear about what applies to everyone regardless of where they sit.",
+          "weight": "supporting",
+          "dimension": "stakeholder_respect_impact"
+        },
+        {
+          "name": "Route for personal circumstances",
+          "means": "A way for affected staff to tell the organization facts about their own situation — location, family, travel, immigration status — that would change its response, and what happens to what they report.",
+          "weight": "supporting",
+          "dimension": "listening_employee_voice"
+        },
+        {
+          "name": "Conditions for revisiting",
+          "means": "What would cause this position or operational decision to change, and when it will next be reviewed.",
+          "weight": "supporting",
+          "dimension": "verification_follow_through"
+        }
+      ],
+      "triggers": [
+        {
+          "check": "An operational change is attributed to the event itself — the conflict, the sanctions, the border closure — with no decision by the organization named alongside it.",
+          "dimension": "causation_explanation"
+        },
+        {
+          "check": "The draft states that the organization is complying with sanctions, export controls or government direction and offers that as the whole account, naming no discretionary choice made around it.",
+          "dimension": "accountability_agency",
+          "review": [
+            "Legal"
+          ]
+        },
+        {
+          "check": "The decision is placed with a parent, headquarters or another jurisdiction and no accountable person or entity is named on the reader's side of the organization.",
+          "dimension": "accountability_agency",
+          "review": [
+            "Legal",
+            "Labor"
+          ]
+        },
+        {
+          "check": "The draft withholds information on grounds of confidentiality, legal advice or security without saying why it is withheld or for how long.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal"
+          ]
+        },
+        {
+          "check": "The draft requires employees to attend a session, acknowledge receipt, or affirm the organization's position on the political matter.",
+          "dimension": "fairness_independence_conflicts",
+          "review": [
+            "Legal",
+            "HR"
+          ]
+        },
+        {
+          "check": "People are in or near a danger zone and the draft offers support resources — counselling, assistance lines, flexibility — but names no protective step, no owner for it, and nothing for those people to do.",
+          "dimension": "corrective_action_proof",
+          "review": [
+            "HR",
+            "Legal"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "ask": "What gives this organization standing to address this event, and is that the reason being given to readers?",
+          "review": [
+            "Executive"
+          ]
+        },
+        {
+          "ask": "Has a decision already been taken — an exit, suspension, relocation or withdrawal — that this draft does not disclose?",
+          "review": [
+            "Legal",
+            "Executive"
+          ]
+        },
+        {
+          "ask": "Does what this says about the effect on employees match what the organization has told, or will tell, investors and regulators?",
+          "review": [
+            "Investor relations",
+            "Legal"
+          ]
+        },
+        {
+          "ask": "Is the reason given here the reason the decision was actually made?",
+          "review": [
+            "Executive"
+          ]
+        },
+        {
+          "ask": "Which statements here are true only as of today, and who corrects them when the situation moves?",
+          "review": [
+            "Executive"
+          ]
+        },
+        {
+          "ask": "Can this message lawfully and safely be read by staff inside the affected jurisdiction, and does anything in it expose them?",
+          "review": [
+            "Legal",
+            "Local market",
+            "Information security"
+          ]
+        }
+      ],
+      "narrows": [
+        "plain-naming"
+      ],
+      "prose": "## Source\n\n**Binding law, read in full or in the parts cited.**\n\n- Council Directive 89/391/EEC on safety and health of workers at work, Articles 8, 10 and 11. https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A31989L0391 — the employer must inform workers as soon as possible of serious and imminent danger *and of the steps taken or to be taken as regards protection*, must give all necessary information on risks and protective measures, and must consult in advance and in good time. This is the anchor for the danger-and-protective-steps element and for the trigger on support offered without protection.\n- Council Directive 98/59/EC on collective redundancies, Article 2. Read from the UK retained copy at https://www.legislation.gov.uk/eudr/1998/59/article/2 because EUR-Lex repeatedly served a different document. Article 2(3) requires the reasons, numbers, period and *selection criteria* in writing. Article 2(4) provides that the obligation applies whether the decision was taken by the employer or by a controlling undertaking, and that ignorance of the parent's decision is no defence — the documentary basis for the trigger on attributing a decision upward. Articles 3 and 4 were not read.\n- Directive 2002/14/EC establishing a general framework for informing and consulting employees, Articles 4 and 6. https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32002L0014 — information and consultation on the undertaking's economic situation, on threats to employment, and on decisions likely to change work organisation. Article 6 permits withholding where disclosure would seriously harm the undertaking, as an exception the employer must justify.\n- Directive (EU) 2025/2450 amending the European Works Councils Directive, read as the Official Journal PDF at https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202502450. It adds a duty to state the reasons for a confidentiality claim and its duration. **It does not apply until 2029**, and the article numbering returned by extraction was not independently confirmed. It is cited here as evidence that bare confidentiality claims were common enough to legislate against, not as a current obligation.\n- 20 CFR 639.7 and 639.9 (WARN). https://www.ecfr.gov/current/title-20/chapter-V/part-639/section-639.7 and https://www.ecfr.gov/current/title-20/chapter-V/part-639/section-639.9 — a literal content specification for a notice, including a *named company official with a telephone number*, and, where notice is shortened under unforeseeable business circumstances, a brief statement of the reason for the reduction.\n- California Labor Code § 1137, read via https://codes.findlaw.com/ca/labor-code/lab-sect-1137/ because the official bill page disallows automated fetching. It prohibits retaliation against an employee who declines to attend a meeting or receive communications about the employer's opinion on political matters. **Its current enforceability is unknown** — it was reported preliminarily enjoined in late 2025 by secondary sources only, which were not relied on. Comparable laws in other US states were not surveyed. The trigger on compelled attendance is framed as a drafting check, not as a statement of what the law requires.\n\n**Official guidance, no force of law.**\n\n- SEC Division of Corporation Finance, sample letter on disclosures pertaining to Russia's invasion of Ukraine, 3 May 2022. https://www.sec.gov/corpfin/sample-letter-companies-pertaining-to-ukraine. The letter carries an emphatic staff disclaimer — it \"has no legal force or effect\". It is used here only as the most detailed official articulation of what an organization should be able to account for after a geopolitical event, including the board's role in overseeing the risks *expressly including employees*. That is the basis for the question about consistency between the message and the filings.\n- CISA, Shields Up guidance for corporate leaders and CEOs. https://www.cisa.gov/shields-guidance-corporate-leaders-and-ceos. Advisory; the page carried no visible date. It establishes facts that should exist, not message content, and says nothing about communicating with employees.\n\n**Research.**\n\n- Bamiatzi, Brieger, Karakulak, Kinderman and Manning (2024), \"The rise of partisan CSR — corporate responses to the Russia–Ukraine war\", *Journal of Business Ethics* 198, 263–291. https://link.springer.com/article/10.1007/s10551-024-05795-9. Read in abstract, method and findings. It documents peer imitation as a driver of corporate response, and an \"opportunistically neutral\" response type. This supports the basis-for-speaking element.\n- Braga, Tardin, Grinstein and Perin (2026), \"Corporate sociopolitical activism as a signal — a meta-analysis\", *Journal of Business Research* 210, 116147. https://www.sciencedirect.com/science/article/pii/S0148296326001815. Employees respond least favourably of all stakeholder groups. Treated as a caution toward restraint and specificity, not as a specification.\n- Hamelberg, de Ruyter, van Dolen and Konuş (2024), \"Finding the right voice\", *Journal of Public Policy and Marketing* 44(1). https://journals.sagepub.com/doi/10.1177/07439156241230910. Measures Twitter engagement, not credibility, and points the opposite way from the meta-analysis on CEO versus brand voice. **Nothing in this protocol rests on it.**\n\n**Professional codes**, used only as background on character rather than content — the Page Principles (https://page.org/who-we-are/page-principles/), the PRSA Code of Ethics (undated in its own PDF, https://www.prsa.org/docs/default-source/about/ethics/prsa_code_of_ethics.pdf?sfvrsn=c9b66a6b_2) and the IABC Code of Ethics (undated, https://www.iabc.com/about/what-we-do/standards/code-of-ethics). SHRM's \"Navigating International Crises\" hub (https://www.shrm.org/topics-tools/topics/international-crisis) is the closest professional guidance to this event class and is the reason the protocol tests for support offered in place of an account — all five of its recommendations concern support and none asks the employer to state a decision.\n\n**Not read, and therefore not relied on.** ISO 22361 clause 8, ISO 31030 and ISO 22301 are paywalled; only catalogue pages and a table of contents were seen, so no claim here rests on what those standards say. Coombs, *Ongoing Crisis Communication* (6th ed., 2021), was identified from the publisher page only. The Equinor In Amenas investigation report itself could not be opened — only the announcement page — so nothing is claimed about what it says regarding communication with employees or next of kin.\n\n**Resting on professional judgement rather than a published source.** Four of the drafting checks come from the structure of the obligations above rather than from any document that catalogues them — the agentless-causation trigger, the compliance-framing trigger, the support-without-protection trigger, and the question about commercial reason versus stated reason. No source was found that catalogues evasions specific to this event class. That absence is itself part of the picture.\n\n## Basis\n\nThe legal instruments bind Member States and covered US employers and are enforceable, but they are triggered by *consequences* — redundancy, physical danger, material effect on an issuer — not by the geopolitical event itself. An organization can communicate at length about a war, a coup, a sanctions regime or a border closure and touch none of them. For many drafts this protocol sees, none of the binding sources will apply, and the checks are then drafting discipline drawn from them by analogy rather than compliance tests.\n\nThe EU directives take effect through national transposition, which varies materially between Member States and was not examined. German, French, Dutch and Nordic works-council law in particular goes well beyond the directive floor.\n\nThe regulator guidance is explicitly not law, says so in its own text, and in the SEC's case is specific to one event in 2022 and has not been reissued or generalised.\n\nThe research is about the wrong outcome. The meta-analysis covers 88 studies and 501 effect sizes but reports an overall effect of r = 0.084 with heterogeneity of I² = 98.9%, across a construct — sociopolitical activism — much broader than geopolitical events. The Journal of Business Ethics paper is a qualitative coding of 140 firms with no outcome measurement and no counterfactual; it is a taxonomy, not evidence that anything works. The third study measures engagement on one platform among 608 experimental participants in one country. **No study was found that measures the effect of message content on employee trust after a geopolitical event.** The strongest research-derived claim available is negative — that employees are the least receptive audience for corporate stances — which argues for specificity and restraint rather than for any particular content.\n\nSo: the elements, triggers and questions here are assembled from adjacent legal obligations and from professional judgement. They are not validated against measured outcomes, and no source claims they are.\n\n## What this protocol does not cover\n\nIt cannot tell you whether the organization should take a position on this event at all. No source distinguishes an event on which an employer has standing to speak from one on which it does not. The protocol can ask what the basis is; a human has to judge whether that basis holds.\n\nIt cannot judge a message it cannot compare to anything. The single strongest test available for this event class — whether the employee message says less about the impact on employees than the securities filing does — requires the filing, which the tool does not have. It is raised as a question for the author to settle, not scored.\n\nIt cannot judge the interval between decision and announcement, which is where most of the deception in this event class sits. No source establishes when an organization deliberating an exit, suspension or relocation must say so. The protocol asks; it cannot detect concealment from the draft alone.\n\nIt cannot judge accuracy that has decayed. Statements that were true when written go false as a geopolitical situation moves, and the professional codes address correction of *errors*, not of superseded truth.\n\nIt cannot decide which entity is accountable when the decision was made by a parent in another jurisdiction. Directive 98/59/EC forecloses upward attribution for redundancies only. For suspending operations, moving staff or changing a market position, no source establishes whether the local entity, the parent or a named executive is the party a message must identify. The protocol flags an unnamed accountable owner on the reader's side as a finding, and leaves the resolution to counsel and leadership.\n\nIt cannot resolve a message read simultaneously by staff on opposing sides of a conflict. Every source examined assumes a workforce with a single relationship to the event.\n\nTwo narrows apply. **On naming who decided**, the core check asks for a named decision-maker. In a cross-border group the deciding entity and the person a reader can hold to it may not be the same, and naming only the parent is itself the evasion Directive 98/59/EC Article 2(4) exists to close. This protocol therefore asks for both — the entity where the decision sat and an accountable owner reachable on the reader's side — and does not treat a named parent alone as satisfying the check. **On stating the central fact in ordinary words**, vagueness about a specific site, route, convoy or named individual may be a security decision taken to protect people, not evasion. Where the draft is specific about the decision and its owner but general about locations or individuals in a danger zone, that should not be read as euphemism. Generality about *what was decided* is not covered by this narrowing and remains a finding.\n\nNothing here is legal advice. Where an obligation may apply — collective redundancy information, health and safety information and consultation, works-council consultation, WARN notice content, sanctions and export control, employee data protection, or any restriction on compelling employees to receive political communications — counsel must confirm whether it applies and what it requires. Jurisdictions outside the EU and the US were not examined at all, including the jurisdiction where the event is actually happening, which is where staff are most exposed."
     },
     {
       "id": "public-apology",

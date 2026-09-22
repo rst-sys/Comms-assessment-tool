@@ -91,8 +91,7 @@ questions:
     review: [Legal, Local market, Information security]
 
 narrows:
-  - Who decided, and who owns the response and the questions
-  - The central fact stated in ordinary words rather than euphemism
+  - plain-naming
 ---
 
 ## Source

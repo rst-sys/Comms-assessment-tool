@@ -74,7 +74,7 @@ questions:
     review: [Legal, Executive]
 
 narrows:
-  - The central fact stated in ordinary words rather than euphemism
+  - plain-naming
 ---
 
 ## What this protocol narrows

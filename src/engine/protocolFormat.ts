@@ -77,6 +77,8 @@ export interface ProtocolElement {
 }
 
 export interface ProtocolTrigger {
+  /** Core only: a short name an event protocol can narrow this check by. */
+  id?: string;
   check: string;
   dimension: DimensionId;
   review?: SpecialistReviewType[];
@@ -102,7 +104,7 @@ export interface ProtocolFile {
   elements: ProtocolElement[];
   triggers: ProtocolTrigger[];
   questions: ProtocolQuestion[];
-  /** Core trigger checks this protocol turns into a question instead. */
+  /** Core trigger ids this protocol turns into a question instead. */
   narrows?: string[];
   /** Everything below the front matter: source, basis, limits. For the page, never the engine. */
   prose: string;
@@ -190,6 +192,10 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       const t = raw as Record<string, unknown>;
       const at = `trigger ${i + 1}`;
       if (!isStr(t.check)) err(`${at} needs "check": what to look for, checkable by reading the draft`);
+      if (t.id !== undefined) {
+        if (!isStr(t.id) || !/^[a-z0-9-]+$/.test(t.id as string)) err(`${at} id may use only lower-case letters, numbers and hyphens`);
+        else if (d.layer !== "core") err(`${at} has an id, which only the core protocol's triggers carry`);
+      }
       if (!one(t.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(t.dimension)} is not one of the ten scored dimensions`);
       reviewList(t.review, at, err);
       if (t.may_be_narrowed_by !== undefined) {
@@ -209,13 +215,17 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       const q = raw as Record<string, unknown>;
       const at = `question ${i + 1}`;
       if (!isStr(q.ask)) err(`${at} needs "ask": the question itself`);
-      else if (!q.ask.trim().endsWith("?")) err(`${at} does not end in a question mark`);
+      // Contains a question mark, rather than ends with one. The rule is here
+      // to stop a statement being filed as a question, and a legal question
+      // properly ends "... does the timing fit? Counsel must confirm." —
+      // which is what PROTOCOL-PROMPT.md asks authors to write.
+      else if (!q.ask.includes("?")) err(`${at} is not a question: it contains no question mark`);
       reviewList(q.review, at, err);
     });
   }
 
   if (d.narrows !== undefined) {
-    if (!isArr(d.narrows)) err("narrows must be a list of core trigger checks this protocol softens");
+    if (!isArr(d.narrows)) err("narrows must be a list of core trigger ids this protocol softens");
     else if (d.layer !== "event") err("only an event protocol may narrow a core trigger");
   }
 
@@ -256,6 +266,27 @@ export function checkLibrary(files: { file: string; data: ProtocolFile }[]): Che
   const cores = files.filter((f) => f.data.layer === "core");
   if (cores.length > 1) {
     errors.push({ file: cores.map((c) => c.file).join(", "), message: "more than one core protocol; there can be only one" });
+  }
+
+  // The core is the floor. Without this, any protocol could switch off any
+  // core check simply by naming it, and nothing would say so.
+  const core = cores[0]?.data;
+  const narrowable = new Set(
+    (core?.triggers ?? []).filter((t) => t.may_be_narrowed_by === "event" && t.id).map((t) => t.id as string),
+  );
+  for (const { file, data } of files) {
+    for (const n of data.narrows ?? []) {
+      if (!narrowable.has(n)) {
+        errors.push({
+          file,
+          message:
+            `narrows "${n}", which is not a core check that may be narrowed. ` +
+            (narrowable.size > 0
+              ? `The core allows: ${[...narrowable].join(", ")}. Name the id, not the wording.`
+              : "The core allows none."),
+        });
+      }
+    }
   }
 
   const byId = new Map<string, string>();

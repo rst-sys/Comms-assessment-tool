@@ -60,7 +60,8 @@ triggers:
   - check: The draft describes something still unfolding and gives neither a next update time nor a place where updates will appear.
     dimension: verification_follow_through
 
-  - check: The central fact is never stated in ordinary words. The draft refers to it only as "the situation", "recent events", "the incident" or similar.
+  - id: plain-naming
+    check: The central fact is never stated in ordinary words. The draft refers to it only as "the situation", "recent events", "the incident" or similar.
     dimension: clarity_plain_language
     may_be_narrowed_by: event
 
