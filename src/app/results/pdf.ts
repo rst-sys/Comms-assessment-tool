@@ -180,7 +180,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
 
   w.pageBreak();
   w.heading("Devil's Advocate: how skeptical audiences may read this", 15);
-  w.label("Most damaging interpretation if issued as is");
+  w.label("Most damning interpretation if issued as is");
   w.paragraph(a.devils_advocate.most_damaging_interpretation, 10.5, 0, "bold");
   w.paragraph(a.devils_advocate.disclaimer, 9.5, 0, "italic");
   for (const p of a.devils_advocate.personas) {

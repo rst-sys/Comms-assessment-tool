@@ -192,7 +192,7 @@ describe("personas with nothing in them", () => {
     expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
   });
 
-  it("rejects an empty most damaging interpretation", () => {
+  it("rejects an empty most damning interpretation", () => {
     const bad = sampleAnalysis();
     bad.devils_advocate.most_damaging_interpretation = "";
     expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);

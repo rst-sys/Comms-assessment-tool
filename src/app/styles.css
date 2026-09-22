@@ -449,7 +449,7 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 .scoring-note h3 { margin: 0 0 4px; }
 .copyright { margin-top: calc(var(--space) * 1.5); }
 
-/* The stakeholder voices sit behind an expander; the damaging interpretation
+/* The stakeholder voices sit behind an expander; the damning interpretation
    above them is always visible (revision 24). */
 .stakeholders { margin-top: calc(var(--space) * 3); }
 .stakeholders > summary {

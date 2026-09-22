@@ -4,7 +4,7 @@ import { REPORTER_QUESTION } from "../copy.js";
 /**
  * How skeptical audiences may read the draft (revision 21).
  *
- * Cut to what the owner found useful. The most damaging interpretation is
+ * Cut to what the owner found useful. The most damning interpretation is
  * shown as soon as the page opens — it is the single most useful line in the
  * section, and hiding it behind a disclosure meant nobody read it. The
  * stakeholder voices sit behind an expander beneath it. Each audience gets one line in its own voice, rather
@@ -19,7 +19,7 @@ export function DevilsAdvocate({ data }: { data: DevilsAdvocateData }) {
       <h2 id="devils-advocate-heading">Devil's Advocate: how skeptical audiences may read this</h2>
 
       <div className="callout-material" role="note">
-        <div className="label">Most damaging interpretation if issued as is</div>
+        <div className="label">Most damning interpretation if issued as is</div>
         <p style={{ margin: 0 }}>{data.most_damaging_interpretation}</p>
       </div>
 

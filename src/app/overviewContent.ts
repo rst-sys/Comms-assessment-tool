@@ -26,7 +26,7 @@ export const WHAT_YOU_GET: string[] = [
   "Specific findings, each naming the gap and the kind of information that would close it.",
   "One line from each of five audiences, in their own words, saying what the draft leaves them asking.",
   "Questions worth asking before you publish, tagged where a named reviewer should see them.",
-  "The most damaging way the draft could reasonably be read, if it went out unchanged.",
+  "The most damning way the draft could reasonably be read, if it went out unchanged.",
   "A PDF of the whole review to keep or to share with colleagues.",
 ];
 

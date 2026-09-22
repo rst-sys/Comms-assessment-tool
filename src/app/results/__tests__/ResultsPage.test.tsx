@@ -102,7 +102,7 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
   it("renders the remaining collapsed panels and the footer", () => {
     const { container } = render(<ResultsPage result={result} request={DEMO_1.request} />);
     const panels = Array.from(container.querySelectorAll("details.panel"));
-    // Devil's Advocate is no longer a panel: its damaging interpretation shows
+    // Devil's Advocate is no longer a panel: its damning interpretation shows
     // on load, with only the stakeholder voices behind an expander.
     expect(panels.map((p) => p.id)).toEqual(["questions"]);
     expect(panels.every((p) => !(p as HTMLDetailsElement).open)).toBe(true);
@@ -169,13 +169,13 @@ describe("the Devil's Advocate, cut back (revision 21)", () => {
     expect(said[0]!.textContent).toMatch(/might say:/);
   });
 
-  it("leads with the most damaging interpretation", () => {
+  it("leads with the most damning interpretation", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     const panel = document.getElementById("devils-advocate")!;
-    const damaging = panel.querySelector(".callout-material");
+    const damning = panel.querySelector(".callout-material");
     const first = panel.querySelector(".callout-material, .might-say");
-    expect(damaging).toBeTruthy();
-    expect(first).toBe(damaging);
+    expect(damning).toBeTruthy();
+    expect(first).toBe(damning);
   });
 
   it("puts the reporter question to the reader without answering it", () => {
@@ -190,7 +190,7 @@ describe("the Devil's Advocate, cut back (revision 21)", () => {
 describe("the Devil's Advocate, opened up (revision 24)", () => {
   const result = load("demo1");
 
-  it("shows the most damaging interpretation without a click", () => {
+  it("shows the most damning interpretation without a click", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     const callout = document.querySelector("#devils-advocate .callout-material")!;
     expect(callout).toBeTruthy();
@@ -201,7 +201,7 @@ describe("the Devil's Advocate, opened up (revision 24)", () => {
 
   it("uses the shorter heading", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.getByText("Most damaging interpretation if issued as is")).toBeTruthy();
+    expect(screen.getByText("Most damning interpretation if issued as is")).toBeTruthy();
     expect(screen.queryByText(/plausible interpretation if issued unchanged/)).toBeNull();
   });
 
