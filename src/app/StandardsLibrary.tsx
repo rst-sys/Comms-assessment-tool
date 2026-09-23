@@ -23,11 +23,13 @@ import { CODES, CODES_BY_ID, GROUNDING, OWNER_S_OWN } from "./standardsContent.j
 export function StandardsLibrary() {
   return (
     <main className="page welcome" aria-labelledby="standards-heading">
-      <h1 id="standards-heading">Standards library</h1>
-      <p className="welcome-intro">
-        What this tool measures against, where each standard comes from, and — just as important — which parts are our
-        own judgement rather than anyone's published code.
-      </p>
+      <header className="page-head">
+        <h1 id="standards-heading">Standards library</h1>
+        <p className="welcome-intro">
+          What this tool measures against, where each standard comes from, and — just as important — which parts are our
+          own judgement rather than anyone's published code.
+        </p>
+      </header>
 
       <section className="card welcome-card" aria-labelledby="how-heading">
         <h2 id="how-heading">How to read this page</h2>

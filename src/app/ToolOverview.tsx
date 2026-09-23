@@ -15,8 +15,10 @@ import type { PrivacyConfig } from "./PrivacyPanel.js";
 export function ToolOverview({ config, runtimeNote }: { config: PrivacyConfig | null; runtimeNote?: string }) {
   return (
     <main className="page welcome" aria-labelledby="overview-heading">
-      <h1 id="overview-heading">Tool overview</h1>
-      <p className="welcome-intro">{INTRO}</p>
+      <header className="page-head">
+        <h1 id="overview-heading">Tool overview</h1>
+        <p className="welcome-intro">{INTRO}</p>
+      </header>
 
       <section className="card welcome-card" aria-labelledby="what-heading">
         <h2 id="what-heading">What it does</h2>

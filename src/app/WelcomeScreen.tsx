@@ -38,9 +38,13 @@ export function WelcomeScreen({ config, runtimeNote, onStart, onOverview, onStan
   const privacy = privacyPoints(config ? `${config.provider} (${config.model})` : null, null);
   return (
     <main className="page welcome" aria-labelledby="welcome-heading">
-      <h1 id="welcome-heading">{APP_NAME}</h1>
-      <p className="welcome-tagline">{TAGLINE}</p>
-      <p className="welcome-intro">{INTRO}</p>
+      <header className="page-head">
+        <div>
+          <h1 id="welcome-heading">{APP_NAME}</h1>
+          <p className="welcome-tagline">{TAGLINE}</p>
+        </div>
+        <p className="welcome-intro">{INTRO}</p>
+      </header>
 
       <section className="card welcome-card" aria-labelledby="why-heading">
         <h2 id="why-heading">Why it matters</h2>

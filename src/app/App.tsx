@@ -149,8 +149,10 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
     <>
       <header className="site-header no-print">
         <div className="page" style={{ paddingBottom: 0 }}>
-          <h1 style={{ marginBottom: 4 }}>{APP_NAME}</h1>
-          <p className="muted intro" style={{ marginTop: 0 }}>{INTRO}</p>
+          <div className="header-head">
+            <h1 style={{ marginBottom: 4 }}>{APP_NAME}</h1>
+            <p className="muted intro" style={{ marginTop: 0 }}>{INTRO}</p>
+          </div>
           <nav aria-label="Areas">
             <ul className="nav">
               <li>

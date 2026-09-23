@@ -317,9 +317,21 @@ textarea { resize: vertical; }
   .welcome > *, .results > * { margin-top: 0; }
   .welcome-card { margin-top: 0; max-width: none; }
 
+  /* The page head is the one place a wide screen looked worst: a title and a
+     four-line paragraph both capped at the measure, with six hundred pixels of
+     nothing beside them. Same answer as everywhere else — the width holds a
+     second thing rather than a longer line. Masthead left, intro right. */
+  .page-head, .header-head {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--space) * 2) calc(var(--space) * 4);
+    align-items: end;
+  }
+  .page-head > *, .header-head > * { margin-top: 0; }
+  .page-head .welcome-intro, .header-head .intro { margin-bottom: 0; max-width: none; }
+
   /* Full width: headings, running intros, and anything that is one wide thing. */
-  .welcome > h1, .welcome > .welcome-tagline, .welcome > .welcome-intro,
-  .welcome > .welcome-more, .welcome > .welcome-runtime, .welcome > .welcome-start,
+  .welcome > .page-head, .welcome > .welcome-more, .welcome > .welcome-runtime, .welcome > .welcome-start,
   .results > .results-actions, .results > .save-note, .results > .error,
   .results > #executive-summary, .results > #findings, .results > .comparison {
     grid-column: 1 / -1;
