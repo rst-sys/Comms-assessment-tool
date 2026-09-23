@@ -6,6 +6,8 @@ goals:
   - Apologize or repair trust
 version: 1
 status: active
+rests_on: >-
+  One 2016 study of 755 people, known here through a press account, plus the tool author's own standard.
 
 elements:
   - name: Acknowledged responsibility

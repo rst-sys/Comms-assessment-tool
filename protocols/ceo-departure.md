@@ -5,6 +5,8 @@ layer: event
 event: CEO or senior-leader departure
 version: 1
 status: active
+rests_on: >-
+  US securities law for listed companies — Form 8-K, Regulation FD, Rule 10b-5 — plus professional judgement for everything else.
 
 elements:
   - name: Character of the departure

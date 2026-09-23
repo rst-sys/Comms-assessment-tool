@@ -490,6 +490,19 @@ a.score-number:hover { text-decoration-color: var(--ink); }
   max-width: var(--measure);
 }
 
+/* Standards library: what a protocol rests on, and its sources behind a click.
+   The five protocols' sources ran to three thousand words — 42% of the page —
+   which made the provenance that justifies the tool the reason nobody read
+   about it. The one-line summary is what a reader sees; nothing was cut. */
+.rests-on { margin: calc(var(--space) * 2) 0 0; max-width: var(--measure); font-size: 14px; }
+.rests-on .label { display: inline; margin-right: 6px; }
+.sources { margin-top: calc(var(--space) * 1.5); border-top: 1px solid var(--border); padding-top: var(--space); }
+.sources > summary { cursor: pointer; font-size: 14px; color: var(--neutral); }
+.sources > summary:hover { color: var(--ink); }
+.sources-body { margin-top: var(--space); }
+.sources-body .label { margin-top: calc(var(--space) * 2); }
+.sources-body > div:first-child .label { margin-top: 0; }
+
 /* Standards library: codes and the dimension grounding (revision 20). */
 .code-entry + .code-entry, .grounding-entry + .grounding-entry {
   margin-top: calc(var(--space) * 3);

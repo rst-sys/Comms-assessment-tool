@@ -5,6 +5,8 @@ layer: event
 event: Workforce reduction or major reorganization
 version: 1
 status: active
+rests_on: >-
+  EEOC and US Labor Department guidance, Fair Work Australia and CIPD, plus three studies, none of them about wording.
 
 elements:
   - name: Decision status

@@ -143,10 +143,24 @@ export function StandardsLibrary() {
         </p>
       </section>
 
+      {/* Said once here rather than repeated on all five cards. */}
+      <section className="card welcome-card" aria-labelledby="protocols-heading">
+        <h2 id="protocols-heading">Protocols: the standard for what happened</h2>
+        <p className="prose">
+          Naming the event at intake brings in the standard written for it. Each protocol below is a lens on the ten
+          dimensions above, never an eleventh score: a missing element shows up in the dimension it belongs to, as an
+          ordinary finding.
+        </p>
+        <p className="prose">
+          Every one says in a line what kind of authority it rests on, and carries its full sources — including what its
+          author could not open, and what it cannot judge — behind the expander on its own card.
+        </p>
+      </section>
+
       {PROTOCOLS.map((protocol) => (
         <section key={protocol.id} className="card welcome-card" aria-labelledby={`${protocol.id}-heading`}>
           <h2 id={`${protocol.id}-heading`}>{protocol.name}</h2>
-          <p className="muted small">
+          <p className="muted small" style={{ marginTop: 0 }}>
             Applied when: {appliesTo(protocol)} · Version {protocol.version}
           </p>
 
@@ -165,52 +179,43 @@ export function StandardsLibrary() {
               </div>
             ))}
           </dl>
-          <p className="prose">
-            These elements are a lens on the ten dimensions above, not an eleventh score. A missing element shows up in
-            the dimension it belongs to.
+
+          <p className="rests-on">
+            <span className="label">Rests on</span> {protocol.rests_on}
           </p>
 
-          {["Source", "Basis"].map((heading) => {
-            const blocks = proseBlocks(protocolSection(protocol.prose, heading));
-            if (blocks.length === 0) return null;
-            return (
-              <div key={heading}>
-                <div className="label">{heading}</div>
-                {blocks.map((b, i) =>
-                  b.kind === "list" ? (
-                    <ul key={i} className="tight prose">
-                      {(b.items ?? []).map((item, j) => (
-                        <li key={j}>{item}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p key={i} className="prose small">{b.text}</p>
-                  ),
-                )}
-              </div>
-            );
-          })}
-
-          {(() => {
-            const limits = proseBlocks(protocolSection(protocol.prose, "What this protocol does not cover") || protocolSection(protocol.prose, "Limits"));
-            if (limits.length === 0) return null;
-            return (
-              <>
-                <div className="label">What it cannot do</div>
-                {limits.map((b, i) =>
-                  b.kind === "list" ? (
-                    <ul key={i} className="tight prose">
-                      {(b.items ?? []).map((item, j) => (
-                        <li key={j}>{item}</li>
-                      ))}
-                    </ul>
-                  ) : (
-                    <p key={i} className="prose small">{b.text}</p>
-                  ),
-                )}
-              </>
-            );
-          })()}
+          {/* The full sources are the reason to trust any of this, and three
+              thousand words of them were the reason nobody read the page.
+              Kept whole, one click away. */}
+          <details className="sources">
+            <summary>Sources in full, and what this protocol cannot judge</summary>
+            <div className="sources-body">
+              {[
+                ["Source", protocolSection(protocol.prose, "Source")],
+                ["Basis", protocolSection(protocol.prose, "Basis")],
+                ["What it cannot do", protocolSection(protocol.prose, "What this protocol does not cover") || protocolSection(protocol.prose, "Limits")],
+              ].map(([heading, text]) => {
+                const blocks = proseBlocks(text ?? "");
+                if (blocks.length === 0) return null;
+                return (
+                  <div key={heading}>
+                    <div className="label">{heading}</div>
+                    {blocks.map((b, i) =>
+                      b.kind === "list" ? (
+                        <ul key={i} className="tight prose small">
+                          {(b.items ?? []).map((item, j) => (
+                            <li key={j}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p key={i} className="prose small">{b.text}</p>
+                      ),
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </details>
         </section>
       ))}
 

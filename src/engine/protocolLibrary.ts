@@ -16,6 +16,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "event": "CEO or senior-leader departure",
       "version": 1,
       "status": "active",
+      "rests_on": "US securities law for listed companies — Form 8-K, Regulation FD, Rule 10b-5 — plus professional judgement for everything else.",
       "elements": [
         {
           "name": "Character of the departure",
@@ -165,6 +166,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "event": "Cyberattack or data incident",
       "version": 1,
       "status": "active",
+      "rests_on": "US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgement. None of it measures which notices work better.",
       "elements": [
         {
           "name": "What and when",
@@ -290,6 +292,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "event": "Geopolitical event affecting operations or employee welfare",
       "version": 1,
       "status": "active",
+      "rests_on": "EU worker-information directives and US WARN, official guidance with no force of law, and three studies.",
       "elements": [
         {
           "name": "Basis for speaking",
@@ -440,6 +443,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       ],
       "version": 1,
       "status": "active",
+      "rests_on": "One 2016 study of 755 people, known here through a press account, plus the tool author's own standard.",
       "elements": [
         {
           "name": "Acknowledged responsibility",
@@ -543,6 +547,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "event": "Workforce reduction or major reorganization",
       "version": 1,
       "status": "active",
+      "rests_on": "EEOC and US Labor Department guidance, Fair Work Australia and CIPD, plus three studies, none of them about wording.",
       "elements": [
         {
           "name": "Decision status",

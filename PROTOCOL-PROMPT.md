@@ -162,6 +162,12 @@ finding or question.
 chosen", not "the communication does not appear to provide clarity regarding
 selection methodology".
 
+**`rests_on` is honest, not impressive.** It is the only line about provenance
+most readers will see — the full sources sit behind a click. Say what kind of
+authority it is and how much weight it carries. Good: "US regulator guidance
+plus professional judgement; none of it measures which notices work better."
+Bad: "extensive research and international best practice".
+
 ## The exact shape to produce
 
 Give me one Markdown file. Nothing before the first `---`.
@@ -174,6 +180,9 @@ layer: event
 event: <one of the thirteen, spelled exactly>
 version: 1
 status: active
+rests_on: >-
+  One line, at most 30 words, naming what KIND of authority this rests on and
+  how strong it is. Not a summary of the sources.
 
 elements:
   - name: Short name

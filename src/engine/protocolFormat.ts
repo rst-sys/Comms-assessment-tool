@@ -113,6 +113,16 @@ export interface ProtocolFile {
   event?: CommunicationEvent;
   /** Posture layer: the goals that bring it in, on top of any event. */
   goals?: Goal[];
+  /**
+   * One line naming what kind of authority this protocol rests on.
+   *
+   * Required because the Standards Library page cannot show every citation at
+   * once and stay readable: five protocols' sources ran to three thousand
+   * words, 42% of the page. The full sources stay, one click away; this is
+   * what a reader sees first, and it has to be honest about the weight of the
+   * evidence rather than impressive about its quantity.
+   */
+  rests_on: string;
   elements: ProtocolElement[];
   triggers: ProtocolTrigger[];
   questions: ProtocolQuestion[];
@@ -150,6 +160,11 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
   if (!isStr(d.id)) err("needs an id, a short name with no spaces, such as cyber-incident");
   else if (!/^[a-z0-9-]+$/.test(d.id)) err(`id "${d.id}" may use only lower-case letters, numbers and hyphens`);
   if (!isStr(d.name)) err("needs a name, the title shown in the Standards Library");
+  if (!isStr(d.rests_on)) {
+    err('needs rests_on: one line naming what kind of authority it rests on, such as "US regulator guidance plus professional judgement; no effectiveness studies exist"');
+  } else if ((d.rests_on as string).trim().split(/\s+/).length > 30) {
+    err(`rests_on is ${(d.rests_on as string).trim().split(/\s+/).length} words; keep it to 30. It is the line a reader sees instead of the full sources, not a summary of them.`);
+  }
   if (typeof d.version !== "number") err("needs a version number, starting at 1 and going up whenever the protocol changes");
   if (!one(d.status, ["draft", "active"] as const)) err('status must be "draft" or "active"');
   if (!one(d.layer, ["event", "posture"] as const)) {

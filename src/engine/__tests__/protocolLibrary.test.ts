@@ -39,6 +39,7 @@ describe("the protocol library", () => {
 describe("the checker", () => {
   const good = {
     id: "example", name: "Example", layer: "event", version: 1, status: "active",
+    rests_on: "Regulator guidance plus professional judgement.",
     event: "Cyberattack or data incident",
     elements: [{ name: "A", means: "B.", weight: "core", dimension: "accountability_agency" }],
     triggers: [{ check: "C.", dimension: "accountability_agency", review: ["Legal"] }],
@@ -109,5 +110,13 @@ describe("the checker", () => {
     // "core" was a third layer that duplicated the framework; it is gone, and
     // a file still claiming it should fail rather than be quietly ignored.
     expect(messages({ ...good, layer: "core" })).toContain('layer must be "event"');
+  });
+
+  it("insists on a one-line summary of what the protocol rests on, and keeps it short", () => {
+    // The page shows this instead of three thousand words of citations, so a
+    // protocol without one has nothing to say for itself above the fold.
+    const { rests_on: _omitted, ...without } = good;
+    expect(messages(without)).toContain("needs rests_on");
+    expect(messages({ ...good, rests_on: Array.from({ length: 31 }, (_, i) => `w${i}`).join(" ") })).toContain("keep it to 30");
   });
 });

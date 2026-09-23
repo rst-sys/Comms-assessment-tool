@@ -5,6 +5,8 @@ layer: event
 event: Geopolitical event affecting operations or employee welfare
 version: 1
 status: active
+rests_on: >-
+  EU worker-information directives and US WARN, official guidance with no force of law, and three studies.
 
 elements:
   - name: Basis for speaking

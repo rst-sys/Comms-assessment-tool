@@ -5,6 +5,8 @@ layer: event
 event: Cyberattack or data incident
 version: 1
 status: active
+rests_on: >-
+  US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgement. None of it measures which notices work better.
 
 elements:
   - name: What and when
