@@ -245,6 +245,12 @@ textarea { resize: vertical; }
 .welcome-tagline { font-family: var(--serif); font-size: 22px; line-height: 1.35; max-width: var(--measure);
   margin: 0 0 calc(var(--space) * 2); color: var(--ink); }
 .welcome-intro { font-family: var(--serif); font-size: 19px; line-height: 1.5; max-width: var(--measure); margin-bottom: calc(var(--space) * 4); }
+/* Cards on the explanatory pages are sized to their text, not to the page.
+   Capping the prose inside a full-width card leaves a band of empty card to
+   the right of every line — the same fault as revision 22, which was fixed on
+   the results page and missed here. The card is the measure plus its own
+   left and right padding, so the text fills it. */
+.welcome-card, .callout-privacy { max-width: calc(var(--measure) + var(--space) * 5); }
 .welcome-card { margin-top: calc(var(--space) * 3); }
 .welcome-card h2 { margin-bottom: calc(var(--space) * 1.5); }
 .welcome-card h3 { font-size: 16px; margin-top: calc(var(--space) * 3); }
