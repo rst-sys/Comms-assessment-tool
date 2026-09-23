@@ -133,6 +133,23 @@ export function chargeOne(req: IncomingMessage, now: Date = new Date()): LimitDe
   return { allowed: true };
 }
 
+/**
+ * Give a charge back when the review never happened.
+ *
+ * The count has to be taken before the work starts, or two requests at once
+ * could both pass the check. But a review that fails costs the owner nothing
+ * and helps the visitor not at all, so charging for it means a bad afternoon
+ * of provider errors quietly eats the day's allowance — which is exactly when
+ * somebody most needs another try.
+ */
+export function refundOne(req: IncomingMessage, now: Date = new Date()): void {
+  roll(now);
+  const key = visitorKey(req);
+  const mine = counters.perVisitor.get(key) ?? 0;
+  if (mine > 0) counters.perVisitor.set(key, mine - 1);
+  if (counters.total > 0) counters.total -= 1;
+}
+
 /** How much of today's total ceiling is spent, for the owner's own check. */
 export function usageToday(now: Date = new Date()): { used: number; limit: number; visitors: number } {
   roll(now);

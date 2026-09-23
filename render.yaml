@@ -32,10 +32,15 @@ services:
       # Spending brakes. These reset if the service restarts, so they are a
       # brake and not a guarantee; the hard stop is the spending limit you set
       # in your Anthropic account.
+      # Raised from 10 and 60 for the owner's own testing: a failed review now
+      # gives its slot back, but a session spent diagnosing one still runs
+      # through the old ten quickly. At roughly $0.15 a review the total is
+      # about $18 a day at full tilt; the Anthropic spending limit is the real
+      # stop. Put them back to 10 and 60 before sharing the link widely.
       - key: ACR_DAILY_LIMIT_PER_VISITOR
-        value: "10"
+        value: "25"
       - key: ACR_DAILY_LIMIT_TOTAL
-        value: "60"
+        value: "120"
       # Speed levers. Change either in the Environment tab; the service
       # restarts and picks it up, with no rebuild.
       #

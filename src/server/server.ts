@@ -24,6 +24,7 @@ import { allowedUrl, extractReadable, fetchPage, IMPORT_ERROR } from "./import.j
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
 import {
   chargeOne,
+  refundOne,
   clearedCookie,
   GATE_ENABLED,
   isAuthorized,
@@ -304,6 +305,12 @@ export const server = createServer(async (req, res) => {
   if (PAID.has(url.pathname) && method === "POST") {
     const decision = chargeOne(req);
     if (!decision.allowed) return send(res, 429, { error: "rate_limited", message: decision.message });
+    // Charged up front so two requests at once cannot both slip through, and
+    // given back if the request fails. Done here rather than in each handler
+    // so no error path can be missed.
+    res.once("finish", () => {
+      if (res.statusCode >= 400) refundOne(req);
+    });
   }
   if (url.pathname === "/api/evaluate" && method === "POST") return handleEvaluate(req, res);
   if (url.pathname === "/api/import" && method === "POST") return handleImport(req, res);

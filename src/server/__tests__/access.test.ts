@@ -3,6 +3,7 @@ import type { IncomingMessage } from "node:http";
 import {
   accessToken,
   chargeOne,
+  refundOne,
   OVER_TOTAL_LIMIT,
   OVER_VISITOR_LIMIT,
   resetCounters,
@@ -79,5 +80,47 @@ describe("the access token", () => {
     expect(accessToken("copper-lantern-marsh")).toBe(accessToken("copper-lantern-marsh"));
     expect(accessToken("copper-lantern-marsh")).not.toBe(accessToken("copper-lantern-marsX"));
     expect(accessToken("copper-lantern-marsh")).not.toContain("copper");
+  });
+});
+
+describe("a failed review gives its charge back", () => {
+  it("does not spend a slot on a review that never produced anything", () => {
+    const visitor = req();
+    chargeOne(visitor);
+    chargeOne(visitor);
+    expect(usageToday().used).toBe(2);
+
+    refundOne(visitor);
+    expect(usageToday().used).toBe(1);
+  });
+
+  it("lets a visitor keep trying after a run of failures", () => {
+    const visitor = req();
+    // Every attempt fails and is refunded, so the allowance is never eaten.
+    for (let i = 0; i < 25; i += 1) {
+      expect(chargeOne(visitor).allowed, `attempt ${i + 1}`).toBe(true);
+      refundOne(visitor);
+    }
+    expect(usageToday().used).toBe(0);
+    expect(chargeOne(visitor).allowed).toBe(true);
+  });
+
+  it("never refunds below zero", () => {
+    const visitor = req();
+    refundOne(visitor);
+    refundOne(visitor);
+    expect(usageToday().used).toBe(0);
+  });
+
+  it("refunds the visitor who was charged, not another", () => {
+    const a = req({}, "10.0.0.1");
+    const b = req({}, "10.0.0.2");
+    chargeOne(a);
+    chargeOne(b);
+    refundOne(a);
+    expect(usageToday().used).toBe(1);
+    // b still holds its charge, so its own allowance is one lower than a's.
+    for (let i = 0; i < 9; i += 1) expect(chargeOne(b).allowed).toBe(true);
+    expect(chargeOne(b).allowed).toBe(false);
   });
 });
