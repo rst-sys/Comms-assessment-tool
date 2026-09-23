@@ -1,17 +1,6 @@
 import { describe, expect, it } from "vitest";
-import type { AgencyScanItem, Finding } from "../../../engine/types.js";
-import { highlightSegments, matchesFilters, sortFindings, specialistQuestions, topFindings } from "../model.js";
-
-const scanItem = (phrase: string, overrides: Partial<AgencyScanItem> = {}): AgencyScanItem => ({
-  phrase,
-  category: "Vague action",
-  severity: "Low",
-  assessment: "Incomplete explanation",
-  why: "",
-  what_would_make_it_credible: "",
-  finding_id: null,
-  ...overrides,
-});
+import type { Finding } from "../../../engine/types.js";
+import { matchesFilters, sortFindings, specialistQuestions, topFindings } from "../model.js";
 
 const finding = (overrides: Partial<Finding>): Finding => ({
   id: "F-001",
@@ -26,30 +15,6 @@ const finding = (overrides: Partial<Finding>): Finding => ({
   specialist_review_needed: false,
   specialist_review_type: null,
   ...overrides,
-});
-
-describe("highlightSegments", () => {
-  it("splits the draft around each phrase, in draft order", () => {
-    const draft = "Rapid growth brought complexity. We will streamline things.";
-    const segs = highlightSegments(draft, [scanItem("streamline"), scanItem("Rapid growth brought complexity")]);
-    expect(segs.map((s) => [s.text, s.scanIndex])).toEqual([
-      ["Rapid growth brought complexity", 1],
-      [". We will ", null],
-      ["streamline", 0],
-      [" things.", null],
-    ]);
-  });
-
-  it("drops a phrase that overlaps an earlier highlight and ignores phrases not in the draft", () => {
-    const draft = "Some customers were offended by content.";
-    const segs = highlightSegments(draft, [scanItem("Some customers were offended"), scanItem("customers were"), scanItem("not present")]);
-    expect(segs.filter((s) => s.scanIndex !== null).map((s) => s.scanIndex)).toEqual([0]);
-    expect(segs.map((s) => s.text).join("")).toBe(draft);
-  });
-
-  it("returns the whole draft as one plain segment when nothing is flagged", () => {
-    expect(highlightSegments("abc", [])).toEqual([{ text: "abc", scanIndex: null }]);
-  });
 });
 
 describe("topFindings", () => {

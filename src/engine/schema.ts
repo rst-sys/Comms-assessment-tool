@@ -24,8 +24,6 @@ import {
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
   RISK_LEVELS,
-  SCAN_ASSESSMENTS,
-  SCAN_CATEGORIES,
   SCHEMA_VERSION,
   SEVERITIES,
   SPECIALIST_REVIEW_TYPES,
@@ -95,17 +93,6 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
       fact_validation_needed: bool,
       specialist_review_needed: bool,
       specialist_review_type: nullableEnum(SPECIALIST_REVIEW_TYPES),
-    }),
-  ),
-  agency_scan: arr(
-    obj({
-      phrase: str,
-      category: enumOf(SCAN_CATEGORIES),
-      severity: enumOf(SEVERITIES),
-      assessment: enumOf(SCAN_ASSESSMENTS),
-      why: str,
-      what_would_make_it_credible: str,
-      finding_id: nullableStr,
     }),
   ),
   devils_advocate: obj({

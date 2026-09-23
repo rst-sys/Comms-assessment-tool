@@ -99,38 +99,6 @@ function checkFixture(fixture: Fixture, result: EvaluationResult): Check[] {
     const label = floor === "High" ? "High finding" : `${floor}-or-higher finding`;
     checks.push({ name: `${label}: ${exp.label}`, pass: Boolean(hit), detail: hit ? `${hit.id} ${hit.severity} (${hit.dimension})` : `no ${label} matched ${exp.pattern}` });
   }
-  for (const exp of expect.scan_flags ?? []) {
-    // Several entries can contain the expected text (a whole sentence and the
-    // clause inside it); prefer the one whose category, severity and
-    // assessment match, and fall back to the first so the mismatch is shown.
-    const matches = a.agency_scan.filter((s) => exp.phrase.test(s.phrase));
-    const hit =
-      matches.find(
-        (s) =>
-          (!exp.category || s.category === exp.category) &&
-          (!exp.severity || s.severity === exp.severity) &&
-          (!exp.assessment || s.assessment === exp.assessment),
-      ) ?? matches[0];
-    let pass = Boolean(hit);
-    const problems: string[] = [];
-    if (hit) {
-      if (exp.category && hit.category !== exp.category) { pass = false; problems.push(`category ${hit.category}`); }
-      if (exp.severity && hit.severity !== exp.severity) { pass = false; problems.push(`severity ${hit.severity}`); }
-      if (exp.assessment && hit.assessment !== exp.assessment) { pass = false; problems.push(`assessment ${hit.assessment}`); }
-    }
-    checks.push({
-      name: `scan flag ${exp.phrase}${exp.category ? ` as ${exp.category}` : ""}${exp.severity ? ` ${exp.severity}` : ""}${exp.assessment ? ` (${exp.assessment})` : ""}`,
-      pass,
-      detail: hit ? (problems.length ? problems.join(", ") : `"${hit.phrase}"`) : "not flagged",
-    });
-  }
-  if (expect.max_scan_flags !== undefined) {
-    checks.push({ name: `≤ ${expect.max_scan_flags} scan flag(s)`, pass: a.agency_scan.length <= expect.max_scan_flags, detail: `${a.agency_scan.length} flag(s): ${a.agency_scan.map((s) => `"${s.phrase}" ${s.severity}`).join("; ") || "none"}` });
-  }
-  if (expect.max_scan_severity) {
-    const worst = a.agency_scan.reduce<number>((m, s) => Math.min(m, SEVERITY_RANK[s.severity]), 99);
-    checks.push({ name: `scan severity ≤ ${expect.max_scan_severity}`, pass: a.agency_scan.length === 0 || worst >= SEVERITY_RANK[expect.max_scan_severity] });
-  }
   for (const type of expect.specialist_review ?? []) {
     checks.push({ name: `specialist review includes ${type}`, pass: a.specialist_review_summary.includes(type), detail: a.specialist_review_summary.join(", ") || "none" });
   }
@@ -154,10 +122,10 @@ function report(title: string, checks: Check[]): void {
 
 function summarize(label: string, r: EvaluationResult): void {
   const a = r.analysis;
-  console.log(`  ${label}: score ${r.score} (${r.band}); risk ${a.executive_summary.risk_level}; ${a.findings.length} findings (${a.findings.filter((f) => f.severity === "High").length} High); ${a.agency_scan.length} scan flags; specialist: ${a.specialist_review_summary.join(", ") || "none"}`);
+  console.log(`  ${label}: score ${r.score} (${r.band}); risk ${a.executive_summary.risk_level}; ${a.findings.length} findings (${a.findings.filter((f) => f.severity === "High").length} High); ${a.questions_before_publication.length} questions; specialist: ${a.specialist_review_summary.join(", ") || "none"}`);
   const dims = a.dimensions.map((d) => `${d.id.split("_")[0]} ${d.score.toFixed(1)}`).join(", ");
   console.log(`    dimensions: ${dims}`);
-  if (r.adjustments.dropped_findings || r.adjustments.dropped_scan_phrases) {
+  if (r.adjustments.dropped_findings || r.adjustments.trimmed_findings || r.adjustments.thin_questions) {
     console.log(`    adjustments: ${JSON.stringify(r.adjustments)}`);
   }
 }

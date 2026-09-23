@@ -42,8 +42,6 @@ export class AnalysisValidationError extends Error {
 export interface ValidationAdjustments {
   /** Findings removed because their excerpt was not verbatim in the draft. */
   dropped_findings: number;
-  /** Agency-scan entries removed because their phrase was not verbatim in the draft. */
-  dropped_scan_phrases: number;
   /** True when the model's context_supplied disagreed with the request and was corrected. */
   context_flag_corrected: boolean;
   /** Findings beyond MAX_FINDINGS, trimmed from the end of an already-ranked list. */
@@ -198,18 +196,6 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
   // finding behind it.
   const trimmedFindings = Math.max(0, verified.length - MAX_FINDINGS);
   const findings = trimmedFindings > 0 ? verified.slice(0, MAX_FINDINGS) : verified;
-  const keptIds = new Set(findings.map((f) => f.id));
-
-  let droppedScan = 0;
-  const agency_scan = input.agency_scan.flatMap((item) => {
-    const verbatim = findVerbatim(draft, item.phrase);
-    if (verbatim === null) {
-      droppedScan += 1;
-      return [];
-    }
-    const finding_id = item.finding_id !== null && keptIds.has(item.finding_id) ? item.finding_id : null;
-    return [{ ...item, phrase: verbatim, finding_id }];
-  });
 
   // Readiness rule, enforced in code.
   const specialistNeeded = findings.some((f) => f.specialist_review_needed);
@@ -228,7 +214,6 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
     ...input,
     executive_summary: { ...summary, context_supplied: contextSupplied },
     findings,
-    agency_scan,
     specialist_review_summary: [...summaryTypes],
   };
 
@@ -236,7 +221,6 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
     analysis,
     adjustments: {
       dropped_findings: droppedFindings,
-      dropped_scan_phrases: droppedScan,
       context_flag_corrected: contextCorrected,
       trimmed_findings: trimmedFindings,
       thin_questions: thinQuestions,

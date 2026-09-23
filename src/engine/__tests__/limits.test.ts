@@ -44,7 +44,7 @@ describe("the output budget", () => {
     expect(adjustments.trimmed_findings).toBe(0);
   });
 
-  it("names no specialist review and no scan phrase that a trimmed finding took with it", () => {
+  it("names no specialist review that a trimmed finding took with it", () => {
     const many = sampleAnalysis({
       findings: Array.from({ length: MAX_FINDINGS + 1 }, (_, i) =>
         sampleFinding({
@@ -58,12 +58,10 @@ describe("the output budget", () => {
       ),
       specialist_review_summary: [],
     });
-    many.agency_scan[0]!.finding_id = `F-${String(MAX_FINDINGS + 1).padStart(3, "0")}`;
 
     const { analysis } = validateAnalysis(many, SAMPLE_DRAFT, {});
     expect(analysis.specialist_review_summary).not.toContain("Investor relations");
     expect(analysis.specialist_review_summary).toContain("HR");
-    expect(analysis.agency_scan[0]!.finding_id).toBeNull();
   });
 
   it("caps questions in the normalizer, whatever the model returns", () => {

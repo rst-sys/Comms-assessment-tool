@@ -12,7 +12,6 @@ import {
   DOCUMENT_KINDS,
   DOCUMENT_REACH,
   RISK_LEVELS,
-  SCAN_ASSESSMENTS,
   SCAN_CATEGORIES,
   SEVERITIES,
   SPECIALIST_REVIEW_TYPES,
@@ -33,16 +32,13 @@ The JSON object must satisfy these counts and conventions in addition to the sch
 - findings use ids F-001, F-002, ... in order of materiality: F-001 is the gap a reasonable stakeholder would most need resolved, with High findings before Moderate before Low. Within one severity, order by dimension: accountability_agency, stakeholder_respect_impact, causation_explanation, truthfulness_factual_discipline, corrective_action_proof, listening_employee_voice, verification_follow_through, clarity_plain_language, fairness_independence_conflicts, future_readiness_learning. excerpt is an exact, character-for-character substring of the draft, or null when the finding is an omission; omission is then a description of what is missing. Never leave both null.
 - claim_status is set on findings for accountability_agency, causation_explanation and corrective_action_proof, and null elsewhere.
 - recommended_action and what_would_make_it_credible describe information ("the deciding body or role", "a date for the first update", "the selection criteria"), not text to paste. would_raise on each dimension does the same.
-- agency_scan phrase is an exact substring of the draft. finding_id names the related finding or is null.
 - devils_advocate.personas contains exactly five personas, no more and no fewer. Each carries persona (the audience, named as a person) and might_say (one sentence in their own voice, at most 25 words). Neither may be empty: a persona with a blank field is worse than no persona at all, and the review is rejected when one is. The disclaimer is exactly: "These are plausible audience interpretations, not statements of fact."
 - questions_before_publication contains at least ${MIN_QUESTIONS} questions and at most ${MAX_QUESTIONS}. ${MIN_QUESTIONS} is a floor, not a target to cut down to: every draft leaves something worth settling, and a review that asks fewer has stopped looking. Where the protocols above list questions, apply the selection rule stated with them.
 - specialist_review_summary lists each review type named by any finding with specialist_review_needed true, without duplicates.
 - Every value below is spelled exactly as given here, including its capital letters. Copy the spelling; do not upper-case it for emphasis even where the guidance above does.
-  severity and agency_scan severity: ${SEVERITIES.join(" | ")}
+  severity: ${SEVERITIES.join(" | ")}
   claim_status: ${CLAIM_STATUSES.join(" | ")} (note the initial capital only)
   executive_summary.risk_level: ${RISK_LEVELS.join(" | ")}
-  agency_scan category: ${SCAN_CATEGORIES.join(" | ")}
-  agency_scan assessment: ${SCAN_ASSESSMENTS.join(" | ")}
   specialist_review_type and every entry of specialist_review_summary: ${SPECIALIST_REVIEW_TYPES.join(" | ")}
 
 WHAT EACH DIMENSION EVALUATES

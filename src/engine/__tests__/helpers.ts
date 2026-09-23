@@ -41,17 +41,6 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
       would_raise: "Name a specific actor.",
     })),
     findings: [sampleFinding()],
-    agency_scan: [
-      {
-        phrase: "Rapid growth brought complexity",
-        category: "Institutional abstraction",
-        severity: "High",
-        assessment: "Potential accountability gap",
-        why: "Growth is a condition, not a decision-maker.",
-        what_would_make_it_credible: "Name the leadership choices.",
-        finding_id: "F-001",
-      },
-    ],
     devils_advocate: {
       disclaimer: DEVILS_ADVOCATE_DISCLAIMER,
       personas: [persona, { ...persona, persona: "Remaining employee" }, { ...persona, persona: "Manager" }, { ...persona, persona: "Journalist" }, { ...persona, persona: "Labor representative" }],

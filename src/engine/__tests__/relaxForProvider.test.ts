@@ -23,7 +23,7 @@ describe("relaxForProvider", () => {
   const relaxed = relaxForProvider(ANALYSIS_SCHEMA);
 
   it("removes every enum and const at any depth", () => {
-    expect(countKeys(ANALYSIS_SCHEMA, "enum")).toBeGreaterThan(10);
+    expect(countKeys(ANALYSIS_SCHEMA, "enum")).toBeGreaterThan(5);
     expect(countKeys(relaxed, "enum")).toBe(0);
     expect(countKeys(relaxed, "const")).toBe(0);
   });

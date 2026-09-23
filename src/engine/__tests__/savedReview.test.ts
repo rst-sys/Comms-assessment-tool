@@ -51,12 +51,10 @@ describe("buildSavedReview", () => {
     const withQuotes = buildSavedReview(result, request);
     expect(withQuotes.excerpts_included).toBe(true);
     expect(withQuotes.findings.some((f) => f.excerpt !== null)).toBe(true);
-    expect(withQuotes.agency_scan.some((s) => s.phrase !== null)).toBe(true);
 
     const without = buildSavedReview(result, request, { includeExcerpts: false });
     expect(without.excerpts_included).toBe(false);
     expect(without.findings.every((f) => f.excerpt === null)).toBe(true);
-    expect(without.agency_scan.every((s) => s.phrase === null)).toBe(true);
     // Honest limit: the review's own prose still quotes the draft, so this is a
     // reduction, not a guarantee. The whole draft is still never present.
     expect(JSON.stringify(without)).not.toContain(request.draft);

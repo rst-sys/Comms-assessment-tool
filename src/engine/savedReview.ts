@@ -72,7 +72,6 @@ export interface SavedReview {
   };
   dimensions: { id: string; score: number; rationale: string; would_raise: string }[];
   findings: SavedFinding[];
-  agency_scan: { phrase: string | null; category: string; severity: Severity; assessment: string }[];
   specialist_review_summary: string[];
 }
 
@@ -125,12 +124,6 @@ export function buildSavedReview(
       recommended_action: f.recommended_action,
       specialist_review_needed: f.specialist_review_needed,
       specialist_review_type: f.specialist_review_type,
-    })),
-    agency_scan: a.agency_scan.map((s) => ({
-      phrase: includeExcerpts ? s.phrase : null,
-      category: s.category,
-      severity: s.severity,
-      assessment: s.assessment,
     })),
     specialist_review_summary: [...a.specialist_review_summary],
   };
@@ -198,7 +191,6 @@ const SAVED_REVIEW_SCHEMA = {
     summary: { type: "object" },
     dimensions: { type: "array" },
     findings: { type: "array" },
-    agency_scan: { type: "array" },
     specialist_review_summary: { type: "array" },
   },
   required: ["format", "format_version", "score", "settings", "summary", "dimensions", "findings"],

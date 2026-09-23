@@ -81,9 +81,6 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   if (adjustments.trimmed_findings > 0) {
     log(`[${requestId}] trimmed ${adjustments.trimmed_findings} finding(s) past the ${MAX_FINDINGS}-finding cap`);
   }
-  if (adjustments.dropped_scan_phrases > 0) {
-    log(`[${requestId}] dropped ${adjustments.dropped_scan_phrases} agency-scan phrase(s) not found in the draft`);
-  }
 
   const score = computeScore(analysis.dimensions);
   return {

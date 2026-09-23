@@ -17,7 +17,6 @@ describe("normalizeAnalysis", () => {
     messy.findings[0].fact_validation_needed = undefined;
     messy.findings[0].note = "extra";
     delete messy.findings[0].id;
-    messy.agency_scan[0].suggested_edit = "leftover";
     messy.devils_advocate.disclaimer = "Just interpretations.";
     messy.devils_advocate.personas.push({ ...messy.devils_advocate.personas[0], persona: "Sixth" });
     messy.questions_before_publication = Array.from({ length: 14 }, (_, i) => `q${i}`);
@@ -56,18 +55,15 @@ describe("enum casing, which the provider's grammar used to absorb", () => {
     expect(out.findings[0]!.specialist_review_type).toBe("HR");
   });
 
-  it("repairs the scan, summary and review-summary values too", () => {
+  it("repairs the summary and review-summary values too", () => {
     const out = normalizeAnalysis({
       executive_summary: { risk_level: "moderate" },
-      agency_scan: [{ phrase: "headwinds", category: "external weather", severity: "low", assessment: "legitimate context" }],
       specialist_review_summary: ["legal", "investor relations"],
     }) as {
       executive_summary: { risk_level: string };
-      agency_scan: { category: string; severity: string; assessment: string }[];
       specialist_review_summary: string[];
     };
     expect(out.executive_summary.risk_level).toBe("Moderate");
-    expect(out.agency_scan[0]).toMatchObject({ category: "External weather", severity: "Low", assessment: "Legitimate context" });
     expect(out.specialist_review_summary).toEqual(["Legal", "Investor relations"]);
   });
 

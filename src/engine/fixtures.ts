@@ -6,8 +6,6 @@
  */
 import type {
   EvaluationRequest,
-  ScanAssessment,
-  ScanCategory,
   Severity,
   SpecialistReviewType,
 } from "./types.js";
@@ -20,22 +18,10 @@ export interface HighFindingExpectation {
   min_severity?: Severity;
 }
 
-export interface ScanExpectation {
-  phrase: RegExp;
-  category?: ScanCategory;
-  severity?: Severity;
-  assessment?: ScanAssessment;
-}
-
 export interface FixtureExpectation {
   max_score?: number;
   min_score?: number;
   high_findings?: HighFindingExpectation[];
-  scan_flags?: ScanExpectation[];
-  /** Upper bound on agency-scan entries (the false-positive ceiling). */
-  max_scan_flags?: number;
-  /** Every scan entry must be at or below this severity. */
-  max_scan_severity?: Severity;
   specialist_review?: SpecialistReviewType[];
   personas?: RegExp[];
   most_damaging?: RegExp;
@@ -79,10 +65,6 @@ export const DEMO_1: Fixture = {
       { label: "no correction beyond headcount", pattern: /beyond|headcount|only (action|change)|other than|solely|correction|leaner .* no plan|decision rights|recurrence/i },
       { label: "no learning plan", pattern: /learn|recurr|prevent|governance|operating model/i },
       { label: "no verification", pattern: /verif|metric|milestone|update|measur|follow[- ]through/i },
-    ],
-    scan_flags: [
-      { phrase: /rapid growth brought complexity/i, category: "Institutional abstraction", severity: "High" },
-      { phrase: /leaner and more agile/i, category: "Vague action" },
     ],
     specialist_review: ["HR", "Labor"],
     personas: [/affected employee/i, /remaining employee/i],
@@ -130,10 +112,6 @@ export const DEMO_2: Fixture = {
       { label: "no timeline", pattern: /timeline|date|when|by which/i },
       { label: "no verification", pattern: /verif|measur|metric|update|follow[- ]through/i, min_severity: "Moderate" },
     ],
-    scan_flags: [
-      { phrase: /some customers were offended/i, category: "Audience displacement" },
-      { phrase: /committed to learning/i, category: "Values without action" },
-    ],
     most_damaging: /audience|customer|offen|reaction|blame|responsib|fault|sensitiv/i,
   },
 };
@@ -164,15 +142,6 @@ export const DEMO_3: Fixture = {
       { label: "no strategy correction", pattern: /strategy|correct|chang|adjust/i },
       { label: "no measurable response", pattern: /measur|metric|verif|milestone|target|quantif/i },
     ],
-    scan_flags: [
-      {
-        // The engine may flag the two conditions as separate entries; either satisfies the check.
-        phrase: /macroeconomic headwinds|sector-wide conditions/i,
-        category: "External weather",
-        assessment: "Incomplete explanation",
-      },
-      { phrase: /remain confident/i, category: "Values without action" },
-    ],
     specialist_review: ["Investor relations", "Legal"],
   },
 };
@@ -196,8 +165,6 @@ export const CONTROL: Fixture = {
   },
   expect: {
     min_score: 80,
-    max_scan_flags: 1,
-    max_scan_severity: "Low",
   },
 };
 

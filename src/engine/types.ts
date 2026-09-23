@@ -258,6 +258,12 @@ export const SPECIALIST_REVIEW_TYPES = [
 ] as const;
 export type SpecialistReviewType = (typeof SPECIALIST_REVIEW_TYPES)[number];
 
+/**
+ * The six ways language lets responsibility disappear. The engine reads for
+ * these and lets what it finds shape the findings and the scores; it no longer
+ * lists them back as output, which nothing displayed. Kept as one list so the
+ * prompt and the Standards Library page name the same six.
+ */
 export const SCAN_CATEGORIES = [
   "External weather",
   "Institutional abstraction",
@@ -267,13 +273,6 @@ export const SCAN_CATEGORIES = [
   "Vague action",
 ] as const;
 export type ScanCategory = (typeof SCAN_CATEGORIES)[number];
-
-export const SCAN_ASSESSMENTS = [
-  "Legitimate context",
-  "Incomplete explanation",
-  "Potential accountability gap",
-] as const;
-export type ScanAssessment = (typeof SCAN_ASSESSMENTS)[number];
 
 export const DEVILS_ADVOCATE_DISCLAIMER =
   "These are plausible audience interpretations, not statements of fact.";
@@ -311,16 +310,6 @@ export interface Finding {
   specialist_review_type: SpecialistReviewType | null;
 }
 
-export interface AgencyScanItem {
-  phrase: string;
-  category: ScanCategory;
-  severity: Severity;
-  assessment: ScanAssessment;
-  why: string;
-  what_would_make_it_credible: string;
-  finding_id: string | null;
-}
-
 export interface Persona {
   /** The audience, named: "An affected employee", "A journalist". */
   persona: string;
@@ -343,7 +332,6 @@ export interface Analysis {
   executive_summary: ExecutiveSummary;
   dimensions: Dimension[];
   findings: Finding[];
-  agency_scan: AgencyScanItem[];
   devils_advocate: DevilsAdvocate;
   questions_before_publication: string[];
   specialist_review_summary: SpecialistReviewType[];

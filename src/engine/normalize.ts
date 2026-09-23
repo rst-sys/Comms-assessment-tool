@@ -13,8 +13,6 @@ import {
   DEVILS_ADVOCATE_DISCLAIMER,
   DIMENSION_IDS,
   RISK_LEVELS,
-  SCAN_ASSESSMENTS,
-  SCAN_CATEGORIES,
   SCHEMA_VERSION,
   SEVERITIES,
   SPECIALIST_REVIEW_TYPES,
@@ -94,17 +92,6 @@ export function normalizeAnalysis(raw: unknown): unknown {
       .map((d) => ({ id: oneOf(d.id, DIMENSION_IDS), score: roundHalf(d.score), rationale: str(d.rationale), would_raise: str(d.would_raise) }))
       .filter((d) => (DIMENSION_IDS as readonly string[]).includes(d.id)),
     findings,
-    agency_scan: arr(raw.agency_scan)
-      .filter(isObj)
-      .map((s) => ({
-        phrase: str(s.phrase),
-        category: oneOf(s.category, SCAN_CATEGORIES),
-        severity: oneOf(s.severity, SEVERITIES),
-        assessment: oneOf(s.assessment, SCAN_ASSESSMENTS),
-        why: str(s.why),
-        what_would_make_it_credible: str(s.what_would_make_it_credible),
-        finding_id: nullableStr(s.finding_id),
-      })),
     devils_advocate: {
       disclaimer: DEVILS_ADVOCATE_DISCLAIMER,
       personas: arr(da.personas)

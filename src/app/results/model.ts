@@ -3,7 +3,7 @@
  * without a DOM.
  */
 import { rankFindings } from "../../engine/scoring.js";
-import type { AgencyScanItem, DimensionId, Finding, ScanCategory, Severity, SpecialistReviewType } from "../../engine/types.js";
+import type { DimensionId, Finding, Severity, SpecialistReviewType } from "../../engine/types.js";
 
 /** The five highest-severity findings, in display order. */
 export function topFindings(findings: ReadonlyArray<Finding>, count = 5): Finding[] {
@@ -40,57 +40,6 @@ export function reviewTagsFor(question: string): SpecialistReviewType[] {
 export function specialistQuestions(questions: ReadonlyArray<string>): string[] {
   return questions.filter((q) => reviewTagsFor(q).length > 0);
 }
-
-// ---------------------------------------------------------------------------
-// Agency scan highlighting
-// ---------------------------------------------------------------------------
-
-export interface HighlightSegment {
-  text: string;
-  /** Index into the agency_scan array, or null for plain text. */
-  scanIndex: number | null;
-}
-
-/**
- * Splits the draft into plain and highlighted segments. Each scan phrase is
- * matched at its first occurrence in the draft; when two phrases overlap the
- * one that starts first wins, and a later-starting phrase inside it is dropped
- * from the highlights (its card is still reachable from the list below the
- * draft). Phrases are verbatim by construction (validate.ts), so a phrase that
- * is not found is simply not highlighted.
- */
-export function highlightSegments(draft: string, scan: ReadonlyArray<AgencyScanItem>): HighlightSegment[] {
-  const spans: { start: number; end: number; scanIndex: number }[] = [];
-  scan.forEach((item, scanIndex) => {
-    const start = draft.indexOf(item.phrase);
-    if (start >= 0) spans.push({ start, end: start + item.phrase.length, scanIndex });
-  });
-  spans.sort((a, b) => a.start - b.start || b.end - a.end);
-
-  const segments: HighlightSegment[] = [];
-  let cursor = 0;
-  for (const span of spans) {
-    if (span.start < cursor) continue; // overlaps a highlight already emitted
-    if (span.start > cursor) segments.push({ text: draft.slice(cursor, span.start), scanIndex: null });
-    segments.push({ text: draft.slice(span.start, span.end), scanIndex: span.scanIndex });
-    cursor = span.end;
-  }
-  if (cursor < draft.length) segments.push({ text: draft.slice(cursor), scanIndex: null });
-  return segments;
-}
-
-export const SCAN_CATEGORY_CLASS: Record<ScanCategory, string> = {
-  "External weather": "cat-weather",
-  "Institutional abstraction": "cat-institution",
-  "Audience displacement": "cat-audience",
-  "Passive accountability": "cat-passive",
-  "Values without action": "cat-values",
-  "Vague action": "cat-vague",
-};
-
-// ---------------------------------------------------------------------------
-// Findings register filters
-// ---------------------------------------------------------------------------
 
 export const REGISTER_FILTERS = [
   "High only",
@@ -139,31 +88,3 @@ export function sortFindings(findings: ReadonlyArray<Finding>, sort: RegisterSor
 
 export const FINDING_STATUSES = ["Open", "Accepted risk", "Not applicable", "Resolved", "Needs review"] as const;
 export type FindingStatus = (typeof FINDING_STATUSES)[number];
-
-/**
- * Flagged phrases grouped by the finding they belong to (revision 19).
- *
- * The scan and the findings used to be two sections saying related things in
- * different places. Nesting a phrase under the finding it evidences makes one
- * argument out of two lists: here is the problem, and here is the language in
- * the draft that causes it.
- */
-export function phrasesByFinding(scan: ReadonlyArray<AgencyScanItem>): Map<string, AgencyScanItem[]> {
-  const byFinding = new Map<string, AgencyScanItem[]>();
-  for (const item of scan) {
-    if (!item.finding_id) continue;
-    const existing = byFinding.get(item.finding_id);
-    if (existing) existing.push(item);
-    else byFinding.set(item.finding_id, [item]);
-  }
-  return byFinding;
-}
-
-/** Phrases the engine flagged without tying them to a finding. They still belong on the page. */
-export function unlinkedPhrases(
-  scan: ReadonlyArray<AgencyScanItem>,
-  findings: ReadonlyArray<Finding>,
-): AgencyScanItem[] {
-  const known = new Set(findings.map((f) => f.id));
-  return scan.filter((s) => !s.finding_id || !known.has(s.finding_id));
-}

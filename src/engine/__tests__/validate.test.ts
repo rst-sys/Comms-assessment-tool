@@ -6,10 +6,8 @@ describe("validateAnalysis", () => {
   it("accepts a well-formed analysis unchanged", () => {
     const { analysis, adjustments } = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, {});
     expect(analysis.findings).toHaveLength(1);
-    expect(analysis.agency_scan).toHaveLength(1);
     expect(adjustments).toEqual({
       dropped_findings: 0,
-      dropped_scan_phrases: 0,
       context_flag_corrected: false,
       trimmed_findings: 0,
       thin_questions: 0,
@@ -82,25 +80,14 @@ describe("validateAnalysis", () => {
         sampleFinding({ id: "F-003", excerpt: null, omission: "No verification is offered." }),
       ],
     });
-    analysis.agency_scan[0]!.finding_id = "F-002";
     const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
     expect(out.findings.map((f) => f.id)).toEqual(["F-001", "F-003"]);
     expect(adjustments.dropped_findings).toBe(1);
-    // The scan entry that pointed at the dropped finding now points nowhere.
-    expect(out.agency_scan[0]!.finding_id).toBeNull();
-  });
-
-  it("drops agency-scan phrases that are not in the draft", () => {
-    const analysis = sampleAnalysis();
-    analysis.agency_scan.push({ ...analysis.agency_scan[0]!, phrase: "market headwinds", finding_id: null });
-    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
-    expect(out.agency_scan).toHaveLength(1);
-    expect(adjustments.dropped_scan_phrases).toBe(1);
   });
 
   it("normalizes excerpts that differ only in whitespace or quote style to the draft's text", () => {
     const draft = 'We said “we take this seriously”\nand moved on.';
-    const analysis = sampleAnalysis({ findings: [sampleFinding({ excerpt: 'We said "we take this seriously" and moved on.' })], agency_scan: [] });
+    const analysis = sampleAnalysis({ findings: [sampleFinding({ excerpt: 'We said "we take this seriously" and moved on.' })] });
     const { analysis: out, adjustments } = validateAnalysis(analysis, draft, {});
     expect(adjustments.dropped_findings).toBe(0);
     expect(out.findings[0]!.excerpt).toBe('We said “we take this seriously”\nand moved on.');
