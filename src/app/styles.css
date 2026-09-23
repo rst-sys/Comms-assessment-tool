@@ -310,9 +310,10 @@ textarea { resize: vertical; }
     gap: calc(var(--space) * 5) var(--col-gap);
     align-items: start;
   }
-  /* Cards side by side match height, or a short one leaves a ragged hole above
-     the next row and the gaps stop reading as a rhythm. */
-  .welcome > .card { align-self: stretch; }
+  /* Cards are as tall as what is in them. Stretching them to match a taller
+     neighbour buys a tidy row edge and pays for it with half-empty boxes,
+     which is the worse of the two. */
+  .welcome > .card { align-self: start; }
   /* The grid gap replaces the stacked margins, or sections get both. */
   .welcome > *, .results > * { margin-top: 0; }
   .welcome-card { margin-top: 0; max-width: none; }
