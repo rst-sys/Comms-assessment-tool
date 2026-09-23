@@ -30,6 +30,11 @@
   --sans: Inter, "Segoe UI", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
   --space: 8px;
   --measure: 68ch;
+  /* One readable column is the measure plus a card's own padding. Written
+     out rather than multiplied from a nested calc, which Chromium collapses
+     to a single column without complaining. */
+  --col: calc(var(--measure) + var(--space) * 5);
+  --col-gap: calc(var(--space) * 3);
   --radius: 6px;
   --shadow: 0 1px 2px rgba(20, 33, 61, 0.06);
   --fast: 150ms;
@@ -66,7 +71,7 @@ ul.tight, ol.tight { margin: 0; padding-left: 20px; }
 ul.tight li, ol.tight li { margin-bottom: calc(var(--space) / 2); text-wrap: pretty; }
 q { quotes: "“" "”"; }
 
-.page { max-width: 1100px; margin: 0 auto; padding: calc(var(--space) * 3) calc(var(--space) * 2) calc(var(--space) * 6); }
+.page { max-width: calc(var(--measure) * 2 + var(--space) * 17); margin: 0 auto; padding: calc(var(--space) * 3) calc(var(--space) * 2) calc(var(--space) * 6); }
 .page > section, .page > .panel, .page > aside, .page > .results-grid { margin-top: calc(var(--space) * 6); }
 .page > :first-child { margin-top: 0; }
 .prose { max-width: var(--measure); }
@@ -282,6 +287,68 @@ textarea { resize: vertical; }
 .site-footer blockquote { margin: 0 0 calc(var(--space) * 1.5); padding-left: calc(var(--space) * 1.5); border-left: 3px solid var(--border); color: var(--ink); font-family: var(--serif); font-size: 16px; max-width: var(--measure); text-wrap: balance; }
 
 /* Print: every panel expanded (done in script), page breaks between sections, no controls. */
+/* ---------------------------------------------------------------------------
+   Two columns on a wide screen.
+
+   The results page was seven screens tall and the content used a third of a
+   1920px window. The fix is not longer lines — past about seventy-five
+   characters the eye starts losing its place on the way back — but a second
+   column. Lines stay at the measure; the width buys fewer screens instead.
+
+   Everything is a grid of two measure-wide columns. Anything that needs the
+   full width says so, and anything that is genuinely prose stays one column
+   wide inside it.
+   --------------------------------------------------------------------------- */
+@media screen and (min-width: 1240px) {
+  /* Both pages were capped at a single measure — .page.results at revision 22
+     and .welcome from the start — which is what left two thirds of a wide
+     window empty. Two columns need two measures. */
+  .page.welcome, .page.results { max-width: calc(var(--measure) * 2 + var(--space) * 17); }
+  .welcome, .results {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--space) * 5) var(--col-gap);
+    align-items: start;
+  }
+  /* Cards side by side match height, or a short one leaves a ragged hole above
+     the next row and the gaps stop reading as a rhythm. */
+  .welcome > .card { align-self: stretch; }
+  /* The grid gap replaces the stacked margins, or sections get both. */
+  .welcome > *, .results > * { margin-top: 0; }
+  .welcome-card { margin-top: 0; max-width: none; }
+
+  /* Full width: headings, running intros, and anything that is one wide thing. */
+  .welcome > h1, .welcome > .welcome-tagline, .welcome > .welcome-intro,
+  .welcome > .welcome-more, .welcome > .welcome-runtime, .welcome > .welcome-start,
+  .results > .results-actions, .results > .save-note, .results > .error,
+  .results > #executive-summary, .results > #findings, .results > .comparison {
+    grid-column: 1 / -1;
+  }
+
+  /* The executive summary earns the full width by using it: the score beside
+     the note that explains it, and the ten dimensions two abreast. */
+  #executive-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 calc(var(--space) * 4);
+    align-items: start;
+  }
+  #executive-summary > h2, #executive-summary > .summary-headline,
+  #executive-summary > .scorecard, #executive-summary > .two-col { grid-column: 1 / -1; }
+  #executive-summary > .summary-head { grid-column: 1; margin-bottom: 0; }
+  /* The strongest/priority pair used to follow the scorecard down the page and
+     inherited its spacing from the stack; in the grid it needs its own. */
+  #executive-summary > .two-col { margin-top: calc(var(--space) * 4); }
+  #executive-summary > .scoring-note { grid-column: 2; margin-top: 0; }
+
+  .scorecard { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--space) * 4); }
+  .scorecard > h3, .scorecard > p { grid-column: 1 / -1; }
+
+  /* Findings are ranked, and a grid fills left to right, so the order a reader
+     meets them is still most serious first. */
+  .finding-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--col-gap); align-items: start; }
+}
+
 @media print {
   body { background: #fff; font-size: 12pt; }
   .no-print { display: none !important; }
@@ -446,7 +513,10 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 
    The privacy panel moves below the summary instead of sitting in a sidebar,
    which is what forced the page that wide in the first place. */
-.page.results { max-width: calc(var(--measure) + var(--space) * 10); }
+/* One measure wide below the two-column breakpoint; above it the grid takes
+   over and the page is two measures. Scoped rather than overridden, because
+   this rule sits after the breakpoint block and would otherwise win. */
+@media (max-width: 1239px) { .page.results { max-width: calc(var(--measure) + var(--space) * 10); } }
 .results .results-grid { grid-template-columns: 1fr; }
 @media (min-width: 1180px) {
   .results .results-grid { grid-template-columns: 1fr; }
