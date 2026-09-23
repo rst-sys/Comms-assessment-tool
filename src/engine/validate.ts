@@ -15,7 +15,7 @@
  *      specialist review; context_supplied reflects what was actually sent.
  */
 import { Ajv, type ErrorObject } from "ajv";
-import { MAX_FINDINGS } from "./limits.js";
+import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
 import { ANALYSIS_SCHEMA } from "./schema.js";
 import { isValidDimensionScore } from "./scoring.js";
 import {
@@ -48,6 +48,8 @@ export interface ValidationAdjustments {
   context_flag_corrected: boolean;
   /** Findings beyond MAX_FINDINGS, trimmed from the end of an already-ranked list. */
   trimmed_findings: number;
+  /** How many questions came back when fewer than MIN_QUESTIONS did; 0 when the count was fine. */
+  thin_questions: number;
 }
 
 export interface ValidatedAnalysis {
@@ -159,8 +161,14 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
   if (input.devils_advocate.most_damaging_interpretation.trim().length === 0) {
     fail("/devils_advocate/most_damaging_interpretation", "is empty");
   }
+  // Empty is broken; thin is not. The range asked for in the prompt is a
+  // quality preference, and throwing away a complete, correct review because
+  // it asked four good questions instead of five costs the reader everything
+  // and gains nothing. Recorded and logged, so a run of thin reviews is
+  // visible rather than silent.
   const q = input.questions_before_publication.length;
-  if (q < 5 || q > 12) fail("/questions_before_publication", `expected 5-12 questions, got ${q}`);
+  if (q === 0) fail("/questions_before_publication", "no questions were returned");
+  const thinQuestions = q < MIN_QUESTIONS ? q : 0;
 
   // Findings: excerpt/omission rule, unique ids, verbatim excerpts.
   const findingIds = new Set<string>();
@@ -231,6 +239,7 @@ export function validateAnalysis(raw: unknown, draft: string, context: ContextFi
       dropped_scan_phrases: droppedScan,
       context_flag_corrected: contextCorrected,
       trimmed_findings: trimmedFindings,
+      thin_questions: thinQuestions,
     },
   };
 }

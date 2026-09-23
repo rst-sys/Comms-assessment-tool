@@ -12,6 +12,7 @@ describe("validateAnalysis", () => {
       dropped_scan_phrases: 0,
       context_flag_corrected: false,
       trimmed_findings: 0,
+      thin_questions: 0,
     });
   });
 
@@ -42,20 +43,30 @@ describe("validateAnalysis", () => {
     expect(() => validateAnalysis(step, SAMPLE_DRAFT, {})).toThrow(/0\.5 step/);
   });
 
-  it("rejects the wrong persona count, question count, and summary list sizes", () => {
+  it("rejects the wrong persona count and summary list sizes", () => {
     const personas = sampleAnalysis();
     personas.devils_advocate.personas.pop();
     expect(() => validateAnalysis(personas, SAMPLE_DRAFT, {})).toThrow(/exactly 5 personas/);
 
-    const fewQuestions = sampleAnalysis({ questions_before_publication: ["a", "b"] });
-    expect(() => validateAnalysis(fewQuestions, SAMPLE_DRAFT, {})).toThrow(/5-12 questions/);
-
-    const manyQuestions = sampleAnalysis({ questions_before_publication: Array.from({ length: 13 }, (_, i) => `q${i}`) });
-    expect(() => validateAnalysis(manyQuestions, SAMPLE_DRAFT, {})).toThrow(/5-12 questions/);
-
     const strongest = sampleAnalysis();
     strongest.executive_summary.strongest_elements = ["one"];
     expect(() => validateAnalysis(strongest, SAMPLE_DRAFT, {})).toThrow(/strongest_elements/);
+  });
+
+  it("keeps a review that came back thin on questions, and records how thin", () => {
+    // Four good questions instead of five is not a broken review. Throwing the
+    // whole analysis away over it costs the reader everything and gains
+    // nothing — and it is what actually happened to four cyber reviews in a
+    // row, on a rule the prompt had already been changed away from.
+    const thin = sampleAnalysis({ questions_before_publication: ["a?", "b?", "c?", "d?"] });
+    const { analysis, adjustments } = validateAnalysis(thin, SAMPLE_DRAFT, {});
+    expect(analysis.questions_before_publication).toHaveLength(4);
+    expect(adjustments.thin_questions).toBe(4);
+  });
+
+  it("rejects a review with no questions at all, which has nothing to show", () => {
+    const none = sampleAnalysis({ questions_before_publication: [] });
+    expect(() => validateAnalysis(none, SAMPLE_DRAFT, {})).toThrow(/no questions were returned/);
   });
 
   it("rejects a finding with neither excerpt nor omission", () => {

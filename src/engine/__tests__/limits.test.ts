@@ -77,9 +77,14 @@ describe("the output budget", () => {
   it("asks for the same numbers in the prompt that the code enforces", () => {
     const blocks = buildSystemBlocks(DEMO_1.request).map((b) => b.text).join("\n");
     expect(blocks).toContain(`findings contains at most ${MAX_FINDINGS} entries`);
-    expect(blocks).toContain(`between ${MIN_QUESTIONS} and ${MAX_QUESTIONS} questions`);
-    // A protocol supplies candidates, not obligations, or the cap fills with boilerplate.
-    expect(blocks).toContain("candidates and not obligations");
+    expect(blocks).toContain(`at least ${MIN_QUESTIONS} questions and at most ${MAX_QUESTIONS}`);
+    // A protocol supplies candidates, not obligations, or the cap fills with
+    // boilerplate — said once, in the shared rules, not twice.
+    expect(blocks).toContain("not obligations");
+    expect(blocks.match(/not obligations/g)).toHaveLength(1);
+    // And the floor is stated as a floor, or the sparing rule wins and the
+    // review comes back under it. Four cyber reviews died that way.
+    expect(blocks).toContain("is a floor, not a target");
     expect(blocks).toContain("it never raises the ceiling");
   });
 });
