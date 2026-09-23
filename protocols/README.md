@@ -18,12 +18,14 @@ claiming the same event, or a missing Source section all fail by name.
 
 ## The layers
 
-- **core** — `EVENT-CORE.md`. Fires on any of the thirteen events. There is
-  exactly one.
-- **event** — one per event, carrying only what that event adds. Selected by
-  the event dropdown at intake.
+- **event** — one per event, carrying only what that event adds to the
+  framework. Selected by the event dropdown at intake.
 - **posture** — a stance that sits on top of any event, such as an apology.
   Selected by the goal.
+
+There is no third layer. A "core" protocol existed briefly and was removed:
+six of its eight checks were already in the framework, two of them word for
+word. What was genuinely new moved into the framework instead.
 
 ## Running the checker
 

@@ -71,17 +71,17 @@ export function compile(dir = DIR): CompiledLibrary {
 
   errors.push(...checkLibrary(protocols.map((data, i) => ({ file: files[i] ?? data.id, data }))));
 
-  // Budget: the core plus the heaviest event plus the heaviest posture.
-  const core = protocols.find((p) => p.layer === "core");
+  // Budget: the heaviest event plus the heaviest posture, the most that can
+  // apply to one draft.
   const heaviest = (layer: ProtocolFile["layer"]) =>
-    Math.max(0, ...protocols.filter((p) => p.layer === layer).map((p) => protocolWordCount(buildProtocolBlock(p, true))));
-  const worst = (core ? protocolWordCount(buildProtocolBlock(core, true)) : 0) + heaviest("event") + heaviest("posture");
+    Math.max(0, ...protocols.filter((p) => p.layer === layer).map((p) => protocolWordCount(buildProtocolBlock(p))));
+  const worst = heaviest("event") + heaviest("posture");
   const budget = protocolWordBudget();
   if (worst > budget) {
     errors.push({
       file: "(whole library)",
       message:
-        `the worst case — core plus the longest event plus the longest posture — is ${worst} words, ` +
+        `the worst case — the longest event plus the longest posture — is ${worst} words, ` +
         `over the ${budget}-word budget. The protocols must stay shorter than the framework they sit under.`,
     });
   }

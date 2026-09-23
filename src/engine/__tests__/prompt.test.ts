@@ -18,13 +18,19 @@ describe("system prompt text", () => {
 });
 
 describe("buildSystemBlocks", () => {
-  it("sends the framework, then the core, then the event, then the rules, then the output notes", () => {
+  it("sends the framework, then the event protocol, then the rules, then the output notes", () => {
     const blocks = buildSystemBlocks(DEMO_1.request).map((b) => b.text);
     expect(blocks[0]).toBe(SYSTEM_PROMPT);
-    expect(blocks[1]).toContain("HIGH-STAKES EVENT CORE");
-    expect(blocks[2]).toContain("WORKFORCE REDUCTION AND RESTRUCTURING");
-    expect(blocks[3]).toBe(PROTOCOL_RULES);
+    expect(blocks[1]).toContain("WORKFORCE REDUCTION AND RESTRUCTURING");
+    expect(blocks[2]).toBe(PROTOCOL_RULES);
     expect(blocks[blocks.length - 1]).toBe(OUTPUT_NOTES);
+  });
+
+  it("carries the account the framework asks for, including what the reader should do", () => {
+    // These two were the only part of the deleted event core that the
+    // framework did not already have. They live here now, not in a layer.
+    expect(SYSTEM_PROMPT).toContain("what the reader should do now, or that nothing is needed from them yet");
+    expect(SYSTEM_PROMPT).toContain("when the next update comes, where it will appear, and a named way to ask");
   });
 
   it("sends no protocol at all when the draft is about none of the thirteen events", () => {
@@ -51,38 +57,32 @@ describe("buildSystemBlocks", () => {
 
   it("sends the shared rules once however many protocols apply", () => {
     const blocks = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
-    expect(protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" })).toHaveLength(3);
+    expect(protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" })).toHaveLength(2);
     expect(blocks.filter((t) => t === PROTOCOL_RULES)).toHaveLength(1);
   });
 });
 
 describe("the protocol library", () => {
-  it("selects one core, one event and one posture from the intake, never by reading the draft", () => {
+  it("selects one event and one posture from the intake, never by reading the draft", () => {
     const applied = protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((p) => p.id);
-    expect(applied).toEqual(["event-core", "workforce-restructuring", "public-apology"]);
+    expect(applied).toEqual(["workforce-restructuring", "public-apology"]);
 
     expect(protocolsFor({ ...DEMO_1.request, communication_event: "None of these", goal: "Inform" })).toEqual([]);
   });
 
-  it("carries a protocol for an event that has no file yet, using the core alone", () => {
+  it("sends no protocol at all for an event that has no file yet, leaving the framework to it", () => {
     const applied = protocolsFor({
       ...DEMO_1.request,
       communication_event: "Workplace safety event or facility emergency",
       goal: "Inform",
     });
-    expect(applied.map((p) => p.id)).toEqual(["event-core"]);
-  });
-
-  it("fires the core's recurrence element only where something failed", () => {
-    const failure = buildSystemBlocks(DEMO_1.request).map((b) => b.text).join("\n");
-    expect(failure).toContain("What changes");
-
-    const notAFailure = buildSystemBlocks({
+    expect(applied).toEqual([]);
+    const blocks = buildSystemBlocks({
       ...DEMO_1.request,
-      communication_event: "Acquisition, divestiture or major integration",
-    }).map((b) => b.text).join("\n");
-    expect(notAFailure).toContain("HIGH-STAKES EVENT CORE");
-    expect(notAFailure).not.toContain("What changes");
+      communication_event: "Workplace safety event or facility emergency",
+      goal: "Inform",
+    }).map((b) => b.text);
+    expect(blocks).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
   });
 
   it("maps every element and trigger in the library to a dimension the engine scores", () => {

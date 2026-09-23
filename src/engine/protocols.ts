@@ -13,13 +13,12 @@
 import { buildProtocolBlock, PROTOCOL_RULES } from "./protocolPrompt.js";
 import type { ProtocolFile } from "./protocolFormat.js";
 import { PROTOCOL_LIBRARY } from "./protocolLibrary.js";
-import { FAILURE_EVENTS, NO_EVENT, type EvaluationRequest } from "./types.js";
+import { NO_EVENT, type EvaluationRequest } from "./types.js";
 
 export type { ProtocolFile } from "./protocolFormat.js";
 
 const ACTIVE = PROTOCOL_LIBRARY.filter((p) => p.status === "active");
 
-export const CORE_PROTOCOL: ProtocolFile | undefined = ACTIVE.find((p) => p.layer === "core");
 export const EVENT_PROTOCOLS: ProtocolFile[] = ACTIVE.filter((p) => p.layer === "event");
 export const POSTURE_PROTOCOLS: ProtocolFile[] = ACTIVE.filter((p) => p.layer === "posture");
 
@@ -27,17 +26,19 @@ export const POSTURE_PROTOCOLS: ProtocolFile[] = ACTIVE.filter((p) => p.layer ==
 export const PROTOCOLS: ProtocolFile[] = ACTIVE;
 
 /**
- * The protocols that apply, in the order they are sent: the core first, then
- * the event, then the posture. Order matters for the provider's cache — the
- * core is identical on every high-stakes review, so it belongs in front of the
- * part that varies.
+ * The protocols that apply: the event's, then the posture's.
+ *
+ * There used to be a third, a core that fired on any high-stakes event. It was
+ * extracted from three protocols and tested against the thirteen events, but
+ * never against the framework already running — and six of its eight checks
+ * were already there, two of them word for word. What was genuinely new moved
+ * into the framework; the layer is gone.
  */
 export function protocolsFor(request: EvaluationRequest): ProtocolFile[] {
   const applied: ProtocolFile[] = [];
   const event = request.communication_event;
 
   if (event !== NO_EVENT) {
-    if (CORE_PROTOCOL) applied.push(CORE_PROTOCOL);
     const forEvent = EVENT_PROTOCOLS.find((p) => p.event === event);
     if (forEvent) applied.push(forEvent);
   }
@@ -54,6 +55,5 @@ export function protocolsFor(request: EvaluationRequest): ProtocolFile[] {
 export function protocolBlocksFor(request: EvaluationRequest): string[] {
   const applied = protocolsFor(request);
   if (applied.length === 0) return [];
-  const failure = FAILURE_EVENTS.has(request.communication_event);
-  return [...applied.map((p) => buildProtocolBlock(p, failure)), PROTOCOL_RULES];
+  return [...applied.map((p) => buildProtocolBlock(p)), PROTOCOL_RULES];
 }

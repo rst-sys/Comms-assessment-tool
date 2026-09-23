@@ -23,7 +23,7 @@ describe("protocols add instructions, never output", () => {
 
   it("asks no protocol to fill a field of its own", () => {
     for (const protocol of PROTOCOLS) {
-      const block = buildProtocolBlock(protocol, true);
+      const block = buildProtocolBlock(protocol);
       expect(block, protocol.id).not.toContain("protocol_review");
       expect(JSON.stringify(protocol), protocol.id).not.toContain("protocol_review");
     }

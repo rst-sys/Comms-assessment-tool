@@ -11,17 +11,17 @@
  *
  * The owner's file says what to look for. This says how to say it.
  */
-import type { ProtocolFile } from "./protocolFormat.js";
+import { FRAMEWORK_NARROWABLE, type ProtocolFile } from "./protocolFormat.js";
 
 function reviewNote(review: string[] | undefined): string {
   if (!review || review.length === 0) return "";
   return `; review ${review.join(" or ")}`;
 }
 
-export function buildProtocolBlock(p: ProtocolFile, failureEvent: boolean): string {
+export function buildProtocolBlock(p: ProtocolFile): string {
   const lines: string[] = [`${p.name.toUpperCase()} (${p.layer} protocol)`];
 
-  const elements = p.elements.filter((e) => e.only_when !== "failure" || failureEvent);
+  const elements = p.elements;
   if (elements.length > 0) {
     lines.push("", "ELEMENTS");
     for (const e of elements) {
@@ -45,8 +45,8 @@ export function buildProtocolBlock(p: ProtocolFile, failureEvent: boolean): stri
   }
 
   if (p.narrows && p.narrows.length > 0) {
-    lines.push("", "NARROWS THIS CORE CHECK");
-    for (const n of p.narrows) lines.push(`- ${n}`);
+    lines.push("", "NARROWS THIS FRAMEWORK CHECK");
+    for (const n of p.narrows) lines.push(`- ${FRAMEWORK_NARROWABLE[n] ?? n}`);
   }
 
   return lines.join("\n");
@@ -65,12 +65,12 @@ export function buildProtocolBlock(p: ProtocolFile, failureEvent: boolean): stri
  * ship a softened version of a rule that is not negotiable.
  */
 export const PROTOCOL_RULES = `HOW TO APPLY THE PROTOCOLS ABOVE
-A protocol applies to this draft because of the event or the goal the author selected. Where more than one applies, the core comes first and covers every high-stakes event; the others add only what is distinctive and do not repeat it.
+A protocol applies to this draft because of the event or the goal the author selected. It adds what is distinctive to that event or stance; the framework above already covers what every draft must account for, and a protocol does not repeat it.
 
 ELEMENTS are what a credible communication of that kind contains. The dimension in brackets is the one each bears on.
 HIGH-SEVERITY TRIGGERS are gaps to raise as High-severity findings when the draft meets them, on the dimension named. Where a review type is named, set specialist_review_needed true with that type.
 QUESTIONS are candidates for questions_before_publication, not obligations: include one only where this draft leaves it genuinely open, and let it compete with the questions the draft itself raises. A question the draft already answers is noise.
-NARROWS THIS CORE CHECK means that event makes the named core check unsafe to assert; raise it as a question rather than a finding.
+NARROWS THIS FRAMEWORK CHECK means the event makes the named requirement unsafe to assert; raise it as a question rather than a finding.
 
 The protocols are a lens on the ten dimensions you already score, never an eleventh score and never a section of their own: raise what you find through the ordinary findings. Name the kind of information missing — a date, a named owner, the selection criteria — and never supply wording. Where a legal, consultation or disclosure obligation may apply, say that it may and that counsel must confirm; never state that a draft is compliant or non-compliant. A protocol tells you what to look for. It does not raise the finding or question caps.`;
 

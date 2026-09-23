@@ -65,13 +65,13 @@ describe("evaluateDraft", () => {
     const outputConfig = params.output_config as { effort: string; format: { type: string } };
     expect(outputConfig.effort).toBe("high");
     expect(outputConfig.format.type).toBe("json_schema");
-    // Framework, the event core, the event protocol, the shared rules, the
-    // output notes. The stable blocks come first so the provider's cache
-    // covers as long a prefix as possible.
+    // Framework, the event protocol, the shared rules, the output notes. The
+    // framework comes first so the provider's cache covers as long a prefix as
+    // possible.
     const system = params.system as { text: string }[];
-    expect(system).toHaveLength(5);
+    expect(system).toHaveLength(4);
     expect(system[0]!.text.startsWith("You are the evaluation engine")).toBe(true);
-    expect(system[1]!.text.startsWith("HIGH-STAKES EVENT CORE")).toBe(true);
+    expect(system[1]!.text.startsWith("WORKFORCE REDUCTION AND RESTRUCTURING")).toBe(true);
     expect(system[system.length - 1]!.text.startsWith("OUTPUT STRUCTURE")).toBe(true);
   });
 

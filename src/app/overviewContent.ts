@@ -7,16 +7,20 @@
 export const CONFIDENTIALITY_NOTICE =
   "This prototype sends your draft to an external AI provider for analysis and stores nothing. Do not submit attorney-client privileged, material nonpublic, or regulated personal information unless your legal, privacy, and security teams have approved this provider and mode. Redaction is not available in this build.";
 
-/** The nine things a message should make visible (PROMPT.md Section 2). */
+/**
+ * The ten things a message should make visible (PROMPT.md Section 2, plus the
+ * two the event core turned out to be the only new part of; see DEVIATIONS 65).
+ */
 export const ACCOUNT_ELEMENTS: [string, string][] = [
   ["Decision", "what was decided, announced, changed or corrected"],
   ["Agency", "who had the authority to decide, approve or intervene"],
   ["Context", "the external conditions that mattered, stated specifically"],
   ["Exposure", "the internal choices and assumptions that increased exposure"],
   ["Impact", "who is affected, and how"],
+  ["Action", "what the reader should do now, or that nothing is needed from them yet"],
   ["Correction", "what will change"],
   ["Ownership", "who owns the change"],
-  ["Verification", "the metric, date or review that lets people judge follow-through"],
+  ["Verification", "the metric, date or review that lets people judge follow-through, when the next update comes, and a named way to ask"],
   ["Learning", "what changes so it does not happen again"],
 ];
 

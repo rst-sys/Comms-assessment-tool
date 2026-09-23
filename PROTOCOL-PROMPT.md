@@ -61,32 +61,36 @@ not write anything that assumes a particular format or reader.
 
 ## What is already covered — do not repeat it
 
-Every review of any high-stakes event already applies a shared core. Your
-protocol must **not** include any of these. Duplicating one wastes the budget
-and produces the same finding twice.
+Every draft, whatever it is about, is already judged on whether it makes these
+visible. Your protocol must **not** include any of them. Duplicating one wastes
+the budget and produces the same finding twice.
 
-1. Who decided, and who owns the response and the questions
-2. Who is affected, and the concrete impact on them
-3. What is confirmed, what is an assessment, what is unknown, what is a promise
-4. What the reader should do now, or that nothing is needed yet
-5. A next update time, where updates appear, and a named way to ask
-6. What happened *to* the organization, kept separate from what it decided,
-   enabled or failed to prevent
-7. The central fact stated in ordinary words rather than euphemism
-8. What changes so it does not recur — on failure events only
+1. The decision — what was decided, announced, changed or corrected
+2. Who had the authority to decide, approve or intervene
+3. The external conditions that mattered, stated specifically
+4. The internal choices and assumptions that increased exposure
+5. Who is affected, and how
+6. What the reader should do now, or that nothing is needed from them yet
+7. What will change, and who owns the change
+8. How anyone can verify follow-through, when the next update comes, and a
+   named way to ask
+9. What changes so it does not happen again
+10. Whether claims are confirmed, asserted or unverifiable
+11. Language that hides who decided — euphemism, passive voice, external
+    weather, institutional abstraction
 
 Your job is **only what is distinctive to this event.** If you find yourself
-writing "names who decided", stop: the core has it.
+writing "names who decided", stop: it is already there.
 
-You may **narrow** one core check if this event genuinely requires it. Exactly
-one is open to it: **`plain-naming`** — the check that the central fact is
+You may **narrow** one framework check if this event genuinely requires it.
+Exactly one is open to it: **`plain-naming`** — that the central fact must be
 stated in ordinary words rather than euphemism. Narrow it when vagueness may be
 a deliberate safety or legal decision the draft cannot evidence, name it by that
 id in the `narrows` field, and explain why in the prose.
 
-Nothing else in the core can be narrowed, and the checker will refuse a file
-that tries. The core is the floor: if an event seems to need a lower one, that
-is worth arguing before it is worth writing.
+Nothing else can be narrowed, and the checker will refuse a file that tries. The
+framework is the floor: if an event seems to need a lower one, that is worth
+arguing before it is worth writing.
 
 ## The thirteen events
 
@@ -131,13 +135,12 @@ A checker rejects the file if it breaks these.
 - **At most 6 triggers** — every trigger is a serious finding. If everything is
   serious, nothing is.
 - **At most 6 questions** — and a review shows at most 8 in total, so yours
-  compete with the core's and with the draft's own.
+  compete with the draft's own and with any posture protocol's.
 
 **Keep the whole file under about 450 words of `means`, `check` and `ask` text.**
 Counts alone are not enough: eight elements of forty words each blows a
-library-wide budget that also has to fit the shared core and a posture
-protocol. One clean sentence per element. A trigger is a condition, not a
-paragraph.
+library-wide budget that also has to fit a posture protocol on top. One clean
+sentence per element. A trigger is a condition, not a paragraph.
 
 ## Rules
 
@@ -187,8 +190,8 @@ questions:
   - ask: A question this event should always settle?
     review: [Legal]              # optional
 
-narrows:                          # optional; only if you are softening a core check
-  - plain-naming                  # the id of the core check, not its wording
+narrows:                          # optional; only if you are softening plain-naming
+  - plain-naming                  # the id of the framework check, not its wording
 ---
 
 ## Source

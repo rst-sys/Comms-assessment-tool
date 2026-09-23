@@ -139,7 +139,7 @@ export const GROUNDING: Record<DimensionId, Grounding[]> = {
 export const OWNER_S_OWN: [string, string][] = [
   ["The ten dimensions and their weights", "Which dimensions exist, and that accountability and agency carries 18 of the 100 points while future readiness carries 5. No code assigns weights."],
   ["The 0–100 score and its five bands", "Turning ten judgements into one number, and the thresholds at 90, 75, 60 and 40."],
-  ["The account a message should give", "The nine things a reader should be able to see: decision, agency, context, exposure, impact, correction, ownership, verification, learning."],
+  ["The account a message should give", "The ten things a reader should be able to see: decision, agency, context, exposure, impact, action, correction, ownership, verification, learning."],
   ["The agency and abstraction scan", "Six categories of language that let responsibility disappear, and the rule that a phrase is flagged only where it is doing the explaining."],
   ["Asserted, Supported, Unverifiable", "Capping a dimension at 3.5 of 5 where the draft claims something no supplied context confirms."],
   ["Severity thresholds and readiness", "What makes a finding High rather than Moderate, and when a draft should not be issued."],

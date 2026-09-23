@@ -115,7 +115,7 @@ export function StandardsLibrary() {
         <h2 id="core-heading">The core framework</h2>
         <p className="muted small">Applied to every draft.</p>
         <h3>The account a message should give</h3>
-        <p className="prose">Nine things a reader should be able to see.</p>
+        <p className="prose">Ten things a reader should be able to see.</p>
         <dl className="account-list">
           {ACCOUNT_ELEMENTS.map(([name, meaning]) => (
             <div key={name} className="account-item">
@@ -158,7 +158,6 @@ export function StandardsLibrary() {
                   <div className="muted small">
                     Scored under: {DIMENSION_LABELS[e.dimension]}
                     {e.weight === "supporting" ? " · supporting" : ""}
-                    {e.only_when === "failure" ? " · only where something failed" : ""}
                   </div>
                 </dd>
               </div>

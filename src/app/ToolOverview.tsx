@@ -42,7 +42,7 @@ export function ToolOverview({ config, runtimeNote }: { config: PrivacyConfig | 
         </p>
 
         <h3>The account a message should give</h3>
-        <p className="prose">Nine things a reader should be able to see:</p>
+        <p className="prose">Ten things a reader should be able to see:</p>
         <dl className="account-list">
           {ACCOUNT_ELEMENTS.map(([name, meaning]) => (
             <div key={name} className="account-item">

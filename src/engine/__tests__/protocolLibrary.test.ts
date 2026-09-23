@@ -23,9 +23,8 @@ describe("the protocol library", () => {
 
   it("stays shorter than the framework it sits under, in the worst case", () => {
     const heaviest = (layer: string) =>
-      Math.max(0, ...PROTOCOL_LIBRARY.filter((p) => p.layer === layer).map((p) => protocolWordCount(buildProtocolBlock(p, true))));
-    const core = PROTOCOL_LIBRARY.find((p) => p.layer === "core");
-    const worst = (core ? protocolWordCount(buildProtocolBlock(core, true)) : 0) + heaviest("event") + heaviest("posture");
+      Math.max(0, ...PROTOCOL_LIBRARY.filter((p) => p.layer === layer).map((p) => protocolWordCount(buildProtocolBlock(p))));
+    const worst = heaviest("event") + heaviest("posture");
     expect(worst).toBeLessThanOrEqual(protocolWordBudget());
   });
 
@@ -89,25 +88,14 @@ describe("the checker", () => {
     expect(checkProtocol("f.md", { ...good, questions: [{ ask: "Does the timing fit? Counsel must confirm." }] }, prose)).toEqual([]);
   });
 
-  it("refuses a protocol that narrows a core check the core does not allow to be narrowed", () => {
-    const core = {
-      file: "EVENT-CORE.md",
-      data: {
-        ...good, id: "event-core", layer: "core", event: undefined,
-        triggers: [
-          { id: "plain-naming", check: "C.", dimension: "clarity_plain_language", may_be_narrowed_by: "event" },
-          { check: "D.", dimension: "accountability_agency" },
-        ],
-        prose,
-      } as never,
-    };
-    const ok = { file: "a.md", data: { ...good, narrows: ["plain-naming"], prose } as never };
-    expect(checkLibrary([core, ok])).toEqual([]);
+  it("refuses a protocol that narrows a framework check the framework does not open", () => {
+    // The framework is the floor. Without this, a protocol could switch off any
+    // part of it by naming it, and nothing would say so.
+    expect(checkProtocol("a.md", { ...good, narrows: ["plain-naming"] }, prose)).toEqual([]);
 
-    const sneaky = { file: "b.md", data: { ...good, id: "b", narrows: ["Who decided"], prose } as never };
-    const message = checkLibrary([core, sneaky]).map((e) => e.message).join(" | ");
-    expect(message).toContain("not a core check that may be narrowed");
-    expect(message).toContain("The core allows: plain-naming");
+    const message = messages({ ...good, narrows: ["Who decided"] });
+    expect(message).toContain("not a framework check that may be narrowed");
+    expect(message).toContain("The framework allows: plain-naming");
   });
 
   it("refuses two protocols claiming the same event, or the same id", () => {
@@ -117,8 +105,9 @@ describe("the checker", () => {
     expect(checkLibrary([a, { ...a, file: "c.md" }]).map((e) => e.message).join(" | ")).toContain('id "example" is already used');
   });
 
-  it("allows only the core to use the failure-only and narrowing fields", () => {
-    const bad = { ...good, elements: [{ ...good.elements[0], only_when: "failure" }] };
-    expect(messages(bad)).toContain("belongs to the core protocol");
+  it("accepts only the two layers that remain", () => {
+    // "core" was a third layer that duplicated the framework; it is gone, and
+    // a file still claiming it should fail rather than be quietly ignored.
+    expect(messages({ ...good, layer: "core" })).toContain('layer must be "event"');
   });
 });
