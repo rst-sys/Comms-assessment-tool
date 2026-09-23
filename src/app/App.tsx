@@ -7,6 +7,8 @@ import { ApiError, compare, evaluate, fetchConfig } from "./api.js";
 import { CompareRevisions } from "./compare/CompareRevisions.js";
 import { StandardsLibrary } from "./StandardsLibrary.js";
 import { ToolOverview } from "./ToolOverview.js";
+import { Footer } from "./results/Footer.js";
+import type { EvaluationFailure } from "./intake/rules.js";
 import { WelcomeScreen } from "./WelcomeScreen.js";
 import { SignIn } from "./SignIn.js";
 import { COMING_SOON, FEATURES } from "./features.js";
@@ -46,7 +48,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
   const [welcomeDone, setWelcomeDone] = useState(false);
   const [review, setReview] = useState<Review | null>(null);
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<EvaluationFailure | null>(null);
   const [intakeKey, setIntakeKey] = useState(0);
   const [baseline, setBaseline] = useState<SavedReview | null>(null);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
@@ -72,6 +74,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
   }, []);
 
   const runEvaluation = async (request: EvaluationRequest) => {
+    const startedAt = Date.now();
     setBusy(true);
     setError(null);
     setComparison(null);
@@ -92,7 +95,15 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
       const message = e instanceof ApiError ? e.message : "The evaluation failed. Try again.";
       // Log the kind and the hashed request id only; never the draft or the response.
       console.error(`evaluation failed: ${e instanceof ApiError ? `${e.kind}${e.requestId ? ` [${e.requestId}]` : ""}` : "unknown"}`);
-      setError(message);
+      // The reference and the elapsed time go on screen as well as in the log.
+      // "Try again" on its own leaves a tester with nothing to report and no
+      // way to tell a slow failure from an instant one, which are different
+      // faults with different causes.
+      setError({
+        message,
+        requestId: e instanceof ApiError ? e.requestId : undefined,
+        seconds: Math.round((Date.now() - startedAt) / 1000),
+      });
     } finally {
       setBusy(false);
     }
@@ -222,6 +233,9 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
           />
         </>
       )}
+      <div className="page" style={{ paddingTop: 0 }}>
+        <Footer />
+      </div>
     </>
   );
 }

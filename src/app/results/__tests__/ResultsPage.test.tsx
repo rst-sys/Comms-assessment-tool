@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it } from "vitest";
 import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
-import { CORE_PRINCIPLE, REPORTER_QUESTION } from "../../copy.js";
+import { REPORTER_QUESTION } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
 import { ceilingWithoutContext } from "../../../engine/scoring.js";
 
@@ -99,15 +99,15 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
     expect(document.body.textContent!.split(first).length - 1).toBe(1);
   });
 
-  it("renders the remaining collapsed panels and the footer", () => {
+  it("renders the remaining collapsed panels", () => {
     const { container } = render(<ResultsPage result={result} request={DEMO_1.request} />);
     const panels = Array.from(container.querySelectorAll("details.panel"));
     // Devil's Advocate is no longer a panel: its damning interpretation shows
     // on load, with only the stakeholder voices behind an expander.
     expect(panels.map((p) => p.id)).toEqual(["questions"]);
     expect(panels.every((p) => !(p as HTMLDetailsElement).open)).toBe(true);
-    expect(screen.getByText(CORE_PRINCIPLE)).toBeTruthy();
-    expect(screen.getByText("© 2026 Richard Thompson")).toBeTruthy();
+    // The footer moved to the app shell so it is there before a review too;
+    // App.test covers it.
   });
 
   it("shows the ten scorecard rows with rationale on expand", () => {

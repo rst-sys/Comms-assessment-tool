@@ -21,4 +21,4 @@ export const APP_NAME = "Trust Assessment Assistant";
 export const TAGLINE = "Know whether your message will be trusted before your audience decides.";
 
 export const INTRO =
-  "Paste your draft, add the context, and in about a minute see how well your message explains the decision behind it, where it falls short, and which published standards and best practices it was measured against.";
+  "Paste your draft, add as much context as you can, and sit back as an AI-assisted pair of fresh eyes shows you how well your message explains the decision behind it, where it falls short, and which published standards and best practices it was measured against.";

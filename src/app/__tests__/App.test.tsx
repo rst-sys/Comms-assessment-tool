@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
+import { CORE_PRINCIPLE } from "../copy.js";
 import { PROTOCOLS } from "../../engine/protocols.js";
 import { FEATURES, type Features } from "../features.js";
 
@@ -102,6 +103,40 @@ describe("App", () => {
     // Claims the redesign made false.
     expect(screen.queryByText(/two minutes/)).toBeNull();
     expect(screen.queryByText(/tied to specific passages/)).toBeNull();
+  });
+
+  it("shows the footer and a build stamp on every screen, not only on results", async () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    // A tester has to be able to answer "am I on the build you just pushed?"
+    // before running anything, not only after a review has succeeded.
+    expect(screen.getByText(CORE_PRINCIPLE)).toBeTruthy();
+    expect(screen.getByText("© 2026 Richard Thompson")).toBeTruthy();
+    expect(screen.getByText(/^Build /)).toBeTruthy();
+  });
+
+  it("names the reference and the elapsed time when a review fails", async () => {
+    vi.stubGlobal(
+      "fetch",
+      fakeFetch(() =>
+        new Response(JSON.stringify({ error: "api", message: "Provider error 529: overloaded", request_id: "9a83fbab61d0" }), {
+          status: 502,
+          headers: { "content-type": "application/json" },
+        }),
+      ),
+    );
+    vi.stubGlobal("scrollTo", vi.fn());
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+
+    expect(await screen.findByText("Provider error 529: overloaded")).toBeTruthy();
+    // "Try again" alone leaves a tester with nothing to report, and no way to
+    // tell a slow failure from an instant one.
+    expect(screen.getByText(/Failed after \d+ seconds?/)).toBeTruthy();
+    expect(screen.getByText("9a83fbab61d0")).toBeTruthy();
   });
 
   it("opens the Standards Library from the welcome screen, not the Tool Overview", async () => {

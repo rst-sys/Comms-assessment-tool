@@ -11,7 +11,6 @@ import type { EvaluationRequest } from "../../engine/types.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
-import { Footer } from "./Footer.js";
 import { Questions } from "./Questions.js";
 
 interface Props {
@@ -117,7 +116,6 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
       <Questions questions={a.questions_before_publication} />
       {/* Reference material, below the analysis rather than between the reader and it. */}
       <PrivacyPanel config={config} />
-      <Footer />
     </main>
   );
 }

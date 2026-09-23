@@ -31,12 +31,13 @@ import {
   showHighRiskWarning,
   wordCount,
   type DraftFields,
+  type EvaluationFailure,
 } from "./rules.js";
 
 interface Props {
   config: PrivacyConfig | null;
   busy: boolean;
-  error: string | null;
+  error: EvaluationFailure | null;
   onEvaluate: (request: EvaluationRequest) => void;
   /** Settings and context to load on first render (a demo, or a saved review's settings). */
   initialRequest?: EvaluationRequest;
@@ -268,7 +269,16 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
           {showHighRiskWarning(fields.communication_event, fields.market) ? (
             <p className="warning" role="note">{HIGH_RISK_WARNING}</p>
           ) : null}
-          {error ? <p className="error" role="alert">{error}</p> : null}
+          {error ? (
+            <div role="alert">
+              <p className="error" style={{ marginBottom: 4 }}>{error.message}</p>
+              <p className="muted small" style={{ margin: 0 }}>
+                Failed after {error.seconds} second{error.seconds === 1 ? "" : "s"}
+                {error.requestId ? <> · reference <code>{error.requestId}</code></> : null}
+                {error.requestId ? " · quote it if you report this" : null}
+              </p>
+            </div>
+          ) : null}
           <p>
             <button type="button" className="primary" onClick={submit} disabled={!ready} aria-disabled={!ready}>
               {busy ? "Evaluating…" : baseline ? "Evaluate and compare" : "Evaluate draft"}

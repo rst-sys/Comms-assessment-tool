@@ -4,6 +4,19 @@
  */
 import type { CommunicationEvent, EvaluationRequest, Market, Setting } from "../../engine/types.js";
 
+/**
+ * What the intake shows when a review fails.
+ *
+ * The reference is what ties the red line on screen to the line in the
+ * service log, and the elapsed time separates a slow failure from an instant
+ * one — a timeout and a refusal look identical otherwise.
+ */
+export interface EvaluationFailure {
+  message: string;
+  requestId?: string;
+  seconds: number;
+}
+
 export const MIN_WORDS = 50;
 export const MAX_WORDS = 5000;
 
