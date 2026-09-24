@@ -304,19 +304,38 @@ textarea { resize: vertical; }
      and .welcome from the start — which is what left two thirds of a wide
      window empty. Two columns need two measures. */
   .page.welcome, .page.results { max-width: calc(var(--measure) * 2 + var(--space) * 17); }
-  .welcome, .results {
+  /* Cards pack, they do not sit in rows.
+
+     A two-column grid gives every row the height of its tallest card, so a
+     short card leaves a hole beneath it — measured at 1,487px on the Standards
+     Library, nearly two empty screens. Stretching cards to match instead gives
+     half-empty boxes. Column flow is the third option and the right one: each
+     card is as tall as its contents and the next one starts immediately below.
+
+     Reading order becomes down the first column then down the second. For
+     independent sections that is a normal magazine reading order, and for
+     findings it is better than a grid's left-to-right pairing, because the
+     most serious stay together at the top of the first column. */
+  .card-columns { columns: 2; column-gap: var(--col-gap); }
+  .card-columns > * {
+    break-inside: avoid;
+    margin: 0 0 calc(var(--space) * 5);
+    max-width: none;
+    display: flow-root;
+  }
+
+  .results {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: calc(var(--space) * 5) var(--col-gap);
     align-items: start;
   }
-  /* Cards are as tall as what is in them. Stretching them to match a taller
-     neighbour buys a tidy row edge and pays for it with half-empty boxes,
-     which is the worse of the two. */
-  .welcome > .card { align-self: start; }
-  /* The grid gap replaces the stacked margins, or sections get both. */
   .welcome > *, .results > * { margin-top: 0; }
   .welcome-card { margin-top: 0; max-width: none; }
+
+  /* Findings pack the same way, for the same reason. */
+  .finding-list { columns: 2; column-gap: var(--col-gap); }
+  .finding-list > * { break-inside: avoid; margin: 0 0 var(--col-gap); display: flow-root; }
 
   /* The page head is the one place a wide screen looked worst: a title and a
      four-line paragraph both capped at the measure, with six hundred pixels of
@@ -337,6 +356,8 @@ textarea { resize: vertical; }
   .results > #executive-summary, .results > #findings, .results > .comparison {
     grid-column: 1 / -1;
   }
+  /* Overrides the base .finding-list grid; column flow does the packing. */
+  .finding-list { display: block; }
 
   /* The executive summary earns the full width by using it: the score beside
      the note that explains it, and the ten dimensions two abreast. */
@@ -357,9 +378,6 @@ textarea { resize: vertical; }
   .scorecard { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--space) * 4); }
   .scorecard > h3, .scorecard > p { grid-column: 1 / -1; }
 
-  /* Findings are ranked, and a grid fills left to right, so the order a reader
-     meets them is still most serious first. */
-  .finding-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--col-gap); align-items: start; }
 }
 
 @media print {

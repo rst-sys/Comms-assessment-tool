@@ -31,202 +31,206 @@ export function StandardsLibrary() {
         </p>
       </header>
 
-      <section className="card welcome-card" aria-labelledby="how-heading">
-        <h2 id="how-heading">How to read this page</h2>
-        <p className="prose">
-          There are two different kinds of claim here, and conflating them would be the sort of thing this tool exists
-          to catch.
-        </p>
-        <dl className="account-list">
-          <div className="account-item">
-            <dt>Applied</dt>
-            <dd>
-              Rules the review engine actually runs: the ten dimensions, the agency scan, and the protocols below. These
-              determine your score.
-            </dd>
-          </div>
-          <div className="account-item">
-            <dt>Grounded in</dt>
-            <dd>
-              Published codes the framework was built from. These are <strong>not</strong> sent to the engine and change
-              no review. They are cited so you can check the framework against codes you already know.
-            </dd>
-          </div>
-        </dl>
-      </section>
 
-      <section className="card welcome-card" aria-labelledby="codes-heading">
-        <h2 id="codes-heading">The codes this framework rests on</h2>
-        <p className="prose">
-          Established standards in professional communication and public relations. Each is linked; read them yourself
-          rather than taking our summary for it.
-        </p>
-        {CODES.map((c) => (
-          <div key={c.id} className="code-entry">
-            <h3>
-              {c.body} — {c.name}
-              {c.year ? ` (${c.year})` : ""}
-            </h3>
-            <p className="prose">{c.summary}</p>
-            <p className="muted small">
-              <a href={c.url} target="_blank" rel="noopener noreferrer">{c.url}</a>
-            </p>
-          </div>
-        ))}
-      </section>
-
-      <section className="card welcome-card" aria-labelledby="grounding-heading">
-        <h2 id="grounding-heading">Each dimension, and the principle behind it</h2>
-        <p className="prose">
-          The ten dimensions the engine scores, with the published principle each one rests on. A dimension nobody can
-          trace to an established principle has no business carrying weight in a score.
-        </p>
-        {DIMENSION_IDS.map((id) => (
-          <div key={id} className="grounding-entry">
-            <h3>
-              {DIMENSION_LABELS[id]} <span className="muted">— weight {DIMENSION_WEIGHTS[id]}</span>
-            </h3>
-            <ul className="tight">
-              {GROUNDING[id].map((g, i) => (
-                <li key={i}>
-                  {g.principle} <span className="muted">— {CODES_BY_ID[g.code]?.body ?? g.code}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </section>
-
-      <section className="card welcome-card" aria-labelledby="own-heading">
-        <h2 id="own-heading">What is our own judgement</h2>
-        <p className="prose">
-          No published code supplies the following. They are this tool's construction — informed by the codes above, not
-          dictated by them. If you disagree with one, you are disagreeing with us, not with PRSA.
-        </p>
-        <dl className="account-list">
-          {OWNER_S_OWN.map(([name, meaning]) => (
-            <div key={name} className="account-item">
-              <dt>{name}</dt>
-              <dd>{meaning}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      <section className="card welcome-card" aria-labelledby="core-heading">
-        <h2 id="core-heading">The core framework</h2>
-        <p className="muted small">Applied to every draft.</p>
-        <h3>The account a message should give</h3>
-        <p className="prose">Ten things a reader should be able to see.</p>
-        <dl className="account-list">
-          {ACCOUNT_ELEMENTS.map(([name, meaning]) => (
-            <div key={name} className="account-item">
-              <dt>{name}</dt>
-              <dd>{meaning}</dd>
-            </div>
-          ))}
-        </dl>
-        <h3>Ten weighted dimensions</h3>
-        <ul className="weights">
-          {DIMENSION_IDS.map((id) => (
-            <li key={id}>
-              <span>{DIMENSION_LABELS[id]}</span>
-              <span className="weight">{DIMENSION_WEIGHTS[id]}</span>
-            </li>
-          ))}
-        </ul>
-        <h3>Agency and abstraction scan</h3>
-        <p className="prose">
-          Six categories of language that let responsibility disappear: external weather, institutional abstraction,
-          audience displacement, passive accountability, values without action, and vague action. A phrase is flagged only
-          where it is doing the explaining.
-        </p>
-      </section>
-
-      {/* Said once here rather than repeated on all five cards. */}
-      <section className="card welcome-card" aria-labelledby="protocols-heading">
-        <h2 id="protocols-heading">Protocols: the standard for what happened</h2>
-        <p className="prose">
-          Naming the event at intake brings in the standard written for it. Each protocol below is a lens on the ten
-          dimensions above, never an eleventh score: a missing element shows up in the dimension it belongs to, as an
-          ordinary finding.
-        </p>
-        <p className="prose">
-          Every one says in a line what kind of authority it rests on, and carries its full sources — including what its
-          author could not open, and what it cannot judge — behind the expander on its own card.
-        </p>
-      </section>
-
-      {PROTOCOLS.map((protocol) => (
-        <section key={protocol.id} className="card welcome-card" aria-labelledby={`${protocol.id}-heading`}>
-          <h2 id={`${protocol.id}-heading`}>{protocol.name}</h2>
-          <p className="muted small" style={{ marginTop: 0 }}>
-            Applied when: {appliesTo(protocol)} · Version {protocol.version}
+      <div className="card-columns">
+        <section className="card welcome-card" aria-labelledby="how-heading">
+          <h2 id="how-heading">How to read this page</h2>
+          <p className="prose">
+            There are two different kinds of claim here, and conflating them would be the sort of thing this tool exists
+            to catch.
           </p>
+          <dl className="account-list">
+            <div className="account-item">
+              <dt>Applied</dt>
+              <dd>
+                Rules the review engine actually runs: the ten dimensions, the agency scan, and the protocols below. These
+                determine your score.
+              </dd>
+            </div>
+            <div className="account-item">
+              <dt>Grounded in</dt>
+              <dd>
+                Published codes the framework was built from. These are <strong>not</strong> sent to the engine and change
+                no review. They are cited so you can check the framework against codes you already know.
+              </dd>
+            </div>
+          </dl>
+        </section>
 
-          <div className="label">What it checks</div>
-          <dl className="account-list not-list">
-            {protocol.elements.map((e) => (
-              <div key={e.name} className="account-item">
-                <dt>{e.name}</dt>
-                <dd>
-                  {e.means}
-                  <div className="muted small">
-                    Scored under: {DIMENSION_LABELS[e.dimension]}
-                    {e.weight === "supporting" ? " · supporting" : ""}
-                  </div>
-                </dd>
+        <section className="card welcome-card" aria-labelledby="codes-heading">
+          <h2 id="codes-heading">The codes this framework rests on</h2>
+          <p className="prose">
+            Established standards in professional communication and public relations. Each is linked; read them yourself
+            rather than taking our summary for it.
+          </p>
+          {CODES.map((c) => (
+            <div key={c.id} className="code-entry">
+              <h3>
+                {c.body} — {c.name}
+                {c.year ? ` (${c.year})` : ""}
+              </h3>
+              <p className="prose">{c.summary}</p>
+              <p className="muted small">
+                <a href={c.url} target="_blank" rel="noopener noreferrer">{c.url}</a>
+              </p>
+            </div>
+          ))}
+        </section>
+
+        <section className="card welcome-card" aria-labelledby="grounding-heading">
+          <h2 id="grounding-heading">Each dimension, and the principle behind it</h2>
+          <p className="prose">
+            The ten dimensions the engine scores, with the published principle each one rests on. A dimension nobody can
+            trace to an established principle has no business carrying weight in a score.
+          </p>
+          {DIMENSION_IDS.map((id) => (
+            <div key={id} className="grounding-entry">
+              <h3>
+                {DIMENSION_LABELS[id]} <span className="muted">— weight {DIMENSION_WEIGHTS[id]}</span>
+              </h3>
+              <ul className="tight">
+                {GROUNDING[id].map((g, i) => (
+                  <li key={i}>
+                    {g.principle} <span className="muted">— {CODES_BY_ID[g.code]?.body ?? g.code}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+
+        <section className="card welcome-card" aria-labelledby="own-heading">
+          <h2 id="own-heading">What is our own judgement</h2>
+          <p className="prose">
+            No published code supplies the following. They are this tool's construction — informed by the codes above, not
+            dictated by them. If you disagree with one, you are disagreeing with us, not with PRSA.
+          </p>
+          <dl className="account-list">
+            {OWNER_S_OWN.map(([name, meaning]) => (
+              <div key={name} className="account-item">
+                <dt>{name}</dt>
+                <dd>{meaning}</dd>
               </div>
             ))}
           </dl>
-
-          <p className="rests-on">
-            <span className="label">Rests on</span> {protocol.rests_on}
-          </p>
-
-          {/* The full sources are the reason to trust any of this, and three
-              thousand words of them were the reason nobody read the page.
-              Kept whole, one click away. */}
-          <details className="sources">
-            <summary>Sources in full, and what this protocol cannot judge</summary>
-            <div className="sources-body">
-              {[
-                ["Source", protocolSection(protocol.prose, "Source")],
-                ["Basis", protocolSection(protocol.prose, "Basis")],
-                ["What it cannot do", protocolSection(protocol.prose, "What this protocol does not cover") || protocolSection(protocol.prose, "Limits")],
-              ].map(([heading, text]) => {
-                const blocks = proseBlocks(text ?? "");
-                if (blocks.length === 0) return null;
-                return (
-                  <div key={heading}>
-                    <div className="label">{heading}</div>
-                    {blocks.map((b, i) =>
-                      b.kind === "list" ? (
-                        <ul key={i} className="tight prose small">
-                          {(b.items ?? []).map((item, j) => (
-                            <li key={j}>{item}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p key={i} className="prose small">{b.text}</p>
-                      ),
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </details>
         </section>
-      ))}
 
-      <section className="card welcome-card" aria-labelledby="planned-heading">
-        <h2 id="planned-heading">Planned</h2>
-        <p className="prose">
-          The library covers thirteen high-stakes events. Protocols for the rest are planned and not in this build: a
-          draft about an event with no protocol is still judged against the core framework above, and against the
-          high-stakes event core where an event is named.
-        </p>
-      </section>
+        <section className="card welcome-card" aria-labelledby="core-heading">
+          <h2 id="core-heading">The core framework</h2>
+          <p className="muted small">Applied to every draft.</p>
+          <h3>The account a message should give</h3>
+          <p className="prose">Ten things a reader should be able to see.</p>
+          <dl className="account-list">
+            {ACCOUNT_ELEMENTS.map(([name, meaning]) => (
+              <div key={name} className="account-item">
+                <dt>{name}</dt>
+                <dd>{meaning}</dd>
+              </div>
+            ))}
+          </dl>
+          <h3>Ten weighted dimensions</h3>
+          <ul className="weights">
+            {DIMENSION_IDS.map((id) => (
+              <li key={id}>
+                <span>{DIMENSION_LABELS[id]}</span>
+                <span className="weight">{DIMENSION_WEIGHTS[id]}</span>
+              </li>
+            ))}
+          </ul>
+          <h3>Agency and abstraction scan</h3>
+          <p className="prose">
+            Six categories of language that let responsibility disappear: external weather, institutional abstraction,
+            audience displacement, passive accountability, values without action, and vague action. A phrase is flagged only
+            where it is doing the explaining.
+          </p>
+        </section>
+
+        {/* Said once here rather than repeated on all five cards. */}
+        <section className="card welcome-card" aria-labelledby="protocols-heading">
+          <h2 id="protocols-heading">Protocols: the standard for what happened</h2>
+          <p className="prose">
+            Naming the event at intake brings in the standard written for it. Each protocol below is a lens on the ten
+            dimensions above, never an eleventh score: a missing element shows up in the dimension it belongs to, as an
+            ordinary finding.
+          </p>
+          <p className="prose">
+            Every one says in a line what kind of authority it rests on, and carries its full sources — including what its
+            author could not open, and what it cannot judge — behind the expander on its own card.
+          </p>
+        </section>
+
+        {PROTOCOLS.map((protocol) => (
+          <section key={protocol.id} className="card welcome-card" aria-labelledby={`${protocol.id}-heading`}>
+            <h2 id={`${protocol.id}-heading`}>{protocol.name}</h2>
+            <p className="muted small" style={{ marginTop: 0 }}>
+              Applied when: {appliesTo(protocol)} · Version {protocol.version}
+            </p>
+
+            <div className="label">What it checks</div>
+            <dl className="account-list not-list">
+              {protocol.elements.map((e) => (
+                <div key={e.name} className="account-item">
+                  <dt>{e.name}</dt>
+                  <dd>
+                    {e.means}
+                    <div className="muted small">
+                      Scored under: {DIMENSION_LABELS[e.dimension]}
+                      {e.weight === "supporting" ? " · supporting" : ""}
+                    </div>
+                  </dd>
+                </div>
+              ))}
+            </dl>
+
+            <p className="rests-on">
+              <span className="label">Rests on</span> {protocol.rests_on}
+            </p>
+
+            {/* The full sources are the reason to trust any of this, and three
+                thousand words of them were the reason nobody read the page.
+                Kept whole, one click away. */}
+            <details className="sources">
+              <summary>Sources in full, and what this protocol cannot judge</summary>
+              <div className="sources-body">
+                {[
+                  ["Source", protocolSection(protocol.prose, "Source")],
+                  ["Basis", protocolSection(protocol.prose, "Basis")],
+                  ["What it cannot do", protocolSection(protocol.prose, "What this protocol does not cover") || protocolSection(protocol.prose, "Limits")],
+                ].map(([heading, text]) => {
+                  const blocks = proseBlocks(text ?? "");
+                  if (blocks.length === 0) return null;
+                  return (
+                    <div key={heading}>
+                      <div className="label">{heading}</div>
+                      {blocks.map((b, i) =>
+                        b.kind === "list" ? (
+                          <ul key={i} className="tight prose small">
+                            {(b.items ?? []).map((item, j) => (
+                              <li key={j}>{item}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p key={i} className="prose small">{b.text}</p>
+                        ),
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </details>
+          </section>
+        ))}
+
+        <section className="card welcome-card" aria-labelledby="planned-heading">
+          <h2 id="planned-heading">Planned</h2>
+          <p className="prose">
+            The library covers thirteen high-stakes events. Protocols for the rest are planned and not in this build: a
+            draft about an event with no protocol is still judged against the core framework above, and against the
+            high-stakes event core where an event is named.
+          </p>
+        </section>
+      </div>
+
     </main>
   );
 }
