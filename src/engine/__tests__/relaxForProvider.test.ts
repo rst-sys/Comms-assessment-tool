@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { Ajv } from "ajv";
-import { ANALYSIS_SCHEMA, relaxForProvider } from "../schema.js";
+import { ANALYSIS_SCHEMA, PROVIDER_UNSUPPORTED_KEYWORDS, relaxForProvider } from "../schema.js";
 import { COMPARE_SCHEMA } from "../compare.js";
 import { sampleAnalysis } from "./helpers.js";
 
@@ -21,6 +21,25 @@ function countKeys(node: unknown, key: string): number {
  */
 describe("relaxForProvider", () => {
   const relaxed = relaxForProvider(ANALYSIS_SCHEMA);
+
+  // The gap that caused a live outage: nothing asserted what actually reaches
+  // the provider. maxItems was added to the strict schema, relaxForProvider
+  // passed it straight through, and every review failed with "Provider error
+  // 400: output_config.format.schema: For 'array' type, property 'maxItems' is
+  // not supported" until it was stripped.
+  it("sends the provider no keyword that constrains a value, in either schema", () => {
+    for (const [name, schema] of [["analysis", ANALYSIS_SCHEMA], ["comparison", COMPARE_SCHEMA]] as const) {
+      for (const keyword of PROVIDER_UNSUPPORTED_KEYWORDS) {
+        expect(countKeys(relaxForProvider(schema), keyword), `${name} still sends ${keyword}`).toBe(0);
+      }
+    }
+  });
+
+  it("keeps those keywords in the strict schema, which is where they are enforced", () => {
+    // maxItems on the questions array is the live example: ajv holds the cap,
+    // normalize.ts repairs an overrun, and the provider never hears about it.
+    expect(countKeys(ANALYSIS_SCHEMA, "maxItems")).toBeGreaterThan(0);
+  });
 
   it("removes every enum and const at any depth", () => {
     expect(countKeys(ANALYSIS_SCHEMA, "enum")).toBeGreaterThan(5);

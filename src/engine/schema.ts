@@ -48,7 +48,42 @@ const obj = (properties: Record<string, JsonSchema>): JsonSchema => ({
 });
 
 /**
- * A copy with every `enum` and `const` removed, at any depth. Structure —
+ * Keywords that constrain a VALUE, which the provider's grammar will not take.
+ *
+ * `enum` and `const` were dropped for size — each list of allowed strings
+ * becomes a set of alternatives in the compiled grammar. The rest are here
+ * because the provider rejects them outright: adding `maxItems` to the
+ * questions array returned "Provider error 400: output_config.format.schema:
+ * For 'array' type, property 'maxItems' is not supported", and every review
+ * failed until it was taken out again.
+ *
+ * So the whole family goes, not just the one that bit. A grammar can express
+ * shape — what fields exist, what type each is, whether null is allowed — and
+ * nothing about how many or how long. Anything of that kind belongs in
+ * ANALYSIS_SCHEMA for ajv, and in normalize.ts to repair, and must never reach
+ * the provider.
+ */
+const VALUE_CONSTRAINTS = new Set([
+  "enum",
+  "const",
+  "maxItems",
+  "minItems",
+  "uniqueItems",
+  "maxLength",
+  "minLength",
+  "pattern",
+  "format",
+  "minimum",
+  "maximum",
+  "exclusiveMinimum",
+  "exclusiveMaximum",
+  "multipleOf",
+  "maxProperties",
+  "minProperties",
+]);
+
+/**
+ * A copy with every value constraint removed, at any depth. Structure —
  * types, properties, required, additionalProperties, items, anyOf — is kept
  * exactly. Deriving it rather than maintaining a second schema by hand means
  * the two cannot drift apart.
@@ -58,11 +93,14 @@ export function relaxForProvider(schema: unknown): unknown {
   if (!schema || typeof schema !== "object") return schema;
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(schema as Record<string, unknown>)) {
-    if (key === "enum" || key === "const") continue;
+    if (VALUE_CONSTRAINTS.has(key)) continue;
     out[key] = relaxForProvider(value);
   }
   return out;
 }
+
+/** The value constraints, exported so a test can assert none of them survive. */
+export const PROVIDER_UNSUPPORTED_KEYWORDS: readonly string[] = [...VALUE_CONSTRAINTS];
 
 export const ANALYSIS_SCHEMA: JsonSchema = obj({
   schema_version: enumOf([SCHEMA_VERSION]),
