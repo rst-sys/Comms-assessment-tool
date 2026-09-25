@@ -127,7 +127,7 @@ export function ToolOverview({ config, runtimeNote }: { config: PrivacyConfig | 
               </div>
             ))}
           </dl>
-          <p className="prose muted">It is decision-support software. The judgement, and the words, stay yours.</p>
+          <p className="prose muted">It is decision-support software. The judgment, and the words, stay yours.</p>
         </section>
 
         <section className="card callout-privacy" aria-labelledby="privacy-heading">

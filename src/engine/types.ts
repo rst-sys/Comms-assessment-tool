@@ -11,7 +11,7 @@
  * named by the owner, plus an explicit "none of these" so a routine or
  * positive announcement is not forced to claim a disaster.
  *
- * This is the axis the protocol library is organised on. It replaces half of
+ * This is the axis the protocol library is organized on. It replaces half of
  * the old COMMUNICATION_TYPES list, which mixed events with formats: a
  * workforce reduction is not a kind of document, and it arrives as a press
  * release, an employee memo and a manager toolkit in the same week, needing
@@ -61,7 +61,7 @@ export const FAILURE_EVENTS: ReadonlySet<CommunicationEvent> = new Set<Communica
  * consequence. They do not change how the draft is scored — the tool used to
  * have a "heightened review" mode that raised four faults to High severity,
  * and it is gone. What they do now is put a warning on the results page naming
- * the specialisms this kind of event tends to touch, which is the part a
+ * the specialties this kind of event tends to touch, which is the part a
  * reader could act on.
  */
 export const HEIGHTENED_EVENTS: ReadonlySet<CommunicationEvent> = new Set<CommunicationEvent>([
@@ -127,7 +127,7 @@ export const HEIGHTENED_SETTINGS: ReadonlySet<Setting> = new Set<Setting>(["Cris
 
 /**
  * Whether the results page should warn that this review touches ground a
- * specialist should see. A judgement about the event and the setting, not
+ * specialist should see. A judgment about the event and the setting, not
  * about the draft — the tool cannot tell from the words whether a redundancy
  * consultation is under way.
  */

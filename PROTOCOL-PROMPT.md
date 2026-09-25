@@ -46,7 +46,7 @@ author should settle before publishing.
 information that is missing and leaves the writing to the author. This rule is
 absolute.
 
-## How the tool is organised
+## How the tool is organized
 
 The user answers three separate questions at intake:
 
@@ -165,7 +165,7 @@ selection methodology".
 **`rests_on` is honest, not impressive.** It is the only line about provenance
 most readers will see — the full sources sit behind a click. Say what kind of
 authority it is and how much weight it carries. Good: "US regulator guidance
-plus professional judgement; none of it measures which notices work better."
+plus professional judgment; none of it measures which notices work better."
 Bad: "extensive research and international best practice".
 
 ## The exact shape to produce
@@ -206,7 +206,7 @@ narrows:                          # optional; only if you are softening plain-na
 ## Source
 
 The research, code or standard it rests on: author, title, publication, year,
-and a link. Say plainly where something rests on professional judgement rather
+and a link. Say plainly where something rests on professional judgment rather
 than a published source. Do not invent citations. Do not cite what you have not
 read — say what you could not open and why.
 

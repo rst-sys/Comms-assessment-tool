@@ -27,7 +27,7 @@ export function StandardsLibrary() {
         <h1 id="standards-heading">Standards library</h1>
         <p className="welcome-intro">
           What this tool measures against, where each standard comes from, and — just as important — which parts are our
-          own judgement rather than anyone's published code.
+          own judgment rather than anyone's published code.
         </p>
       </header>
 
@@ -100,7 +100,7 @@ export function StandardsLibrary() {
         </section>
 
         <section className="card welcome-card" aria-labelledby="own-heading">
-          <h2 id="own-heading">What is our own judgement</h2>
+          <h2 id="own-heading">What is our own judgment</h2>
           <p className="prose">
             No published code supplies the following. They are this tool's construction — informed by the codes above, not
             dictated by them. If you disagree with one, you are disagreeing with us, not with PRSA.

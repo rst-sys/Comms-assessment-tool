@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
  * so the page is visibly alive, and sets the expectation up front. It does not
  * pretend to know the engine's real progress: the stages are described in the
  * order the prompt asks for them, and the last one holds until the reply
- * arrives rather than creeping towards a fake hundred per cent.
+ * arrives rather than creeping towards a fake hundred percent.
  */
 const STAGES: { at: number; text: string }[] = [
   { at: 0, text: "Reading your draft and the context you gave" },

@@ -10,7 +10,7 @@
  * Without a cap, every protocol added would lengthen both the wait and the
  * results page, undoing the redesign that cut the page down in the first
  * place. With one, a protocol competes for space instead of adding to it, and
- * the model has to decide what matters most — which is the judgement the
+ * the model has to decide what matters most — which is the judgment the
  * reader wanted anyway.
  *
  * The numbers live here so the prompt that asks for them, the normalizer that

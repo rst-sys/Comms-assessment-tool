@@ -39,7 +39,7 @@ describe("the protocol library", () => {
 describe("the checker", () => {
   const good = {
     id: "example", name: "Example", layer: "event", version: 1, status: "active",
-    rests_on: "Regulator guidance plus professional judgement.",
+    rests_on: "Regulator guidance plus professional judgment.",
     event: "Cyberattack or data incident",
     elements: [{ name: "A", means: "B.", weight: "core", dimension: "accountability_agency" }],
     triggers: [{ check: "C.", dimension: "accountability_agency", review: ["Legal"] }],

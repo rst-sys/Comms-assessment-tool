@@ -6,7 +6,7 @@ event: Cyberattack or data incident
 version: 1
 status: active
 rests_on: >-
-  US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgement. None of it measures which notices work better.
+  US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgment. None of it measures which notices work better.
 
 elements:
   - name: What and when
@@ -71,25 +71,25 @@ questions:
   - ask: Does publishing this change containment, evidence preservation or the investigation?
     review: [Information security]
   - ask: Does the support offered match the data actually involved?
-  - ask: Do the website, customer letter, call-centre script, employee talking points and regulator notice agree on facts, dates and scope?
+  - ask: Do the website, customer letter, call-center script, employee talking points and regulator notice agree on facts, dates and scope?
   - ask: If employees are affected, have they been told before external release?
     review: [HR]
 ---
 
 ## 3. Source
-Professional judgement, informed by the following. Each was read as a fetched summary, not full text.
+Professional judgment, informed by the following. Each was read as a fetched summary, not full text.
 
 - Nelson, A., Rekhi, S., Souppaya, M., Scarfone, K. *Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile* (NIST SP 800-61r3). NIST, April 2025. https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-61r3.pdf
 - U.S. Securities and Exchange Commission. *Cybersecurity Risk Management, Strategy, Governance, and Incident Disclosure: Small Entity Compliance Guide* (Form 8-K Item 1.05). August 2023. https://www.sec.gov/resources-small-businesses/small-business-compliance-guides/cybersecurity-risk-management-strategy-governance-incident-disclosure
 - U.S. Department of Health and Human Services. *Breach Notification Rule*, 45 CFR §§ 164.400–414. https://www.hhs.gov/hipaa/for-professionals/breach-notification/index.html
 - Federal Trade Commission. *Data Breach Response: A Guide for Business*. August 2023, updated June 2025. https://www.ftc.gov/business-guidance/resources/data-breach-response-guide-business
 
-The distinction between confirmed fact, current assessment, unknown and commitment, and the list of over-assurance phrases, come from a research brief supplied by the tool's owner. They are professional judgement, not a published standard.
+The distinction between confirmed fact, current assessment, unknown and commitment, and the list of over-assurance phrases, come from a research brief supplied by the tool's owner. They are professional judgment, not a published standard.
 
 Not cited because not read: the CISA/FBI "Communicating Under Pressure" guidance (retrieval returned a 403; by the owner's description it covers IT/OT service outages, not data breaches), ISO/IEC 27035, and NIST CSF 2.0.
 
 ## 4. Basis
-NIST SP 800-61r3 is a federal technical guidance document. It sets recommendations, not binding rules. The SEC rule and the HIPAA rule are binding regulation, applying only to SEC registrants and HIPAA covered entities or business associates respectively. The FTC guide is regulator business guidance and is not binding. None of these was produced from an empirical study of which notices work better. Those judgements are consensus, not measured effect.
+NIST SP 800-61r3 is a federal technical guidance document. It sets recommendations, not binding rules. The SEC rule and the HIPAA rule are binding regulation, applying only to SEC registrants and HIPAA covered entities or business associates respectively. The FTC guide is regulator business guidance and is not binding. None of these was produced from an empirical study of which notices work better. Those judgments are consensus, not measured effect.
 
 ## 5. Elements
 
@@ -144,7 +144,7 @@ Always include these:
 - Which state, national, sector, contract and cross-border notification duties may apply, and what is the earliest deadline? Counsel must confirm; the review does not state whether any obligation applies. (Legal, Privacy)
 - Has law enforcement asked for a delay, and does the law allow one in this case? (Legal)
 - For a public company: who made the materiality determination, when, and how does the draft agree with the filing? (Investor relations, Legal)
-- Do the website, customer letter, call-centre script, employee talking points, regulator notice and executive statement agree on facts, dates and scope?
+- Do the website, customer letter, call-center script, employee talking points, regulator notice and executive statement agree on facts, dates and scope?
 - Does publishing this change containment, evidence preservation or an investigation? (Information security)
 - Who owns the next update, and can the organization meet the time it names?
 - What did the organization's own decisions or controls contribute, separate from the attacker's actions?
@@ -157,7 +157,7 @@ Always include these:
 
 - **Speed of notice.** The draft shows whether dates are stated, not whether the organization was fast. Timeliness has no dimension among the ten, so the protocol cannot score it. A human must judge it against the earliest applicable deadline.
 - **Operational preparedness.** Out-of-band channels, tabletop exercises, and named incident roles before an incident are outside what a draft reveals.
-- **Legal conclusions.** It cannot say whether a notice is required, adequate or compliant. State and country laws, GDPR, sector rules and contracts are not covered here, and the sources are U.S.-centred. Counsel decides.
+- **Legal conclusions.** It cannot say whether a notice is required, adequate or compliant. State and country laws, GDPR, sector rules and contracts are not covered here, and the sources are U.S.-centered. Counsel decides.
 - **Whether a claim is true.** It checks whether claims are supported in the text, not against the facts. Information security must verify them.
 - **Materiality.** It flags a materiality claim without a stated determination. It cannot judge the determination.
 - **Cross-audience consistency.** It can compare only what it is given.

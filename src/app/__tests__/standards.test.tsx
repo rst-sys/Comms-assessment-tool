@@ -62,7 +62,7 @@ describe("the page, and the line it must not cross", () => {
 
   it("admits what no code supplies rather than implying the codes cover it", () => {
     render(<StandardsLibrary />);
-    expect(screen.getByRole("heading", { name: "What is our own judgement" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What is our own judgment" })).toBeTruthy();
     expect(screen.getByText(/you are disagreeing with us, not with PRSA/)).toBeTruthy();
     // Some of these names also appear as headings in the core framework below.
     for (const [name] of OWNER_S_OWN) expect(screen.getAllByText(name).length, name).toBeGreaterThan(0);

@@ -113,7 +113,7 @@ No single standard governs communication about workforce restructuring. This pro
 - Topa, G., Aranda-Carmena, M., & De-Maria, B. (2022). Psychological Contract Breach and Outcomes: A Systematic Review of Reviews. *International Journal of Environmental Research and Public Health*, 19(23), 15527. https://www.mdpi.com/1660-4601/19/23/15527
 - Khaw, K. W., Alnoor, A., AL-Abrrow, H., Tiberius, V., Ganesan, Y., & Atshan, N. A. (2022). Reactions towards organizational change: a systematic literature review. *Current Psychology*, published online 13 April 2022. https://doi.org/10.1007/s12144-022-03070-6. Pages 1–6 of 24 were read, so only what appears there is cited.
 
-**Professional judgement.** These parts rest on no published source:
+**Professional judgment.** These parts rest on no published source:
 
 - Which gaps count as High and which as Moderate.
 - The wording of each trigger.
@@ -126,7 +126,7 @@ No single standard governs communication about workforce restructuring. This pro
 ## 4. Basis
 
 - **Lee et al.** A qualitative case study of interviews with 15 Airbnb employees who survived the 2020 layoffs.
-- **Topa et al.** A systematic review of eight earlier reviews, seven of them meta-analyses. The authors call their own conclusions about the effects of psychological-contract breach "tentative".
+- **Topa et al.** A systematic review of eight earlier reviews, seven of them meta-analyzes. The authors call their own conclusions about the effects of psychological-contract breach "tentative".
 - **Khaw et al.** A PRISMA literature review of 79 studies, drawn from four databases with the search term "reactions to change". About 90% of the 79 studies relied on self-reports. It is not about layoffs. Its statement that communication is critical to success cites another author, Gillet et al. (2013), as its source, so it reports that claim and did not test it.
 - **EEOC waiver Q&A.** A government agency's plain-language explanation of existing law, with worked examples and a sample waiver. It does not bind courts or the public.
 - **EEOC, DOL, Fair Work, CIPD, Page.** Two US agencies, one Australian agency, the UK HR professional body, and a US communications society. The first three say what employers must or should do in their own jurisdictions. CIPD and Page are practitioner standards. The Page Society's own page says Page did not write the principles.
@@ -205,11 +205,11 @@ Always include these:
 ## 8. What this protocol does not cover
 
 - **What the draft says, not what is true.** The tool reads the draft. It cannot tell whether a process was fair, a selection was unbiased, or a fact is correct. It treats the draft's claims as claims.
-- **Legal conclusions.** It flags where an obligation may apply and never says a draft is compliant or non-compliant. The legal sources here are US federal, UK and Australian. Nothing in this protocol rests on EU collective-redundancy rules, Canadian rules, or the law of any other country, and a draft naming one should get a Local market review. The EEOC guidance also notes that state law governs waiver validity and that restructurings often engage other regimes, such as WARN, the NLRA, ERISA and benefit plans. The tool notes that they may apply and does not analyse them.
+- **Legal conclusions.** It flags where an obligation may apply and never says a draft is compliant or non-compliant. The legal sources here are US federal, UK and Australian. Nothing in this protocol rests on EU collective-redundancy rules, Canadian rules, or the law of any other country, and a draft naming one should get a Local market review. The EEOC guidance also notes that state law governs waiver validity and that restructurings often engage other regimes, such as WARN, the NLRA, ERISA and benefit plans. The tool notes that they may apply and does not analyze them.
 - **Separation agreements.** The EEOC guidance says group waivers for employees aged 40 and over may require a written statement of the group chosen from, the eligibility factors, time limits, and job titles and ages. They may also require 45 days to consider (21 for individual offers) and 7 days to revoke. Those items belong in the agreement, not in an announcement. So the tool must not flag their absence from an all-staff message, and it must not say whether they apply. A draft that is itself a separation agreement needs a different protocol.
-- **Unsettled points inside the guidance.** The same document says courts differ on whether "eligibility factors" means the criteria used to pick people. So the tool must not treat selection criteria as a legal requirement. The existing layoff trigger on criteria rests on process fairness, which is professional judgement here.
+- **Unsettled points inside the guidance.** The same document says courts differ on whether "eligibility factors" means the criteria used to pick people. So the tool must not treat selection criteria as a legal requirement. The existing layoff trigger on criteria rests on process fairness, which is professional judgment here.
 - **Selection.** It does not advise on who should be affected or on selection criteria. It only checks whether the draft describes them.
-- **Evidence limits.** The research shows that fairness, explanation and follow-through matter to how employees judge restructuring. It does not show that any particular draft wording changes outcomes. The Lee study covers 15 people at one company. The Topa authors call their conclusions tentative. The Khaw review is not about layoffs. The thresholds for High and Moderate are judgement, not measured cut-offs.
+- **Evidence limits.** The research shows that fairness, explanation and follow-through matter to how employees judge restructuring. It does not show that any particular draft wording changes outcomes. The Lee study covers 15 people at one company. The Topa authors call their conclusions tentative. The Khaw review is not about layoffs. The thresholds for High and Moderate are judgment, not measured cut-offs.
 - **Things that do not land on the ten dimensions.** These have no home among the ten, so the tool does not score them:
   - legal and contractual sequencing;
   - IT, payroll and property logistics;

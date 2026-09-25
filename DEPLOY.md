@@ -50,7 +50,7 @@ so it can see the code.
 
 The tool stores nothing, and that stays true. But be straight with them:
 
-- Their draft is sent to Anthropic to be analysed, then discarded.
+- Their draft is sent to Anthropic to be analyzed, then discarded.
 - The hosting company handles the traffic.
 - Nothing is removed from their text before it is sent.
 - So: no legally privileged material, no unreleased financial information, no

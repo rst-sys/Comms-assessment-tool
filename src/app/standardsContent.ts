@@ -41,7 +41,7 @@ export const CODES: Code[] = [
     body: "Arthur W. Page Society",
     url: "https://page.org/who-we-are/page-principles/",
     summary:
-      "Seven principles: tell the truth; prove it with action; listen to stakeholders; manage for tomorrow; conduct public relations as if the whole enterprise depends on it; realise that an enterprise's true character is expressed by its people; remain calm, patient and good-humoured. “Prove it with action” holds that public perception is determined ninety per cent by what an organisation does and ten per cent by what it says.",
+      "Seven principles: tell the truth; prove it with action; listen to stakeholders; manage for tomorrow; conduct public relations as if the whole enterprise depends on it; realize that an enterprise's true character is expressed by its people; remain calm, patient and good-humored. “Prove it with action” holds that public perception is determined ninety percent by what an organization does and ten percent by what it says.",
   },
   {
     id: "iabc",
@@ -67,7 +67,7 @@ export const CODES: Code[] = [
     year: "2012",
     url: "https://www.globalalliancepr.org/melbourne-mandate",
     summary:
-      "A call to action endorsed by delegates from twenty-nine countries, built on three pillars: character — defining an organisation's values; listening — to all stakeholders; and responsibility — for the organisation's conduct and its effect on society.",
+      "A call to action endorsed by delegates from twenty-nine countries, built on three pillars: character — defining an organization's values; listening — to all stakeholders; and responsibility — for the organization's conduct and its effect on society.",
   },
 ];
 
@@ -88,7 +88,7 @@ export interface Grounding {
 export const GROUNDING: Record<DimensionId, Grounding[]> = {
   accountability_agency: [
     { code: "prsa", principle: "Disclosure of Information — reveal all information needed for responsible decision-making" },
-    { code: "melbourne", principle: "Responsibility — for the organisation's conduct and its effect on society" },
+    { code: "melbourne", principle: "Responsibility — for the organization's conduct and its effect on society" },
     { code: "page", principle: "An enterprise's true character is expressed by its people" },
   ],
   truthfulness_factual_discipline: [
@@ -102,14 +102,14 @@ export const GROUNDING: Record<DimensionId, Grounding[]> = {
   ],
   stakeholder_respect_impact: [
     { code: "iabc", principle: "Truthful, accurate and fair communication that facilitates respect and mutual understanding" },
-    { code: "melbourne", principle: "Responsibility — to society, not only to the organisation" },
+    { code: "melbourne", principle: "Responsibility — to society, not only to the organization" },
   ],
   listening_employee_voice: [
     { code: "page", principle: "Listen to stakeholders" },
     { code: "melbourne", principle: "Listening — to all stakeholders" },
   ],
   corrective_action_proof: [
-    { code: "page", principle: "Prove it with action — perception is ninety per cent what an organisation does, ten per cent what it says" },
+    { code: "page", principle: "Prove it with action — perception is ninety percent what an organization does, ten percent what it says" },
     { code: "iabc", principle: "Promptly correct any erroneous communication for which the communicator is responsible" },
   ],
   clarity_plain_language: [
@@ -127,7 +127,7 @@ export const GROUNDING: Record<DimensionId, Grounding[]> = {
   ],
   future_readiness_learning: [
     { code: "page", principle: "Manage for tomorrow — anticipate and act on what is coming" },
-    { code: "melbourne", principle: "Character — defining and living the organisation's values" },
+    { code: "melbourne", principle: "Character — defining and living the organization's values" },
   ],
 };
 
@@ -138,7 +138,7 @@ export const GROUNDING: Record<DimensionId, Grounding[]> = {
  */
 export const OWNER_S_OWN: [string, string][] = [
   ["The ten dimensions and their weights", "Which dimensions exist, and that accountability and agency carries 18 of the 100 points while future readiness carries 5. No code assigns weights."],
-  ["The 0–100 score and its five bands", "Turning ten judgements into one number, and the thresholds at 90, 75, 60 and 40."],
+  ["The 0–100 score and its five bands", "Turning ten judgments into one number, and the thresholds at 90, 75, 60 and 40."],
   ["The account a message should give", "The ten things a reader should be able to see: decision, agency, context, exposure, impact, action, correction, ownership, verification, learning."],
   ["The agency and abstraction scan", "Six categories of language that let responsibility disappear, and the rule that a phrase is flagged only where it is doing the explaining."],
   ["Asserted, Supported, Unverifiable", "Capping a dimension at 3.5 of 5 where the draft claims something no supplied context confirms."],

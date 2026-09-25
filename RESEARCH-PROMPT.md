@@ -61,7 +61,7 @@ Sort what you find into these tiers, strongest first.
 3. **Standards bodies.** ISO, NIST, national standards organizations.
 4. **Professional bodies and codes of practice.** PRSA, IABC, CIPD, SHRM, the
    Arthur W. Page Society, industry associations.
-5. **Peer-reviewed research.** Studies, meta-analyses, systematic reviews.
+5. **Peer-reviewed research.** Studies, meta-analyzes, systematic reviews.
 6. **Documented practitioner consensus.** Handbooks, established textbooks,
    post-incident reviews and public inquiries.
 
@@ -94,7 +94,7 @@ from memory and search snippets.
 
 ## What to give me back
 
-**1. The short answer.** In three or four sentences: is there a recognised
+**1. The short answer.** In three or four sentences: is there a recognized
 standard for communicating about this event, or not? Do not soften it if the
 answer is no.
 
@@ -113,7 +113,7 @@ who issues it and what standing it has. Be blunt about weakness. Most
 communications guidance is consensus about good practice, not measured effect —
 if that is the case here, say so.
 
-**5. Known failure patterns.** What are the recognised evasions specific to this
+**5. Known failure patterns.** What are the recognized evasions specific to this
 event — the euphemisms, the standard deflections, the things organizations
 reliably leave out? Cite where these are documented. If they are your own
 observation rather than a source's, label them as that.
@@ -135,7 +135,7 @@ If there is little or nothing authoritative for this event, **say that clearly
 and give me what little there is.** A protocol built on nothing would make the
 tool claim rigour it does not have, which is exactly what this tool exists to
 catch in other people's communications. I can write a protocol that rests
-openly on professional judgement; I cannot use one that rests on invented
+openly on professional judgment; I cannot use one that rests on invented
 citations.
 
 ---

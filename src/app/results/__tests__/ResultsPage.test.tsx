@@ -223,7 +223,7 @@ describe("the Devil's Advocate, opened up (revision 24)", () => {
 describe("the heightened-review notice", () => {
   const result = load("demo1");
 
-  it("names the specialisms on an exposed event, and says nothing otherwise", () => {
+  it("names the specialties on an exposed event, and says nothing otherwise", () => {
     // Replaces the old heightened-review mode, whose tick-box could not be
     // unticked once a qualifying event set it. This is a property of the event
     // and the setting, so it must appear and disappear with them.

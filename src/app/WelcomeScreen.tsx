@@ -26,7 +26,7 @@ const WHAT_YOU_GET_HERE: string[] = [
  * The welcome screen (owner's copy, revision 27).
  *
  * Every word here is the owner's. The structure follows it: the problem first,
- * then what you get, then the three things that make the judgement worth
+ * then what you get, then the three things that make the judgment worth
  * having — one standard every time, a standard chosen for the event, and no
  * standard the reader cannot go and read. The three intake questions come
  * last, because they only make sense once you know what they are for.
@@ -112,13 +112,13 @@ export function WelcomeScreen({ config, runtimeNote, onStart, onOverview, onStan
 
         <section className="card welcome-card" aria-labelledby="not-heading">
           <h2 id="not-heading">What it won't do</h2>
-          <p className="prose">It's built to sharpen your judgement, not replace it.</p>
+          <p className="prose">It's built to sharpen your judgment, not replace it.</p>
           <ul className="tight prose">
             {NOT_THIS_SHORT.map((item) => (
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <p className="prose muted">This is decision-support software. The judgement, and the words, stay yours.</p>
+          <p className="prose muted">This is decision-support software. The judgment, and the words, stay yours.</p>
         </section>
 
         <section className="card callout-privacy" aria-labelledby="privacy-heading">

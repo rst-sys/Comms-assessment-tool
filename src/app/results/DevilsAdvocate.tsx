@@ -11,7 +11,7 @@ import { REPORTER_QUESTION } from "../copy.js";
  * than the four-paragraph breakdown that made five short insights look like a
  * dashboard. The closing question is not answered by the tool: it is put to
  * the reader, because deciding what a journalist would lift is the author's
- * judgement and nobody else's.
+ * judgment and nobody else's.
  */
 export function DevilsAdvocate({ data }: { data: DevilsAdvocateData }) {
   return (

@@ -6,7 +6,7 @@ event: CEO or senior-leader departure
 version: 1
 status: active
 rests_on: >-
-  US securities law for listed companies — Form 8-K, Regulation FD, Rule 10b-5 — plus professional judgement for everything else.
+  US securities law for listed companies — Form 8-K, Regulation FD, Rule 10b-5 — plus professional judgment for everything else.
 
 elements:
   - name: Character of the departure
@@ -25,7 +25,7 @@ elements:
     means: The draft names who holds the departing leader's authority from the departure date, whether that arrangement is interim, and how and roughly when a permanent appointment will be made.
     weight: core
     dimension: accountability_agency
-  - name: The organisation's own voice
+  - name: The organization's own voice
     means: The account of the departure comes from the body that made or accepted the decision, not only from a quotation attributed to the departing leader.
     weight: supporting
     dimension: accountability_agency
@@ -52,7 +52,7 @@ triggers:
   - check: No one is named as holding the departing leader's authority from the departure date, or an interim leader is named with no indication of how or when a permanent appointment will be made.
     dimension: accountability_agency
     review: [Executive]
-  - check: The only explanation of why the leader is leaving appears in a quotation attributed to the departing leader, and the organisation says nothing in its own voice about the decision.
+  - check: The only explanation of why the leader is leaving appears in a quotation attributed to the departing leader, and the organization says nothing in its own voice about the decision.
     dimension: accountability_agency
   - check: The draft gives an effective date on or before the publication date but no date for when the decision was taken or notice given.
     dimension: truthfulness_factual_discipline
@@ -66,13 +66,13 @@ questions:
     review: [Legal, Executive]
   - ask: Is there a separation agreement with non-disparagement, confidentiality or agreed-statement terms, and has the draft been checked against it and against what later remuneration or proxy disclosures will show?
     review: [Legal, Investor relations]
-  - ask: If the organisation is listed, when did any regulatory disclosure clock start — on notice of the decision, or on the governing body's decision — and does the planned publication time fit it? Counsel must confirm which rules apply.
+  - ask: If the organization is listed, when did any regulatory disclosure clock start — on notice of the decision, or on the governing body's decision — and does the planned publication time fit it? Counsel must confirm which rules apply.
     review: [Legal, Investor relations]
   - ask: In what order will employees, the leader's direct reports, key customers and the market learn of this, and could telling any group early amount to selective disclosure? Counsel must confirm.
     review: [HR, Legal, Investor relations]
-  - ask: Which strategies, commitments or relationships depended most on the departing leader, and what does the organisation intend for each?
+  - ask: Which strategies, commitments or relationships depended most on the departing leader, and what does the organization intend for each?
     review: [Executive]
-  - ask: If this account is later contradicted — by an investigation, litigation, a filing or the departing leader — what will the organisation do and how quickly?
+  - ask: If this account is later contradicted — by an investigation, litigation, a filing or the departing leader — what will the organization do and how quickly?
     review: [Legal, Executive]
 
 narrows:
@@ -137,7 +137,7 @@ blend them, and each is labelled here.
 - NYSE Regulation, *2026 Annual Listed Company Compliance Guidance Letter*
   (27 January 2026). https://www.nyse.com/publicdocs/nyse/markets/nyse/NYSE_2026_Annual_Guidance_Letter.pdf
 
-**2. Documented behaviour — justifies suspicion, not a standard.**
+**2. Documented behavior — justifies suspicion, not a standard.**
 
 - Graffin, S. D., Carpenter, M. A., & Boivie, S. (2011). "What's all that
   (strategic) noise? Anticipatory impression management in CEO succession."
@@ -156,10 +156,10 @@ blend them, and each is labelled here.
   — a documented gap between a board's own finding and its public statement;
   basis for the last question.
 
-**3. Declared professional judgement — no published source.**
+**3. Declared professional judgment — no published source.**
 
 The elements *character of the departure*, *reason or declared withholding*,
-*who holds the authority now*, *the organisation's own voice* and *continuity of
+*who holds the authority now*, *the organization's own voice* and *continuity of
 the leader's commitments* are the protocol author's position. No law, standard
 or professional code requires them. The PRSA Code of Ethics (which names "lying
 by omission" as improper) and the IABC Code of Ethics are consistent with them
@@ -187,9 +187,9 @@ been peer-reviewed, and the paper itself was not read. The Wells Fargo report
 was read in part.
 
 **What no one has measured** is whether a more candid departure announcement
-produces more trust, less rumour, better retention or any other outcome. This
+produces more trust, less rumor, better retention or any other outcome. This
 protocol's central position — that an account should give a reason or say it is
-withholding one — is judgement, not evidence.
+withholding one — is judgment, not evidence.
 
 ## What this protocol does not cover
 
@@ -204,7 +204,7 @@ withholding one — is judgement, not evidence.
 - **Its legal grounding covers only listed companies in the US and EU**, and in
   the EU only the instruments named above; national codes and regulator
   practice in most member states were not reviewed. For private companies,
-  nonprofits, arts organisations, public bodies, and US-listed foreign
+  nonprofits, arts organizations, public bodies, and US-listed foreign
   issuers, the protocol applies reasoning borrowed from securities law by
   analogy, with no authority behind the transfer. The UK is not covered.
 - **Sector rules are not covered** — banking, insurance, broker-dealer and

@@ -15,7 +15,7 @@
   --sound: #4a6fa5;
   --caution: #b8860b;
   --material: #7a1f2b;
-  /* Text-safe variants: the spec colours pass AA on paper only for large or non-text use. */
+  /* Text-safe variants: the spec colors pass AA on paper only for large or non-text use. */
   --strong-text: #4a6b50;
   --sound-text: #3f608f;
   --caution-text: #8a6508;
@@ -130,7 +130,7 @@ button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link)
 .two-col { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
 @media (min-width: 760px) { .two-col { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); } }
 
-/* Severity: a small filled square plus a text label, never by colour alone. */
+/* Severity: a small filled square plus a text label, never by color alone. */
 .sev { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
 .sev-square { width: 10px; height: 10px; display: inline-block; border: 1px solid var(--ink); flex: none; }
 .sev-high .sev-square { background: var(--material); border-color: var(--material); }

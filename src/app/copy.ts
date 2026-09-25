@@ -8,7 +8,7 @@ export const DECISION_SUPPORT_DISCLAIMER =
 /**
  * Put to the reader at the close of the Devil's Advocate, never answered by
  * the tool (revision 21). It is a self-reflective device: choosing the line a
- * journalist would lift is the author's judgement, not the engine's.
+ * journalist would lift is the author's judgment, not the engine's.
  */
 export const REPORTER_QUESTION =
   "What phrase or sentence would a reporter or critic be most likely to pull out?";
@@ -26,7 +26,7 @@ export const APP_NAME = "Trust Assessment Assistant";
  * severity and had a tick-box the user could not untick — the box set itself
  * on a qualifying event and nothing ever cleared it. The severity change was
  * the least useful half of the feature: it moved a number. Naming the
- * specialisms a reader should go and check is the half worth keeping.
+ * specialties a reader should go and check is the half worth keeping.
  */
 export const HEIGHTENED_NOTICE =
   "You selected a communications event and/or setting that warrant heightened review. Watch out for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or impact on vulnerable audiences.";

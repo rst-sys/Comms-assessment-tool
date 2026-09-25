@@ -12,7 +12,7 @@ describe("parseEvaluationRequest", () => {
     expect(parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [doc], stance: "reactive", reacting_to: "a report" }).audience_documents).toHaveLength(1);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: Array(9).fill(doc) })).toThrow(RequestValidationError);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [{ ...doc, text: "x".repeat(20_001) }] })).toThrow(RequestValidationError);
-    expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [{ ...doc, kind: "rumour" }] })).toThrow(RequestValidationError);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, audience_documents: [{ ...doc, kind: "rumor" }] })).toThrow(RequestValidationError);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, stance: "defensive" })).toThrow(RequestValidationError);
   });
 

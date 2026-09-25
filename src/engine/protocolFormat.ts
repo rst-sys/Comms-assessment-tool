@@ -51,7 +51,7 @@ export const PROTOCOL_CAPS = {
  * Not a speed limit. Instructions are read in parallel and cached, so a
  * thousand extra words of them cost a fraction of a second where a thousand
  * words of output cost twenty-five. The limit is about attention. The
- * framework is what makes the tool's judgement its own rather than a
+ * framework is what makes the tool's judgment its own rather than a
  * checklist; let the protocol layer outgrow it and every review is mostly
  * protocol, whatever the draft in front of it actually needs.
  *
@@ -161,7 +161,7 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
   else if (!/^[a-z0-9-]+$/.test(d.id)) err(`id "${d.id}" may use only lower-case letters, numbers and hyphens`);
   if (!isStr(d.name)) err("needs a name, the title shown in the Standards Library");
   if (!isStr(d.rests_on)) {
-    err('needs rests_on: one line naming what kind of authority it rests on, such as "US regulator guidance plus professional judgement; no effectiveness studies exist"');
+    err('needs rests_on: one line naming what kind of authority it rests on, such as "US regulator guidance plus professional judgment; no effectiveness studies exist"');
   } else if ((d.rests_on as string).trim().split(/\s+/).length > 30) {
     err(`rests_on is ${(d.rests_on as string).trim().split(/\s+/).length} words; keep it to 30. It is the line a reader sees instead of the full sources, not a summary of them.`);
   }
