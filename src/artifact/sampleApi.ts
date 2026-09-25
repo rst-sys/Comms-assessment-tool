@@ -129,7 +129,10 @@ export const sampleApi: ApiImplementation = {
       throw toApiError(e, "The evaluation failed. Try again.");
     }
     try {
-      return finishEvaluation(normalizeAnalysis(raw), request, { requestId: id, provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" }, usage, log: (l) => console.log(l) });
+      const repairs: string[] = [];
+      const normalized = normalizeAnalysis(raw, repairs);
+      if (repairs.length > 0) console.log(`[${id}] repaired: ${repairs.join(", ")}`);
+      return finishEvaluation(normalized, request, { requestId: id, provider: { provider: "Anthropic", model: "Claude via claude.ai (most capable tier)" }, usage, log: (l) => console.log(l) });
     } catch (e) {
       throw toApiError(e, "The evaluation failed. Try again.");
     }

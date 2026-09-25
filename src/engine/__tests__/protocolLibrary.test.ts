@@ -7,7 +7,8 @@ import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
 import { worstCase } from "../bundleWorstCase.js";
 import { activeTriggers } from "../protocols.js";
 import { DEMOS } from "../fixtures.js";
-import { AUDIENCES, COMMUNICATION_EVENTS, EMPLOYEE_AUDIENCES } from "../types.js";
+import { AUDIENCES, COMMUNICATION_EVENTS, EMPLOYEE_AUDIENCES, SPECIALIST_REVIEW_TYPES } from "../types.js";
+import { MAX_QUESTIONS } from "../limits.js";
 
 /**
  * The library the owner maintains (step 4).
@@ -215,4 +216,52 @@ describe("the checker", () => {
     expect(messages(without)).toContain("needs rests_on");
     expect(messages({ ...good, rests_on: Array.from({ length: 31 }, (_, i) => `w${i}`).join(" ") })).toContain("keep it to 30");
   });
+});
+
+describe("what the protocols ask the model to produce", () => {
+  it("never names a review value the output schema would reject", () => {
+    // A protocol saying "review: [Works council]" puts that word in the prompt,
+    // the model copies it back, and the strict validator throws out the whole
+    // analysis over one label. normalize.ts now maps or drops such a value,
+    // but a protocol should not be shipping one in the first place: the tag is
+    // wrong on the page either way.
+    const allowed = new Set<string>(SPECIALIST_REVIEW_TYPES);
+    const offences: string[] = [];
+    for (const p of PROTOCOL_LIBRARY) {
+      for (const [i, t] of p.triggers.entries()) {
+        for (const r of t.review ?? []) if (!allowed.has(r)) offences.push(`${p.id} trigger ${i + 1}: ${r}`);
+      }
+      for (const [i, q] of p.questions.entries()) {
+        for (const r of q.review ?? []) if (!allowed.has(r)) offences.push(`${p.id} question ${i + 1}: ${r}`);
+      }
+    }
+    expect(offences).toEqual([]);
+  });
+
+  it("assembles the largest reachable bundle without a review value the schema rejects", () => {
+    const worst = worstCase();
+    const allowed = new Set<string>(SPECIALIST_REVIEW_TYPES);
+    const inBundle = worst.protocols.map((id) => PROTOCOL_LIBRARY.find((p) => p.id === id)!);
+    expect(inBundle.every(Boolean)).toBe(true);
+    const named = new Set<string>();
+    for (const p of inBundle) {
+      for (const t of p.triggers) for (const r of t.review ?? []) named.add(r);
+      for (const q of p.questions) for (const r of q.review ?? []) named.add(r);
+    }
+    expect([...named].filter((r) => !allowed.has(r))).toEqual([]);
+    // The bundle really does name several, so this is not passing on an empty set.
+    expect(named.size).toBeGreaterThan(3);
+  }, 60_000);
+
+  it("offers far more questions than a review may carry, which is why the cap is enforced", () => {
+    // The pressure behind the intermittent failure: six protocols between them
+    // put more than twice the cap in front of the model. If this ever falls to
+    // the cap or below, the ranking instruction in the prompt has stopped
+    // earning its place and the trimming in normalize.ts is untested in anger.
+    const worst = worstCase();
+    const offered = worst.protocols
+      .map((id) => PROTOCOL_LIBRARY.find((p) => p.id === id)!)
+      .reduce((n, p) => n + p.questions.length, 0);
+    expect(offered).toBeGreaterThan(MAX_QUESTIONS);
+  }, 60_000);
 });

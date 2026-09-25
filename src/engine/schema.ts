@@ -19,6 +19,7 @@
  * through. This is the same division the count, numeric and string
  * constraints already use: expressed here, enforced in validate.ts.
  */
+import { MAX_QUESTIONS } from "./limits.js";
 import {
   CLAIM_STATUSES,
   DEVILS_ADVOCATE_DISCLAIMER,
@@ -102,6 +103,11 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
     ),
     most_damaging_interpretation: str,
   }),
-  questions_before_publication: arr(str),
+  // The one list with a maximum in the schema itself, so the provider's
+  // grammar stops the overrun as it is written. The others are bounded by
+  // normalize.ts and validate.ts instead: findings are trimmed only after
+  // their excerpts have been checked against the draft, and capping them here
+  // would cut good findings before the unverifiable ones had been dropped.
+  questions_before_publication: { type: "array", items: str, maxItems: MAX_QUESTIONS },
   specialist_review_summary: arr(enumOf(SPECIALIST_REVIEW_TYPES)),
 });

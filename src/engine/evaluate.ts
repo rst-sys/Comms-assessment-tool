@@ -164,7 +164,12 @@ async function askOnce({ request, system, user, config, requestId, log, client }
   // Normalized on this path too, not only on the claude.ai page. The provider's
   // grammar no longer carries the permitted values (see schema.ts), so the
   // casing repair both runtimes need now happens in one place for both.
-  return finishEvaluation(normalizeAnalysis(raw), request, {
+  // Repairs are logged as codes — which field, and how many items — never the
+  // text of anything the model wrote, which can carry the draft.
+  const repairs: string[] = [];
+  const normalized = normalizeAnalysis(raw, repairs);
+  if (repairs.length > 0) log(`[${requestId}] repaired: ${repairs.join(", ")}`);
+  return finishEvaluation(normalized, request, {
     requestId,
     provider: { provider: config.provider, model: call.model },
     usage: call.usage,

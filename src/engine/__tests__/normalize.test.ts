@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { MAX_QUESTIONS } from "../limits.js";
-import { normalizeAnalysis } from "../normalize.js";
+import { normalizeAnalysis, reviewType } from "../normalize.js";
 import { validateAnalysis } from "../validate.js";
 import { SAMPLE_DRAFT, sampleAnalysis } from "./helpers.js";
+import { SPECIALIST_REVIEW_TYPES } from "../types.js";
 
 describe("normalizeAnalysis", () => {
   it("repairs harmless deviations so the strict validator passes", () => {
@@ -82,5 +83,94 @@ describe("enum casing, which the provider's grammar used to absorb", () => {
     }) as { findings: { claim_status: unknown; specialist_review_type: unknown }[] };
     expect(out.findings[0]!.claim_status).toBeNull();
     expect(out.findings[0]!.specialist_review_type).toBeNull();
+  });
+});
+
+describe("tolerating a shape the model reached for, instead of losing the review", () => {
+  const base = () => JSON.parse(JSON.stringify(sampleAnalysis()));
+
+  it("reads questions back out of an object keyed by reviewer", () => {
+    // The live failure: the model grouped its questions under headings instead
+    // of listing them. arr() turned that into [], and an empty questions list
+    // is the one thing the validator refuses, so a complete review was lost.
+    const raw = base();
+    raw.questions_before_publication = {
+      Legal: ["Which duties may apply here?", "Has counsel confirmed the timing?"],
+      HR: ["Have affected employees been told?"],
+    };
+    const repairs: string[] = [];
+    const out = normalizeAnalysis(raw, repairs) as { questions_before_publication: string[] };
+    expect(out.questions_before_publication).toEqual([
+      "Which duties may apply here?",
+      "Has counsel confirmed the timing?",
+      "Have affected employees been told?",
+    ]);
+    expect(repairs).toContain("questions_reshaped");
+  });
+
+  it("reads a question out of the {ask, review} shape the protocols are written in", () => {
+    const raw = base();
+    raw.questions_before_publication = [
+      { ask: "Which entities may require notice?", review: ["Legal", "Labor"] },
+      "A plain one.",
+    ];
+    const out = normalizeAnalysis(raw) as { questions_before_publication: string[] };
+    expect(out.questions_before_publication).toEqual(["Which entities may require notice?", "A plain one."]);
+  });
+
+  it("keeps the first N questions and counts the rest, rather than failing", () => {
+    const raw = base();
+    raw.questions_before_publication = Array.from({ length: MAX_QUESTIONS + 4 }, (_, i) => `Question ${i + 1}?`);
+    const repairs: string[] = [];
+    const out = normalizeAnalysis(raw, repairs) as { questions_before_publication: string[] };
+    expect(out.questions_before_publication).toHaveLength(MAX_QUESTIONS);
+    // The prompt asks for most important first, so the tail is the least material.
+    expect(out.questions_before_publication[0]).toBe("Question 1?");
+    expect(repairs).toContain("questions_trimmed:4");
+  });
+
+  it("invents nothing when there is no text in the shape at all", () => {
+    const raw = base();
+    raw.questions_before_publication = [{}, { review: ["Legal"] }, "   "];
+    const out = normalizeAnalysis(raw) as { questions_before_publication: string[] };
+    expect(out.questions_before_publication).toEqual([]);
+  });
+
+  it("maps a review value it recognizes and drops one it does not", () => {
+    expect(reviewType("Works council")).toBe("Labor");
+    expect(reviewType("infosec")).toBe("Information security");
+    expect(reviewType("H&S")).toBeNull();
+    expect(reviewType("health and safety")).toBe("Health and safety");
+    expect(reviewType("Marketing")).toBeNull();
+    // Exact spellings are untouched.
+    for (const t of SPECIALIST_REVIEW_TYPES) expect(reviewType(t)).toBe(t);
+  });
+
+  it("logs a code for a mapped or dropped tag, and never the model's prose", () => {
+    const repairs: string[] = [];
+    reviewType("Works council", repairs);
+    reviewType("Marketing", repairs);
+    // A value long enough to be prose is never echoed.
+    reviewType("Legal, because the draft says we will notify everyone by Friday", repairs);
+    expect(repairs).toEqual([
+      "review_value_mapped:Works council>Labor",
+      "review_value_dropped:Marketing",
+      "review_value_dropped:unprintable",
+    ]);
+  });
+
+  it("drops an unknown tag from a finding rather than failing the whole analysis", () => {
+    const raw = base();
+    raw.findings[0].specialist_review_needed = true;
+    raw.findings[0].specialist_review_type = "Marketing";
+    raw.specialist_review_summary = ["Works council", "Marketing", "Legal"];
+    const out = normalizeAnalysis(raw) as {
+      findings: { specialist_review_type: string | null }[];
+      specialist_review_summary: string[];
+    };
+    expect(out.findings[0]!.specialist_review_type).toBeNull();
+    expect(out.specialist_review_summary).toEqual(["Labor", "Legal"]);
+    // And the whole thing still passes the strict validator.
+    expect(() => validateAnalysis(out, SAMPLE_DRAFT, "")).not.toThrow();
   });
 });

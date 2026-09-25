@@ -29,6 +29,7 @@ const REVIEW_FUNCTIONS: [SpecialistReviewType, RegExp][] = [
   ["Information security", /\b(information security|infosec|cyber\w*|breach|intrusion|attacker|threat actor|malware|ransomware|vulnerabilit\w*|forensics?|containment|exfiltrat\w*|credentials?)\b/i],
   ["Investor relations", /\b(investor relations|investors|shareholders?|disclosure|securities)\b/i],
   ["Local market", /\b(local[- ]market|jurisdiction|each market|country)\b/i],
+  ["Health and safety", /\b(health and safety|safety|injur\w*|hazard\w*|protective (steps|measures)|first aid|next of kin)\b/i],
   ["Executive", /\b(executive|board|leadership team)\b/i],
 ];
 
