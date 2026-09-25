@@ -18,7 +18,8 @@
     "fixtures": "tsx scripts/run-fixtures.ts",
     "build:artifact": "vite build --config vite.artifact.config.ts && node scripts/prepare-artifact.mjs",
     "preview:results": "vite build --config vite.preview.config.ts",
-    "protocols": "tsx scripts/compile-protocols.ts"
+    "protocols": "tsx scripts/compile-protocols.ts",
+    "protocols:baseline": "tsx scripts/capture-protocol-baseline.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",

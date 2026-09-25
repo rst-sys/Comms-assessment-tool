@@ -6,3 +6,6 @@ dist/
 fixture-runs/
 dist-artifact/
 dist-preview/
+
+# Generated on request from the prompt sources; regenerate rather than commit.
+framework-prompt.txt
