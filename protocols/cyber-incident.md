@@ -2,7 +2,8 @@
 id: cyber-incident
 name: Cyber incident and data breach
 layer: event
-event: Cyberattack or data incident
+events:
+  - Cyber incident or data breach
 version: 1
 status: active
 rests_on: >-

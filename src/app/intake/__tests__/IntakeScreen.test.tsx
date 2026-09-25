@@ -45,7 +45,7 @@ describe("IntakeScreen", () => {
     fireEvent.click(button);
     expect(onEvaluate).toHaveBeenCalledTimes(1);
     const request = onEvaluate.mock.calls[0]![0];
-    expect(request.communication_event).toBe("Workforce reduction or major reorganization");
+    expect(request.communication_event).toBe("Layoffs or job cuts");
     expect(request.communication_format).toBe("Employee announcement");
     expect(request.already_published).toBe(false);
     expect(request.context).toEqual({});
@@ -61,7 +61,7 @@ describe("IntakeScreen", () => {
   it("imports a page, fills the draft, suggests the format and marks the draft as already published", async () => {
     const onEvaluate = vi.fn();
     const text = Array.from({ length: 60 }, (_, i) => `word${i}`).join(" ");
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ source_url: "https://example.com/newsroom/x", title: "A statement", published: "2026-09-01", text, suggested_format: "Press release" }), { status: 200, headers: { "content-type": "application/json" } })));
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ source_url: "https://example.com/newsroom/x", title: "A statement", published: "2026-09-01", text, suggested_format: "Press release or public statement" }), { status: 200, headers: { "content-type": "application/json" } })));
     try {
       render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
       fireEvent.click(screen.getByRole("tab", { name: "Import from URL" }));
@@ -71,20 +71,83 @@ describe("IntakeScreen", () => {
       expect(screen.getByText(/already issued/)).toBeTruthy();
       // The URL suggests a format, never an event: a newsroom page tells you
       // what the document is, not what happened.
-      const selects = screen.getAllByRole("combobox") as HTMLSelectElement[];
-      expect(selects[1]!.value).toBe("Press release");
-      expect(selects[0]!.value).toBe("");
-      fireEvent.change(selects[0]!, { target: { value: "None of these" } });
-      fireEvent.change(selects[2]!, { target: { value: "Media" } });
-      fireEvent.change(selects[3]!, { target: { value: "Routine" } });
-      fireEvent.change(selects[4]!, { target: { value: "United Kingdom" } });
-      fireEvent.change(selects[5]!, { target: { value: "Inform" } });
-      fireEvent.change(selects[6]!, { target: { value: "External" } });
+      expect((screen.getByRole("radio", { name: /Press release or public statement/ }) as HTMLInputElement).checked).toBe(true);
+      expect(screen.queryByRole("radio", { checked: true, name: /Layoffs or job cuts/ })).toBeNull();
+
+      fireEvent.click(screen.getByRole("radio", { name: "Private company" }));
+      fireEvent.change(screen.getByLabelText("Headquarters"), { target: { value: "United Kingdom" } });
+      fireEvent.click(screen.getAllByRole("radio", { name: "Price increase or change to terms" })[0]!);
+      fireEvent.click(screen.getByRole("radio", { name: /Already public/ }));
+      fireEvent.click(screen.getByRole("checkbox", { name: "United Kingdom" }));
+      fireEvent.click(screen.getByRole("radio", { name: /Announce a decision or change/ }));
       fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
-      expect(onEvaluate.mock.calls[0]![0].already_published).toBe(true);
+
+      const request = onEvaluate.mock.calls[0]![0];
+      expect(request.already_published).toBe(true);
+      expect(request.communication_format).toBe("Press release or public statement");
+      // The format pre-selected who it goes to, and nothing the user did
+      // afterwards overwrote it.
+      expect(request.audiences).toEqual(["Media", "General public and communities"]);
+      expect(request.locations).toEqual(["United Kingdom"]);
     } finally {
       vi.unstubAllGlobals();
     }
+  });
+
+  it("pre-selects the audiences a format goes to, and stops as soon as the user has an opinion", () => {
+    const onEvaluate = vi.fn();
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
+    fireEvent.click(screen.getByRole("radio", { name: /Employee announcement/ }));
+    expect((screen.getByRole("checkbox", { name: "All employees" }) as HTMLInputElement).checked).toBe(true);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: /Managers and leaders/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Social media post/ }));
+    // The user has chosen; the new format may not overwrite that.
+    expect((screen.getByRole("checkbox", { name: "All employees" }) as HTMLInputElement).checked).toBe(true);
+    expect((screen.getByRole("checkbox", { name: /General public and communities/ }) as HTMLInputElement).checked).toBe(false);
+  });
+
+  it("renames and hides the audiences that depend on the event and the organization", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    expect(screen.queryByRole("checkbox", { name: /Departing employees/ })).toBeNull();
+    fireEvent.click(screen.getAllByRole("radio", { name: "Layoffs or job cuts" })[0]!);
+    expect(screen.getByRole("checkbox", { name: "Departing employees" })).toBeTruthy();
+
+    expect(screen.getByRole("checkbox", { name: "Investors and analysts" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: "Nonprofit or charity" }));
+    expect(screen.getByRole("checkbox", { name: "Donors, funders and trustees" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: "Public body or government agency" }));
+    expect(screen.queryByRole("checkbox", { name: /Donors, funders and trustees|Investors and analysts/ })).toBeNull();
+  });
+
+  it("pre-selects Still unfolding for a holding statement, and leaves a chosen answer alone", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    fireEvent.click(screen.getByRole("radio", { name: /Holding statement/ }));
+    expect((screen.getByRole("radio", { name: /Still unfolding/ }) as HTMLInputElement).checked).toBe(true);
+
+    cleanup();
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    fireEvent.click(screen.getByRole("radio", { name: /Already public/ }));
+    fireEvent.click(screen.getByRole("radio", { name: /Holding statement/ }));
+    expect((screen.getByRole("radio", { name: /Already public/ }) as HTMLInputElement).checked).toBe(true);
+  });
+
+  it("says which places it carries no legal checks for, and lets a place be removed again", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    fireEvent.click(screen.getByRole("checkbox", { name: "Canada" }));
+    expect(screen.getByText(/Legal checks for Canada aren't included/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Remove Canada" }));
+    expect(screen.queryByText(/Legal checks for Canada/)).toBeNull();
+  });
+
+  it("warns a non-listed organization off a market disclosure", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    fireEvent.click(screen.getByRole("radio", { name: /Investor or market disclosure/ }));
+    expect(screen.queryByText(/Change the profile or choose another format/)).toBeNull();
+    fireEvent.click(screen.getByRole("radio", { name: "Nonprofit or charity" }));
+    expect(screen.getByText(/Change the profile or choose another format/)).toBeTruthy();
+    fireEvent.click(screen.getByRole("radio", { name: "Publicly listed company" }));
+    expect(screen.queryByText(/Change the profile or choose another format/)).toBeNull();
   });
 
   it("adds a pasted media report and a supporting document and sends them with the request", () => {

@@ -1,9 +1,9 @@
 /**
  * Which protocols apply to a request, and what the engine sends when they do.
  *
- * Selection is by the intake dropdowns, not by reading the draft for keywords:
- * the user says what happened, so exactly one core, at most one event protocol
- * and at most one posture protocol load. Nothing scans thirteen files to guess.
+ * Selection is by the intake menus, not by reading the draft for keywords: the
+ * user says what happened, so at most one event protocol and at most one
+ * posture protocol load. Nothing scans the library to guess.
  *
  * The protocols themselves live in protocols/*.md and are compiled into
  * protocolLibrary.ts by `npm run protocols`. This file only chooses among them
@@ -13,7 +13,7 @@
 import { buildProtocolBlock, PROTOCOL_RULES } from "./protocolPrompt.js";
 import type { ProtocolFile } from "./protocolFormat.js";
 import { PROTOCOL_LIBRARY } from "./protocolLibrary.js";
-import { NO_EVENT, type EvaluationRequest } from "./types.js";
+import { OTHER_EVENT, type EvaluationRequest } from "./types.js";
 
 export type { ProtocolFile } from "./protocolFormat.js";
 
@@ -38,14 +38,14 @@ export function protocolsFor(request: EvaluationRequest): ProtocolFile[] {
   const applied: ProtocolFile[] = [];
   const event = request.communication_event;
 
-  if (event !== NO_EVENT) {
-    const forEvent = EVENT_PROTOCOLS.find((p) => p.event === event);
+  if (event !== OTHER_EVENT) {
+    const forEvent = EVENT_PROTOCOLS.find((p) => p.events?.includes(event));
     if (forEvent) applied.push(forEvent);
   }
 
   // A posture sits on top of any event, and on top of none: an apology for a
   // routine mistake still needs to acknowledge responsibility and offer repair.
-  const posture = POSTURE_PROTOCOLS.find((p) => p.goals?.includes(request.goal));
+  const posture = POSTURE_PROTOCOLS.find((p) => p.purposes?.includes(request.purpose));
   if (posture) applied.push(posture);
 
   return applied;

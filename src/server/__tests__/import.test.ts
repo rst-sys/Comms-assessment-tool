@@ -22,7 +22,7 @@ describe("extractReadable", () => {
     expect(page!.text).toContain("Paragraph 6.");
     expect(page!.text).not.toContain("We use cookies");
     expect(page!.text).not.toContain("Great news!");
-    expect(page!.suggested_format).toBe("Press release");
+    expect(page!.suggested_format).toBe("Press release or public statement");
   });
 
   it("returns null for a paywalled or script-only page with no readable body", () => {
@@ -61,15 +61,15 @@ describe("allowedUrl", () => {
 });
 
 describe("suggestFormatFromUrl", () => {
-  it("suggests Press release for newsroom and press URLs only", () => {
-    expect(suggestFormatFromUrl("https://corp.example.com/newsroom/2026/statement")).toBe("Press release");
-    expect(suggestFormatFromUrl("https://corp.example.com/press-releases/q3")).toBe("Press release");
-    expect(suggestFormatFromUrl("https://corp.example.com/news/q3")).toBe("Press release");
+  it("suggests a press release for newsroom and press URLs only", () => {
+    expect(suggestFormatFromUrl("https://corp.example.com/newsroom/2026/statement")).toBe("Press release or public statement");
+    expect(suggestFormatFromUrl("https://corp.example.com/press-releases/q3")).toBe("Press release or public statement");
+    expect(suggestFormatFromUrl("https://corp.example.com/news/q3")).toBe("Press release or public statement");
     expect(suggestFormatFromUrl("https://corp.example.com/ceo-letter")).toBeNull();
   });
-  it("suggests Blog post for a blog URL", () => {
-    expect(suggestFormatFromUrl("https://corp.example.com/blog/why-we-changed")).toBe("Blog post");
-    expect(suggestFormatFromUrl("https://blog.example.com/why-we-changed")).toBe("Blog post");
+  it("suggests a leader message for a blog URL", () => {
+    expect(suggestFormatFromUrl("https://corp.example.com/blog/why-we-changed")).toBe("Leader message");
+    expect(suggestFormatFromUrl("https://blog.example.com/why-we-changed")).toBe("Leader message");
   });
 });
 

@@ -55,8 +55,12 @@ export function proseBlocks(section: string): ProseBlock[] {
 }
 
 /** One line saying when a protocol applies, built from its own selection fields. */
-export function appliesTo(p: { layer: string; event?: string; goals?: string[] }): string {
-  if (p.layer === "event") return `The event "${p.event}", in any format, to any audience.`;
-  if (p.layer === "posture") return `The goal ${(p.goals ?? []).map((g) => `"${g}"`).join(" or ")}, on top of any event or none.`;
+export function appliesTo(p: { layer: string; events?: string[]; purposes?: string[] }): string {
+  if (p.layer === "event") {
+    const events = (p.events ?? []).map((e) => `"${e}"`);
+    const list = events.length <= 1 ? events.join("") : `${events.slice(0, -1).join(", ")} or ${events[events.length - 1]}`;
+    return `The event${events.length === 1 ? "" : "s"} ${list}, in any format, to any audience.`;
+  }
+  if (p.layer === "posture") return `The purpose ${(p.purposes ?? []).map((g) => `"${g}"`).join(" or ")}, on top of any event or none.`;
   return "";
 }

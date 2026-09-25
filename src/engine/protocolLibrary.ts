@@ -13,7 +13,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "ceo-departure",
       "name": "CEO or senior-leader departure",
       "layer": "event",
-      "event": "CEO or senior-leader departure",
+      "events": [
+        "CEO or senior leader departure"
+      ],
       "version": 1,
       "status": "active",
       "rests_on": "US securities law for listed companies — Form 8-K, Regulation FD, Rule 10b-5 — plus professional judgment for everything else.",
@@ -163,7 +165,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "cyber-incident",
       "name": "Cyber incident and data breach",
       "layer": "event",
-      "event": "Cyberattack or data incident",
+      "events": [
+        "Cyber incident or data breach"
+      ],
       "version": 1,
       "status": "active",
       "rests_on": "US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgment. None of it measures which notices work better.",
@@ -289,7 +293,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "geopolitical-operations-employee-welfare",
       "name": "Geopolitical event affecting operations or employee welfare",
       "layer": "event",
-      "event": "Geopolitical event affecting operations or employee welfare",
+      "events": [
+        "Geopolitical event (war, sanctions, unrest)"
+      ],
       "version": 1,
       "status": "active",
       "rests_on": "EU worker-information directives and US WARN, official guidance with no force of law, and three studies.",
@@ -438,8 +444,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "public-apology",
       "name": "Public apology",
       "layer": "posture",
-      "goals": [
-        "Apologize or repair trust"
+      "purposes": [
+        "Apologize and take responsibility"
       ],
       "version": 1,
       "status": "active",
@@ -544,7 +550,11 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "workforce-restructuring",
       "name": "Workforce reduction and restructuring",
       "layer": "event",
-      "event": "Workforce reduction or major reorganization",
+      "events": [
+        "Layoffs or job cuts",
+        "Restructuring or reorganization",
+        "Site, office or store closure"
+      ],
       "version": 1,
       "status": "active",
       "rests_on": "EEOC and US Labor Department guidance, Fair Work Australia and CIPD, plus three studies, none of them about wording.",

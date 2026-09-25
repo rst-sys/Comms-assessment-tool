@@ -79,7 +79,7 @@ export function WelcomeScreen({ config, runtimeNote, onStart, onOverview, onStan
           </p>
           <p className="prose">
             <strong>Tailored to the moment.</strong> Tell it what kind of event you're communicating about, such as a
-            workforce reduction, a data incident, a product recall, a leadership departure, or one of ten others. It applies
+            workforce reduction, a data incident, a product recall, a leadership departure, or one of thirty in all. It applies
             the checks every serious event needs. Where a standard has been written for that specific event, it applies that
             standard too. More are being added.
           </p>

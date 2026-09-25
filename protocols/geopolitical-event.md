@@ -2,7 +2,8 @@
 id: geopolitical-operations-employee-welfare
 name: Geopolitical event affecting operations or employee welfare
 layer: event
-event: Geopolitical event affecting operations or employee welfare
+events:
+  - Geopolitical event (war, sanctions, unrest)
 version: 1
 status: active
 rests_on: >-

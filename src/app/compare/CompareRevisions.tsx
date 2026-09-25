@@ -52,7 +52,7 @@ export function CompareRevisions({ baseline, onLoad, onClear, onStart }: Props) 
             <div className="baseline-card">
               <div className="label">Loaded</div>
               <p style={{ margin: "0 0 8px" }}>
-                <strong>{baseline.settings.communication_event}</strong> to {baseline.settings.primary_audience.toLowerCase()},
+                <strong>{baseline.settings.communication_event}</strong> to {baseline.settings.audiences.toLowerCase()},
                 saved {baseline.saved_at.slice(0, 10)}.
               </p>
               <p style={{ margin: "0 0 8px" }}>

@@ -42,10 +42,10 @@ export function allowedUrl(input: string): URL | null {
   return url;
 }
 
-/** A newsroom or press URL suggests a press release; a blog URL suggests a blog post. */
+/** A newsroom or press URL suggests a press release; a blog URL suggests a leader message. */
 export function suggestFormatFromUrl(url: string): CommunicationFormat | null {
-  if (/newsroom|press[-_]?release|\/press(\/|$)|\/news(\/|$)|\/media(\/|$)|\/announcements?(\/|$)/i.test(url)) return "Press release";
-  if (/\/blogs?(\/|$)|\/posts?(\/|$)|blog\./i.test(url)) return "Blog post";
+  if (/newsroom|press[-_]?release|\/press(\/|$)|\/news(\/|$)|\/media(\/|$)|\/announcements?(\/|$)/i.test(url)) return "Press release or public statement";
+  if (/\/blogs?(\/|$)|\/posts?(\/|$)|blog\./i.test(url)) return "Leader message";
   return null;
 }
 

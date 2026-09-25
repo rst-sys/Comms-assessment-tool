@@ -22,6 +22,6 @@ describe("buildReviewPdf", () => {
   });
 
   it("names the file from the communication event and date", () => {
-    expect(reviewPdfFilename(DEMO_1.request, new Date("2026-09-19T12:00:00Z"))).toBe("trustability-review-workforce-reduction-or-major-reorganization-2026-09-19.pdf");
+    expect(reviewPdfFilename(DEMO_1.request, new Date("2026-09-19T12:00:00Z"))).toBe("trustability-review-layoffs-or-job-cuts-2026-09-19.pdf");
   });
 });

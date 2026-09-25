@@ -210,14 +210,69 @@ table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
 .url-row { margin-bottom: calc(var(--space) * 1.5); }
 .url-input { display: flex; gap: var(--space); }
 .url-input input { flex: 1; }
-textarea, input[type="url"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
+textarea, input[type="url"], input[type="text"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
 textarea:focus, input:focus, select:focus { border-color: var(--sound); outline: none; box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25); }
 textarea { resize: vertical; }
 #draft-text { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
 .field { display: block; margin-bottom: calc(var(--space) * 1.5); }
 .field .label { margin-top: 0; }
-.fields-grid { display: grid; grid-template-columns: 1fr; gap: 0 calc(var(--space) * 2); margin-top: calc(var(--space) * 2); }
-@media (min-width: 700px) { .fields-grid { grid-template-columns: 1fr 1fr; } }
+/* The seven questions above the draft.
+
+   A grid, not the multi-column packing the other pages use: a form is read
+   in order, and multi-column fills the left column to the bottom before it
+   starts the right one, which would number the questions 1, 2, 3, 4 down and
+   5, 6, 7 back up. Two of the cards span both columns because they are the
+   long ones. */
+.intake-questions { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); margin-top: calc(var(--space) * 2); }
+@media (min-width: 900px) {
+  .intake-questions { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+  .intake-questions > .question-wide { grid-column: 1 / -1; }
+}
+.question h2 { font-size: 20px; margin-bottom: 4px; }
+.question-hint { margin-bottom: calc(var(--space) * 2); max-width: var(--measure); }
+.question .field:last-child { margin-bottom: 0; }
+
+/* Group headings inside a question. Stored in ordinary case so a screen
+   reader says the words; shown in capitals because that is what separates a
+   heading from an option at a glance. */
+.group-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--neutral); margin: calc(var(--space) * 2) 0 var(--space); }
+.question > .group-label:first-of-type, .event-group > .group-label { margin-top: 0; }
+
+.choice-list { display: grid; gap: 2px; }
+.choice { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; max-width: var(--measure); cursor: pointer; }
+.choice input { margin: 4px 0 0; flex: none; }
+.choice-body { display: block; }
+.choice-label { display: block; }
+.choice-note { display: block; font-size: 13px; color: var(--neutral); line-height: 1.45; }
+.choice-described { padding: 6px 0; }
+.choice:hover .choice-label { color: var(--sound); }
+/* "Something else", and the harm tick-box: last on the list and not part of
+   the group above it, so they get a rule rather than another 2px gap. */
+.choice-list-apart, .choice-apart { margin-top: calc(var(--space) * 2); padding-top: calc(var(--space) * 1.5); border-top: 1px solid var(--border); }
+
+/* The thirty events. Three columns of groups at desk width, so the longest
+   question on the screen is not also the tallest. */
+.event-groups { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2) calc(var(--space) * 4); }
+@media (min-width: 700px) { .event-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .event-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.event-group { break-inside: avoid; }
+.search-field { max-width: 32ch; }
+/* Two halves of one short question, so a wide card is not half empty. */
+.split-two { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2) calc(var(--space) * 4); }
+@media (min-width: 700px) { .split-two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 700px) { .choice-list-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px calc(var(--space) * 4); } }
+
+/* Chosen places, each its own remove button. */
+.tag-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: var(--space) 0 calc(var(--space) * 1.5); }
+.tag-list li { margin: 0; }
+.tag { background: var(--paper); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; font-size: 14px; color: var(--ink); }
+.tag:hover { border-color: var(--material); color: var(--material-text); }
+
+/* Quieter than a warning: something to know, not something to fix. */
+.notice { border-left: 3px solid var(--border); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper);
+  max-width: var(--measure); font-size: 14px; color: var(--neutral); margin-top: calc(var(--space) * 1.5); }
+
 .checkbox { display: flex; gap: 10px; align-items: flex-start; margin: calc(var(--space) * 1.5) 0; max-width: var(--measure); }
 .checkbox input { margin-top: 5px; flex: none; }
 .warning { border-left: 3px solid var(--caution); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); max-width: var(--measure); }

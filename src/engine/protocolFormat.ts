@@ -22,12 +22,12 @@ import { SYSTEM_PROMPT } from "./promptText.js";
 import {
   COMMUNICATION_EVENTS,
   DIMENSION_IDS,
-  GOALS,
-  NO_EVENT,
+  OTHER_EVENT,
+  PURPOSES,
   SPECIALIST_REVIEW_TYPES,
   type CommunicationEvent,
   type DimensionId,
-  type Goal,
+  type Purpose,
   type SpecialistReviewType,
 } from "./types.js";
 
@@ -109,10 +109,17 @@ export interface ProtocolFile {
   layer: ProtocolLayer;
   version: number;
   status: "draft" | "active";
-  /** Event layer: the one event this protocol owns. */
-  event?: CommunicationEvent;
-  /** Posture layer: the goals that bring it in, on top of any event. */
-  goals?: Goal[];
+  /**
+   * Event layer: the events this protocol owns.
+   *
+   * A list, not one event. Layoffs, a reorganization and a site closure are
+   * three things on the menu and one duty in practice — tell the people
+   * losing something what was decided, by whom, and what happens to them —
+   * so one file covers all three rather than three files drifting apart.
+   */
+  events?: CommunicationEvent[];
+  /** Posture layer: the purposes that bring it in, on top of any event. */
+  purposes?: Purpose[];
   /**
    * One line naming what kind of authority this protocol rests on.
    *
@@ -173,20 +180,31 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
   }
 
   if (d.layer === "event") {
-    if (!one(d.event, COMMUNICATION_EVENTS)) {
-      err(`event must be one of the communication events, spelled exactly. Got ${JSON.stringify(d.event)}`);
-    } else if (d.event === NO_EVENT) {
-      err(`"${NO_EVENT}" means no protocol applies, so no protocol may claim it`);
+    if (!isArr(d.events) || d.events.length === 0) {
+      err("an event protocol needs events: a list of the events it covers, each spelled exactly as the intake spells it");
+    } else {
+      for (const e of d.events) {
+        if (!one(e, COMMUNICATION_EVENTS)) {
+          err(`event ${JSON.stringify(e)} is not one of the communication events. Spell it exactly as the intake spells it.`);
+        } else if (e === OTHER_EVENT) {
+          err(`"${OTHER_EVENT}" means the event is not on the list, so no protocol may claim it`);
+        }
+      }
+      const seen = new Set<string>();
+      for (const e of d.events as string[]) {
+        if (seen.has(e)) err(`lists "${e}" twice`);
+        seen.add(e);
+      }
     }
-  } else if (d.event !== undefined) {
-    err("only a protocol with layer: event names an event");
+  } else if (d.events !== undefined) {
+    err("only a protocol with layer: event names events");
   }
 
   if (d.layer === "posture") {
-    if (!isArr(d.goals) || d.goals.length === 0) err("a posture protocol needs goals: the intake goals that bring it in");
-    else for (const g of d.goals) if (!one(g, GOALS)) err(`goal ${JSON.stringify(g)} is not one of the intake goals`);
-  } else if (d.goals !== undefined) {
-    err("only a protocol with layer: posture names goals");
+    if (!isArr(d.purposes) || d.purposes.length === 0) err("a posture protocol needs purposes: the intake purposes that bring it in");
+    else for (const g of d.purposes) if (!one(g, PURPOSES)) err(`purpose ${JSON.stringify(g)} is not one of the intake purposes`);
+  } else if (d.purposes !== undefined) {
+    err("only a protocol with layer: posture names purposes");
   }
 
   // Elements.
@@ -295,10 +313,12 @@ export function checkLibrary(files: { file: string; data: ProtocolFile }[]): Che
     if (seenId) errors.push({ file, message: `id "${data.id}" is already used by ${seenId}` });
     byId.set(data.id, file);
 
-    if (data.layer === "event" && data.event) {
-      const seen = byEvent.get(data.event);
-      if (seen) errors.push({ file, message: `"${data.event}" is already covered by ${seen}. One protocol per event.` });
-      byEvent.set(data.event, file);
+    if (data.layer === "event") {
+      for (const event of data.events ?? []) {
+        const seen = byEvent.get(event);
+        if (seen) errors.push({ file, message: `"${event}" is already covered by ${seen}. One protocol per event.` });
+        byEvent.set(event, file);
+      }
     }
   }
   return errors;

@@ -40,7 +40,7 @@ describe("the checker", () => {
   const good = {
     id: "example", name: "Example", layer: "event", version: 1, status: "active",
     rests_on: "Regulator guidance plus professional judgment.",
-    event: "Cyberattack or data incident",
+    events: ["Cyber incident or data breach"],
     elements: [{ name: "A", means: "B.", weight: "core", dimension: "accountability_agency" }],
     triggers: [{ check: "C.", dimension: "accountability_agency", review: ["Legal"] }],
     questions: [{ ask: "D?" }],
@@ -62,9 +62,18 @@ describe("the checker", () => {
     expect(messages(bad)).toContain("Information security");
   });
 
-  it("rejects an event that is not on the list, and the no-event placeholder", () => {
-    expect(messages({ ...good, event: "A bad day" })).toContain("spelled exactly");
-    expect(messages({ ...good, event: "None of these" })).toContain("no protocol may claim it");
+  it("rejects an event that is not on the list, and the not-on-the-list placeholder", () => {
+    expect(messages({ ...good, events: ["A bad day"] })).toContain("Spell it exactly");
+    expect(messages({ ...good, events: ["Something else"] })).toContain("no protocol may claim it");
+    expect(messages({ ...good, events: [] })).toContain("needs events");
+  });
+
+  it("lets one protocol cover several events, and catches a repeat", () => {
+    // Layoffs, a reorganization and a site closure are three things on the
+    // menu and one duty in practice, so one file covers all three.
+    const three = { ...good, events: ["Layoffs or job cuts", "Restructuring or reorganization", "Site, office or store closure"] };
+    expect(checkProtocol("f.md", three, prose)).toEqual([]);
+    expect(messages({ ...good, events: ["Layoffs or job cuts", "Layoffs or job cuts"] })).toContain("twice");
   });
 
   it("holds the caps", () => {

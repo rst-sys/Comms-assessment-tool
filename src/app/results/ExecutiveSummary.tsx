@@ -55,7 +55,7 @@ export function ExecutiveSummary({ result, request }: Props) {
         </div>
       </div>
 
-      {warrantsHeightenedReview(request.communication_event, request.setting) ? (
+      {warrantsHeightenedReview(request.communication_event, request.people_at_risk) ? (
         <p className="warning heightened-notice" role="note">{HEIGHTENED_NOTICE}</p>
       ) : null}
 

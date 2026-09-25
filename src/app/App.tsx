@@ -247,17 +247,29 @@ function baselineRequest(saved: SavedReview, fallback?: Req): Req {
   return {
     ...(fallback ?? ({} as Req)),
     draft: "",
+    organization: {
+      type: s.organization_type as Req["organization"]["type"],
+      ...(s.listed_where ? { listed_where: s.listed_where } : {}),
+      headquarters: s.headquarters,
+    },
     communication_event: s.communication_event as Req["communication_event"],
+    ...(s.event_description ? { event_description: s.event_description } : {}),
     communication_format: s.communication_format as Req["communication_format"],
-    primary_audience: s.primary_audience as Req["primary_audience"],
-    setting: s.setting as Req["setting"],
-    market: s.market as Req["market"],
-    goal: s.goal as Req["goal"],
-    audience_scope: s.audience_scope as Req["audience_scope"],
+    ...(s.format_description ? { format_description: s.format_description } : {}),
+    audiences: splitList(s.audiences) as Req["audiences"],
+    situation: s.situation as Req["situation"],
+    people_at_risk: s.people_at_risk,
+    locations: splitList(s.locations),
     context: { ...saved.context },
     already_published: s.already_published,
     stance: s.stance as Req["stance"],
     reacting_to: s.reacting_to,
+    purpose: s.purpose as Req["purpose"],
     audience_documents: [],
   };
+}
+
+/** A saved review stores lists as one comma-separated line; this reads it back. */
+function splitList(value: string): string[] {
+  return value.split(",").map((v) => v.trim()).filter((v) => v.length > 0);
 }

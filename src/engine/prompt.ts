@@ -6,6 +6,8 @@ import { MAX_FINDINGS, MAX_QUESTIONS, MIN_QUESTIONS } from "./limits.js";
 import { protocolBlocksFor } from "./protocols.js";
 import { SYSTEM_PROMPT } from "./promptText.js";
 import {
+  AFFECTED_AUDIENCE,
+  AFFECTED_EMPLOYEE_LABELS,
   CLAIM_STATUSES,
   CONTEXT_FIELDS,
   DIMENSION_IDS,
@@ -14,7 +16,11 @@ import {
   RISK_LEVELS,
   SCAN_CATEGORIES,
   SEVERITIES,
+  SITUATION_DESCRIPTIONS,
   SPECIALIST_REVIEW_TYPES,
+  OTHER_EVENT,
+  OTHER_FORMAT,
+  type Audience,
   type EvaluationRequest,
 } from "./types.js";
 
@@ -107,29 +113,77 @@ function block(label: string, body: string): string {
   return `${label}\n${body}`;
 }
 
+/** How the audience "Employees directly affected" is named for this event. */
+function audienceLabel(audience: Audience, request: EvaluationRequest): string {
+  if (audience !== AFFECTED_AUDIENCE) return audience;
+  return AFFECTED_EMPLOYEE_LABELS[request.communication_event] ?? audience;
+}
+
+/**
+ * The intake, as the engine reads it.
+ *
+ * Written as questions and answers rather than field names, because that is
+ * what the fields now are: "What happened" and "Who will receive this" are
+ * the labels the user saw, and matching them keeps the review's language and
+ * the screen's language the same.
+ */
+export function intakeLines(request: EvaluationRequest): string[] {
+  const org = request.organization;
+  const listed = org.listed_where?.trim();
+  const audiences = request.audiences.map((a) => audienceLabel(a, request));
+  const lines = [
+    `Organization: ${org.type}${listed ? `, listed on ${listed}` : ""}${org.headquarters.trim() ? `, headquartered in ${org.headquarters.trim()}` : ""}`,
+    `What happened: ${request.communication_event}${
+      request.communication_event === OTHER_EVENT && request.event_description?.trim()
+        ? ` — ${request.event_description.trim()}`
+        : ""
+    }`,
+    `What they are drafting: ${request.communication_format}${
+      request.communication_format === OTHER_FORMAT && request.format_description?.trim()
+        ? ` — ${request.format_description.trim()}`
+        : ""
+    }`,
+    `Who will receive it: ${audiences.length > 0 ? audiences.join(", ") : NOT_SUPPLIED}`,
+    `Where things stand: ${request.situation} — ${SITUATION_DESCRIPTIONS[request.situation].toLowerCase()}`,
+    `People have been harmed or put at risk: ${request.people_at_risk ? "yes" : "no"}`,
+    `Where the affected people are: ${request.locations.length > 0 ? request.locations.join(", ") : NOT_SUPPLIED}`,
+    `What the draft is mainly trying to do: ${request.purpose}`,
+    `already_published: ${request.already_published}`,
+    `stance: ${request.stance ?? "proactive"}`,
+  ];
+  if (request.stance === "reactive") {
+    lines.push(`reacting_to: ${request.reacting_to?.trim() || NOT_SUPPLIED}`);
+  }
+  // Two employee audiences in one draft is its own test: the people losing
+  // something and the people staying read the same words and need different
+  // things from them, and a draft written for one usually says nothing to
+  // the other.
+  if (request.audiences.includes("All employees") && request.audiences.includes(AFFECTED_AUDIENCE)) {
+    lines.push(
+      "Note: this draft goes to all employees and to the people directly affected. Judge what it says to the employees who are not directly affected as well as to those who are; a draft that speaks only to one of the two groups is incomplete for the audience it names.",
+    );
+  }
+  return lines;
+}
+
 /** The user message: the draft and every intake field as labeled blocks. */
 export function buildUserMessage(request: EvaluationRequest): string {
   const parts: string[] = [];
 
   parts.push(block("DRAFT", `<<<\n${request.draft.trim()}\n>>>`));
 
-  parts.push(
-    block(
-      "INTAKE",
-      [
-        `Communication event: ${request.communication_event}`,
-        `Communication format: ${request.communication_format}`,
-        `Primary audience: ${request.primary_audience}`,
-        `Setting: ${request.setting}`,
-        `Market: ${request.market}`,
-        `Goal: ${request.goal}`,
-        `Audience scope: ${request.audience_scope}`,
-        `already_published: ${request.already_published}`,
-        `stance: ${request.stance ?? "proactive"}`,
-        ...(request.stance === "reactive" ? [`reacting_to: ${request.reacting_to?.trim() || NOT_SUPPLIED}`] : []),
-      ].join("\n"),
-    ),
-  );
+  parts.push(block("INTAKE", intakeLines(request).join("\n")));
+
+  const announcement = request.main_announcement?.trim();
+  if (announcement) {
+    parts.push(
+      block(
+        "THE MAIN ANNOUNCEMENT THIS DRAFT SUPPORTS",
+        "The draft above is supporting material for the announcement below. Check that it says nothing that goes beyond or contradicts it, and raise anything it adds that the announcement does not carry.\n" +
+          `<<<\n${announcement}\n>>>`,
+      ),
+    );
+  }
 
   const contextLines = CONTEXT_FIELDS.map(([key, label]) => {
     const value = request.context[key]?.trim();

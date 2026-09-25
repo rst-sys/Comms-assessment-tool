@@ -226,17 +226,17 @@ describe("the heightened-review notice", () => {
   it("names the specialties on an exposed event, and says nothing otherwise", () => {
     // Replaces the old heightened-review mode, whose tick-box could not be
     // unticked once a qualifying event set it. This is a property of the event
-    // and the setting, so it must appear and disappear with them.
+    // and the harm tick-box, so it must appear and disappear with them.
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.getByText(HEIGHTENED_NOTICE)).toBeTruthy();
     cleanup();
 
-    render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "None of these", setting: "Routine" }} />);
+    render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "New CEO or leadership appointment", people_at_risk: false }} />);
     expect(screen.queryByText(HEIGHTENED_NOTICE)).toBeNull();
     cleanup();
 
-    // The setting alone is enough, with no qualifying event.
-    render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "None of these", setting: "Crisis" }} />);
+    // The harm tick-box alone is enough, with no qualifying event.
+    render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "New CEO or leadership appointment", people_at_risk: true }} />);
     expect(screen.getByText(HEIGHTENED_NOTICE)).toBeTruthy();
   });
 });

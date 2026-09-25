@@ -30,7 +30,7 @@ describe("CompareRevisions", () => {
     upload(JSON.stringify(saved));
     await waitFor(() => expect(onLoad).toHaveBeenCalled());
     rerender(<CompareRevisions baseline={onLoad.mock.calls[0]![0]} onLoad={onLoad} onClear={() => {}} onStart={() => {}} />);
-    expect(screen.getByText("Workforce reduction or major reorganization")).toBeTruthy();
+    expect(screen.getByText("Layoffs or job cuts")).toBeTruthy();
     expect(screen.getByText(String(saved.score))).toBeTruthy();
     expect(screen.getByText(/Employee FAQ/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Add the new draft" })).toBeTruthy();

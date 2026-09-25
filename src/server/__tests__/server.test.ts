@@ -18,7 +18,7 @@ describe("parseEvaluationRequest", () => {
 
   it("rejects unknown fields, bad enums and a missing draft", () => {
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, extra: 1 })).toThrow(RequestValidationError);
-    expect(() => parseEvaluationRequest({ ...DEMO_1.request, setting: "Casual" })).toThrow(/setting/);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, situation: "Casual" })).toThrow(/situation/);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, draft: "" })).toThrow(/draft/);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, context: { unknown_key: "x" } })).toThrow(RequestValidationError);
   });
@@ -46,7 +46,7 @@ describe("server endpoints", () => {
   });
 
   it("rejects an invalid evaluation request with a plain message and no echo of the body", async () => {
-    const res = await fetch(`${base}/api/evaluate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ draft: "secret text", setting: "Nope" }) });
+    const res = await fetch(`${base}/api/evaluate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ draft: "secret text", situation: "Nope" }) });
     expect(res.status).toBe(400);
     const text = await res.text();
     expect(text).not.toContain("secret text");

@@ -19,8 +19,10 @@ export const COPYRIGHT = "\u00a9 2026 Richard Thompson";
 export const APP_NAME = "Trust Assessment Assistant";
 
 /**
- * Shown on the results page when the event or the setting warrants it
- * (revision 28, wording by the owner).
+ * Shown on the results page when the event warrants it, or when the intake
+ * says people have been harmed or put at risk (revision 28, wording by the
+ * owner; the first clause changed when the Setting menu was removed and there
+ * was no longer a setting to name).
  *
  * This replaces the heightened-review mode, which raised four faults to High
  * severity and had a tick-box the user could not untick — the box set itself
@@ -29,7 +31,7 @@ export const APP_NAME = "Trust Assessment Assistant";
  * specialties a reader should go and check is the half worth keeping.
  */
 export const HEIGHTENED_NOTICE =
-  "You selected a communications event and/or setting that warrant heightened review. Watch out for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or impact on vulnerable audiences.";
+  "This kind of event warrants heightened review. Watch out for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or impact on vulnerable audiences.";
 
 export const TAGLINE = "Know whether your message will be trusted before your audience decides.";
 

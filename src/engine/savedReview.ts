@@ -24,16 +24,42 @@ export const SAVED_REVIEW_VERSION = 1;
 
 /** The intake settings that must match for two reviews to be comparable. */
 export interface SavedSettings {
+  organization_type: string;
+  listed_where: string;
+  headquarters: string;
   communication_event: string;
+  event_description: string;
   communication_format: string;
-  primary_audience: string;
-  setting: string;
-  market: string;
-  goal: string;
-  audience_scope: string;
+  format_description: string;
+  audiences: string;
+  situation: string;
+  people_at_risk: boolean;
+  locations: string;
+  purpose: string;
   already_published: boolean;
   stance: string;
   reacting_to: string;
+}
+
+/** The settings, flattened to the strings a saved review stores and compares. */
+function currentSettings(request: EvaluationRequest): SavedSettings {
+  return {
+    organization_type: request.organization.type,
+    listed_where: request.organization.listed_where?.trim() ?? "",
+    headquarters: request.organization.headquarters.trim(),
+    communication_event: request.communication_event,
+    event_description: request.event_description?.trim() ?? "",
+    communication_format: request.communication_format,
+    format_description: request.format_description?.trim() ?? "",
+    audiences: [...request.audiences].join(", "),
+    situation: request.situation,
+    people_at_risk: request.people_at_risk,
+    locations: [...request.locations].join(", "),
+    purpose: request.purpose,
+    already_published: request.already_published,
+    stance: request.stance ?? "proactive",
+    reacting_to: request.reacting_to ?? "",
+  };
 }
 
 export interface SavedFinding {
@@ -91,18 +117,7 @@ export function buildSavedReview(
     score: result.score,
     band: result.band,
     confidence_label: result.confidence_label,
-    settings: {
-      communication_event: request.communication_event,
-      communication_format: request.communication_format,
-      primary_audience: request.primary_audience,
-      setting: request.setting,
-      market: request.market,
-      goal: request.goal,
-      audience_scope: request.audience_scope,
-      already_published: request.already_published,
-      stance: request.stance ?? "proactive",
-      reacting_to: request.reacting_to ?? "",
-    },
+    settings: currentSettings(request),
     context: { ...request.context },
     documents: (request.audience_documents ?? []).map(({ text: _text, ...rest }) => rest),
     summary: {
@@ -129,23 +144,29 @@ export function buildSavedReview(
 
 /** The settings a later review must match for the comparison to be like-for-like. */
 export const COMPARABLE_SETTINGS: (keyof SavedSettings)[] = [
+  "organization_type",
   "communication_event",
   "communication_format",
-  "primary_audience",
-  "setting",
-  "market",
-  "goal",
-  "audience_scope",
+  "audiences",
+  "situation",
+  "people_at_risk",
+  "locations",
+  "purpose",
 ];
 
 export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
-  communication_event: "Communication event",
-  communication_format: "Communication format",
-  primary_audience: "Primary audience",
-  setting: "Setting",
-  market: "Market",
-  goal: "Goal",
-  audience_scope: "Audience scope",
+  organization_type: "Type of organization",
+  listed_where: "Where it is listed",
+  headquarters: "Headquarters",
+  communication_event: "What's happening",
+  event_description: "What's happening, described",
+  communication_format: "What they were drafting",
+  format_description: "What they were drafting, described",
+  audiences: "Who will receive it",
+  situation: "Where things stand",
+  people_at_risk: "People harmed or put at risk",
+  locations: "Where this is happening",
+  purpose: "What the draft is mainly trying to do",
   already_published: "Already published",
   stance: "Stance",
   reacting_to: "Reacting to",
@@ -153,18 +174,7 @@ export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
 
 /** Settings that differ between the saved review and the current request. */
 export function settingsDrift(saved: SavedSettings, request: EvaluationRequest): string[] {
-  const current: SavedSettings = {
-    communication_event: request.communication_event,
-    communication_format: request.communication_format,
-    primary_audience: request.primary_audience,
-    setting: request.setting,
-    market: request.market,
-    goal: request.goal,
-    audience_scope: request.audience_scope,
-    already_published: request.already_published,
-    stance: request.stance ?? "proactive",
-    reacting_to: request.reacting_to ?? "",
-  };
+  const current = currentSettings(request);
   return COMPARABLE_SETTINGS.filter((k) => saved[k] !== current[k]).map((k) => SETTING_LABELS[k]);
 }
 

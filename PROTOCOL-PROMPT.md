@@ -92,17 +92,25 @@ Nothing else can be narrowed, and the checker will refuse a file that tries. The
 framework is the floor: if an event seems to need a lower one, that is worth
 arguing before it is worth writing.
 
-## The thirteen events
+## The thirty events
 
-CEO or senior-leader departure · Workforce reduction or major reorganization ·
-Cyberattack or data incident · Workplace safety event or facility emergency ·
-Service outage, product defect, recall or quality failure · Regulatory
-investigation, litigation or ethics allegation · Acquisition, divestiture or
-major integration · Poor financial results, site closure or strategic retreat ·
-Employee-relations controversy or union escalation · Public backlash — values,
-culture, DEI or political pressure · Supply-chain disruption affecting customers
-or employees · Community or environmental incident at a facility · Geopolitical
-event affecting operations or employee welfare
+One protocol may claim several of these, and should where they carry the same
+duty: `workforce-restructuring` claims layoffs, restructuring and site closure,
+because the account owed to the people losing something is the same in all
+three. Do not claim an event another protocol already claims — the checker will
+refuse the file and name the other one.
+
+**Leadership and governance** — CEO or senior leader departure · New CEO or leadership appointment · Board change or governance dispute · Allegations against a leader
+
+**People and workplace** — Layoffs or job cuts · Restructuring or reorganization · Site, office or store closure · Workplace accident or serious injury · Harassment, discrimination or culture allegations · Strike or labor dispute · Major policy change (e.g. return to office, benefits)
+
+**Operations and safety** — Cyber incident or data breach · System outage or service disruption · Product recall or safety issue · Environmental incident · Supply chain disruption
+
+**Business and finance** — Merger, acquisition or sale · Disappointing results or profit warning · Price increase or change to terms · Financial difficulty or cost-cutting · Change of strategy or exit from a market
+
+**Legal and reputation** — Investigation, lawsuit or regulatory action · Fraud or financial misconduct · Backlash to something the organization said or did · Rumor or misinformation about the organization · Pressure from activists, campaigners or investors
+
+**External events** — Geopolitical event (war, sanctions, unrest) · Natural disaster or extreme weather · Public health emergency · Social or political issue (deciding whether to speak)
 
 ## The ten dimensions
 
@@ -177,7 +185,8 @@ Give me one Markdown file. Nothing before the first `---`.
 id: short-name-with-hyphens
 name: The name shown in the Standards Library
 layer: event
-event: <one of the thirteen, spelled exactly>
+events:                  # one or more, spelled exactly as the list above spells them
+  - <an event this protocol covers>
 version: 1
 status: active
 rests_on: >-

@@ -18,10 +18,12 @@ claiming the same event, or a missing Source section all fail by name.
 
 ## The layers
 
-- **event** — one per event, carrying only what that event adds to the
-  framework. Selected by the event dropdown at intake.
-- **posture** — a stance that sits on top of any event, such as an apology.
-  Selected by the goal.
+- **event** — carries only what the event adds to the framework. It names the
+  events it covers in `events:`, a list, and may cover several where they carry
+  the same duty. Selected by "What's happening?" at intake.
+- **posture** — a stance that sits on top of any event, such as an apology. It
+  names the intake purposes that bring it in, in `purposes:`. Selected by "What
+  is this draft mainly trying to do?".
 
 There is no third layer. A "core" protocol existed briefly and was removed:
 six of its eight checks were already in the framework, two of them word for

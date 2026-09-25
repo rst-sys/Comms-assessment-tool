@@ -2,7 +2,10 @@
 id: workforce-restructuring
 name: Workforce reduction and restructuring
 layer: event
-event: Workforce reduction or major reorganization
+events:
+  - Layoffs or job cuts
+  - Restructuring or reorganization
+  - Site, office or store closure
 version: 1
 status: active
 rests_on: >-

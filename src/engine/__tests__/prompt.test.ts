@@ -33,54 +33,52 @@ describe("buildSystemBlocks", () => {
     expect(SYSTEM_PROMPT).toContain("when the next update comes, where it will appear, and a named way to ask");
   });
 
-  it("sends no protocol at all when the draft is about none of the thirteen events", () => {
-    const routine = buildSystemBlocks({ ...DEMO_1.request, communication_event: "None of these", goal: "Inform" }).map((b) => b.text);
+  it("sends no protocol at all when the event is not on the list", () => {
+    const routine = buildSystemBlocks({ ...DEMO_1.request, communication_event: "Something else" }).map((b) => b.text);
     expect(routine).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
   });
 
-  it("adds a posture on top of any event, chosen by the goal and not the event", () => {
-    const onEvent = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
+  it("adds a posture on top of any event, chosen by the purpose and not the event", () => {
+    const onEvent = buildSystemBlocks({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((b) => b.text);
     expect(onEvent.some((t) => t.startsWith("PUBLIC APOLOGY"))).toBe(true);
     expect(onEvent.some((t) => t.includes("WORKFORCE REDUCTION"))).toBe(true);
 
     const elsewhere = buildSystemBlocks({
       ...DEMO_1.request,
-      communication_event: "Cyberattack or data incident",
-      goal: "Apologize or repair trust",
+      communication_event: "Cyber incident or data breach",
+      purpose: "Apologize and take responsibility",
     }).map((b) => b.text);
     expect(elsewhere.some((t) => t.startsWith("PUBLIC APOLOGY"))).toBe(true);
     expect(elsewhere.some((t) => t.includes("CYBER INCIDENT"))).toBe(true);
 
-    // No goal, no posture.
+    // No matching purpose, no posture.
     expect(buildSystemBlocks(DEMO_1.request).map((b) => b.text).some((t) => t.startsWith("PUBLIC APOLOGY"))).toBe(false);
   });
 
   it("sends the shared rules once however many protocols apply", () => {
-    const blocks = buildSystemBlocks({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((b) => b.text);
-    expect(protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" })).toHaveLength(2);
+    const blocks = buildSystemBlocks({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((b) => b.text);
+    expect(protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" })).toHaveLength(2);
     expect(blocks.filter((t) => t === PROTOCOL_RULES)).toHaveLength(1);
   });
 });
 
 describe("the protocol library", () => {
   it("selects one event and one posture from the intake, never by reading the draft", () => {
-    const applied = protocolsFor({ ...DEMO_1.request, goal: "Apologize or repair trust" }).map((p) => p.id);
+    const applied = protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((p) => p.id);
     expect(applied).toEqual(["workforce-restructuring", "public-apology"]);
 
-    expect(protocolsFor({ ...DEMO_1.request, communication_event: "None of these", goal: "Inform" })).toEqual([]);
+    expect(protocolsFor({ ...DEMO_1.request, communication_event: "Something else" })).toEqual([]);
   });
 
   it("sends no protocol at all for an event that has no file yet, leaving the framework to it", () => {
     const applied = protocolsFor({
       ...DEMO_1.request,
-      communication_event: "Workplace safety event or facility emergency",
-      goal: "Inform",
+      communication_event: "Board change or governance dispute",
     });
     expect(applied).toEqual([]);
     const blocks = buildSystemBlocks({
       ...DEMO_1.request,
-      communication_event: "Workplace safety event or facility emergency",
-      goal: "Inform",
+      communication_event: "Board change or governance dispute",
     }).map((b) => b.text);
     expect(blocks).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
   });
@@ -113,13 +111,16 @@ describe("buildUserMessage", () => {
   it("includes the draft and every intake field as labeled blocks", () => {
     const msg = buildUserMessage(DEMO_1.request);
     expect(msg).toContain("DRAFT\n<<<\nRapid growth brought complexity.");
-    expect(msg).toContain("Communication event: Workforce reduction or major reorganization");
-    expect(msg).toContain("Communication format: Employee announcement");
-    expect(msg).toContain("Primary audience: All employees");
-    expect(msg).toContain("Setting: High stakes");
-    expect(msg).toContain("Market: United States");
-    expect(msg).toContain("Goal: Announce a difficult employment action");
-    expect(msg).toContain("Audience scope: Internal");
+    expect(msg).toContain("Organization: Private company, headquartered in United States");
+    expect(msg).toContain("What happened: Layoffs or job cuts");
+    expect(msg).toContain("What they are drafting: Employee announcement");
+    // The affected group is named the way this event names it, not "employees
+    // directly affected", which tells the engine nothing it did not know.
+    expect(msg).toContain("Who will receive it: All employees, Departing employees");
+    expect(msg).toContain("Where things stand: Not yet public");
+    expect(msg).toContain("People have been harmed or put at risk: no");
+    expect(msg).toContain("Where the affected people are: United States");
+    expect(msg).toContain("What the draft is mainly trying to do: Announce a decision or change");
     expect(msg).toContain("already_published: false");
   });
 

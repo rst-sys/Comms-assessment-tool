@@ -2,8 +2,8 @@
 id: public-apology
 name: Public apology
 layer: posture
-goals:
-  - Apologize or repair trust
+purposes:
+  - Apologize and take responsibility
 version: 1
 status: active
 rests_on: >-

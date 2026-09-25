@@ -2,7 +2,8 @@
 id: ceo-departure
 name: CEO or senior-leader departure
 layer: event
-event: CEO or senior-leader departure
+events:
+  - CEO or senior leader departure
 version: 1
 status: active
 rests_on: >-

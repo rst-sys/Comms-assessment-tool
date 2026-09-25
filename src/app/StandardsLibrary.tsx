@@ -1,7 +1,7 @@
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
 import { PROTOCOLS } from "../engine/protocols.js";
 import { appliesTo, proseBlocks, protocolSection } from "./protocolProse.js";
-import { DIMENSION_IDS } from "../engine/types.js";
+import { COMMUNICATION_EVENTS, DIMENSION_IDS, OTHER_EVENT } from "../engine/types.js";
 import { ACCOUNT_ELEMENTS } from "./overviewContent.js";
 import { CODES, CODES_BY_ID, GROUNDING, OWNER_S_OWN } from "./standardsContent.js";
 
@@ -20,6 +20,11 @@ import { CODES, CODES_BY_ID, GROUNDING, OWNER_S_OWN } from "./standardsContent.j
  * marks other people down for. So the page states the distinction, cites each
  * source, and labels what the owner devised as the owner's own.
  */
+/** Events the intake names, not counting "Something else". */
+const NAMED_EVENTS = COMMUNICATION_EVENTS.filter((e) => e !== OTHER_EVENT).length;
+/** Events at least one protocol in the library claims. */
+const COVERED_EVENTS = new Set(PROTOCOLS.flatMap((p) => p.events ?? [])).size;
+
 export function StandardsLibrary() {
   return (
     <main className="page welcome" aria-labelledby="standards-heading">
@@ -224,9 +229,9 @@ export function StandardsLibrary() {
         <section className="card welcome-card" aria-labelledby="planned-heading">
           <h2 id="planned-heading">Planned</h2>
           <p className="prose">
-            The library covers thirteen high-stakes events. Protocols for the rest are planned and not in this build: a
-            draft about an event with no protocol is still judged against the core framework above, and against the
-            high-stakes event core where an event is named.
+            The intake lists {NAMED_EVENTS} events. {COVERED_EVENTS} of them have a protocol; the rest are planned and
+            not in this build. A draft about an event with no protocol is still judged against the framework above,
+            which is what does most of the work in every review.
           </p>
         </section>
       </div>

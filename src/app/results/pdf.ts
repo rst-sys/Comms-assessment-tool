@@ -128,7 +128,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   const w = new Writer();
 
   w.heading(APP_NAME, 12);
-  w.paragraph(`${request.communication_event} · ${request.communication_format} · ${request.primary_audience} · ${request.setting} · ${request.market} · ${now.toISOString().slice(0, 10)}`, 9);
+  w.paragraph(`${request.communication_event} · ${request.communication_format} · ${request.audiences.join(", ")} · ${request.situation} · ${request.locations.join(", ")} · ${now.toISOString().slice(0, 10)}`, 9);
   w.rule();
 
   w.heading("Executive summary", 15);
@@ -139,7 +139,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(s.risk_level);
   // Same notice as the page, or the printed copy a colleague reads says less
   // than the screen it came from.
-  if (warrantsHeightenedReview(request.communication_event, request.setting)) {
+  if (warrantsHeightenedReview(request.communication_event, request.people_at_risk)) {
     w.paragraph(HEIGHTENED_NOTICE, 9.5);
   }
   if (request.already_published) {
