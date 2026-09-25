@@ -201,8 +201,6 @@ table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
 .callout-material { border: 2px solid var(--material); border-radius: var(--radius); padding: calc(var(--space) * 1.5) calc(var(--space) * 2); margin-top: calc(var(--space) * 2); max-width: var(--measure); }
 
 /* Intake */
-.intake-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); margin-top: calc(var(--space) * 2); }
-@media (min-width: 900px) { .intake-grid { grid-template-columns: 3fr 2fr; align-items: start; } }
 .tabs { display: flex; gap: var(--space); margin-bottom: calc(var(--space) * 1.5); }
 .tab { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; color: var(--neutral); }
 .tab:hover { color: var(--ink); }
@@ -216,58 +214,86 @@ textarea { resize: vertical; }
 #draft-text { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
 .field { display: block; margin-bottom: calc(var(--space) * 1.5); }
 .field .label { margin-top: 0; }
-/* The seven questions above the draft.
+/* The Review screen: one centered column of three steps. */
+.page.intake { max-width: 960px; }
+.intake .page-head { display: block; margin-bottom: calc(var(--space) * 2); }
+.intake .page-head .prose { max-width: var(--measure); }
+.step { padding: calc(var(--space) * 3.5); }
+.step-head { display: grid; grid-template-columns: 28px 1fr; gap: calc(var(--space) * 1.5);
+  align-items: start; margin-bottom: calc(var(--space) * 3); }
+.step-number { width: 26px; height: 26px; border-radius: 999px; background: var(--ink); color: var(--paper);
+  font-size: 13px; font-weight: 600; display: grid; place-items: center; margin-top: 2px; }
+.step-head h2 { font-size: 21px; margin: 0 0 2px; }
+.step-hint { margin: 0; }
 
-   A grid, not the multi-column packing the other pages use: a form is read
-   in order, and multi-column fills the left column to the bottom before it
-   starts the right one, which would number the questions 1, 2, 3, 4 down and
-   5, 6, 7 back up. Two of the cards span both columns because they are the
-   long ones. */
-.intake-questions { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); margin-top: calc(var(--space) * 2); }
-@media (min-width: 900px) {
-  .intake-questions { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
-  .intake-questions > .question-wide { grid-column: 1 / -1; }
-}
-.question h2 { font-size: 20px; margin-bottom: 4px; }
-.question-hint { margin-bottom: calc(var(--space) * 2); max-width: var(--measure); }
-.question .field:last-child { margin-bottom: 0; }
+/* Step 2: six dropdowns, two to a row. */
+.menu-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
+@media (min-width: 720px) { .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 
-/* Group headings inside a question. Stored in ordinary case so a screen
-   reader says the words; shown in capitals because that is what separates a
-   heading from an option at a glance. */
+.menu-field { position: static; }
+.menu-anchor { position: relative; }
+.menu-control { width: 100%; display: flex; align-items: center; gap: var(--space); justify-content: space-between;
+  min-height: 42px; padding: 7px 12px; text-align: left; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--ink); font: inherit; }
+.menu-control:hover { border-color: var(--neutral); }
+.menu-control-open { border-color: var(--sound); box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25); }
+.menu-value { flex: 1; min-width: 0; }
+.menu-placeholder { color: var(--neutral); }
+.menu-caret { flex: none; width: 9px; height: 9px; border-right: 1.5px solid var(--neutral);
+  border-bottom: 1.5px solid var(--neutral); transform: rotate(45deg) translate(-3px, -3px); }
+.menu-control-open .menu-caret { transform: rotate(225deg) translate(-2px, -2px); }
+.menu-hint { margin: 6px 0 0; }
+
+/* Chosen items live in the closed control, each removable without opening it. */
+.chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip-choice { display: inline-flex; align-items: center; gap: 6px; background: var(--paper); border: 1px solid var(--border);
+  border-radius: 999px; padding: 1px 4px 1px 10px; font-size: 13px; }
+.chip-choice [role="button"] { cursor: pointer; padding: 0 5px; border-radius: 999px; color: var(--neutral); }
+.chip-choice [role="button"]:hover { color: var(--material-text); background: var(--surface); }
+
+.menu-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 10px 30px rgba(20, 33, 61, 0.16); padding: var(--space); }
+.menu-search { margin-bottom: var(--space); }
+.menu-options { max-height: 320px; overflow-y: auto; }
+.menu-group + .menu-group { margin-top: var(--space); }
+.menu-group .group-label { margin: 0 0 4px; padding: 0 8px; }
+.menu-option { display: grid; grid-template-columns: 18px 1fr; gap: 6px; align-items: start;
+  padding: 6px 8px; border-radius: 3px; cursor: pointer; }
+.menu-option:hover, .menu-option:focus-visible { background: var(--paper); outline: none; }
+.menu-option-on { background: var(--paper); }
+.menu-tick { color: var(--sound); font-weight: 700; }
+.menu-option-label { display: block; }
+.menu-option-note { display: block; font-size: 13px; color: var(--neutral); line-height: 1.45; }
+.menu-empty, .menu-foot { margin: 6px 8px; }
+
+/* Group headings. Stored in ordinary case so a screen reader says the words;
+   shown in capitals because that is what separates a heading from an option. */
 .group-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
   color: var(--neutral); margin: calc(var(--space) * 2) 0 var(--space); }
-.question > .group-label:first-of-type, .event-group > .group-label { margin-top: 0; }
 
-.choice-list { display: grid; gap: 2px; }
-.choice { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; max-width: var(--measure); cursor: pointer; }
+.choice-list { display: grid; gap: 6px; }
+.choice { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; cursor: pointer; }
 .choice input { margin: 4px 0 0; flex: none; }
-.choice-body { display: block; }
-.choice-label { display: block; }
-.choice-note { display: block; font-size: 13px; color: var(--neutral); line-height: 1.45; }
-.choice-described { padding: 6px 0; }
-.choice:hover .choice-label { color: var(--sound); }
-/* "Something else", and the harm tick-box: last on the list and not part of
-   the group above it, so they get a rule rather than another 2px gap. */
-.choice-list-apart, .choice-apart { margin-top: calc(var(--space) * 2); padding-top: calc(var(--space) * 1.5); border-top: 1px solid var(--border); }
+/* Step 1's radios: boxed, so the four read as one control rather than as prose. */
+.choice-box { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--border);
+  border-radius: 4px; background: var(--surface); cursor: pointer; }
+.choice-box:hover { border-color: var(--neutral); }
+.choice-box:has(input:checked) { border-color: var(--sound); box-shadow: inset 0 0 0 1px var(--sound); }
 
-/* The thirty events. Three columns of groups at desk width, so the longest
-   question on the screen is not also the tallest. */
-.event-groups { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2) calc(var(--space) * 4); }
-@media (min-width: 700px) { .event-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 1100px) { .event-groups { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.event-group { break-inside: avoid; }
-.search-field { max-width: 32ch; }
-/* Two halves of one short question, so a wide card is not half empty. */
-.split-two { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2) calc(var(--space) * 4); }
-@media (min-width: 700px) { .split-two { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (min-width: 700px) { .choice-list-columns { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2px calc(var(--space) * 4); } }
+.split-two { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
+@media (min-width: 720px) { .split-two { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 
-/* Chosen places, each its own remove button. */
-.tag-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: var(--space) 0 calc(var(--space) * 1.5); }
-.tag-list li { margin: 0; }
-.tag { background: var(--paper); border: 1px solid var(--border); border-radius: 999px; padding: 3px 12px; font-size: 14px; color: var(--ink); }
-.tag:hover { border-color: var(--material); color: var(--material-text); }
+.draft-head { display: flex; flex-wrap: wrap; gap: var(--space) calc(var(--space) * 2); align-items: center;
+  justify-content: space-between; margin-bottom: calc(var(--space) * 1.5); }
+.draft-head .tabs, .draft-head .demo-link { margin: 0; }
+.word-count { text-align: right; margin-top: 4px; }
+.context-field { margin-top: calc(var(--space) * 3); }
+.label-optional { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.context-field .muted { display: block; margin-bottom: 6px; max-width: var(--measure); }
+
+.evaluate-row { display: grid; justify-items: center; gap: var(--space); margin-top: calc(var(--space) * 4); text-align: center; }
+.evaluate-row .primary { padding: 11px 26px; }
+.button-arrow { margin-left: 8px; }
 
 /* Quieter than a warning: something to know, not something to fix. */
 .notice { border-left: 3px solid var(--border); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper);
@@ -281,12 +307,13 @@ textarea { resize: vertical; }
 .demo-link { font-size: 14px; }
 
 /* Privacy panel */
-.privacy-panel dl { margin: 0 0 calc(var(--space) * 1.5); }
-.privacy-row { display: grid; grid-template-columns: 130px 1fr; gap: 4px calc(var(--space) * 1.5); padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-.privacy-row:last-child { border-bottom: 0; }
-.privacy-row dt { color: var(--neutral); }
-.privacy-row dd { margin: 0; }
-@media (max-width: 420px) { .privacy-row { grid-template-columns: 1fr; gap: 0; } }
+.privacy-heading { display: flex; align-items: center; gap: 7px; margin-top: 0; }
+.privacy-panel dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: calc(var(--space) * 2) calc(var(--space) * 3); margin: 0 0 calc(var(--space) * 2);
+  padding-bottom: calc(var(--space) * 2); border-bottom: 1px solid var(--border); }
+.privacy-row { font-size: 14px; }
+.privacy-row dt { color: var(--neutral); font-size: 12px; }
+.privacy-row dd { margin: 2px 0 0; }
 
 /* Results layout with the privacy panel in the right margin */
 .results-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }

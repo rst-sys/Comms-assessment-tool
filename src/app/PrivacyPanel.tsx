@@ -19,14 +19,20 @@ export function PrivacyPanel({ config }: { config: PrivacyConfig | null }) {
   const rows: [string, string][] = [
     ["Processing mode", config?.processing_mode ?? "Reading configuration…"],
     ["Provider and model", config ? `${config.provider} · ${config.model}` : "Reading configuration…"],
-    ["Retention", "Draft text and any supporting documents are sent to the provider for this analysis only and are not stored by this app."],
+    ["Retention", "Sent for this analysis only. Not stored by this app."],
     ["Training", config?.training_term ?? "Reading configuration…"],
-    ["Storage", "Nothing is saved. Closing this tab discards the draft and results."],
+    ["Storage", "Nothing is saved. Closing this tab discards everything."],
     ["Classification", "Confidential"],
   ];
   return (
     <aside className="card privacy-panel" aria-labelledby="privacy-heading">
-      <h3 id="privacy-heading" style={{ marginTop: 0 }}>Privacy</h3>
+      <h3 id="privacy-heading" className="privacy-heading">
+        <svg width="13" height="15" viewBox="0 0 13 15" aria-hidden="true" focusable="false">
+          <path d="M3 6V4a3.5 3.5 0 0 1 7 0v2" fill="none" stroke="currentColor" strokeWidth="1.4" />
+          <rect x="1" y="6" width="11" height="8" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+        </svg>
+        Privacy
+      </h3>
       <dl>
         {rows.map(([k, v]) => (
           <div key={k} className="privacy-row">

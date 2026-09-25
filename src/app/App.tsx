@@ -260,7 +260,7 @@ function baselineRequest(saved: SavedReview, fallback?: Req): Req {
     situation: s.situation as Req["situation"],
     people_at_risk: s.people_at_risk,
     locations: splitList(s.locations),
-    context: { ...saved.context },
+    context: saved.context,
     already_published: s.already_published,
     purpose: s.purpose as Req["purpose"],
     audience_documents: [],

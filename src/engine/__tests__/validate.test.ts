@@ -4,7 +4,7 @@ import { SAMPLE_DRAFT, sampleAnalysis, sampleFinding } from "./helpers.js";
 
 describe("validateAnalysis", () => {
   it("accepts a well-formed analysis unchanged", () => {
-    const { analysis, adjustments } = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, {});
+    const { analysis, adjustments } = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, "");
     expect(analysis.findings).toHaveLength(1);
     expect(adjustments).toEqual({
       dropped_findings: 0,
@@ -17,9 +17,9 @@ describe("validateAnalysis", () => {
   it("rejects a schema violation and reports only the path", () => {
     const bad = sampleAnalysis();
     (bad.executive_summary as { risk_level: string }).risk_level = "Severe";
-    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
+    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, "")).toThrowError(AnalysisValidationError);
     try {
-      validateAnalysis(bad, SAMPLE_DRAFT, {});
+      validateAnalysis(bad, SAMPLE_DRAFT, "");
     } catch (error) {
       const e = error as AnalysisValidationError;
       expect(e.path).toBe("/executive_summary/risk_level");
@@ -30,25 +30,25 @@ describe("validateAnalysis", () => {
   it("rejects the wrong number of dimensions, a duplicate id, and a non-0.5 score", () => {
     const missing = sampleAnalysis();
     missing.dimensions = missing.dimensions.slice(1);
-    expect(() => validateAnalysis(missing, SAMPLE_DRAFT, {})).toThrow(/expected 10 dimensions/);
+    expect(() => validateAnalysis(missing, SAMPLE_DRAFT, "")).toThrow(/expected 10 dimensions/);
 
     const duplicate = sampleAnalysis();
     duplicate.dimensions[1] = { ...duplicate.dimensions[0]! };
-    expect(() => validateAnalysis(duplicate, SAMPLE_DRAFT, {})).toThrow(/duplicate dimension id/);
+    expect(() => validateAnalysis(duplicate, SAMPLE_DRAFT, "")).toThrow(/duplicate dimension id/);
 
     const step = sampleAnalysis();
     step.dimensions[0]!.score = 2.3;
-    expect(() => validateAnalysis(step, SAMPLE_DRAFT, {})).toThrow(/0\.5 step/);
+    expect(() => validateAnalysis(step, SAMPLE_DRAFT, "")).toThrow(/0\.5 step/);
   });
 
   it("rejects the wrong persona count and summary list sizes", () => {
     const personas = sampleAnalysis();
     personas.devils_advocate.personas.pop();
-    expect(() => validateAnalysis(personas, SAMPLE_DRAFT, {})).toThrow(/exactly 5 personas/);
+    expect(() => validateAnalysis(personas, SAMPLE_DRAFT, "")).toThrow(/exactly 5 personas/);
 
     const strongest = sampleAnalysis();
     strongest.executive_summary.strongest_elements = ["one"];
-    expect(() => validateAnalysis(strongest, SAMPLE_DRAFT, {})).toThrow(/strongest_elements/);
+    expect(() => validateAnalysis(strongest, SAMPLE_DRAFT, "")).toThrow(/strongest_elements/);
   });
 
   it("keeps a review that came back thin on questions, and records how thin", () => {
@@ -57,19 +57,19 @@ describe("validateAnalysis", () => {
     // nothing — and it is what actually happened to four cyber reviews in a
     // row, on a rule the prompt had already been changed away from.
     const thin = sampleAnalysis({ questions_before_publication: ["a?", "b?", "c?", "d?"] });
-    const { analysis, adjustments } = validateAnalysis(thin, SAMPLE_DRAFT, {});
+    const { analysis, adjustments } = validateAnalysis(thin, SAMPLE_DRAFT, "");
     expect(analysis.questions_before_publication).toHaveLength(4);
     expect(adjustments.thin_questions).toBe(4);
   });
 
   it("rejects a review with no questions at all, which has nothing to show", () => {
     const none = sampleAnalysis({ questions_before_publication: [] });
-    expect(() => validateAnalysis(none, SAMPLE_DRAFT, {})).toThrow(/no questions were returned/);
+    expect(() => validateAnalysis(none, SAMPLE_DRAFT, "")).toThrow(/no questions were returned/);
   });
 
   it("rejects a finding with neither excerpt nor omission", () => {
     const bad = sampleAnalysis({ findings: [sampleFinding({ excerpt: null, omission: null })] });
-    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrow(/both null/);
+    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, "")).toThrow(/both null/);
   });
 
   it("drops findings whose excerpt is not verbatim in the draft and counts the drop", () => {
@@ -80,7 +80,7 @@ describe("validateAnalysis", () => {
         sampleFinding({ id: "F-003", excerpt: null, omission: "No verification is offered." }),
       ],
     });
-    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
+    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, "");
     expect(out.findings.map((f) => f.id)).toEqual(["F-001", "F-003"]);
     expect(adjustments.dropped_findings).toBe(1);
   });
@@ -88,7 +88,7 @@ describe("validateAnalysis", () => {
   it("normalizes excerpts that differ only in whitespace or quote style to the draft's text", () => {
     const draft = 'We said “we take this seriously”\nand moved on.';
     const analysis = sampleAnalysis({ findings: [sampleFinding({ excerpt: 'We said "we take this seriously" and moved on.' })] });
-    const { analysis: out, adjustments } = validateAnalysis(analysis, draft, {});
+    const { analysis: out, adjustments } = validateAnalysis(analysis, draft, "");
     expect(adjustments.dropped_findings).toBe(0);
     expect(out.findings[0]!.excerpt).toBe('We said “we take this seriously”\nand moved on.');
   });
@@ -99,11 +99,11 @@ describe("validateAnalysis", () => {
   it("sets context_supplied from the request, not the model", () => {
     const analysis = sampleAnalysis();
     analysis.executive_summary.context_supplied = true;
-    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
+    const { analysis: out, adjustments } = validateAnalysis(analysis, SAMPLE_DRAFT, "");
     expect(out.executive_summary.context_supplied).toBe(false);
     expect(adjustments.context_flag_corrected).toBe(true);
 
-    const withContext = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, { known_facts: "The CEO decided." });
+    const withContext = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, "The CEO decided.");
     expect(withContext.analysis.executive_summary.context_supplied).toBe(true);
   });
 
@@ -115,14 +115,14 @@ describe("validateAnalysis", () => {
       ],
       specialist_review_summary: ["Legal"],
     });
-    const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
+    const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, "");
     expect([...out.specialist_review_summary].sort()).toEqual(["HR", "Labor", "Legal"]);
   });
 
   it("rejects the wrong disclaimer text", () => {
     const analysis = sampleAnalysis();
     (analysis.devils_advocate as { disclaimer: string }).disclaimer = "Just opinions.";
-    expect(() => validateAnalysis(analysis, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
+    expect(() => validateAnalysis(analysis, SAMPLE_DRAFT, "")).toThrowError(AnalysisValidationError);
   });
 });
 
@@ -144,11 +144,11 @@ describe("findVerbatim", () => {
 
 describe("contextWasSupplied", () => {
   it("is false for empty or whitespace-only fields", () => {
-    expect(contextWasSupplied({})).toBe(false);
-    expect(contextWasSupplied({ known_facts: "   " })).toBe(false);
+    expect(contextWasSupplied("")).toBe(false);
+    expect(contextWasSupplied("   ")).toBe(false);
   });
   it("is true when any field has text", () => {
-    expect(contextWasSupplied({ desired_tone: "calm" })).toBe(true);
+    expect(contextWasSupplied("Keep the tone calm.")).toBe(true);
   });
 });
 
@@ -160,7 +160,7 @@ describe("decodeStrayEscapes", () => {
   it("is applied during validation", () => {
     const analysis = sampleAnalysis();
     analysis.findings[0]!.finding = "Name it \\u2014 plainly.";
-    const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, {});
+    const { analysis: out } = validateAnalysis(analysis, SAMPLE_DRAFT, "");
     expect(out.findings[0]!.finding).toBe("Name it \u2014 plainly.");
   });
 });
@@ -175,7 +175,7 @@ describe("personas with nothing in them", () => {
       const bad = sampleAnalysis();
       bad.devils_advocate.personas[1]![field] = "";
       try {
-        validateAnalysis(bad, SAMPLE_DRAFT, {});
+        validateAnalysis(bad, SAMPLE_DRAFT, "");
         throw new Error(`${field} was accepted empty`);
       } catch (error) {
         expect(error).toBeInstanceOf(AnalysisValidationError);
@@ -187,16 +187,16 @@ describe("personas with nothing in them", () => {
   it("rejects whitespace as loudly as an empty string", () => {
     const bad = sampleAnalysis();
     bad.devils_advocate.personas[0]!.might_say = "   \n ";
-    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
+    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, "")).toThrowError(AnalysisValidationError);
   });
 
   it("rejects an empty most damning interpretation", () => {
     const bad = sampleAnalysis();
     bad.devils_advocate.most_damaging_interpretation = "";
-    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, {})).toThrowError(AnalysisValidationError);
+    expect(() => validateAnalysis(bad, SAMPLE_DRAFT, "")).toThrowError(AnalysisValidationError);
   });
 
   it("accepts personas that are actually filled in", () => {
-    expect(() => validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, {})).not.toThrow();
+    expect(() => validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, "")).not.toThrow();
   });
 });

@@ -1,12 +1,11 @@
 /**
- * The eight questions the intake asks before the draft.
+ * The six questions in step 2, and the organization profile in step 1.
  *
- * Small, dumb components: each takes the whole intake state and a setter, and
- * renders one card. They live apart from IntakeScreen because the screen was
- * already the longest file in the app and this redesign trebled the number of
- * controls on it.
+ * Every one of the six is a dropdown. They were panels of radio buttons and
+ * the whole screen was five of them tall; the options and the grouping have
+ * not changed, only where they live until they are needed.
  */
-import { useId, useMemo, useState, type ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 import { COUNTRIES } from "../../engine/countries.js";
 import {
   AUDIENCE_DESCRIPTIONS,
@@ -31,6 +30,7 @@ import {
   type CommunicationFormat,
   type OrganizationType,
 } from "../../engine/types.js";
+import { Menu, type MenuGroup } from "./Menu.js";
 import {
   affectedAudienceLabel,
   audienceVisible,
@@ -51,53 +51,22 @@ export interface QuestionProps {
   onChange: (next: IntakeState) => void;
 }
 
-function Card({ id, title, hint, wide, children }: { id: string; title: string; hint?: ReactNode; wide?: boolean; children: ReactNode }) {
+function Described({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <section className={wide ? "card question question-wide" : "card question"} aria-labelledby={`${id}-heading`}>
-      <h2 id={`${id}-heading`}>{title}</h2>
-      {hint ? <p className="muted small question-hint">{hint}</p> : null}
+    <label className="field">
+      <span className="label">{label}</span>
       {children}
-    </section>
-  );
-}
-
-function GroupLabel({ children }: { children: ReactNode }) {
-  return <div className="group-label">{children}</div>;
-}
-
-function Choice({
-  name,
-  value,
-  checked,
-  onSelect,
-  description,
-  type = "radio",
-}: {
-  name: string;
-  value: string;
-  checked: boolean;
-  onSelect: () => void;
-  description?: string;
-  type?: "radio" | "checkbox";
-}) {
-  return (
-    <label className={description ? "choice choice-described" : "choice"}>
-      <input type={type} name={name} value={value} checked={checked} onChange={onSelect} />
-      <span className="choice-body">
-        <span className="choice-label">{value}</span>
-        {description ? <span className="choice-note">{description}</span> : null}
-      </span>
     </label>
   );
 }
 
 // ---------------------------------------------------------------------------
-// 1. Before you start
+// Step 1: before you start
 // ---------------------------------------------------------------------------
 
 export function OrganizationQuestion({ state, onChange }: QuestionProps) {
-  const listedId = useId();
   const hqId = useId();
+  const listedId = useId();
   const setType = (type: OrganizationType) => {
     const next: IntakeState = { ...state, organization_type: type };
     if (type !== "Publicly listed company") next.listed_where = "";
@@ -105,41 +74,52 @@ export function OrganizationQuestion({ state, onChange }: QuestionProps) {
     onChange(next);
   };
   return (
-    <Card id="organization" title="Before you start" hint="Tell us about the organization you communicate for." wide>
-      <div className="split-two">
+    <div className="split-two">
+      <div>
+        <span className="label">Type of organization</span>
         <div className="choice-list">
           {ORGANIZATION_TYPES.map((t) => (
-            <Choice key={t} name="organization-type" value={t} checked={state.organization_type === t} onSelect={() => setType(t)} />
+            <label className="choice-box" key={t}>
+              <input
+                type="radio"
+                name="organization-type"
+                value={t}
+                checked={state.organization_type === t}
+                onChange={() => setType(t)}
+              />
+              <span>{t}</span>
+            </label>
           ))}
         </div>
-        <div>
-          {state.organization_type === "Publicly listed company" ? (
-            <label className="field">
-              <span className="label" id={listedId}>Where is it listed?</span>
-              <input
-                type="text"
-                value={state.listed_where}
-                aria-labelledby={listedId}
-                placeholder="Type an exchange or country…"
-                onChange={(e) => onChange({ ...state, listed_where: e.target.value })}
-              />
-            </label>
-          ) : null}
+      </div>
+      <div>
+        <label className="field">
+          <span className="label" id={hqId}>Headquarters</span>
+          <input
+            type="text"
+            value={state.headquarters}
+            aria-labelledby={hqId}
+            list="country-list"
+            placeholder="Type a country…"
+            onChange={(e) => onChange({ ...state, headquarters: e.target.value })}
+          />
+          <span className="muted small">Where the organization is based. Used to pick the rules that apply.</span>
+        </label>
+        {state.organization_type === "Publicly listed company" ? (
           <label className="field">
-            <span className="label" id={hqId}>Headquarters</span>
+            <span className="label" id={listedId}>Where is it listed?</span>
             <input
               type="text"
-              value={state.headquarters}
-              aria-labelledby={hqId}
-              list="country-list"
-              placeholder="Type a country…"
-              onChange={(e) => onChange({ ...state, headquarters: e.target.value })}
+              value={state.listed_where}
+              aria-labelledby={listedId}
+              placeholder="Type an exchange or country…"
+              onChange={(e) => onChange({ ...state, listed_where: e.target.value })}
             />
           </label>
-        </div>
+        ) : null}
+        <CountryList />
       </div>
-      <CountryList />
-    </Card>
+    </div>
   );
 }
 
@@ -155,82 +135,53 @@ export function CountryList() {
 }
 
 // ---------------------------------------------------------------------------
-// 2. What's happening?
+// Step 2, question 1: what's happening?
 // ---------------------------------------------------------------------------
 
-export function EventQuestion({ state, onChange }: QuestionProps) {
-  const [query, setQuery] = useState("");
-  const searchId = useId();
-  const matches = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (q.length === 0) return null;
-    return EVENT_GROUPS.flatMap(([, events]) => events).filter((e) => e.toLowerCase().includes(q));
-  }, [query]);
+const EVENT_MENU: MenuGroup[] = [
+  { label: "Most common", options: MOST_COMMON_EVENTS.map((e) => ({ value: e, label: e })) },
+  ...EVENT_GROUPS.map(([label, events]) => ({ label, options: events.map((e) => ({ value: e, label: e })) })),
+  { label: "Not on the list", options: [{ value: OTHER_EVENT, label: "Something else…" }] },
+];
 
-  const setEvent = (event: CommunicationEvent) => {
-    const next: IntakeState = { ...state, communication_event: event };
-    if (!showEventDescription(event)) next.event_description = "";
+export function EventQuestion({ state, onChange }: QuestionProps) {
+  const setEvent = (event: string) => {
+    const next: IntakeState = { ...state, communication_event: event as CommunicationEvent };
+    if (!showEventDescription(next.communication_event)) next.event_description = "";
     next.audiences = next.audiences.filter((a) => audienceVisible(a, next));
     onChange(next);
   };
-
-  const option = (e: CommunicationEvent, key?: string) => (
-    <Choice key={key ?? e} name="communication-event" value={e} checked={state.communication_event === e} onSelect={() => setEvent(e)} />
-  );
-
   return (
-    <Card id="event" title="What's happening?" hint="Choose the closest match." wide>
-      <label className="field search-field">
-        <span className="label" id={searchId}>Search events</span>
-        <input type="search" value={query} aria-labelledby={searchId} placeholder="Search events…" onChange={(e) => setQuery(e.target.value)} />
-      </label>
-      {matches ? (
-        <div className="choice-list">
-          {matches.length === 0 ? (
-            <p className="muted small">Nothing matches "{query.trim()}". Clear the search, or choose "Something else" below.</p>
-          ) : (
-            matches.map((e) => option(e))
-          )}
-        </div>
-      ) : (
-        <div className="event-groups">
-          <div className="event-group">
-            <GroupLabel>Most common</GroupLabel>
-            <div className="choice-list">{MOST_COMMON_EVENTS.map((e) => option(e, `common-${e}`))}</div>
-          </div>
-          {EVENT_GROUPS.map(([group, events]) => (
-            <div className="event-group" key={group}>
-              <GroupLabel>{group}</GroupLabel>
-              <div className="choice-list">{events.map((e) => option(e))}</div>
-            </div>
-          ))}
-        </div>
-      )}
-      <div className="choice-list choice-list-apart">
-        <Choice
-          name="communication-event"
-          value={`${OTHER_EVENT}…`}
-          checked={state.communication_event === OTHER_EVENT}
-          onSelect={() => setEvent(OTHER_EVENT)}
-        />
-      </div>
+    <div>
+      <Menu
+        label="What's happening?"
+        hint="Searchable, grouped by category. One choice."
+        placeholder="Choose the closest match"
+        groups={EVENT_MENU}
+        searchable
+        value={state.communication_event}
+        onChange={setEvent}
+      />
       {showEventDescription(state.communication_event) ? (
-        <label className="field">
-          <span className="label">Briefly describe what's happening</span>
-          <textarea
-            rows={2}
-            value={state.event_description}
-            onChange={(e) => onChange({ ...state, event_description: e.target.value })}
-          />
-        </label>
+        <Described label="Briefly describe what's happening">
+          <textarea rows={2} value={state.event_description} onChange={(e) => onChange({ ...state, event_description: e.target.value })} />
+        </Described>
       ) : null}
-    </Card>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// 3. What are you drafting?
+// Step 2, question 2: what are you drafting?
 // ---------------------------------------------------------------------------
+
+const FORMAT_MENU: MenuGroup[] = [
+  ...FORMAT_GROUPS.map(([label, formats]) => ({
+    label,
+    options: formats.map((f) => ({ value: f, label: f, note: FORMAT_DESCRIPTIONS[f] })),
+  })),
+  { label: "Not on the list", options: [{ value: OTHER_FORMAT, label: "Something else…" }] },
+];
 
 export function FormatQuestion({
   state,
@@ -238,7 +189,8 @@ export function FormatQuestion({
   audiencesTouched,
   situationTouched,
 }: QuestionProps & { audiencesTouched: boolean; situationTouched: boolean }) {
-  const setFormat = (format: CommunicationFormat) => {
+  const setFormat = (value: string) => {
+    const format = value as CommunicationFormat;
     const next: IntakeState = { ...state, communication_format: format };
     if (!showFormatDescription(format)) next.format_description = "";
     if (!showMainAnnouncement(format)) next.main_announcement = "";
@@ -247,242 +199,151 @@ export function FormatQuestion({
     onChange(next);
   };
   return (
-    <Card id="format" title="What are you drafting?" hint="Choose a format.">
-      {FORMAT_GROUPS.map(([group, formats]) => (
-        <div key={group}>
-          <GroupLabel>{group}</GroupLabel>
-          <div className="choice-list">
-            {formats.map((f) => (
-              <Choice
-                key={f}
-                name="communication-format"
-                value={f}
-                description={FORMAT_DESCRIPTIONS[f]}
-                checked={state.communication_format === f}
-                onSelect={() => setFormat(f)}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-      <div className="choice-list choice-list-apart">
-        <Choice
-          name="communication-format"
-          value={`${OTHER_FORMAT}…`}
-          checked={state.communication_format === OTHER_FORMAT}
-          onSelect={() => setFormat(OTHER_FORMAT)}
-        />
-      </div>
+    <div>
+      <Menu
+        label="What are you drafting?"
+        hint="Grouped by category. One choice."
+        placeholder="Choose a format"
+        groups={FORMAT_MENU}
+        value={state.communication_format}
+        onChange={setFormat}
+      />
       {showFormatDescription(state.communication_format) ? (
-        <label className="field">
-          <span className="label">Describe what you're drafting</span>
+        <Described label="Describe what you're drafting">
           <textarea rows={2} value={state.format_description} onChange={(e) => onChange({ ...state, format_description: e.target.value })} />
-        </label>
+        </Described>
       ) : null}
       {showMainAnnouncement(state.communication_format) ? (
-        <label className="field">
-          <span className="label">Paste the main announcement (optional)</span>
+        <Described label="Paste the main announcement (optional)">
           <span className="muted small">We'll check your draft says nothing that goes beyond or contradicts it.</span>
           <textarea rows={4} value={state.main_announcement} onChange={(e) => onChange({ ...state, main_announcement: e.target.value })} />
-        </label>
+        </Described>
       ) : null}
       {disclosureMismatch(state) ? (
         <p className="notice" role="note">
           Your organization profile says it isn't listed. Change the profile or choose another format.
         </p>
       ) : null}
-    </Card>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// 4. Who will receive this?
+// Step 2, question 3: who will receive this?
 // ---------------------------------------------------------------------------
 
 export function AudienceQuestion({ state, onChange, onTouch }: QuestionProps & { onTouch: () => void }) {
-  const toggle = (audience: Audience) => {
-    onTouch();
-    const has = state.audiences.includes(audience);
-    onChange({
-      ...state,
-      audiences: has ? state.audiences.filter((a) => a !== audience) : [...state.audiences, audience],
-    });
-  };
   const labelFor = (audience: Audience): string => {
     if (audience === AFFECTED_AUDIENCE) return affectedAudienceLabel(state.communication_event) ?? audience;
     if (audience === INVESTOR_AUDIENCE) return investorAudienceLabel(state.organization_type) ?? audience;
     return audience;
   };
-  const groups = AUDIENCE_GROUPS.map(([group, list]) => [group, list.filter((a) => audienceVisible(a, state))] as const).filter(
-    ([, list]) => list.length > 0,
-  );
+  const groups: MenuGroup[] = AUDIENCE_GROUPS.map(([label, list]) => ({
+    label,
+    options: list
+      .filter((a) => audienceVisible(a, state))
+      .map((a) => ({ value: a, label: labelFor(a), note: AUDIENCE_DESCRIPTIONS[a] })),
+  })).filter((g) => g.options.length > 0);
+
   return (
-    <Card
-      id="audiences"
-      title="Who will receive this?"
-      hint={
-        <>
-          Select all that apply. Assume anything you send may be seen by the media.
-        </>
-      }
-    >
-      {groups.map(([group, list]) => (
-        <div key={group}>
-          <GroupLabel>{group}</GroupLabel>
-          <div className="choice-list">
-            {list.map((a) => (
-              <Choice
-                key={a}
-                type="checkbox"
-                name={`audience-${a}`}
-                value={labelFor(a)}
-                description={AUDIENCE_DESCRIPTIONS[a]}
-                checked={state.audiences.includes(a)}
-                onSelect={() => toggle(a)}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-    </Card>
+    <Menu
+      label="Who will receive this?"
+      hint="Multi-select. Assume anything you send may be seen by the media."
+      placeholder="Select all that apply"
+      groups={groups}
+      multiple
+      value={state.audiences}
+      onChange={(next) => {
+        onTouch();
+        onChange({ ...state, audiences: next as Audience[] });
+      }}
+    />
   );
 }
 
 // ---------------------------------------------------------------------------
-// 5. Where do things stand?
+// Step 2, question 4: where do things stand?
 // ---------------------------------------------------------------------------
+
+const SITUATION_MENU: MenuGroup[] = [
+  { label: "", options: SITUATION_STATUSES.map((s) => ({ value: s, label: s, note: SITUATION_DESCRIPTIONS[s] })) },
+];
 
 export function SituationQuestion({ state, onChange, onTouch }: QuestionProps & { onTouch: () => void }) {
   return (
-    <Card id="situation" title="Where do things stand?">
-      <div className="choice-list">
-        {SITUATION_STATUSES.map((s) => (
-          <Choice
-            key={s}
-            name="situation"
-            value={s}
-            description={SITUATION_DESCRIPTIONS[s]}
-            checked={state.situation === s}
-            onSelect={() => {
-              onTouch();
-              onChange({ ...state, situation: s });
-            }}
-          />
-        ))}
-      </div>
-      <label className="choice choice-apart">
-        <input
-          type="checkbox"
-          checked={state.people_at_risk}
-          onChange={(e) => onChange({ ...state, people_at_risk: e.target.checked })}
-        />
-        <span className="choice-body">
-          <span className="choice-label">People have been harmed or put at risk.</span>
-        </span>
+    <div>
+      <Menu
+        label="Where do things stand?"
+        placeholder="Choose one"
+        groups={SITUATION_MENU}
+        value={state.situation}
+        onChange={(value) => {
+          onTouch();
+          onChange({ ...state, situation: value as IntakeState["situation"] });
+        }}
+      />
+      <label className="choice">
+        <input type="checkbox" checked={state.people_at_risk} onChange={(e) => onChange({ ...state, people_at_risk: e.target.checked })} />
+        <span>People have been harmed or put at risk</span>
       </label>
-    </Card>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// 6. Where is this happening?
+// Step 2, question 5: where is this happening?
 // ---------------------------------------------------------------------------
 
+const LOCATION_MENU: MenuGroup[] = [
+  { label: "Quick picks", options: LOCATION_QUICK_PICKS.map((p) => ({ value: p, label: p })) },
+  { label: "Countries", options: COUNTRIES.map((c) => ({ value: c, label: c })) },
+];
+
 export function LocationQuestion({ state, onChange }: QuestionProps) {
-  const [entry, setEntry] = useState("");
-  const searchId = useId();
-
-  const add = (place: string) => {
-    const name = place.trim();
-    if (name.length === 0 || state.locations.includes(name)) return;
-    onChange({ ...state, locations: [...state.locations, name] });
-  };
-  const remove = (place: string) => onChange({ ...state, locations: state.locations.filter((l) => l !== place) });
-  const toggle = (place: string) => (state.locations.includes(place) ? remove(place) : add(place));
-
-  const commit = () => {
-    add(entry);
-    setEntry("");
-  };
-
   const notice = coverageNotice(state.locations);
-
   return (
-    <Card id="locations" title="Where is this happening?" hint="Where are the people affected by this?">
-      <GroupLabel>Quick picks</GroupLabel>
-      <div className="choice-list">
-        {LOCATION_QUICK_PICKS.map((p) => (
-          <Choice key={p} type="checkbox" name={`location-${p}`} value={p} checked={state.locations.includes(p)} onSelect={() => toggle(p)} />
-        ))}
-      </div>
-      <label className="field">
-        <span className="label" id={searchId}>Or search for a country</span>
-        <div className="url-input">
-          <input
-            type="text"
-            value={entry}
-            list="country-list"
-            aria-labelledby={searchId}
-            placeholder="Type a country…"
-            onChange={(e) => setEntry(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                commit();
-              }
-            }}
-          />
-          <button type="button" onClick={commit} disabled={entry.trim().length === 0}>
-            Add
-          </button>
-        </div>
-      </label>
-      {showEuCountries(state.locations) ? (
-        <p className="muted small">Which EU countries? Optional, and worth adding: rules on consulting employees differ by country.</p>
-      ) : null}
-      {showGlobalCountries(state.locations) ? (
-        <p className="muted small">Which countries are most affected? Optional.</p>
-      ) : null}
-      {state.locations.length > 0 ? (
-        <ul className="tag-list">
-          {state.locations.map((l) => (
-            <li key={l}>
-              <button type="button" className="tag" onClick={() => remove(l)} aria-label={`Remove ${l}`}>
-                {l} <span aria-hidden="true">×</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+    <div>
+      <Menu
+        label="Where is this happening?"
+        hint="Multi-select. Quick picks at the top, then search for a country."
+        placeholder="Where are the people affected?"
+        groups={LOCATION_MENU}
+        searchable
+        multiple
+        value={state.locations}
+        onChange={(locations) => onChange({ ...state, locations })}
+      >
+        {showEuCountries(state.locations) ? (
+          <p className="muted small menu-foot">Which EU countries? Worth adding: rules on consulting employees differ by country.</p>
+        ) : null}
+        {showGlobalCountries(state.locations) ? <p className="muted small menu-foot">Which countries are most affected?</p> : null}
+      </Menu>
       {notice ? (
         <p className="notice" role="note">
           {notice}
         </p>
       ) : null}
-      <CountryList />
-    </Card>
+    </div>
   );
 }
 
 // ---------------------------------------------------------------------------
-// 7. What is this draft mainly trying to do?
+// Step 2, question 6: what is this mainly trying to do?
 // ---------------------------------------------------------------------------
+
+const PURPOSE_MENU: MenuGroup[] = [
+  { label: "", options: PURPOSES.map((p) => ({ value: p, label: p, note: PURPOSE_DESCRIPTIONS[p] })) },
+];
 
 export function PurposeQuestion({ state, onChange }: QuestionProps) {
   return (
-    <Card id="purpose" title="What is this draft mainly trying to do?" hint="Choose the one that matters most." wide>
-      <div className="choice-list choice-list-columns">
-        {PURPOSES.map((p) => (
-          <Choice
-            key={p}
-            name="purpose"
-            value={p}
-            description={PURPOSE_DESCRIPTIONS[p]}
-            checked={state.purpose === p}
-            onSelect={() => onChange({ ...state, purpose: p })}
-          />
-        ))}
-      </div>
-    </Card>
+    <Menu
+      label="What is this mainly trying to do?"
+      hint="One choice."
+      placeholder="Choose the one that matters most"
+      groups={PURPOSE_MENU}
+      value={state.purpose}
+      onChange={(value) => onChange({ ...state, purpose: value as IntakeState["purpose"] })}
+    />
   );
 }

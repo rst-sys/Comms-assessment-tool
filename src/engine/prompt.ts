@@ -9,7 +9,6 @@ import {
   AFFECTED_AUDIENCE,
   AFFECTED_EMPLOYEE_LABELS,
   CLAIM_STATUSES,
-  CONTEXT_FIELDS,
   DIMENSION_IDS,
   DOCUMENT_KINDS,
   DOCUMENT_REACH,
@@ -181,16 +180,13 @@ export function buildUserMessage(request: EvaluationRequest): string {
     );
   }
 
-  const contextLines = CONTEXT_FIELDS.map(([key, label]) => {
-    const value = request.context[key]?.trim();
-    return `${label}: ${value ? value : NOT_SUPPLIED}`;
-  });
-  const anyContext = CONTEXT_FIELDS.some(([key]) => (request.context[key] ?? "").trim().length > 0);
+  const context = request.context.trim();
   parts.push(
     block(
-      "CONTEXT (what the engine can rely on; these fields are the only ground truth)",
-      (anyContext ? "" : "No context fields were supplied. Score agency and causation on the draft's language only and say so.\n") +
-        contextLines.join("\n"),
+      "CONTEXT (what the engine can rely on; this is the only ground truth)",
+      context.length > 0
+        ? `The author supplied this, and it is fact. Everything in the draft is a claim.\n<<<\n${context}\n>>>`
+        : "No context was supplied. Score agency and causation on the draft's language only and say so.",
     ),
   );
 

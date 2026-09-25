@@ -8,7 +8,6 @@ import {
   AUDIENCES,
   COMMUNICATION_EVENTS,
   COMMUNICATION_FORMATS,
-  CONTEXT_FIELDS,
   DOCUMENT_KINDS,
   DOCUMENT_REACH,
   MAX_AUDIENCE_DOCUMENT_CHARS,
@@ -45,11 +44,7 @@ export const REQUEST_SCHEMA = {
     people_at_risk: { type: "boolean" },
     locations: { type: "array", minItems: 1, maxItems: 40, items: { type: "string", minLength: 1, maxLength: 100 } },
     purpose: enumOf(PURPOSES),
-    context: {
-      type: "object",
-      properties: Object.fromEntries(CONTEXT_FIELDS.map(([key]) => [key, { type: "string", maxLength: 10_000 }])),
-      additionalProperties: false,
-    },
+    context: { type: "string", maxLength: 10_000 },
     already_published: { type: "boolean" },
     audience_documents: {
       type: "array",

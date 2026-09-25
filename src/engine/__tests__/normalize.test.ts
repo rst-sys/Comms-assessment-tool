@@ -22,7 +22,7 @@ describe("normalizeAnalysis", () => {
     messy.questions_before_publication = Array.from({ length: 14 }, (_, i) => `q${i}`);
     messy.specialist_review_summary = ["HR", "HR"];
 
-    const { analysis } = validateAnalysis(normalizeAnalysis(messy), SAMPLE_DRAFT, {});
+    const { analysis } = validateAnalysis(normalizeAnalysis(messy), SAMPLE_DRAFT, "");
     expect(analysis.schema_version).toBe("1.0");
     expect(analysis.executive_summary.strongest_elements).toHaveLength(3);
     expect(analysis.dimensions[0]!.score).toBe(1.5);
@@ -37,7 +37,7 @@ describe("normalizeAnalysis", () => {
   it("does not invent missing substance: a run without ten dimensions still fails validation", () => {
     const messy = JSON.parse(JSON.stringify(sampleAnalysis())) as Record<string, any>;
     messy.dimensions = messy.dimensions.slice(0, 4);
-    expect(() => validateAnalysis(normalizeAnalysis(messy), SAMPLE_DRAFT, {})).toThrow(/dimensions/);
+    expect(() => validateAnalysis(normalizeAnalysis(messy), SAMPLE_DRAFT, "")).toThrow(/dimensions/);
   });
 
   it("leaves non-objects alone", () => {

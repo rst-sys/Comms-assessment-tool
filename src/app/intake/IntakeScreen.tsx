@@ -1,14 +1,10 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { DEMOS, type Fixture } from "../../engine/fixtures.js";
 import type { SavedReview } from "../../engine/savedReview.js";
-import {
-  CONTEXT_FIELDS,
-  type ContextFields,
-  type EvaluationRequest,
-  type AudienceDocument,
-} from "../../engine/types.js";
+import { type EvaluationRequest, type AudienceDocument } from "../../engine/types.js";
 import {
   AudienceQuestion,
+  CountryList,
   EventQuestion,
   FormatQuestion,
   LocationQuestion,
@@ -56,14 +52,17 @@ interface Props {
 type SourceTab = "paste" | "url";
 
 /**
- * The intake screen: the seven questions first, then the draft and the
- * context fields.
+ * The Review screen: three steps down one column.
  *
- * The questions come before the paste box because they change what the
- * paste box is for. A holding statement from a charity to its donors and a
- * market disclosure from a listed company are judged against different
- * duties, and asking afterwards made the whole thing feel like paperwork
- * attached to a text area.
+ * Step 1 is who the organization is, step 2 is six dropdowns about the
+ * situation, step 3 is the draft. The six were panels of radio buttons and
+ * the screen was five of them tall; the options and their grouping have not
+ * changed, only where they live until they are needed.
+ *
+ * The thirteen labelled context fields are gone. One optional box under the
+ * draft carries the same ground truth: almost nobody filled more than two of
+ * the thirteen, and the rest went to the engine as twelve lines of "(not
+ * supplied)" on every review.
  *
  * All state lives in this component; nothing is written to storage, the URL
  * or the page title.
@@ -80,7 +79,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   // bug these two flags exist to prevent.
   const [audiencesTouched, setAudiencesTouched] = useState(Boolean(init));
   const [situationTouched, setSituationTouched] = useState(Boolean(init));
-  const [context, setContext] = useState<ContextFields>(init ? { ...init.context } : {});
+  const [context, setContext] = useState(init?.context ?? "");
   const [documents, setDocuments] = useState<AudienceDocument[]>(init?.audience_documents ?? []);
   const [isDemo, setIsDemo] = useState(Boolean(init));
   const [url, setUrl] = useState("");
@@ -92,6 +91,16 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const ready = canEvaluate(draft, intake, isDemo) && !busy;
   const missing = missingAnswers(intake);
 
+  /**
+   * Scrolls to the step that still needs an answer. The disabled button used
+   * to be the only signal and the list of names only helps if you can find
+   * them; on a three-step page the step is the useful unit, not the field.
+   */
+  const jumpToFirstMissing = () => {
+    const step = intakeComplete(intake) ? "step-draft" : intake.organization_type === "" || intake.headquarters.trim() === "" ? "step-org" : "step-about";
+    document.getElementById(step)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const loadDemo = (fixture: Fixture) => {
     const r = fixture.request;
     setTab("paste");
@@ -99,7 +108,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
     setIntake(intakeFromRequest(r));
     setAudiencesTouched(true);
     setSituationTouched(true);
-    setContext({ ...r.context });
+    setContext(r.context);
     setIsDemo(true);
     setImported(null);
   };
@@ -140,7 +149,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
     onEvaluate({
       draft: draft.trim(),
       ...intakeFields(intake),
-      context: Object.fromEntries(Object.entries(context).filter(([, v]) => (v ?? "").trim().length > 0)),
+      context: context.trim(),
       already_published: imported !== null,
       ...(documents.length > 0 ? { audience_documents: documents } : {}),
     });
@@ -148,6 +157,13 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
 
   return (
     <div className="page intake">
+      <header className="page-head">
+        <div>
+          <h1>Start a review</h1>
+          <p className="prose">Three steps. Tell us who you are, describe the situation, then paste your draft.</p>
+        </div>
+      </header>
+
       {baseline ? (
         <div className="card baseline-banner" role="note">
           <div className="label">Comparing with a saved review</div>
@@ -163,24 +179,34 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
           ) : null}
         </div>
       ) : null}
-      <PrivacyPanel config={config} />
-      <div className="intake-questions">
+
+      <Step n={1} id="step-org" title="Before you start" hint="Tell us about the organization you communicate for.">
         <OrganizationQuestion state={intake} onChange={setIntake} />
-        <EventQuestion state={intake} onChange={setIntake} />
-        <FormatQuestion
-          state={intake}
-          onChange={setIntake}
-          audiencesTouched={audiencesTouched}
-          situationTouched={situationTouched}
-        />
-        <AudienceQuestion state={intake} onChange={setIntake} onTouch={() => setAudiencesTouched(true)} />
-        <SituationQuestion state={intake} onChange={setIntake} onTouch={() => setSituationTouched(true)} />
-        <LocationQuestion state={intake} onChange={setIntake} />
-        <PurposeQuestion state={intake} onChange={setIntake} />
-      </div>
-      <div className="intake-grid">
-        <section className="card" aria-labelledby="draft-heading">
-          <h2 id="draft-heading">Draft</h2>
+      </Step>
+
+      <Step n={2} id="step-about" title="About this message" hint="Six questions. Your answers decide which standards apply.">
+        <div className="menu-grid">
+          <EventQuestion state={intake} onChange={setIntake} />
+          <FormatQuestion
+            state={intake}
+            onChange={setIntake}
+            audiencesTouched={audiencesTouched}
+            situationTouched={situationTouched}
+          />
+          <AudienceQuestion state={intake} onChange={setIntake} onTouch={() => setAudiencesTouched(true)} />
+          <SituationQuestion state={intake} onChange={setIntake} onTouch={() => setSituationTouched(true)} />
+          <LocationQuestion state={intake} onChange={setIntake} />
+          <PurposeQuestion state={intake} onChange={setIntake} />
+        </div>
+      </Step>
+
+      <Step
+        n={3}
+        id="step-draft"
+        title="Your draft"
+        hint={`Paste the text or import it from a URL. ${MIN_WORDS} to ${MAX_WORDS.toLocaleString()} words.`}
+      >
+        <div className="draft-head">
           <div className="tabs no-print" role="tablist" aria-label="Draft source">
             <button type="button" role="tab" aria-selected={tab === "paste"} className={tab === "paste" ? "tab tab-active" : "tab"} onClick={() => setTab("paste")}>
               Paste text
@@ -191,21 +217,8 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
               </button>
             ) : null}
           </div>
-          {tab === "url" ? (
-            <div className="url-row">
-              <label htmlFor="import-url">Address of a published page</label>
-              <div className="url-input">
-                <input id="import-url" type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/newsroom/statement" disabled={importing} />
-                <button type="button" onClick={doImport} disabled={importing || url.trim().length === 0}>
-                  {importing ? "Fetching…" : "Fetch text"}
-                </button>
-              </div>
-              {importError ? <p className="error" role="alert">{importError}</p> : null}
-              <p className="muted small">The page is fetched once and its main text is placed below for you to review and trim. The engine never sees the address or the page itself.</p>
-            </div>
-          ) : null}
           <p className="demo-link no-print">
-            Load a demo draft:{" "}
+            Try a demo:{" "}
             {DEMOS.map((d, i) => (
               <span key={d.key}>
                 {i > 0 ? " · " : ""}
@@ -213,75 +226,109 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
               </span>
             ))}
           </p>
-          {imported ? (
-            <div className="import-info" aria-live="polite">
-              <div className="label">Imported from</div>
-              <div>{imported.source_url}</div>
-              {imported.title ? <div><strong>{imported.title}</strong></div> : null}
-              {imported.published ? <div className="muted small">Published {imported.published}</div> : null}
-              <div className="muted small">This draft is already issued; findings will be framed retrospectively.</div>
+        </div>
+        {tab === "url" ? (
+          <div className="url-row">
+            <label htmlFor="import-url" className="label">Address of a published page</label>
+            <div className="url-input">
+              <input id="import-url" type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/newsroom/statement" disabled={importing} />
+              <button type="button" onClick={doImport} disabled={importing || url.trim().length === 0}>
+                {importing ? "Fetching…" : "Fetch text"}
+              </button>
             </div>
-          ) : null}
-          <label htmlFor="draft-text" className="label">Draft text</label>
-          <textarea id="draft-text" value={draft} onChange={(e) => onDraftChange(e.target.value)} rows={16} placeholder="Paste the draft message here." />
-          <div className="muted small" aria-live="polite">
-            {words} {words === 1 ? "word" : "words"}
-            {isDemo ? " (demo draft)" : ` · ${MIN_WORDS}–${MAX_WORDS.toLocaleString()} words`}
+            {importError ? <p className="error" role="alert">{importError}</p> : null}
+            <p className="muted small">The page is fetched once and its main text is placed below for you to review and trim. The engine never sees the address or the page itself.</p>
           </div>
+        ) : null}
+        {imported ? (
+          <div className="import-info" aria-live="polite">
+            <div className="label">Imported from</div>
+            <div>{imported.source_url}</div>
+            {imported.title ? <div><strong>{imported.title}</strong></div> : null}
+            {imported.published ? <div className="muted small">Published {imported.published}</div> : null}
+            <div className="muted small">This draft is already issued; findings will be framed retrospectively.</div>
+          </div>
+        ) : null}
+        <textarea
+          id="draft-text"
+          aria-label="Draft text"
+          value={draft}
+          onChange={(e) => onDraftChange(e.target.value)}
+          rows={16}
+          placeholder="Paste the draft message here."
+        />
+        <div className="muted small word-count" aria-live="polite">
+          {words} {words === 1 ? "word" : "words"}
+          {isDemo ? " (demo draft)" : ` · ${MIN_WORDS}–${MAX_WORDS.toLocaleString()}`}
+        </div>
 
+        <label className="field context-field">
+          <span className="label">
+            Anything else we should know? <span className="label-optional">(optional)</span>
+          </span>
+          <span className="muted small">
+            Facts, constraints or background the draft doesn't show. What you write here is treated as fact; the draft is
+            treated as claims.
+          </span>
+          <textarea
+            rows={4}
+            value={context}
+            onChange={(e) => setContext(e.target.value)}
+            placeholder="For example: what's confirmed so far, what can't be disclosed and why, the planned publication date."
+          />
+        </label>
 
-          {showHighRiskWarning(intake.communication_event, intake.locations) ? (
-            <p className="warning" role="note">{HIGH_RISK_WARNING}</p>
-          ) : null}
-          {error ? (
-            <div role="alert">
-              <p className="error" style={{ marginBottom: 4 }}>{error.message}</p>
-              <p className="muted small" style={{ margin: 0 }}>
-                Failed after {error.seconds} second{error.seconds === 1 ? "" : "s"}
-                {error.requestId ? <> · reference <code>{error.requestId}</code></> : null}
-                {error.requestId ? " · quote it if you report this" : null}
-              </p>
-            </div>
-          ) : null}
-          <p>
-            <button type="button" className="primary" onClick={submit} disabled={!ready} aria-disabled={!ready}>
-              {busy ? "Evaluating…" : baseline ? "Evaluate and compare" : "Evaluate draft"}
-            </button>
+        {FEATURES.audienceDocuments ? (
+          <AudienceDocuments documents={documents} onChange={setDocuments} publicSearch={publicSearch && FEATURES.publicContextSearch} />
+        ) : null}
+      </Step>
+
+      {showHighRiskWarning(intake.communication_event, intake.locations) ? (
+        <p className="warning" role="note">{HIGH_RISK_WARNING}</p>
+      ) : null}
+      {error ? (
+        <div role="alert">
+          <p className="error" style={{ marginBottom: 4 }}>{error.message}</p>
+          <p className="muted small" style={{ margin: 0 }}>
+            Failed after {error.seconds} second{error.seconds === 1 ? "" : "s"}
+            {error.requestId ? <> · reference <code>{error.requestId}</code></> : null}
+            {error.requestId ? " · quote it if you report this" : null}
           </p>
-          {missing.length > 0 ? (
-            <p className="muted small" aria-live="polite">
-              Still to answer above: {missing.join(", ")}.
-            </p>
-          ) : null}
-          {busy ? <Progress /> : null}
-        </section>
+        </div>
+      ) : null}
 
-        <section className="card" aria-labelledby="context-heading">
-          <h2 id="context-heading">Provide additional context</h2>
-          <p className="muted small">These fields are the engine's only source of ground truth. Everything in the draft is treated as a claim; what you put here is treated as fact. All optional.</p>
-          {CONTEXT_FIELDS.map(([key, label]) => (
-            <Field key={key} label={label}>
-              <textarea rows={2} value={context[key] ?? ""} onChange={(e) => setContext((prev) => ({ ...prev, [key]: e.target.value }))} />
-            </Field>
-          ))}
-          {/* Switched off features are absent, not greyed out. A control a
-              tester cannot use is a question they have to ask and an answer
-              they have to read past; the feature flag still guards the code,
-              so switching it back on is one line. */}
-          {FEATURES.audienceDocuments ? (
-            <AudienceDocuments documents={documents} onChange={setDocuments} publicSearch={publicSearch && FEATURES.publicContextSearch} />
-          ) : null}
-        </section>
+      <div className="evaluate-row">
+        <button type="button" className="primary" onClick={submit} disabled={!ready} aria-disabled={!ready}>
+          {busy ? "Evaluating…" : baseline ? "Evaluate and compare" : "Evaluate draft"}
+          {busy || baseline ? null : <span aria-hidden="true" className="button-arrow">→</span>}
+        </button>
+        {missing.length > 0 ? (
+          <p className="muted small" aria-live="polite">
+            Still to answer: {missing.join(", ")}.{" "}
+            <button type="button" className="linklike" onClick={jumpToFirstMissing}>Jump to the first one</button>
+          </p>
+        ) : null}
+        {busy ? <Progress /> : null}
       </div>
+
+      <PrivacyPanel config={config} />
+      <CountryList />
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: ReactNode }) {
+/** One numbered step. The number is decoration; the heading carries the meaning. */
+function Step({ n, id, title, hint, children }: { n: number; id: string; title: string; hint: string; children: ReactNode }) {
   return (
-    <label className="field">
-      <span className="label">{label}</span>
+    <section className="card step" id={id} aria-labelledby={`${id}-heading`}>
+      <div className="step-head">
+        <span className="step-number" aria-hidden="true">{n}</span>
+        <div>
+          <h2 id={`${id}-heading`}>{title}</h2>
+          <p className="muted small step-hint">{hint}</p>
+        </div>
+      </div>
       {children}
-    </label>
+    </section>
   );
 }

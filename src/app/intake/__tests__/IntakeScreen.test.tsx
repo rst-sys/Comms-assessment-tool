@@ -24,6 +24,35 @@ afterEach(() => {
   restore = null;
 });
 
+/**
+ * Opens one of the six dropdowns in step 2 and returns a picker for its
+ * options. The control's accessible name is the question plus whatever is
+ * chosen, so it is matched on the question alone.
+ */
+function menu(question: string | RegExp) {
+  const control = screen.getByRole("button", { name: typeof question === "string" ? new RegExp(`^${question}`) : question });
+  if (control.getAttribute("aria-expanded") !== "true") fireEvent.click(control);
+  const panel = screen.getByRole("listbox", { name: question });
+  return {
+    control,
+    pick(option: string | RegExp) {
+      // An event can sit in Most common and in its own group, and a country
+      // can be a quick pick and a country; either copy will do.
+      fireEvent.click(within(panel).getAllByRole("option", { name: option })[0]!);
+    },
+    close() {
+      fireEvent.keyDown(document, { key: "Escape" });
+    },
+  };
+}
+
+/** Whether a dropdown currently shows this answer as chosen. */
+function chosen(question: string | RegExp, option: string | RegExp): boolean {
+  const control = screen.getByRole("button", { name: typeof question === "string" ? new RegExp(`^${question}`) : question });
+  const text = control.textContent ?? "";
+  return typeof option === "string" ? text.includes(option) : option.test(text);
+}
+
 describe("IntakeScreen", () => {
   it("shows the privacy panel with the configured provider and model before anything is typed", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
@@ -48,7 +77,7 @@ describe("IntakeScreen", () => {
     expect(request.communication_event).toBe("Layoffs or job cuts");
     expect(request.communication_format).toBe("Employee announcement");
     expect(request.already_published).toBe(false);
-    expect(request.context).toEqual({});
+    expect(request.context).toBe("");
   });
 
   it("shows a live word count and blocks a short pasted draft", () => {
@@ -71,15 +100,17 @@ describe("IntakeScreen", () => {
       expect(screen.getByText(/already issued/)).toBeTruthy();
       // The URL suggests a format, never an event: a newsroom page tells you
       // what the document is, not what happened.
-      expect((screen.getByRole("radio", { name: /Press release or public statement/ }) as HTMLInputElement).checked).toBe(true);
-      expect(screen.queryByRole("radio", { checked: true, name: /Layoffs or job cuts/ })).toBeNull();
+      expect(chosen("What are you drafting?", "Press release or public statement")).toBe(true);
+      expect(chosen("What's happening?", "Choose the closest match")).toBe(true);
 
       fireEvent.click(screen.getByRole("radio", { name: "Private company" }));
       fireEvent.change(screen.getByLabelText("Headquarters"), { target: { value: "United Kingdom" } });
-      fireEvent.click(screen.getAllByRole("radio", { name: "Price increase or change to terms" })[0]!);
-      fireEvent.click(screen.getByRole("radio", { name: /Already public/ }));
-      fireEvent.click(screen.getByRole("checkbox", { name: "United Kingdom" }));
-      fireEvent.click(screen.getByRole("radio", { name: /Announce a decision or change/ }));
+      menu("What's happening?").pick("Price increase or change to terms");
+      menu("Where do things stand?").pick(/Already public/);
+      const where = menu("Where is this happening?");
+      where.pick("United Kingdom");
+      where.close();
+      menu(/What is this mainly trying to do/).pick(/Announce a decision or change/);
       fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
 
       const request = onEvaluate.mock.calls[0]![0];
@@ -97,44 +128,57 @@ describe("IntakeScreen", () => {
   it("pre-selects the audiences a format goes to, and stops as soon as the user has an opinion", () => {
     const onEvaluate = vi.fn();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
-    fireEvent.click(screen.getByRole("radio", { name: /Employee announcement/ }));
-    expect((screen.getByRole("checkbox", { name: "All employees" }) as HTMLInputElement).checked).toBe(true);
+    menu("What are you drafting?").pick(/Employee announcement/);
+    expect(chosen("Who will receive this?", "All employees")).toBe(true);
 
-    fireEvent.click(screen.getByRole("checkbox", { name: /Managers and leaders/ }));
-    fireEvent.click(screen.getByRole("radio", { name: /Social media post/ }));
+    const who = menu("Who will receive this?");
+    who.pick(/Managers and leaders/);
+    who.close();
+    menu("What are you drafting?").pick(/Social media post/);
     // The user has chosen; the new format may not overwrite that.
-    expect((screen.getByRole("checkbox", { name: "All employees" }) as HTMLInputElement).checked).toBe(true);
-    expect((screen.getByRole("checkbox", { name: /General public and communities/ }) as HTMLInputElement).checked).toBe(false);
+    expect(chosen("Who will receive this?", "All employees")).toBe(true);
+    expect(chosen("Who will receive this?", "General public and communities")).toBe(false);
   });
 
   it("renames and hides the audiences that depend on the event and the organization", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    expect(screen.queryByRole("checkbox", { name: /Departing employees/ })).toBeNull();
-    fireEvent.click(screen.getAllByRole("radio", { name: "Layoffs or job cuts" })[0]!);
-    expect(screen.getByRole("checkbox", { name: "Departing employees" })).toBeTruthy();
+    const options = () => {
+      const who = menu("Who will receive this?");
+      const names = within(screen.getByRole("listbox", { name: "Who will receive this?" }))
+        .getAllByRole("option")
+        .map((o) => o.textContent ?? "");
+      who.close();
+      return names.join(" | ");
+    };
 
-    expect(screen.getByRole("checkbox", { name: "Investors and analysts" })).toBeTruthy();
+    expect(options()).not.toMatch(/Departing employees/);
+    menu("What's happening?").pick("Layoffs or job cuts");
+    expect(options()).toMatch(/Departing employees/);
+
+    expect(options()).toMatch(/Investors and analysts/);
     fireEvent.click(screen.getByRole("radio", { name: "Nonprofit or charity" }));
-    expect(screen.getByRole("checkbox", { name: "Donors, funders and trustees" })).toBeTruthy();
+    expect(options()).toMatch(/Donors, funders and trustees/);
     fireEvent.click(screen.getByRole("radio", { name: "Public body or government agency" }));
-    expect(screen.queryByRole("checkbox", { name: /Donors, funders and trustees|Investors and analysts/ })).toBeNull();
+    expect(options()).not.toMatch(/Donors, funders and trustees|Investors and analysts/);
   });
 
   it("pre-selects Still unfolding for a holding statement, and leaves a chosen answer alone", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    fireEvent.click(screen.getByRole("radio", { name: /Holding statement/ }));
-    expect((screen.getByRole("radio", { name: /Still unfolding/ }) as HTMLInputElement).checked).toBe(true);
+    menu("What are you drafting?").pick(/Holding statement/);
+    expect(chosen("Where do things stand?", "Still unfolding")).toBe(true);
 
     cleanup();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    fireEvent.click(screen.getByRole("radio", { name: /Already public/ }));
-    fireEvent.click(screen.getByRole("radio", { name: /Holding statement/ }));
-    expect((screen.getByRole("radio", { name: /Already public/ }) as HTMLInputElement).checked).toBe(true);
+    menu("Where do things stand?").pick(/Already public/);
+    menu("What are you drafting?").pick(/Holding statement/);
+    expect(chosen("Where do things stand?", "Already public")).toBe(true);
   });
 
   it("says which places it carries no legal checks for, and lets a place be removed again", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    fireEvent.click(screen.getByRole("checkbox", { name: "Canada" }));
+    const where = menu("Where is this happening?");
+    where.pick("Canada");
+    where.close();
     expect(screen.getByText(/Legal checks for Canada aren't included/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Remove Canada" }));
     expect(screen.queryByText(/Legal checks for Canada/)).toBeNull();
@@ -142,7 +186,7 @@ describe("IntakeScreen", () => {
 
   it("warns a non-listed organization off a market disclosure", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    fireEvent.click(screen.getByRole("radio", { name: /Investor or market disclosure/ }));
+    menu("What are you drafting?").pick(/Investor or market disclosure/);
     expect(screen.queryByText(/Change the profile or choose another format/)).toBeNull();
     fireEvent.click(screen.getByRole("radio", { name: "Nonprofit or charity" }));
     expect(screen.getByText(/Change the profile or choose another format/)).toBeTruthy();

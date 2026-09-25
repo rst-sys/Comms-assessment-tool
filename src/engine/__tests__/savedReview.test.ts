@@ -23,7 +23,7 @@ const doc: AudienceDocument = {
 
 describe("buildSavedReview", () => {
   const result = load("demo1");
-  const request = { ...DEMO_1.request, audience_documents: [doc], context: { known_facts: "The executive team decided." } };
+  const request = { ...DEMO_1.request, audience_documents: [doc], context: "The executive team decided." };
 
   it("never writes the whole draft or a document's contents into the file", () => {
     const saved = buildSavedReview(result, request);
@@ -40,7 +40,7 @@ describe("buildSavedReview", () => {
     const saved = buildSavedReview(result, request);
     expect(saved.score).toBe(result.score);
     expect(saved.settings.communication_event).toBe("Layoffs or job cuts");
-    expect(saved.context.known_facts).toBe("The executive team decided.");
+    expect(saved.context).toBe("The executive team decided.");
     expect(saved.dimensions).toHaveLength(10);
     expect(saved.findings.length).toBe(result.analysis.findings.length);
     expect(saved.findings[0]!.recommended_action.length).toBeGreaterThan(0);

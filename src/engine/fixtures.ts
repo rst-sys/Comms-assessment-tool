@@ -45,7 +45,7 @@ const demo1Request: EvaluationRequest = {
   people_at_risk: false,
   locations: ["United States"],
   purpose: "Announce a decision or change",
-  context: {},
+  context: "",
   already_published: false,
 };
 
@@ -76,10 +76,8 @@ export const DEMO_1_WITH_CONTEXT: Fixture = {
   name: "Demo 1 with known facts (calibration 1)",
   request: {
     ...demo1Request,
-    context: {
-      known_facts:
-        "The CEO and the executive team made the decision to eliminate the roles. A redeployment program exists and affected employees are eligible to apply for open roles through it.",
-    },
+    context:
+      "The CEO and the executive team made the decision to eliminate the roles. A redeployment program exists and affected employees are eligible to apply for open roles through it.",
   },
   expect: {},
 };
@@ -98,7 +96,7 @@ export const DEMO_2: Fixture = {
     people_at_risk: false,
     locations: ["Multiple regions / global"],
     purpose: "Apologize and take responsibility",
-    context: {},
+    context: "",
     already_published: false,
   },
   expect: {
@@ -130,7 +128,7 @@ export const DEMO_3: Fixture = {
     people_at_risk: false,
     locations: ["United States"],
     purpose: "Explain what happened and why",
-    context: {},
+    context: "",
     already_published: false,
   },
   expect: {
@@ -160,7 +158,7 @@ export const CONTROL: Fixture = {
     people_at_risk: false,
     locations: ["United States"],
     purpose: "Explain what happened and why",
-    context: {},
+    context: "",
     already_published: false,
   },
   expect: {

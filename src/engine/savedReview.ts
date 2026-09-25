@@ -13,7 +13,6 @@
 import { Ajv } from "ajv";
 import type {
   AudienceDocument,
-  ContextFields,
   EvaluationRequest,
   Severity,
 } from "./types.js";
@@ -82,7 +81,7 @@ export interface SavedReview {
   band: string;
   confidence_label: string;
   settings: SavedSettings;
-  context: ContextFields;
+  context: string;
   /** Titles and descriptions only; document contents are never saved. */
   documents: Omit<AudienceDocument, "text">[];
   summary: {
@@ -114,7 +113,7 @@ export function buildSavedReview(
     band: result.band,
     confidence_label: result.confidence_label,
     settings: currentSettings(request),
-    context: { ...request.context },
+    context: request.context,
     documents: (request.audience_documents ?? []).map(({ text: _text, ...rest }) => rest),
     summary: {
       headline: a.executive_summary.headline,
@@ -185,7 +184,7 @@ const SAVED_REVIEW_SCHEMA = {
     band: str,
     confidence_label: str,
     settings: { type: "object" },
-    context: { type: "object" },
+    context: str,
     documents: { type: "array" },
     summary: { type: "object" },
     dimensions: { type: "array" },

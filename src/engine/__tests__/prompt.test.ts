@@ -124,16 +124,18 @@ describe("buildUserMessage", () => {
     expect(msg).toContain("already_published: false");
   });
 
-  it("lists all thirteen context fields and says when none were supplied", () => {
+  it("sends the context as one block, and says plainly when there is none", () => {
+    // Thirteen labelled fields became one box. The old prompt printed every
+    // unfilled label back as "(not supplied)" — twelve lines of nothing on a
+    // typical review.
     const msg = buildUserMessage(DEMO_1.request);
-    expect(msg).toContain("No context fields were supplied.");
-    expect(msg).toContain("Organization or sector: (not supplied)");
-    expect(msg).toContain("Known legal, HR, labor, privacy, or disclosure review requirements: (not supplied)");
-    expect((msg.match(/\(not supplied\)/g) ?? []).length).toBe(13);
+    expect(msg).toContain("No context was supplied.");
+    expect(msg).not.toContain("(not supplied)");
 
     const withContext = buildUserMessage(DEMO_1_WITH_CONTEXT.request);
-    expect(withContext).not.toContain("No context fields were supplied.");
-    expect(withContext).toContain("Known facts and source material: The CEO and the executive team made the decision");
+    expect(withContext).not.toContain("No context was supplied.");
+    expect(withContext).toContain("it is fact. Everything in the draft is a claim.");
+    expect(withContext).toContain("The CEO and the executive team made the decision");
   });
 
   it("adds the retrospective note only when already published", () => {

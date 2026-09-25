@@ -19,7 +19,7 @@ describe("parseEvaluationRequest", () => {
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, extra: 1 })).toThrow(RequestValidationError);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, situation: "Casual" })).toThrow(/situation/);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, draft: "" })).toThrow(/draft/);
-    expect(() => parseEvaluationRequest({ ...DEMO_1.request, context: { unknown_key: "x" } })).toThrow(RequestValidationError);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, context: { unknown_key: "x" } as unknown as string })).toThrow(RequestValidationError);
   });
 });
 

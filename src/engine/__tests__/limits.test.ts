@@ -28,7 +28,7 @@ describe("the output budget", () => {
       ),
     });
 
-    const { analysis, adjustments } = validateAnalysis(many, SAMPLE_DRAFT, {});
+    const { analysis, adjustments } = validateAnalysis(many, SAMPLE_DRAFT, "");
     expect(analysis.findings).toHaveLength(MAX_FINDINGS);
     expect(adjustments.trimmed_findings).toBe(4);
     expect(analysis.findings.map((f) => f.id)).toEqual(
@@ -39,7 +39,7 @@ describe("the output budget", () => {
   });
 
   it("leaves a review under the cap alone", () => {
-    const { analysis, adjustments } = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, {});
+    const { analysis, adjustments } = validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, "");
     expect(analysis.findings).toHaveLength(1);
     expect(adjustments.trimmed_findings).toBe(0);
   });
@@ -59,7 +59,7 @@ describe("the output budget", () => {
       specialist_review_summary: [],
     });
 
-    const { analysis } = validateAnalysis(many, SAMPLE_DRAFT, {});
+    const { analysis } = validateAnalysis(many, SAMPLE_DRAFT, "");
     expect(analysis.specialist_review_summary).not.toContain("Investor relations");
     expect(analysis.specialist_review_summary).toContain("HR");
   });

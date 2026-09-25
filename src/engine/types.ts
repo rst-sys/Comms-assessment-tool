@@ -363,27 +363,7 @@ export function warrantsHeightenedReview(event: CommunicationEvent, peopleAtRisk
   return peopleAtRisk || HEIGHTENED_EVENTS.has(event);
 }
 
-/** Context fields, in the order Section 3 lists them. Key, then the label shown to the user and the model. */
-export const CONTEXT_FIELDS = [
-  ["organization_or_sector", "Organization or sector"],
-  ["speaker_role", "Speaker role"],
-  ["decision_or_event", "Decision or event being communicated"],
-  ["known_facts", "Known facts and source material"],
-  ["claims_to_verify", "Claims that must be verified"],
-  ["cannot_disclose", "What cannot be disclosed, and why"],
-  ["stakeholder_concerns", "Known stakeholder concerns"],
-  ["prior_commitments", "Prior commitments on this topic"],
-  [
-    "materially_affected",
-    "Who is materially affected (job loss, service disruption, safety, privacy, rights, price, access, reputation)",
-  ],
-  ["communicated_before", "Whether the organization has communicated on this before"],
-  ["publication_date", "Intended publication date"],
-  ["desired_tone", "Desired tone"],
-  ["review_requirements", "Known legal, HR, labor, privacy, or disclosure review requirements"],
-] as const;
-export type ContextFieldKey = (typeof CONTEXT_FIELDS)[number][0];
-export type ContextFields = Partial<Record<ContextFieldKey, string>>;
+
 
 /** What the audience already has or will receive when the communication lands (revision 8). */
 export const DOCUMENT_KINDS = [
@@ -443,7 +423,16 @@ export interface EvaluationRequest {
   locations: string[];
   /** What the draft is mainly trying to do. */
   purpose: Purpose;
-  context: ContextFields;
+  /**
+   * Anything the draft does not show, in the user's own words.
+   *
+   * One free-text field, not the thirteen labelled ones the intake used to
+   * ask for. Thirteen boxes is a form; almost nobody filled more than two,
+   * and the ones they skipped went to the engine as "(not supplied)" —
+   * twelve lines of nothing on every review. This is the same ground truth,
+   * asked for once.
+   */
+  context: string;
   already_published: boolean;
   audience_documents?: AudienceDocument[];
 }

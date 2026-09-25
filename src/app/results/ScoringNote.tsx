@@ -20,8 +20,8 @@ export function scoringNoteParagraphs(result: EvaluationResult, contextSupplied:
   const opening = `${result.provider.provider} (${result.provider.model}) scored this draft across ${dimensions} weighted dimensions, out of 100.`;
 
   const scoring = contextSupplied
-    ? `${opening} The context you supplied was weighed against the draft, so what it confirms counts as established rather than claimed. Add more under "Provide additional context" to enhance the depth of the scoring.`
-    : `${opening} As no context was supplied, the maximum score for three dimensions — accountability, causation and corrective action — is restricted to 3.5 out of 5, which caps this review at ${ceilingWithoutContext()} out of 100. Fill in "Provide additional context" to enhance the depth of the scoring.`;
+    ? `${opening} The context you supplied was weighed against the draft, so what it confirms counts as established rather than claimed. Add more under "Anything else we should know?" to enhance the depth of the scoring.`
+    : `${opening} As no context was supplied, the maximum score for three dimensions — accountability, causation and corrective action — is restricted to 3.5 out of 5, which caps this review at ${ceilingWithoutContext()} out of 100. Fill in "Anything else we should know?" to enhance the depth of the scoring.`;
 
   const caveat =
     "NB: This is decision support, not advice. It does not replace review by key partners such as legal counsel, HR, investor relations, security, subject-matter experts or local-market experts.";

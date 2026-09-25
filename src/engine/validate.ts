@@ -21,7 +21,6 @@ import { isValidDimensionScore } from "./scoring.js";
 import {
   DIMENSION_IDS,
   type Analysis,
-  type ContextFields,
   type SpecialistReviewType,
 } from "./types.js";
 
@@ -63,8 +62,8 @@ function describe(error: ErrorObject | undefined): { path: string; message: stri
   return { path: error.instancePath || "/", message: error.message ?? "invalid" };
 }
 
-export function contextWasSupplied(context: ContextFields): boolean {
-  return Object.values(context).some((v) => typeof v === "string" && v.trim().length > 0);
+export function contextWasSupplied(context: string): boolean {
+  return context.trim().length > 0;
 }
 
 const QUOTE_CLASS = "[\"'‘’“”«»]";
@@ -116,7 +115,7 @@ function fail(path: string, message: string): never {
   throw new AnalysisValidationError(path, `${path}: ${message}`);
 }
 
-export function validateAnalysis(raw: unknown, draft: string, context: ContextFields): ValidatedAnalysis {
+export function validateAnalysis(raw: unknown, draft: string, context: string): ValidatedAnalysis {
   if (!validateSchema(raw)) {
     const { path, message } = describe(validateSchema.errors?.[0]);
     fail(path, message);
