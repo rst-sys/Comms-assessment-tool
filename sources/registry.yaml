@@ -544,10 +544,10 @@ sources:
     binding: false
     url: https://link.springer.com/article/10.3758/PBR.17.5.644
     version_or_date: "2010"
-    read_status: read
+    read_status: partly_read
     last_checked: 2026-09-25
     review_by: 2027-03-25
-    notes: "Abstract read. Replication (Tonković et al. 2022) reported by a secondary source, not read. Grounds the framework's \"who had authority over it\" element; cited by no protocol element."
+    notes: "Abstract only. Replication (Tonković et al. 2022) reported by a secondary source, not read. Grounds the framework's \"who had authority over it\" element; cited by no protocol element."
 
   # ------------------------------------------------- ceo-departure: missed by the phase 1 seed
   - id: eu-impl-reg-2016-1055

@@ -3,11 +3,12 @@ id: ceo-departure
 name: CEO or senior-leader departure
 layer: event
 family: leadership
-version: 1.0.0
+version: 1.1.0
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.0 — two listed-company disclosure questions removed; the listed-company overlay now asks them."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   US securities law for listed companies — Form 8-K, Regulation FD, Rule 10b-5 — plus professional judgment for everything else.
@@ -94,10 +95,6 @@ questions:
     review: [Legal, Executive]
   - ask: Is there a separation agreement with non-disparagement, confidentiality or agreed-statement terms, and has the draft been checked against it and against what later remuneration or proxy disclosures will show?
     review: [Legal, Investor relations]
-  - ask: If the organization is listed, when did any regulatory disclosure clock start — on notice of the decision, or on the governing body's decision — and does the planned publication time fit it? Counsel must confirm which rules apply.
-    review: [Legal, Investor relations]
-  - ask: In what order will employees, the leader's direct reports, key customers and the market learn of this, and could telling any group early amount to selective disclosure? Counsel must confirm.
-    review: [HR, Legal, Investor relations]
   - ask: Which strategies, commitments or relationships depended most on the departing leader, and what does the organization intend for each?
     review: [Executive]
   - ask: If this account is later contradicted — by an investigation, litigation, a filing or the departing leader — what will the organization do and how quickly?

@@ -37,9 +37,16 @@ describe("buildSystemBlocks", () => {
     expect(SYSTEM_PROMPT).toContain("when the next update comes, where it will appear, and a named way to ask");
   });
 
-  it("sends no protocol at all when the event is not on the list", () => {
+  it("sends the core, and only the core, when the event is \"Something else\"", () => {
+    // It is on the menu, so the core applies: what the tool asks of any
+    // high-stakes message does not depend on the event having a protocol. It
+    // has no family, so nothing below the core has anything to attach to.
     const routine = buildSystemBlocks({ ...DEMO_1.request, communication_event: "Something else" }).map((b) => b.text);
-    expect(routine).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
+    expect(routine[0]).toBe(SYSTEM_PROMPT);
+    expect(routine[1]!.startsWith("CORE PROTOCOL")).toBe(true);
+    expect(routine[2]).toBe(PROTOCOL_RULES);
+    expect(routine[3]).toBe(OUTPUT_NOTES);
+    expect(routine).toHaveLength(4);
   });
 
   it("adds a posture on top of any event, chosen by the purpose and not the event", () => {
@@ -74,9 +81,9 @@ describe("the protocol library", () => {
     // Core first, then the event, then the overlays sorted by id.
     expect(applied).toEqual(["core", "workforce-reduction", "apology", "workforce-impact"]);
 
-    // "Something else" has no family, so it gets no core and no family either,
-    // and this request switches on no overlay.
-    expect(protocolsFor({ ...DEMO_1.request, communication_event: "Something else" })).toEqual([]);
+    // "Something else" has no family, so no family protocol and no event
+    // protocol; the core still applies, and this request switches on no overlay.
+    expect(protocolsFor({ ...DEMO_1.request, communication_event: "Something else" }).map((p) => p.id)).toEqual(["core"]);
   });
 
   it("sends the core and nothing more for an event that has no file yet", () => {

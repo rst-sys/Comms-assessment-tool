@@ -152,15 +152,14 @@ describe("phase 2: the core, the three overlays and how they combine", () => {
   const ids = (r: EvaluationRequest) => protocolsFor(r).map((p) => p.id);
   const elementIds = (r: EvaluationRequest) => resolveProtocols(r).protocols.flatMap((p) => p.elements.map((e) => e.id));
 
-  it("applies the core to every named event, and to no event at all", () => {
+  it("applies the core to every event on the menu, whatever its family", () => {
     for (const event of COMMUNICATION_EVENTS) {
-      const applied = ids(req({ communication_event: event }));
-      const named = EVENT_BY_LABEL.get(event)?.family !== null;
-      expect(applied.includes("core"), event).toBe(named);
+      expect(ids(req({ communication_event: event })), event).toContain("core");
     }
-    // "Something else" has no family, so there is nothing for the core to be
-    // the core of: it is judged on the framework and whatever overlays hold.
-    expect(ids(req({ communication_event: "Something else" }))).not.toContain("core");
+    // Including the one with no family. The core is what the tool asks of any
+    // high-stakes message; only the layers below it need an event to attach to.
+    expect(EVENT_BY_LABEL.get("Something else")?.family).toBeNull();
+    expect(ids(req({ communication_event: "Something else" }))).toEqual(["core"]);
   });
 
   it("fires the workforce overlay on job-affecting events, and never on a dispute or a policy change", () => {

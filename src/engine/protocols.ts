@@ -102,26 +102,32 @@ export function activeTriggers(request: EvaluationRequest): OverlayTrigger[] {
  * was filled in; a bundle hash that changed with the order of the answers
  * would be useless for tracing a review back to what produced it.
  */
-export function protocolsFor(request: EvaluationRequest): ProtocolFile[] {
+export function protocolsFor(request: EvaluationRequest, library: readonly ProtocolFile[] = PROTOCOL_LIBRARY): ProtocolFile[] {
+  const active = library === PROTOCOL_LIBRARY ? ACTIVE : library.filter((p) => p.status === "active");
   const applied: ProtocolFile[] = [];
   const event = EVENT_BY_LABEL.get(request.communication_event);
 
-  // The core and the family need a named event. "Something else" has neither,
-  // and is judged on the framework plus whatever overlays apply.
-  if (event && event.family !== null) {
-    if (CORE_PROTOCOL) applied.push(CORE_PROTOCOL);
-    const family = FAMILY_PROTOCOLS.find((p) => p.id === event.family);
-    if (family) applied.push(family);
-    if (event.event_protocol) {
-      const own = EVENT_PROTOCOLS.find((p) => p.id === event.event_protocol);
-      if (own) applied.push(own);
+  // The core applies to every event on the menu, "Something else" included: it
+  // is what the tool asks of any high-stakes message, and an event nobody has
+  // written a protocol for still gets one. Only the family and the event's own
+  // protocol need a family, which "Something else" has not got.
+  if (event) {
+    const core = active.find((p) => p.layer === "core");
+    if (core) applied.push(core);
+    if (event.family !== null) {
+      const family = active.find((p) => p.layer === "family" && p.id === event.family);
+      if (family) applied.push(family);
+      if (event.event_protocol) {
+        const own = active.find((p) => p.layer === "event" && p.id === event.event_protocol);
+        if (own) applied.push(own);
+      }
     }
   }
 
   const triggers = activeTriggers(request);
-  const overlays = OVERLAY_PROTOCOLS.filter((p) => p.trigger && triggers.includes(p.trigger)).sort((a, b) =>
-    a.id.localeCompare(b.id),
-  );
+  const overlays = active
+    .filter((p) => p.layer === "overlay" && p.trigger && triggers.includes(p.trigger))
+    .sort((a, b) => a.id.localeCompare(b.id));
   applied.push(...overlays);
 
   return applied;
@@ -184,10 +190,10 @@ export interface ResolvedBundle {
 }
 
 /** Everything the engine needs to know about which standards this review applied. */
-export function resolveProtocols(request: EvaluationRequest): ResolvedBundle {
+export function resolveProtocols(request: EvaluationRequest, library?: readonly ProtocolFile[]): ResolvedBundle {
   // Two passes. The first drops what the intake does not qualify for; the
   // second drops the overlay elements that what survived has replaced.
-  const applicable = protocolsFor(request).map((p) => filtered(p, request));
+  const applicable = protocolsFor(request, library).map((p) => filtered(p, request));
   const superseded = supersededBy(applicable);
   const protocols = applicable.map((p) => filtered(p, request, superseded));
   const narrows = [...new Set(protocols.flatMap((p) => p.narrows ?? []))].sort();

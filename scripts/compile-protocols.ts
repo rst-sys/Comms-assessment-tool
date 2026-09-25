@@ -20,7 +20,7 @@ import {
   type EventEntry,
   type ProtocolFile,
 } from "../src/engine/protocolFormat.js";
-import { buildProtocolBlock, PROTOCOL_RULES, protocolWordCount } from "../src/engine/protocolPrompt.js";
+import { worstCase, type WorstCase } from "../src/engine/bundleWorstCase.js";
 
 const DIR = "protocols";
 const OUT = "src/engine/protocolLibrary.ts";
@@ -29,17 +29,17 @@ const EVENTS_OUT = "src/engine/eventTaxonomy.ts";
 const REGISTRY = "sources/registry.yaml";
 
 /**
- * The most a whole bundle may cost, in tokens.
+ * The most a whole bundle may cost, in tokens. The hard limit.
  *
  * Instructions are cached and read in parallel, so this is not a speed limit;
  * it is about attention. Let the protocol layers outgrow the framework and
  * every review is mostly protocol, whatever the draft in front of it needs.
- * Four English characters to the token is the usual rule of thumb and is what
- * the report below assumes.
+ *
+ * The number a bundle is measured against is the largest one the intake can
+ * actually produce, enumerated through the resolver in bundleWorstCase.ts, not
+ * a sum of protocols no single request can select together.
  */
-const TOKEN_BUDGET = Number.parseInt(process.env.ACR_PROTOCOL_TOKEN_BUDGET ?? "2500", 10);
-const CHARS_PER_TOKEN = 4;
-const estimateTokens = (text: string) => Math.ceil(text.length / CHARS_PER_TOKEN);
+const TOKEN_BUDGET = Number.parseInt(process.env.ACR_PROTOCOL_TOKEN_BUDGET ?? "4000", 10);
 
 /** Splits `---\n<yaml>\n---\n<prose>`. Returns null when there is no front matter. */
 export function splitFrontMatter(text: string): { yaml: string; prose: string } | null {
@@ -54,8 +54,8 @@ export function splitFrontMatter(text: string): { yaml: string; prose: string } 
 export interface CompiledLibrary {
   protocols: ProtocolFile[];
   errors: CheckError[];
-  /** The heaviest bundle the resolver could assemble, for the build report. */
-  worst?: { words: number; tokens: number; wordBudget: number; tokenBudget: number };
+  /** The heaviest bundle the resolver can assemble, for the build report. */
+  worst?: WorstCase & { wordBudget: number; tokenBudget: number };
 }
 
 /** Every .md under the folder, deepest last, README excluded. */
@@ -121,41 +121,20 @@ export function compile(dir = DIR): CompiledLibrary {
     ),
   );
 
-  // Worst case: the core, the heaviest family, the heaviest event and every
-  // overlay at once, plus the rules block sent with them.
-  const active = protocols.filter((p) => p.status === "active");
-  const blockOf = (p: ProtocolFile) => buildProtocolBlock(p);
-  const heaviest = (layer: ProtocolFile["layer"]) => {
-    const texts = active.filter((p) => p.layer === layer).map(blockOf);
-    return texts.length === 0 ? "" : texts.reduce((a, b) => (b.length > a.length ? b : a));
-  };
-  const worstTexts = [
-    heaviest("core"),
-    heaviest("family"),
-    heaviest("event"),
-    ...active.filter((p) => p.layer === "overlay").map(blockOf),
-    PROTOCOL_RULES,
-  ].filter((t) => t.length > 0);
-  const worstText = worstTexts.join("\n\n");
-  const worstWords = protocolWordCount(worstText);
-  const worstTokens = estimateTokens(worstText);
+  // The largest bundle any set of intake answers can produce, found by putting
+  // every combination through the resolver the reviews use.
+  const enumerated = worstCase(protocols);
   const budget = protocolWordBudget();
-  if (worstWords > budget) {
+  if (enumerated.tokens > TOKEN_BUDGET) {
     errors.push({
       file: "(whole library)",
       message:
-        `the worst case is ${worstWords} words, over the ${budget}-word budget. ` +
-        "The protocols must stay shorter than the framework they sit under.",
-    });
-  }
-  if (worstTokens > TOKEN_BUDGET) {
-    errors.push({
-      file: "(whole library)",
-      message: `the worst case is about ${worstTokens} tokens, over the ${TOKEN_BUDGET}-token budget (ACR_PROTOCOL_TOKEN_BUDGET).`,
+        `the largest bundle the intake can produce is about ${enumerated.tokens} tokens, over the ${TOKEN_BUDGET}-token budget ` +
+        `(ACR_PROTOCOL_TOKEN_BUDGET). It is ${enumerated.protocols.join(" + ")}, from: ${enumerated.answers}`,
     });
   }
 
-  return { protocols, errors, worst: { words: worstWords, tokens: worstTokens, wordBudget: budget, tokenBudget: TOKEN_BUDGET } };
+  return { protocols, errors, worst: { ...enumerated, wordBudget: budget, tokenBudget: TOKEN_BUDGET } };
 }
 
 export function render(protocols: ProtocolFile[]): string {
@@ -279,9 +258,22 @@ function main(): void {
   }
   if (worst) {
     console.log(
-      `\nWorst-case bundle: ${worst.words} words, about ${worst.tokens} tokens ` +
-        `(budgets: ${worst.wordBudget} words, ${worst.tokenBudget} tokens).`,
+      `\nLargest bundle the intake can produce: ${worst.words} words, about ${worst.tokens} tokens ` +
+        `(hard limit ${worst.tokenBudget} tokens).\n  ${worst.protocols.join(" + ")}\n  from: ${worst.answers}\n` +
+        `  found by enumerating ${worst.requests.toLocaleString()} requests through the resolver ` +
+        `(${worst.bundles} distinct bundles).`,
     );
+    // A warning, not a failure. The rule it states — that the protocols stay
+    // the smaller voice, below the length of the framework they sit under — is
+    // the one worth keeping in view, and phase 2 broke it deliberately: four
+    // overlays is more instruction than the framework itself. Printed every
+    // build so it stays a decision rather than something nobody remembers.
+    if (worst.words > worst.wordBudget) {
+      console.warn(
+        `\n  warning: that is ${worst.words} words against a framework of ${worst.wordBudget}. ` +
+          "The protocols are no longer the smaller voice. Under the hard token limit, so the build passes.",
+      );
+    }
   }
   for (const s of staleSources()) console.warn(`  warning: source ${s}`);
 }

@@ -4,6 +4,10 @@ import { compile, render, splitFrontMatter } from "../../../scripts/compile-prot
 import { checkLibrary, checkProtocol, PROTOCOL_CAPS, protocolWordBudget } from "../protocolFormat.js";
 import { buildProtocolBlock, protocolWordCount } from "../protocolPrompt.js";
 import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
+import { worstCase } from "../bundleWorstCase.js";
+import { activeTriggers } from "../protocols.js";
+import { DEMOS } from "../fixtures.js";
+import { AUDIENCES, COMMUNICATION_EVENTS, EMPLOYEE_AUDIENCES } from "../types.js";
 
 /**
  * The library the owner maintains (step 4).
@@ -14,18 +18,47 @@ import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
  * name, rather than quietly producing worse reviews for months.
  */
 describe("the protocol library", () => {
+  // Slower than the rest: compiling runs the worst-case enumeration, which puts
+  // a million requests through the resolver. That is the point of it.
   it("matches the protocols folder, so a forgotten rebuild fails here and not in front of a tester", () => {
     const { protocols, errors } = compile("protocols");
     expect(errors).toEqual([]);
     expect(readFileSync("src/engine/protocolLibrary.ts", "utf8")).toBe(render(protocols));
     expect(PROTOCOL_LIBRARY.map((p) => p.id).sort()).toEqual(protocols.map((p) => p.id).sort());
-  });
+  }, 60_000);
 
-  it("stays shorter than the framework it sits under, in the worst case", () => {
-    const heaviest = (layer: string) =>
-      Math.max(0, ...PROTOCOL_LIBRARY.filter((p) => p.layer === layer).map((p) => protocolWordCount(buildProtocolBlock(p))));
-    const worst = heaviest("event") + heaviest("posture");
-    expect(worst).toBeLessThanOrEqual(protocolWordBudget());
+  // This used to add the heaviest event to the heaviest posture, a layer that
+  // no longer exists, so it had been measuring the event protocols alone and
+  // passing for the wrong reason.
+  it("keeps the largest bundle the intake can produce under the hard token limit", () => {
+    const worst = worstCase();
+    expect(worst.tokens).toBeLessThanOrEqual(4000);
+    // The enumeration has to be finding real bundles, not an empty search.
+    expect(worst.bundles).toBeGreaterThan(20);
+    expect(worst.requests).toBeGreaterThan(100_000);
+    expect(worst.protocols).toContain("core");
+  }, 60_000);
+
+  it("reads nothing but the Employees group out of the audiences, which is why one of each is enough", () => {
+    // bundleWorstCase tries each audience alone and all of them together
+    // rather than all 512 subsets. That is sound only while the resolver reads
+    // no more than whether an Employees option is present; if a rule ever
+    // looks at a combination, the enumeration would step straight past it.
+    const base = DEMOS[0]!.request;
+    const employee = EMPLOYEE_AUDIENCES;
+    const others = AUDIENCES.filter((a) => !(employee as readonly string[]).includes(a));
+    for (const event of COMMUNICATION_EVENTS) {
+      const request = { ...base, communication_event: event };
+      const alone = new Set(others.map((a) => activeTriggers({ ...request, audiences: [a] }).join("|")));
+      const together = activeTriggers({ ...request, audiences: [...others] }).join("|");
+      // No non-employee audience changes the answer, alone or in any group.
+      expect(alone.size, event).toBe(1);
+      expect(together, event).toBe([...alone][0]);
+      // Adding one employee audience is the same as adding all of them.
+      const oneEmployee = activeTriggers({ ...request, audiences: [employee[0]!] }).join("|");
+      const allEmployees = activeTriggers({ ...request, audiences: [...employee] }).join("|");
+      expect(allEmployees, event).toBe(oneEmployee);
+    }
   });
 
   it("reads the front matter and leaves the prose for the page", () => {

@@ -95,8 +95,9 @@ questions:
 
 Two experiments with 755 participants: 333 online adults and 422 undergraduates. Each read a scenario in which a job candidate apologizes for an incorrect tax return. They then rated the apology on effectiveness, credibility and adequacy, from 1 to 5. Apologies contained between one and six components. Study 1 told participants which components were present, and Study 2 showed them actual statements. The evidence covers written apologies by an individual to an individual, judged by hypothetical readers. It did not test organizations, public audiences or real trust outcomes.
 
-## 5. Elements
+## Drafting notes: elements considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 Importance labels: Core, Supporting, Minor. "Research" means Lewicki et al. supports the ranking. "Judgment" means it rests on the audit key.
 
 | Element | What it means | Importance | Dimensions |
@@ -116,8 +117,9 @@ Importance labels: Core, Supporting, Minor. "Research" means Lewicki et al. supp
 
 The rankings marked "research" rest on the Lewicki study, but the study did not test corporate apologies. Treat "Core (research)" as the best available evidence, not as proof for this setting. The tie between regret, explanation and repentance means the protocol should not raise a finding because one of the three is stronger than another.
 
-## 6. High-severity triggers
+## Drafting notes: triggers considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 **Watchlist.** Treat these as prompts in addition to the vague-action list: "mistakes were made", "we regret that this happened", "sorry if", "any inconvenience", "the situation", "recent events", "the incident", "the content was posted", "not who we are", "never our intention", "we hear your concerns", "we are conducting a review", "we take this seriously", "we ask for your understanding", "committed to doing better". A watchlist term alone is not a finding. Raise one only when the term stands in place of an element from Section 5.
 
 Raise a High-severity finding when any of these is true:
@@ -145,8 +147,9 @@ Raise a High-severity finding when any of these is true:
 
 **Raise Low when** the draft requests forgiveness after repair has been stated.
 
-## 7. Questions before publication
+## Drafting notes: questions considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 Always include these:
 
 - Who approved the decision or conduct being apologized for, and does the draft say so?
