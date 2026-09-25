@@ -255,14 +255,9 @@ export function ownJudgment(): [string, string][] {
 }
 
 /**
- * What kind of authority each protocol element rests on, for the Library card.
- *
- * The label is the element's own `basis` field, read from the protocol. The
- * note is the qualification the protocol's own Source section attaches to it,
- * quoted rather than paraphrased: several of these checks rest on guidance
- * written for a different situation, or extend a rule past what it covers, and
- * the page that exists to say where a standard comes from has to say so on the
- * element rather than three paragraphs down. No label is upgraded here.
+ * The label shown for an element's basis. The note beside it is the element's
+ * own `basis_note`, read from the protocol file: one place per note, so the
+ * card and the protocol cannot come to disagree about what a check rests on.
  */
 export const BASIS_LABELS: Record<string, string> = {
   law: "Law",
@@ -273,28 +268,6 @@ export const BASIS_LABELS: Record<string, string> = {
   judgement: "Our judgment",
   unclassified: "Unclassified",
 };
-
-export const ELEMENT_BASIS_NOTES: Record<string, string> = {
-  "core.estimates_as_estimates":
-    "Written for public authorities in health emergencies; applied to organizational communication by analogy.",
-  "core.central_fact_first":
-    "The “first two or three sentences” threshold is professional judgement; the standard and the research do not set one.",
-  "people-harmed.danger_and_protection":
-    "The directive binds only employers in the EU, and only toward their workers. For other readers and places, the element applies CDC guidance and the same reasoning by analogy.",
-  "people-harmed.harm_acknowledged": "Guidance and theory, not measured effect.",
-  "people-harmed.support": "Theory, not measured effect.",
-  "listed-company.same_to_all":
-    "Regulation FD covers market professionals and securityholders, not employees as such. Extending it to employees and partners is professional judgement.",
-  "workforce-impact.decision-status": WORKFORCE_LAW_NOTE(),
-  "workforce-impact.scope-of-impact": WORKFORCE_LAW_NOTE(),
-  "workforce-impact.selection-basis-and-alternatives": WORKFORCE_LAW_NOTE(),
-  "workforce-impact.individual-notice-timing-and-terms": WORKFORCE_LAW_NOTE(),
-  "workforce-impact.voice-and-what-can-still-change": WORKFORCE_LAW_NOTE(),
-};
-
-function WORKFORCE_LAW_NOTE(): string {
-  return "These laws govern formal notices to representatives and authorities, not employee messages. Applying their content to a message is professional judgement.";
-}
 
 /**
  * The framework elements the core protocol's source review grounds, from its

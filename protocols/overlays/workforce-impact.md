@@ -4,13 +4,14 @@ name: Workforce impact
 layer: overlay
 # rule: event in [layoffs, restructuring, site-closure] OR (event in [financial-difficulty, strategy-market-exit, merger-acquisition] AND audiences include an Employees option)
 trigger: workforce-impact
-version: 0.3.0
+version: 0.3.1
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.
 changelog:
+  - "0.3.1 — basis notes moved into the file"
   - "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed."
   - "0.2.0 (2026-09-25): reconciled with workforce-reduction 1.0.0. Takes over its five law-related elements word for word (adding only \"where roles end\" / \"no roles are affected\" so they fit events where job loss isn't certain), four of its triggers and three of its questions. Adds EU and US law as sources, and four new triggers. Trigger narrowed: policy-change and labor-dispute no longer fire it."
   - "0.1.0 (2026-09-25): first draft from the geopolitical source review."
@@ -23,6 +24,8 @@ elements:
     dimension: accountability_agency
     basis: law
     sources: [eu-directive-2002-14, eu-directive-98-59]
+    basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+
   - id: workforce-impact.scope-of-impact
     name: Scope of impact
     means: How many are affected, in which functions, sites and countries, or that the group is still being set, or plainly that no roles are affected.
@@ -30,6 +33,8 @@ elements:
     dimension: stakeholder_respect_impact
     basis: law
     sources: [eu-directive-98-59, us-warn-20-cfr-639]
+    basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+
   - id: workforce-impact.selection-basis-and-alternatives
     name: Selection basis and alternatives
     means: Where roles end, how roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.
@@ -37,6 +42,8 @@ elements:
     dimension: fairness_independence_conflicts
     basis: law
     sources: [eu-directive-98-59]
+    basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+
   - id: workforce-impact.individual-notice-timing-and-terms
     name: Individual notice, timing and terms
     means: Where roles end, how and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.
@@ -44,6 +51,8 @@ elements:
     dimension: stakeholder_respect_impact
     basis: law
     sources: [us-warn-20-cfr-639, eu-directive-98-59]
+    basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+
   - id: workforce-impact.voice-and-what-can-still-change
     name: Voice and what can still change
     means: What employees or their representatives can still influence, kept separate from what leadership has already decided.
@@ -51,6 +60,7 @@ elements:
     dimension: listening_employee_voice
     basis: law
     sources: [eu-directive-2002-14, eu-directive-98-59]
+    basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
 
 triggers:
   # Moved unchanged from workforce-reduction 1.0.0
@@ -91,6 +101,7 @@ questions:
   # New
   - ask: Does this draft match the formal notice given to employee representatives or authorities, and what they were told in writing?
     review: [HR, Legal]
+
 ---
 
 ## What this overlay does

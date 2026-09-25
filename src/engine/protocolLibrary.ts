@@ -13,12 +13,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "core",
       "name": "Core protocol",
       "layer": "core",
-      "version": "0.5.0",
+      "version": "0.5.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
       "rests_on": "Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.",
       "changelog": [
+        "0.5.1 — basis notes moved into the file",
         "0.5.0 (2026-09-25): made to pass the build checker. Added rests_on; removed the frontmatter narrows (the core sits directly under the framework and can't narrow it; the relationship is described in the body); added a Source section. No element, trigger or question changed.",
         "0.4.0 (2026-09-25): cleared to activate without Seeger (2006) and Ma & Zhan (2016) in the original; limitation recorded.",
         "0.3.0 (2026-09-25): wording refined after testing on two versions of a workforce-reduction memo. Central fact must come in the first two or three sentences, in ordinary words; a one-line signpost is allowed; euphemism now fires the trigger. Reputation-first trigger broadened to strategy and ambitions.",
@@ -37,7 +38,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "iso-24495-1-2023",
             "who-erc-2017",
             "li-2008"
-          ]
+          ],
+          "basis_note": "A plain-language standard and WHO guidance applied to organizations by analogy, supported by one large study showing bad news is written less plainly. The “first two or three sentences” threshold is the tool's own."
         },
         {
           "id": "core.estimates_as_estimates",
@@ -50,7 +52,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "who-erc-2017",
             "cdc-cerc-intro-2018",
             "seeger-2006"
-          ]
+          ],
+          "basis_note": "Emergency risk-communication guidance (WHO, CDC) written for public authorities, applied to organizations by analogy; Seeger (2006) read only through a secondary source."
         }
       ],
       "triggers": [
@@ -856,11 +859,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Public apology",
       "layer": "overlay",
       "trigger": "apology",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.0.1 — Evidence labels added; no check changed.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
       "rests_on": "One 2016 study of 755 people, known here through a press account, plus the tool author's own standard.",
@@ -871,8 +875,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The organization or a named leader says it is responsible for the conduct, decision or failure — not merely that the outcome is regrettable.",
           "weight": "core",
           "dimension": "accountability_agency",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "research",
+          "sources": [
+            "lewicki-2016-effective-apologies",
+            "sciencedaily-2016-six-elements"
+          ],
+          "basis_note": "The most important of six apology elements in one 2016 study of 755 people, known here through a press account."
         },
         {
           "id": "apology.repair-offered",
@@ -880,8 +888,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "A remedy for the people affected — restitution, correction, recall, support or access — proportionate to the harm.",
           "weight": "core",
           "dimension": "corrective_action_proof",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "research",
+          "sources": [
+            "lewicki-2016-effective-apologies",
+            "sciencedaily-2016-six-elements"
+          ],
+          "basis_note": "The second most important element in the same study, known through a press account."
         },
         {
           "id": "apology.direct-regret",
@@ -889,8 +901,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "An unconditional apology for the organization's own conduct, not conditional on how anyone reacted.",
           "weight": "core",
           "dimension": "stakeholder_respect_impact",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "Regret is one of six apology elements in a 2016 study, but requiring it to be unconditional is the tool's own standard."
         },
         {
           "id": "apology.conduct-rejected",
@@ -898,8 +911,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft says the conduct was wrong, not only that the reaction was unfortunate.",
           "weight": "supporting",
           "dimension": "accountability_agency",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "Close to the study's “declaration of repentance”, but not the same thing."
         },
         {
           "id": "apology.restraint-in-the-ask",
@@ -907,8 +921,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft does not demand forgiveness, understanding or moving on, and does not ask before repair is stated.",
           "weight": "supporting",
           "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "A 2016 study found asking for forgiveness added least to an apology; treating a demand for it as a fault is the tool's own standard."
         }
       ],
       "triggers": [
@@ -973,19 +988,20 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           ]
         }
       ],
-      "prose": "## 3. Source\n\n- **Published research (Elements 1, 2 and 12 only):** Lewicki, R. J., Polin, B., & Lount, R. B. (2016). \"An Exploration of the Structure of Effective Apologies.\" *Negotiation and Conflict Management Research*, 9(2), 177–196. doi:10.1111/ncmr.12073. https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073\n- **Secondary account, read in full:** Ohio State University (written by Jeff Grabmeier), \"Six elements of an effective apology, according to science,\" ScienceDaily, 12 April 2016. https://www.sciencedaily.com/releases/2016/04/160412091111.htm\n- **Not read:** the article itself, which is paywalled. Study details in this protocol come from the press account, which quotes the lead author.\n- **Professional judgment (everything else):** the 12-standard audit key supplied by the tool's author. It has no published source.\n\n## 4. Basis\n\nTwo experiments with 755 participants: 333 online adults and 422 undergraduates. Each read a scenario in which a job candidate apologizes for an incorrect tax return. They then rated the apology on effectiveness, credibility and adequacy, from 1 to 5. Apologies contained between one and six components. Study 1 told participants which components were present, and Study 2 showed them actual statements. The evidence covers written apologies by an individual to an individual, judged by hypothetical readers. It did not test organizations, public audiences or real trust outcomes.\n\n## Drafting notes: elements considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\nImportance labels: Core, Supporting, Minor. \"Research\" means Lewicki et al. supports the ranking. \"Judgment\" means it rests on the audit key.\n\n| Element | What it means | Importance | Dimensions |\n|---|---|---|---|\n| Acknowledged responsibility | The organization or a named leader says it is responsible for the conduct, decision or failure. | Core (research) | accountability_agency, fairness_independence_conflicts |\n| Repair offered | A remedy for the people affected, such as restitution, correction, recall, support or access. | Core (research) | corrective_action_proof, stakeholder_respect_impact |\n| Offense named | The conduct, decision, product or omission is identified in ordinary words a reader new to the story can follow. | Core (judgment) | accountability_agency, clarity_plain_language |\n| Organizational agency | The organization's own role in making, approving, enabling or failing to prevent the conduct is stated, not left in passive or abstract wording. | Core (judgment) | accountability_agency |\n| Impact recognized | The affected groups and the concrete harm to them are named before the organization's own discomfort. | Core (judgment) | stakeholder_respect_impact |\n| System change | Operational, policy, governance, staffing or oversight changes that address why the failure could happen. | Core (judgment) | future_readiness_learning, corrective_action_proof |\n| Owner and follow-up | A named role or body owns the work, with a date or an external standard by which progress can be checked. | Core (judgment) | verification_follow_through, accountability_agency |\n| Explanation | A brief, fact-grounded account of how the failure happened. It separates confirmed facts from what is still under investigation, and it explains rather than excuses. | Supporting (research: tied third) | causation_explanation, truthfulness_factual_discipline |\n| Direct regret | An unconditional statement of apology for the organization's own conduct. | Supporting (research: tied third) | stakeholder_respect_impact, clarity_plain_language |\n| Conduct rejected | The draft says the conduct was wrong, not only that the reaction was unfortunate. | Supporting (research: tied third) | accountability_agency, future_readiness_learning |\n| Timely care information | If people are still at risk, the draft tells them what to do and whom to contact, and says what is confirmed now. | Supporting (judgment) | stakeholder_respect_impact, clarity_plain_language |\n| Restraint in the ask | The draft does not demand forgiveness, understanding or moving on. | Minor (research: forgiveness ranked lowest) | fairness_independence_conflicts, stakeholder_respect_impact |\n\nThe rankings marked \"research\" rest on the Lewicki study, but the study did not test corporate apologies. Treat \"Core (research)\" as the best available evidence, not as proof for this setting. The tie between regret, explanation and repentance means the protocol should not raise a finding because one of the three is stronger than another.\n\n## Drafting notes: triggers considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\n**Watchlist.** Treat these as prompts in addition to the vague-action list: \"mistakes were made\", \"we regret that this happened\", \"sorry if\", \"any inconvenience\", \"the situation\", \"recent events\", \"the incident\", \"the content was posted\", \"not who we are\", \"never our intention\", \"we hear your concerns\", \"we are conducting a review\", \"we take this seriously\", \"we ask for your understanding\", \"committed to doing better\". A watchlist term alone is not a finding. Raise one only when the term stands in place of an element from Section 5.\n\nRaise a High-severity finding when any of these is true:\n\n- No sentence says the organization or a named leader is responsible for the conduct, decision or failure. The draft offers only regret, sympathy or concern. *(accountability_agency; Legal)*\n- The draft never says what the conduct or failure was. The only references are \"the situation\", \"the incident\", \"mistakes\" or similar. *(accountability_agency, clarity_plain_language)*\n- The cause is placed only on an individual employee, a vendor, a miscommunication, circumstances or the audience's reaction, and the draft does not state the organization's own supervisory or control role. *(accountability_agency, fairness_independence_conflicts; Legal, plus HR if an employee is named)*\n- The only apology sentence is conditional on the audience's reaction, for example \"if\", \"to anyone who felt\", or \"that concerns were raised\". *(stakeholder_respect_impact; Legal)*\n- The draft names no affected group and no concrete harm. Alternatively, it states that no one was harmed with no stated basis. *(stakeholder_respect_impact; add Privacy or Information security where data is involved, and HR or Labor where employees are affected)*\n- The draft describes harm to identifiable people and offers neither a repair nor any corrective action. *(corrective_action_proof; Executive)*\n- The only forward commitment is a review, an investigation, training or \"doing better\", and it has no named owner and no date. *(corrective_action_proof, verification_follow_through; Executive)*\n- The draft, or context the author supplied, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication. *(truthfulness_factual_discipline, accountability_agency; Legal.)* This trigger rests on professional judgment, not on the study. The study found the components worked the same for competence and integrity failures, so do not cite research for it.\n- The draft describes an ongoing risk to people (safety, money, data, access) and gives them no action to take or contact to use. *(stakeholder_respect_impact, clarity_plain_language; Privacy or Information security where data is involved)*\n\n**Raise Moderate when:**\n\n- Explanation comes before the first statement of responsibility.\n- The explanation names external context, third parties or audience misreading and names no internal decision or control.\n- The only apology is conditional but responsibility is stated elsewhere.\n- Values language stands in for a statement that the conduct was wrong.\n- The draft asks for understanding or patience before any repair is stated.\n- The impact passage leads with reputation, criticism or intent before the affected group.\n- An owner is named by department only, or a follow-up has no date.\n- Facts are still developing and the draft does not separate confirmed from unconfirmed or give an update date.\n\n**Raise Low when** the draft requests forgiveness after repair has been stated.\n\n## Drafting notes: questions considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\nAlways include these:\n\n- Who approved the decision or conduct being apologized for, and does the draft say so?\n- Who is affected, and have they been told directly before or at the same time as the public release?\n- Is the repair proportionate to the harm, and does the named owner have authority to commit to it? *(Executive)*\n- Which statements in the draft are confirmed today, and which are still under investigation? When is the next update?\n- Does the draft blame a person or vendor who has not been told or given a chance to respond? *(HR, Legal)*\n- Does any statement of responsibility carry legal consequences that counsel should review before publication? *(Legal)*\n- Do notification, disclosure or consultation obligations apply in the markets where people are affected? These may apply, and counsel must confirm. *(Legal, Privacy, Information security, Investor relations, Local market, or HR and Labor, depending on the case)*\n\n## 8. What this protocol does not cover\n\n- **It cannot judge sincerity or whether the apology will land.** It reads for the presence of information, not for feeling.\n- **It cannot verify facts.** It can see whether the draft separates confirmed from unconfirmed, not whether the confirmed statements are true.\n- **It cannot see timing.** Timeliness can only be checked against dates and care information the draft itself states.\n- **It makes no legal call.** It never says a draft is compliant or non-compliant. Whether an admission of responsibility creates liability is for counsel. The protocol never advises softening responsibility to manage that risk.\n- **Its evidence base is thin.** Only the responsibility, repair and forgiveness rankings rest on a published study, known here through a press account. It used written hypothetical scenarios, student and online participants, and perceived effectiveness as the outcome. Everything else is one author's professional standard.\n- **It does not adjust for the kind of failure.** The study found apologies were less accepted when the failure involved integrity, and component value did not change. The protocol applies the same checks either way. Whether a deliberate breach needs consequences or independent review is for a human to decide, because the draft cannot show it.\n- **Two dimensions get little coverage.** listening_employee_voice has no element here, because nothing in the supplied material supports one. fairness_independence_conflicts is checked only through blame-shifting and the ask."
+      "prose": "## 3. Source\n\n- **Published research (Acknowledged responsibility and Repair offered only):** Lewicki, R. J., Polin, B., & Lount, R. B. (2016). \"An Exploration of the Structure of Effective Apologies.\" *Negotiation and Conflict Management Research*, 9(2), 177–196. doi:10.1111/ncmr.12073. https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073\n- **Secondary account, read in full:** Ohio State University (written by Jeff Grabmeier), \"Six elements of an effective apology, according to science,\" ScienceDaily, 12 April 2016. https://www.sciencedaily.com/releases/2016/04/160412091111.htm\n- **Not read:** the article itself, which is paywalled. Study details in this protocol come from the press account, which quotes the lead author.\n- **Professional judgment (everything else):** the 12-standard audit key supplied by the tool's author. It has no published source.\n\n## 4. Basis\n\nTwo experiments with 755 participants: 333 online adults and 422 undergraduates. Each read a scenario in which a job candidate apologizes for an incorrect tax return. They then rated the apology on effectiveness, credibility and adequacy, from 1 to 5. Apologies contained between one and six components. Study 1 told participants which components were present, and Study 2 showed them actual statements. The evidence covers written apologies by an individual to an individual, judged by hypothetical readers. It did not test organizations, public audiences or real trust outcomes.\n\n## Drafting notes: elements considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\nImportance labels: Core, Supporting, Minor. \"Research\" means Lewicki et al. supports the ranking. \"Judgment\" means it rests on the audit key.\n\n| Element | What it means | Importance | Dimensions |\n|---|---|---|---|\n| Acknowledged responsibility | The organization or a named leader says it is responsible for the conduct, decision or failure. | Core (research) | accountability_agency, fairness_independence_conflicts |\n| Repair offered | A remedy for the people affected, such as restitution, correction, recall, support or access. | Core (research) | corrective_action_proof, stakeholder_respect_impact |\n| Offense named | The conduct, decision, product or omission is identified in ordinary words a reader new to the story can follow. | Core (judgment) | accountability_agency, clarity_plain_language |\n| Organizational agency | The organization's own role in making, approving, enabling or failing to prevent the conduct is stated, not left in passive or abstract wording. | Core (judgment) | accountability_agency |\n| Impact recognized | The affected groups and the concrete harm to them are named before the organization's own discomfort. | Core (judgment) | stakeholder_respect_impact |\n| System change | Operational, policy, governance, staffing or oversight changes that address why the failure could happen. | Core (judgment) | future_readiness_learning, corrective_action_proof |\n| Owner and follow-up | A named role or body owns the work, with a date or an external standard by which progress can be checked. | Core (judgment) | verification_follow_through, accountability_agency |\n| Explanation | A brief, fact-grounded account of how the failure happened. It separates confirmed facts from what is still under investigation, and it explains rather than excuses. | Supporting (research: tied third) | causation_explanation, truthfulness_factual_discipline |\n| Direct regret | An unconditional statement of apology for the organization's own conduct. | Supporting (research: tied third) | stakeholder_respect_impact, clarity_plain_language |\n| Conduct rejected | The draft says the conduct was wrong, not only that the reaction was unfortunate. | Supporting (research: tied third) | accountability_agency, future_readiness_learning |\n| Timely care information | If people are still at risk, the draft tells them what to do and whom to contact, and says what is confirmed now. | Supporting (judgment) | stakeholder_respect_impact, clarity_plain_language |\n| Restraint in the ask | The draft does not demand forgiveness, understanding or moving on. | Minor (research: forgiveness ranked lowest) | fairness_independence_conflicts, stakeholder_respect_impact |\n\nThe rankings marked \"research\" rest on the Lewicki study, but the study did not test corporate apologies. Treat \"Core (research)\" as the best available evidence, not as proof for this setting. The tie between regret, explanation and repentance means the protocol should not raise a finding because one of the three is stronger than another.\n\n## Drafting notes: triggers considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\n**Watchlist.** Treat these as prompts in addition to the vague-action list: \"mistakes were made\", \"we regret that this happened\", \"sorry if\", \"any inconvenience\", \"the situation\", \"recent events\", \"the incident\", \"the content was posted\", \"not who we are\", \"never our intention\", \"we hear your concerns\", \"we are conducting a review\", \"we take this seriously\", \"we ask for your understanding\", \"committed to doing better\". A watchlist term alone is not a finding. Raise one only when the term stands in place of an element from Section 5.\n\nRaise a High-severity finding when any of these is true:\n\n- No sentence says the organization or a named leader is responsible for the conduct, decision or failure. The draft offers only regret, sympathy or concern. *(accountability_agency; Legal)*\n- The draft never says what the conduct or failure was. The only references are \"the situation\", \"the incident\", \"mistakes\" or similar. *(accountability_agency, clarity_plain_language)*\n- The cause is placed only on an individual employee, a vendor, a miscommunication, circumstances or the audience's reaction, and the draft does not state the organization's own supervisory or control role. *(accountability_agency, fairness_independence_conflicts; Legal, plus HR if an employee is named)*\n- The only apology sentence is conditional on the audience's reaction, for example \"if\", \"to anyone who felt\", or \"that concerns were raised\". *(stakeholder_respect_impact; Legal)*\n- The draft names no affected group and no concrete harm. Alternatively, it states that no one was harmed with no stated basis. *(stakeholder_respect_impact; add Privacy or Information security where data is involved, and HR or Labor where employees are affected)*\n- The draft describes harm to identifiable people and offers neither a repair nor any corrective action. *(corrective_action_proof; Executive)*\n- The only forward commitment is a review, an investigation, training or \"doing better\", and it has no named owner and no date. *(corrective_action_proof, verification_follow_through; Executive)*\n- The draft, or context the author supplied, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication. *(truthfulness_factual_discipline, accountability_agency; Legal.)* This trigger rests on professional judgment, not on the study. The study found the components worked the same for competence and integrity failures, so do not cite research for it.\n- The draft describes an ongoing risk to people (safety, money, data, access) and gives them no action to take or contact to use. *(stakeholder_respect_impact, clarity_plain_language; Privacy or Information security where data is involved)*\n\n**Raise Moderate when:**\n\n- Explanation comes before the first statement of responsibility.\n- The explanation names external context, third parties or audience misreading and names no internal decision or control.\n- The only apology is conditional but responsibility is stated elsewhere.\n- Values language stands in for a statement that the conduct was wrong.\n- The draft asks for understanding or patience before any repair is stated.\n- The impact passage leads with reputation, criticism or intent before the affected group.\n- An owner is named by department only, or a follow-up has no date.\n- Facts are still developing and the draft does not separate confirmed from unconfirmed or give an update date.\n\n**Raise Low when** the draft requests forgiveness after repair has been stated.\n\n## Drafting notes: questions considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\nAlways include these:\n\n- Who approved the decision or conduct being apologized for, and does the draft say so?\n- Who is affected, and have they been told directly before or at the same time as the public release?\n- Is the repair proportionate to the harm, and does the named owner have authority to commit to it? *(Executive)*\n- Which statements in the draft are confirmed today, and which are still under investigation? When is the next update?\n- Does the draft blame a person or vendor who has not been told or given a chance to respond? *(HR, Legal)*\n- Does any statement of responsibility carry legal consequences that counsel should review before publication? *(Legal)*\n- Do notification, disclosure or consultation obligations apply in the markets where people are affected? These may apply, and counsel must confirm. *(Legal, Privacy, Information security, Investor relations, Local market, or HR and Labor, depending on the case)*\n\n## 8. What this protocol does not cover\n\n- **It cannot judge sincerity or whether the apology will land.** It reads for the presence of information, not for feeling.\n- **It cannot verify facts.** It can see whether the draft separates confirmed from unconfirmed, not whether the confirmed statements are true.\n- **It cannot see timing.** Timeliness can only be checked against dates and care information the draft itself states.\n- **It makes no legal call.** It never says a draft is compliant or non-compliant. Whether an admission of responsibility creates liability is for counsel. The protocol never advises softening responsibility to manage that risk.\n- **Its evidence base is thin.** Only the responsibility, repair and forgiveness rankings rest on a published study, known here through a press account. It used written hypothetical scenarios, student and online participants, and perceived effectiveness as the outcome. Everything else is one author's professional standard.\n- **It does not adjust for the kind of failure.** The study found apologies were less accepted when the failure involved integrity, and component value did not change. The protocol applies the same checks either way. Whether a deliberate breach needs consequences or independent review is for a human to decide, because the draft cannot show it.\n- **Two dimensions get little coverage.** listening_employee_voice has no element here, because nothing in the supplied material supports one. fairness_independence_conflicts is checked only through blame-shifting and the ask."
     },
     {
       "id": "listed-company",
       "name": "Listed company disclosure",
       "layer": "overlay",
       "trigger": "listed-company",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
       "rests_on": "US and EU securities disclosure law, applied to every message from a listed organization; its extension to employees and partners is professional judgement.",
       "changelog": [
+        "0.2.1 — basis notes moved into the file",
         "0.2.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
         "0.1.0 (2026-09-25): first draft, built from sources already opened in the CEO departure source review. No new research."
       ],
@@ -999,7 +1015,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "basis": "law",
           "sources": [
             "sec-rule-10b5"
-          ]
+          ],
+          "basis_note": "Binding on US securities communications; applies here only to listed organizations."
         },
         {
           "id": "listed-company.same_to_all",
@@ -1011,7 +1028,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "sec-regulation-fd",
             "eu-impl-reg-2016-1055"
-          ]
+          ],
+          "basis_note": "Reg FD covers market professionals and holders; extending it to employees and partners is professional judgement."
         },
         {
           "id": "listed-company.eu_notice_form",
@@ -1031,7 +1049,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
               "Investor or market disclosure",
               "Press release or public statement"
             ]
-          }
+          },
+          "basis_note": "Binding for EU inside-information disclosures only."
         }
       ],
       "triggers": [
@@ -1082,12 +1101,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "People harmed or at risk",
       "layer": "overlay",
       "trigger": "people-harmed",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
       "rests_on": "The EU workplace-safety directive (binding only for EU employers toward their workers) and US CDC emergency-communication guidance applied by analogy, plus crisis-communication theory.",
       "changelog": [
+        "0.3.1 — basis notes moved into the file",
         "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
         "0.2.0 (2026-09-25): combination rule with the geopolitical and cyber protocols set: their event-specific elements replace this overlay's equivalents when both apply.",
         "0.1.0 (2026-09-25): first draft, built from sources already opened in the geopolitical and core protocol source reviews. No new research."
@@ -1103,7 +1123,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "cdc-cerc-intro-2018",
             "coombs-2007"
-          ]
+          ],
+          "basis_note": "US CDC emergency guidance and crisis-communication theory, applied by analogy; not a measured effect."
         },
         {
           "id": "people-harmed.danger_and_protection",
@@ -1115,7 +1136,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "eu-directive-89-391",
             "cdc-cerc-intro-2018"
-          ]
+          ],
+          "basis_note": "Binding for EU employers toward their workers; applied by analogy elsewhere."
         },
         {
           "id": "people-harmed.support",
@@ -1126,7 +1148,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "basis": "research",
           "sources": [
             "coombs-2007"
-          ]
+          ],
+          "basis_note": "Crisis-communication theory (Coombs 2007), not a measured effect."
         }
       ],
       "triggers": [
@@ -1217,12 +1240,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Workforce impact",
       "layer": "overlay",
       "trigger": "workforce-impact",
-      "version": "0.3.0",
+      "version": "0.3.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
       "rests_on": "EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.",
       "changelog": [
+        "0.3.1 — basis notes moved into the file",
         "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
         "0.2.0 (2026-09-25): reconciled with workforce-reduction 1.0.0. Takes over its five law-related elements word for word (adding only \"where roles end\" / \"no roles are affected\" so they fit events where job loss isn't certain), four of its triggers and three of its questions. Adds EU and US law as sources, and four new triggers. Trigger narrowed: policy-change and labor-dispute no longer fire it.",
         "0.1.0 (2026-09-25): first draft from the geopolitical source review."
@@ -1238,7 +1262,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "eu-directive-2002-14",
             "eu-directive-98-59"
-          ]
+          ],
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
         },
         {
           "id": "workforce-impact.scope-of-impact",
@@ -1250,7 +1275,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "eu-directive-98-59",
             "us-warn-20-cfr-639"
-          ]
+          ],
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
         },
         {
           "id": "workforce-impact.selection-basis-and-alternatives",
@@ -1261,7 +1287,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "basis": "law",
           "sources": [
             "eu-directive-98-59"
-          ]
+          ],
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
         },
         {
           "id": "workforce-impact.individual-notice-timing-and-terms",
@@ -1273,7 +1300,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "us-warn-20-cfr-639",
             "eu-directive-98-59"
-          ]
+          ],
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
         },
         {
           "id": "workforce-impact.voice-and-what-can-still-change",
@@ -1285,7 +1313,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "eu-directive-2002-14",
             "eu-directive-98-59"
-          ]
+          ],
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
         }
       ],
       "triggers": [

@@ -8,7 +8,6 @@ import { Clock } from "./Icons.js";
 import { proseBlocks, protocolSection } from "./protocolProse.js";
 import {
   BASIS_LABELS,
-  ELEMENT_BASIS_NOTES,
   FRAMEWORK_GROUNDING,
   FRAMEWORK_GROUNDING_INTRO,
   SOURCES_NOT_READ_HEADING,
@@ -250,11 +249,6 @@ function appliedWhen(p: ProtocolFile): string {
   return `Applied when the event is ${list}`;
 }
 
-/** The sentence shown under an element's basis label, if it has one. */
-function basisNote(e: ProtocolFile["elements"][number]): string | undefined {
-  return e.basis_note ?? ELEMENT_BASIS_NOTES[e.id];
-}
-
 /** What each overlay rule means, in the words the intake uses. */
 const OVERLAY_WHEN: Record<string, string> = {
   "listed-company": "the organization is a publicly listed company",
@@ -329,14 +323,8 @@ function ProtocolCard({ protocol, openByDefault }: { protocol: ProtocolFile; ope
                     {/* The qualification on this check — applied by analogy,
                         binding in one place only, an extension that is the
                         author's judgement. It belongs on the element, not three
-                        paragraphs down behind an expander.
-
-                        The protocol file's own basis_note wins. ELEMENT_BASIS_NOTES
-                        is the fallback for the core and the overlays, whose notes
-                        were quoted into the app before the field existed; they
-                        should move into their files when those protocols are next
-                        revised, and this map should then go. */}
-                    {basisNote(e) ? <span className="basis-note"> {basisNote(e)}</span> : null}
+                        paragraphs down behind an expander. */}
+                    {e.basis_note ? <span className="basis-note"> {e.basis_note}</span> : null}
                   </td>
                   <td>
                     <span className="chip-dimension">{DIMENSION_LABELS[e.dimension]}</span>

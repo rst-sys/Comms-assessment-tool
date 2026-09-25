@@ -268,13 +268,25 @@ describe("what the protocols ask the model to produce", () => {
 
 describe("evidence labels", () => {
   const LABELLED = ["ceo-departure", "cyber-incident", "geopolitical", "workforce-reduction"];
+  const ACTIVE = PROTOCOL_LIBRARY.filter((p) => p.status === "active");
 
-  it("leaves no element in the labelled protocols unclassified", () => {
-    for (const id of LABELLED) {
-      const p = PROTOCOL_LIBRARY.find((x) => x.id === id)!;
-      const unclassified = p.elements.filter((e) => e.basis === "unclassified").map((e) => e.name);
-      expect(unclassified, id).toEqual([]);
-    }
+  it("leaves no element of an active protocol unclassified", () => {
+    // Every check the engine actually applies says what kind of authority it
+    // rests on. A card that shows a check with no label is asking the reader to
+    // take it on trust, which is the thing this page exists not to do.
+    const unclassified = ACTIVE.flatMap((p) => p.elements.filter((e) => e.basis === "unclassified").map((e) => e.id));
+    expect(unclassified).toEqual([]);
+    expect(ACTIVE.flatMap((p) => p.elements).length).toBeGreaterThan(20);
+  });
+
+  it("gives every element of an active protocol its note, except where the label needs none", () => {
+    // A note is required wherever the label overstates the source: law that
+    // binds somewhere narrower than the tool is used, or research and guidance
+    // borrowed from another setting. Plain judgement can stand on the label.
+    const missing = ACTIVE.flatMap((p) =>
+      p.elements.filter((e) => e.basis !== "judgement" && !e.basis_note).map((e) => `${e.id} (${e.basis})`),
+    );
+    expect(missing).toEqual([]);
   });
 
   it("resolves every source id an element cites against the registry", () => {
@@ -305,15 +317,18 @@ describe("evidence labels", () => {
     }
   });
 
-  it("carries a note wherever a label overstates what the source covers", () => {
-    // Every element resting on law in these four is binding somewhere narrower
-    // than the tool is used, so each must say where.
-    for (const id of LABELLED) {
-      const p = PROTOCOL_LIBRARY.find((x) => x.id === id)!;
-      for (const e of p.elements.filter((x) => x.basis === "law")) {
-        expect(e.basis_note, `${e.id} rests on law and must say where it binds`).toBeTruthy();
-        expect(e.basis_note!, e.id).toMatch(/binding/i);
-      }
+  it("qualifies every element resting on law", () => {
+    // "Law" is the label most likely to be read as settling the matter, and
+    // not one of these is binding everywhere the tool is used: some bind only
+    // in the EU, some only for listed companies, and one is an extension of a
+    // rule that covers a narrower audience. Each must say so. The note is not
+    // matched for particular words — same_to_all limits its claim by naming
+    // whom Reg FD covers, which no keyword would catch.
+    const onLaw = ACTIVE.flatMap((p) => p.elements.filter((e) => e.basis === "law"));
+    expect(onLaw.length).toBeGreaterThan(3);
+    for (const e of onLaw) {
+      expect(e.basis_note, `${e.id} rests on law and must say how far that reaches`).toBeTruthy();
+      expect(e.basis_note!.trim().split(/\s+/).length, e.id).toBeGreaterThan(5);
     }
   });
 });

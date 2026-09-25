@@ -3,11 +3,12 @@ id: apology
 name: Public apology
 layer: overlay
 trigger: apology
-version: 1.0.0
+version: 1.0.1
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.0.1 — Evidence labels added; no check changed."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   One 2016 study of 755 people, known here through a press account, plus the tool author's own standard.
@@ -18,40 +19,45 @@ elements:
     means: The organization or a named leader says it is responsible for the conduct, decision or failure — not merely that the outcome is regrettable.
     weight: core
     dimension: accountability_agency
-    basis: unclassified
-    sources: []
+    basis: research
+    sources: [lewicki-2016-effective-apologies, sciencedaily-2016-six-elements]
+    basis_note: "The most important of six apology elements in one 2016 study of 755 people, known here through a press account."
 
   - id: apology.repair-offered
     name: Repair offered
     means: A remedy for the people affected — restitution, correction, recall, support or access — proportionate to the harm.
     weight: core
     dimension: corrective_action_proof
-    basis: unclassified
-    sources: []
+    basis: research
+    sources: [lewicki-2016-effective-apologies, sciencedaily-2016-six-elements]
+    basis_note: "The second most important element in the same study, known through a press account."
 
   - id: apology.direct-regret
     name: Direct regret
     means: An unconditional apology for the organization's own conduct, not conditional on how anyone reacted.
     weight: core
     dimension: stakeholder_respect_impact
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "Regret is one of six apology elements in a 2016 study, but requiring it to be unconditional is the tool's own standard."
 
   - id: apology.conduct-rejected
     name: Conduct rejected
     means: The draft says the conduct was wrong, not only that the reaction was unfortunate.
     weight: supporting
     dimension: accountability_agency
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "Close to the study's \u201cdeclaration of repentance\u201d, but not the same thing."
 
   - id: apology.restraint-in-the-ask
     name: Restraint in the ask
     means: The draft does not demand forgiveness, understanding or moving on, and does not ask before repair is stated.
     weight: supporting
     dimension: fairness_independence_conflicts
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "A 2016 study found asking for forgiveness added least to an apology; treating a demand for it as a fault is the tool's own standard."
 
 triggers:
   - check: No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern.
@@ -82,11 +88,12 @@ questions:
     review: [HR, Legal]
   - ask: Does any statement of responsibility carry legal consequences counsel should review before publication?
     review: [Legal]
+
 ---
 
 ## 3. Source
 
-- **Published research (Elements 1, 2 and 12 only):** Lewicki, R. J., Polin, B., & Lount, R. B. (2016). "An Exploration of the Structure of Effective Apologies." *Negotiation and Conflict Management Research*, 9(2), 177–196. doi:10.1111/ncmr.12073. https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073
+- **Published research (Acknowledged responsibility and Repair offered only):** Lewicki, R. J., Polin, B., & Lount, R. B. (2016). "An Exploration of the Structure of Effective Apologies." *Negotiation and Conflict Management Research*, 9(2), 177–196. doi:10.1111/ncmr.12073. https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073
 - **Secondary account, read in full:** Ohio State University (written by Jeff Grabmeier), "Six elements of an effective apology, according to science," ScienceDaily, 12 April 2016. https://www.sciencedaily.com/releases/2016/04/160412091111.htm
 - **Not read:** the article itself, which is paywalled. Study details in this protocol come from the press account, which quotes the lead author.
 - **Professional judgment (everything else):** the 12-standard audit key supplied by the tool's author. It has no published source.

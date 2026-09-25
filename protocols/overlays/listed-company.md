@@ -4,13 +4,14 @@ name: Listed company disclosure
 layer: overlay
 # rule: org_type = publicly_listed
 trigger: listed-company
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   US and EU securities disclosure law, applied to every message from a listed organization; its extension to employees and partners is professional judgement.
 changelog:
+  - "0.2.1 — basis notes moved into the file"
   - "0.2.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed."
   - "0.1.0 (2026-09-25): first draft, built from sources already opened in the CEO departure source review. No new research."
 
@@ -22,6 +23,8 @@ elements:
     dimension: truthfulness_factual_discipline
     basis: law
     sources: [sec-rule-10b5]
+    basis_note: "Binding on US securities communications; applies here only to listed organizations."
+
   - id: listed-company.same_to_all
     name: The same material facts for every audience
     means: The material facts in the draft match what the organization is telling investors and the market, and the draft doesn't give one audience (employees, analysts, partners) material information that the others don't get at the same time.
@@ -29,6 +32,8 @@ elements:
     dimension: fairness_independence_conflicts
     basis: law
     sources: [sec-regulation-fd, eu-impl-reg-2016-1055]
+    basis_note: "Reg FD covers market professionals and holders; extending it to employees and partners is professional judgement."
+
   - id: listed-company.eu_notice_form
     name: Named sender, date and time (EU inside information)
     means: Where the draft is the public disclosure of inside information, it names the person making the notification with their position, gives the date and time, and says that it contains inside information.
@@ -37,6 +42,7 @@ elements:
     basis: law
     sources: [eu-impl-reg-2016-1055]
     applies_if: { jurisdiction: [EU], format: ["Investor or market disclosure", "Press release or public statement"] }
+    basis_note: "Binding for EU inside-information disclosures only."
 
 triggers:
   - check: The draft describes the event as having little or no financial effect, or gives a positive outlook, while the supplied context shows costs, losses, liabilities or uncertainty the draft doesn't mention.
@@ -53,6 +59,7 @@ questions:
     review: [Legal, Investor relations]
   - ask: Will a later filing (an annual report, proxy statement or remuneration report) show something this draft contradicts or leaves out?
     review: [Legal, Investor relations]
+
 ---
 
 ## What this overlay does

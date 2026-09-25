@@ -2,13 +2,14 @@
 id: core
 name: Core protocol
 layer: core
-version: 0.5.0
+version: 0.5.1
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.
 changelog:
+  - "0.5.1 — basis notes moved into the file"
   - "0.5.0 (2026-09-25): made to pass the build checker. Added rests_on; removed the frontmatter narrows (the core sits directly under the framework and can't narrow it; the relationship is described in the body); added a Source section. No element, trigger or question changed."
   - "0.4.0 (2026-09-25): cleared to activate without Seeger (2006) and Ma & Zhan (2016) in the original; limitation recorded."
   - "0.3.0 (2026-09-25): wording refined after testing on two versions of a workforce-reduction memo. Central fact must come in the first two or three sentences, in ordinary words; a one-line signpost is allowed; euphemism now fires the trigger. Reputation-first trigger broadened to strategy and ambitions."
@@ -23,6 +24,8 @@ elements:
     dimension: clarity_plain_language
     basis: standard
     sources: [iso-24495-1-2023, who-erc-2017, li-2008]
+    basis_note: "A plain-language standard and WHO guidance applied to organizations by analogy, supported by one large study showing bad news is written less plainly. The \u201cfirst two or three sentences\u201d threshold is the tool's own."
+
   - id: core.estimates_as_estimates
     name: Estimates marked as estimates
     means: Whatever stage the situation is at, the draft marks what is estimated, expected or still being established as such, and does not state as settled anything the supplied context shows is not.
@@ -30,6 +33,7 @@ elements:
     dimension: truthfulness_factual_discipline
     basis: guidance
     sources: [who-erc-2017, cdc-cerc-intro-2018, seeger-2006]
+    basis_note: "Emergency risk-communication guidance (WHO, CDC) written for public authorities, applied to organizations by analogy; Seeger (2006) read only through a secondary source."
 
 triggers:
   - check: The central fact first appears after the first two or three sentences, following background, values, achievements or context; or it is stated only in euphemism ("transformation", "impacted", "realignment") so that a reader skimming the opening would not know what happened.
@@ -44,6 +48,7 @@ questions:
   - ask: Which facts in this draft are confirmed, and by whom? Which are estimates or assumptions, and would the draft still stand if they changed?
     review: [Legal, Executive]
   - ask: If a reader read only the first two sentences, would they know what happened or what was decided?
+
 ---
 
 ## What this protocol is
