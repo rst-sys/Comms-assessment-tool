@@ -153,7 +153,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
     <>
       <SiteHeader view={view} onGo={setView} />
       {view === "overview" ? (
-        <ToolOverview config={config} runtimeNote={runtimeNote} />
+        <ToolOverview config={config} runtimeNote={runtimeNote} onStandards={() => setView("standards")} />
       ) : view === "standards" ? (
         <StandardsLibrary />
       ) : view === "compare" && FEATURES.compareRevisions ? (
@@ -195,7 +195,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
           />
         </>
       )}
-      <div className="page" style={{ paddingTop: 0 }}>
+      <div className={view === "overview" ? "page overview-foot" : "page"} style={{ paddingTop: 0 }}>
         <Footer />
       </div>
     </>

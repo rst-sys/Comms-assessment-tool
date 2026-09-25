@@ -1,150 +1,249 @@
+import { useEffect, useState, type ReactNode } from "react";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
 import { DIMENSION_IDS } from "../engine/types.js";
-import { APP_NAME, INTRO } from "./copy.js";
+import { WarningTriangle } from "./Icons.js";
 import {
   ACCOUNT_ELEMENTS,
-  CONFIDENTIALITY_NOTICE,
+  DIMENSIONS_NOTE,
+  EVIDENCE_RULE,
+  LENSES,
+  LENSES_INTRO,
   NOT_THIS,
+  NOT_THIS_CLOSE,
+  OVERVIEW_EYEBROW,
+  OVERVIEW_QUESTION,
+  OVERVIEW_SECTIONS,
+  OVERVIEW_TITLE,
   privacyPoints,
+  REDACTION_WARNING,
+  REVIEW_STEPS,
+  SCORE_INTRO,
   VALUE_POINTS,
   WHAT_YOU_GET,
+  WHY_USE_IT,
 } from "./overviewContent.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
-/** The full explanation of the tool, reachable from the Tool Overview tab. */
-export function ToolOverview({ config, runtimeNote }: { config: PrivacyConfig | null; runtimeNote?: string }) {
+interface Props {
+  config: PrivacyConfig | null;
+  runtimeNote?: string;
+  onStandards?: () => void;
+}
+
+/** The heaviest dimension sets the bar scale, so the longest bar is always full. */
+const MAX_WEIGHT = Math.max(...DIMENSION_IDS.map((id) => DIMENSION_WEIGHTS[id]));
+
+/**
+ * The Tool Overview (the owner's desktop artboard, revision 29).
+ *
+ * One long read with a contents list beside it, rather than six cards of
+ * equal weight: this is the page somebody opens with a question, so it is
+ * built to be skimmed to the answer. Sections in the order a reader asks
+ * them — why, how, what comes back, how it is scored, what else is applied,
+ * what it won't do, what happens to the draft.
+ */
+export function ToolOverview({ config, runtimeNote, onStandards }: Props) {
+  const active = useActiveSection(OVERVIEW_SECTIONS.map((s) => s.id));
+  const provider = config ? `${config.provider} (${config.model})` : null;
+
   return (
-    <main className="page welcome" aria-labelledby="overview-heading">
-      <header className="page-head">
-        <h1 id="overview-heading">Tool overview</h1>
-        <p className="welcome-intro">{INTRO}</p>
-      </header>
+    <div className="page overview">
+      <nav className="toc no-print" aria-label="On this page">
+        <p className="toc-label">On this page</p>
+        <ul>
+          {OVERVIEW_SECTIONS.map((s) => (
+            <li key={s.id}>
+              <a href={`#${s.id}`} className={active === s.id ? "toc-link toc-current" : "toc-link"} aria-current={active === s.id ? "true" : undefined}>
+                {s.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
+      <main className="overview-main" aria-labelledby="overview-heading">
+        <p className="eyebrow">{OVERVIEW_EYEBROW}</p>
+        <h1 id="overview-heading" className="overview-title">{OVERVIEW_TITLE}</h1>
+        <p className="overview-lede">
+          It reads your draft the way a thoughtful, skeptical member of your audience would, and asks one question
+          throughout: <em>{OVERVIEW_QUESTION}</em>
+        </p>
 
-      <div className="card-columns">
-        <section className="card welcome-card" aria-labelledby="what-heading">
-          <h2 id="what-heading">What it does</h2>
-          <p className="prose">
-            You paste a draft message and answer three questions: what happened, what kind of document this is, and who it
-            is for. {APP_NAME} then reads it the way a thoughtful, skeptical member of that audience would. It asks one
-            question throughout: does this message give an account of the decision behind it, or does it only sound
-            reassuring?
-          </p>
-          <p className="prose">You get back, in about a minute:</p>
-          <ul className="tight prose">
-            {WHAT_YOU_GET.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="card welcome-card" aria-labelledby="how-heading">
-          <h2 id="how-heading">How it works</h2>
-          <p className="prose">
-            The assistant applies one consistent framework to every draft, so two messages reviewed a month apart are held to
-            the same standard.
-          </p>
-
-          <h3>The account a message should give</h3>
-          <p className="prose">Ten things a reader should be able to see:</p>
-          <dl className="account-list">
-            {ACCOUNT_ELEMENTS.map(([name, meaning]) => (
-              <div key={name} className="account-item">
-                <dt>{name}</dt>
-                <dd>{meaning}</dd>
+        <Section id="why" title="Why use it">
+          <p className="prose">{WHY_USE_IT}</p>
+          <div className="tile-grid">
+            {VALUE_POINTS.map(([title, body]) => (
+              <div className="card tile" key={title}>
+                <h3>{title}</h3>
+                <p>{body}</p>
               </div>
             ))}
-          </dl>
+          </div>
+        </Section>
 
-          <h3>Ten weighted dimensions</h3>
-          <p className="prose">
-            Each is scored from 0 to 5 with a written rationale, then weighted into the score out of 100. Accountability and
-            agency carries the most weight, because it is where trust is most often lost.
-          </p>
-          <ul className="weights">
-            {DIMENSION_IDS.map((id) => (
-              <li key={id}>
-                <span>{DIMENSION_LABELS[id]}</span>
-                <span className="weight">{DIMENSION_WEIGHTS[id]}</span>
+        <Section id="how" title="How a review works">
+          <ol className="steps">
+            {REVIEW_STEPS.map(([title, body], i) => (
+              <li key={title}>
+                <span className="step-label">Step {i + 1}</span>
+                <h3>{title}</h3>
+                <p>{body}</p>
               </li>
             ))}
-          </ul>
+          </ol>
+          <div className="evidence-rule">
+            <h3>The evidence rule</h3>
+            <p>
+              <strong>{EVIDENCE_RULE[0]}</strong> {EVIDENCE_RULE[1]}
+            </p>
+          </div>
+        </Section>
 
-          <h3>The standard for what happened</h3>
-          <p className="prose">
-            The event you name brings in a further set of checks. Every high-stakes event shares a core — who decided and
-            who owns the response, who is affected, what is confirmed against what is assumed, what the reader should do,
-            when the next update comes, and whether the hard fact is said plainly. Some events also have a standard of
-            their own, written from published research or regulation.
-          </p>
-          <p className="prose">
-            These are a lens on the ten dimensions above, never an eleventh score, and they never produce a section of
-            their own: what they find appears as an ordinary finding or question. Every one of them is set out in the
-            Standards Library, with its source and its limits. Choose "None of these" and the draft is judged on the ten
-            dimensions alone.
-          </p>
-
-          <h3>Two lenses on top</h3>
-          <ul className="tight prose">
-            <li>
-              <strong>Agency and abstraction scan.</strong> Six categories of language that hide who decided: external
-              weather, institutional abstraction, audience displacement, passive accountability, values without action, and
-              vague action. A phrase is flagged only when it is doing the explaining, never because a word appears. The
-              scan shapes the findings and the scores; its flagged phrases are no longer printed back at you.
-            </li>
-            <li>
-              <strong>Devil's advocate.</strong> Five audience perspectives chosen for your message type, each stating what a
-              reasonable but skeptical reader may hear, question and find missing.
-            </li>
-          </ul>
-
-          <h3>The evidence rule</h3>
-          <p className="prose">
-            Your draft is treated as claims; the context you supply is treated as fact. The assistant never invents a metric,
-            a date, a commitment or a name, and it says plainly when a score reflects the draft's language alone. Supporting
-            documents, earlier communications and media coverage you add are read as what the audience already has.
-          </p>
-        </section>
-
-        <section className="card welcome-card" aria-labelledby="value-heading">
-          <h2 id="value-heading">Why use it</h2>
-          <ul className="tight prose">
-            {VALUE_POINTS.map(([lead, rest]) => (
+        <Section id="get" title="What you get back">
+          <ol className="numbered numbered-two">
+            {WHAT_YOU_GET.map(([lead, rest], i) => (
               <li key={lead}>
-                <strong>{lead}</strong> {rest}
+                <span className="numbered-index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <span>
+                  <strong>{lead}</strong> {rest}
+                </span>
               </li>
             ))}
-          </ul>
-        </section>
+          </ol>
+        </Section>
 
-        <section className="card welcome-card" aria-labelledby="not-heading">
-          <h2 id="not-heading">What it is not</h2>
-          <dl className="account-list not-list">
-            {NOT_THIS.map(([name, meaning]) => (
-              <div key={name} className="account-item">
-                <dt>{name}</dt>
-                <dd>{meaning}</dd>
+        <Section id="score" title="How the score is built">
+          <p className="prose">{SCORE_INTRO}</p>
+
+          <div className="card panel-card">
+            <h3>The account a message should give</h3>
+            <p className="muted small">Ten things a reader should be able to see.</p>
+            <dl className="account-grid">
+              {ACCOUNT_ELEMENTS.map(([name, meaning]) => (
+                <div key={name} className="account-row">
+                  <dt>{name}</dt>
+                  <dd>{meaning}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div className="card panel-card">
+            <h3>Ten weighted dimensions</h3>
+            <p className="muted small">{DIMENSIONS_NOTE}</p>
+            <ul className="weight-bars">
+              {DIMENSION_IDS.map((id, i) => (
+                <li key={id} className={i === 0 ? "weight-lead" : undefined}>
+                  <span className="weight-name">{DIMENSION_LABELS[id]}</span>
+                  <span className="weight-track" aria-hidden="true">
+                    <span className="weight-fill" style={{ width: `${(DIMENSION_WEIGHTS[id] / MAX_WEIGHT) * 100}%` }} />
+                  </span>
+                  <span className="weight-value">{DIMENSION_WEIGHTS[id]}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="muted small weights-total">Weights add up to 100.</p>
+          </div>
+        </Section>
+
+        <Section id="lenses" title="Event standards and lenses">
+          <p className="prose">{LENSES_INTRO}</p>
+          <div className="tile-grid tile-grid-three">
+            {LENSES.map((lens) => (
+              <div className="card tile" key={lens.title}>
+                <h3>{lens.title}</h3>
+                {lens.paragraphs.map((text) => (
+                  <p key={text}>{text}</p>
+                ))}
+                {lens.title === "Event standards" && onStandards ? (
+                  <p>
+                    <button type="button" className="linklike" onClick={onStandards}>Browse the Standards Library</button>
+                  </p>
+                ) : null}
               </div>
             ))}
-          </dl>
-          <p className="prose muted">It is decision-support software. The judgment, and the words, stay yours.</p>
-        </section>
+          </div>
+        </Section>
 
-        <section className="card callout-privacy" aria-labelledby="privacy-heading">
-          <h2 id="privacy-heading">Your draft and your privacy</h2>
-          <ul className="tight prose">
-            {privacyPoints(config ? `${config.provider} (${config.model})` : null, config?.training_term ?? null).map(([lead, rest]) => (
-              <li key={lead}>
-                <strong>{lead}</strong> {rest}
-              </li>
+        <Section id="wont" title="What it won't do">
+          <div className="def-grid">
+            {NOT_THIS.map(([title, body]) => (
+              <div key={title}>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
             ))}
-          </ul>
-          <p className="prose notice-text">{CONFIDENTIALITY_NOTICE}</p>
-        </section>
+          </div>
+          <p className="closing-line">{NOT_THIS_CLOSE}</p>
+        </Section>
+
+        <Section id="privacy" title="Your draft and your privacy">
+          <div className="tile-grid">
+            {privacyPoints(provider, config?.training_term ?? null).map(([title, body]) => (
+              <div className="card tile" key={title}>
+                <h3>{title}</h3>
+                <p>{body}</p>
+              </div>
+            ))}
+          </div>
+          <p className="callout-warning" role="note">
+            <WarningTriangle />
+            <span>
+              <strong>WARNING:</strong> {REDACTION_WARNING}
+            </span>
+          </p>
+        </Section>
 
         {runtimeNote ? <p className="muted small prose welcome-runtime">{runtimeNote}</p> : null}
-      </div>
-
-    </main>
+      </main>
+    </div>
   );
+}
+
+function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
+  return (
+    <section id={id} className="overview-section" aria-labelledby={`${id}-heading`}>
+      <h2 id={`${id}-heading`}>{title}</h2>
+      {children}
+    </section>
+  );
+}
+
+/**
+ * Which section the reader is in, for the contents list.
+ *
+ * Measured on scroll rather than with an IntersectionObserver. The observer
+ * version highlighted the wrong entry twice: two sections are often in the
+ * band at once, and at the foot of the page the last section's heading has
+ * already scrolled above it, so the reader sits in "Your privacy" while the
+ * list still says "What it won't do". This rule has neither problem — the
+ * current section is the last one whose heading is above the fold, and the
+ * bottom of the page is always the last section.
+ */
+function useActiveSection(ids: string[]): string | null {
+  const [active, setActive] = useState<string | null>(ids[0] ?? null);
+  const key = ids.join(",");
+  useEffect(() => {
+    const update = () => {
+      const doc = document.documentElement;
+      if (window.scrollY + window.innerHeight >= doc.scrollHeight - 4) {
+        setActive(ids[ids.length - 1] ?? null);
+        return;
+      }
+      let current = ids[0] ?? null;
+      for (const id of ids) {
+        const top = document.getElementById(id)?.getBoundingClientRect().top;
+        if (top !== undefined && top <= 120) current = id;
+      }
+      setActive(current);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [key]);
+  return active;
 }

@@ -1,8 +1,6 @@
-import { CONFIDENTIALITY_NOTICE } from "./overviewContent.js";
+import { REDACTION_WARNING } from "./overviewContent.js";
 import { ArrowRight, CircleSlash, Lock, WarningTriangle } from "./Icons.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
-
-export { CONFIDENTIALITY_NOTICE };
 
 interface Props {
   config: PrivacyConfig | null;
@@ -71,8 +69,7 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
           <p className="callout-warning" role="note">
             <WarningTriangle />
             <span>
-              <strong>WARNING:</strong> Do not paste privileged, material nonpublic or regulated personal information in
-              the tool. Redact beforehand.
+              <strong>WARNING:</strong> {REDACTION_WARNING}
             </span>
           </p>
         </div>

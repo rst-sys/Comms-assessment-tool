@@ -455,6 +455,108 @@ textarea { resize: vertical; }
   .hero-card { padding: 20px; }
 }
 
+/* Tool Overview: a contents list beside one long read.
+
+   Not six cards of equal weight. This is the page somebody opens with a
+   question, so it is built to be skimmed to the answer: the sidebar sticks,
+   tracks where the reader is, and every section is linkable. */
+.page.overview { max-width: 1440px; padding: 56px 80px 72px; display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 1100px) {
+  .page.overview { grid-template-columns: 220px minmax(0, 1fr); gap: 64px; }
+  .toc { position: sticky; top: 32px; align-self: start; }
+}
+.overview-main { max-width: 960px; }
+
+.toc-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--neutral); margin: 0 0 var(--space); }
+.toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+.toc-link { display: block; padding: 7px 0 7px 14px; margin-left: -1px; border-left: 2px solid transparent;
+  font-size: 14px; color: var(--neutral); text-decoration: none; }
+.toc-link:hover { color: var(--ink); }
+.toc-current { color: var(--ink); font-weight: 600; border-left-color: var(--accent); }
+
+.overview-title { font-size: 52px; line-height: 1.08; letter-spacing: -0.02em; margin: 8px 0 20px; max-width: 760px; }
+.overview-lede { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 640px; margin: 0; }
+.overview-lede em { font-family: var(--serif); font-size: 19px; }
+.overview-section { margin-top: 64px; scroll-margin-top: 90px; }
+.overview-section > h2 { font-size: 30px; margin-bottom: calc(var(--space) * 2); }
+.overview-section > .prose { color: var(--ink-2); max-width: 640px; margin-bottom: calc(var(--space) * 3); }
+.overview-section h3 { font-family: var(--sans); font-size: 15px; font-weight: 600; margin: 0 0 6px; letter-spacing: 0; }
+.overview-section p { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+
+/* Two or three equal cards of the same short shape. */
+.tile-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
+@media (min-width: 700px) { .tile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .tile-grid-three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.tile { padding: calc(var(--space) * 2.5); align-content: start; }
+.tile p:last-child { margin-bottom: 0; }
+
+/* The three steps, ruled at the top rather than boxed. */
+.steps { list-style: none; display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3);
+  margin: 0 0 calc(var(--space) * 3); padding: 0; }
+@media (min-width: 760px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(var(--space) * 4); } }
+.steps li { border-top: 1px solid var(--ink); padding-top: calc(var(--space) * 1.5); }
+.step-label { display: block; font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.steps p { margin-bottom: 0; }
+
+.evidence-rule { background: #eef2f1; border-radius: var(--radius-sm); padding: calc(var(--space) * 2.5); }
+.evidence-rule p { margin-bottom: 0; }
+
+/* The numbered list, one column on the welcome card and two here. */
+@media (min-width: 760px) {
+  .numbered-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--space) * 4); }
+  .numbered-two li:nth-child(2) { border-top: 0; padding-top: 0; }
+}
+
+.panel-card { padding: calc(var(--space) * 3); margin-bottom: calc(var(--space) * 3); }
+.panel-card h3 { font-size: 16px; }
+.panel-card > .muted { margin-bottom: calc(var(--space) * 2); max-width: 62ch; }
+
+.account-grid { display: grid; grid-template-columns: 1fr; gap: 0 calc(var(--space) * 4); margin: 0; }
+@media (min-width: 720px) { .account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.account-row { display: grid; grid-template-columns: 96px 1fr; gap: calc(var(--space) * 1.5);
+  padding: 10px 0; border-top: 1px solid var(--divider); font-size: 14px; }
+.account-row dt { font-weight: 600; }
+.account-row dd { margin: 0; color: var(--ink-2); }
+
+.weight-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.weight-bars li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, 2fr) 28px; gap: calc(var(--space) * 2);
+  align-items: center; font-size: 14px; }
+.weight-lead .weight-name, .weight-lead .weight-value { font-weight: 600; }
+.weight-track { height: 7px; border-radius: 999px; background: var(--divider); overflow: hidden; }
+.weight-fill { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+.weight-value { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.weights-total { margin: calc(var(--space) * 2) 0 0; }
+@media (max-width: 600px) { .weight-bars li { grid-template-columns: minmax(0, 1fr) 28px; } .weight-track { display: none; } }
+
+/* "What it won't do": four definitions, ruled, no cards. */
+.def-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
+@media (min-width: 700px) { .def-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.def-grid > div { border-top: 1px solid var(--border); padding-top: calc(var(--space) * 1.5); }
+.def-grid p { margin-bottom: 0; }
+.closing-line { font-family: var(--serif); font-size: 18px; color: var(--ink);
+  margin: calc(var(--space) * 3) 0 0; max-width: var(--measure); }
+
+.overview .callout-warning { margin-top: calc(var(--space) * 2); max-width: none; }
+
+/* The footer lines up with the reading column, not with the page edge, or it
+   reads as belonging to the contents list. */
+.overview-foot { max-width: 1440px; padding-left: 80px; padding-right: 80px; }
+@media (min-width: 1100px) { .overview-foot { padding-left: 364px; } }
+
+@media (max-width: 1099px) {
+  .page.overview { padding: 40px; }
+  .overview-foot { padding-left: 40px; padding-right: 40px; }
+  .toc { display: none; }
+}
+@media (max-width: 640px) {
+  .page.overview { padding: 32px 16px 48px; }
+  .overview-foot { padding-left: 16px; padding-right: 16px; }
+  .overview-title { font-size: 32px; }
+  .overview-section { margin-top: 48px; }
+  .overview-section > h2 { font-size: 24px; }
+}
+
 /* Shared by the explanatory pages: Tool Overview, Standards Library, sign-in.
    The welcome screen used to be one of them; it has its own layout now, and
    these classes stayed because those three still use them. */

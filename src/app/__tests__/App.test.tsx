@@ -3,6 +3,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { App } from "../App.js";
+import { OVERVIEW_SECTIONS } from "../overviewContent.js";
 import { CORE_PRINCIPLE } from "../copy.js";
 import { PROTOCOLS } from "../../engine/protocols.js";
 import { FEATURES, type Features } from "../features.js";
@@ -149,11 +150,15 @@ describe("App", () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Tool Overview" }));
-    expect(screen.getByRole("heading", { name: "Tool overview", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What the assistant checks, and how it scores", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Ten weighted dimensions" })).toBeTruthy();
     expect(screen.getByText("Accountability and agency")).toBeTruthy();
     expect(screen.getByText(/never invents a metric/)).toBeTruthy();
-    expect(screen.getByText(/attorney-client privileged/)).toBeTruthy();
+    // Every section the contents list promises is on the page and linkable.
+    for (const { id, title } of OVERVIEW_SECTIONS) {
+      expect(document.getElementById(id), title).toBeTruthy();
+    }
+    expect(screen.getAllByText(/Do not paste privileged, material nonpublic/).length).toBeGreaterThan(0);
     fireEvent.click(screen.getByRole("button", { name: "Review" }));
     expect(screen.getByLabelText("Draft text")).toBeTruthy();
   });
