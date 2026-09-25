@@ -144,7 +144,7 @@ describe("App", () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
-    expect(screen.getByRole("heading", { name: "Standards library", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What every draft is measured against", level: 1 })).toBeTruthy();
   });
 
   it("opens the Tool Overview tab from the welcome link and from the nav", async () => {
@@ -205,18 +205,21 @@ describe("App", () => {
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
-    expect(screen.getByRole("heading", { name: "Standards library", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What every draft is measured against", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "The core framework" })).toBeTruthy();
-    // Every protocol the engine can send is on the page, with every element it
-    // checks: the library must not claim a standard the tool does not apply,
-    // nor apply one it does not show.
+    // Every protocol the engine can send is named, and opening one shows every
+    // element it checks: the library must not claim a standard the tool does
+    // not apply, nor apply one it does not show.
     for (const protocol of PROTOCOLS) {
       expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
+    }
+    for (const protocol of PROTOCOLS) {
+      const head = screen.getByRole("button", { name: new RegExp(protocol.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
+      if (head.getAttribute("aria-expanded") === "false") fireEvent.click(head);
       for (const element of protocol.elements) {
-        expect(screen.getByText(element.name)).toBeTruthy();
+        expect(screen.getAllByText(element.name).length, element.name).toBeGreaterThan(0);
       }
     }
-    expect(screen.getByText(/Lewicki/)).toBeTruthy();
     expect(screen.queryByRole("textbox")).toBeNull();
   });
 });

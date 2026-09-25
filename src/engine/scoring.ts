@@ -72,8 +72,14 @@ export function confidenceLabel(contextSupplied: boolean): string {
 }
 
 /**
- * The three dimensions a draft cannot score above 3.5 on while nothing
- * confirms its claims (the ASSERTED cap in the Section 5 prompt).
+ * The highest a capped dimension can score while nothing confirms the claim.
+ * Named so the Standards Library can cite the number rather than repeat it.
+ */
+export const ASSERTED_CEILING = 3.5;
+
+/**
+ * The three dimensions a draft cannot score above ASSERTED_CEILING on while
+ * nothing confirms its claims (the ASSERTED cap in the Section 5 prompt).
  */
 export const CAPPED_WITHOUT_CONTEXT: DimensionId[] = [
   "accountability_agency",
@@ -94,7 +100,7 @@ export const CAPPED_WITHOUT_CONTEXT: DimensionId[] = [
 export function ceilingWithoutContext(): number {
   const total = Object.values(DIMENSION_WEIGHTS).reduce((a, b) => a + b, 0);
   const capped = CAPPED_WITHOUT_CONTEXT.reduce((a, id) => a + DIMENSION_WEIGHTS[id], 0);
-  return Math.round(((total - capped) * 1 + capped * (3.5 / 5)) * (100 / total));
+  return Math.round(((total - capped) * 1 + capped * (ASSERTED_CEILING / 5)) * (100 / total));
 }
 
 export const SEVERITY_RANK: Record<Severity, number> = { High: 0, Moderate: 1, Low: 2 };

@@ -155,7 +155,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
       {view === "overview" ? (
         <ToolOverview config={config} runtimeNote={runtimeNote} onStandards={() => setView("standards")} />
       ) : view === "standards" ? (
-        <StandardsLibrary />
+        <StandardsLibrary onOverview={() => setView("overview")} />
       ) : view === "compare" && FEATURES.compareRevisions ? (
         <CompareRevisions
           baseline={baseline}

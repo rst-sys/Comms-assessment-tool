@@ -61,3 +61,12 @@ export function CircleSlash({ size = 16 }: { size?: number }) {
     </svg>
   );
 }
+
+export function Clock({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...common}>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="M12 7.4V12l3 1.8" />
+    </svg>
+  );
+}

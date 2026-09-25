@@ -42,6 +42,8 @@
 
 > 30. **Two attempts, and a failure that names itself.** When a reply comes back unusable — failing validation, unparseable, cut off, or empty — the engine asks once more before reporting a failure, because nothing about the request is wrong and the same question usually works the second time. Two attempts, never a loop, and only for those four faults: an authentication error, a refusal, a rate limit or an overload fails the same way on a second call. When a review does fail, the reason shown to the reader names the fault and the field it tripped on, which is safe: every path is a JSON pointer and nothing beside it comes from the draft.
 
+> 31. **The Standards Library rebuilt (replaces revision 20's layout).** One column with the Tool Overview's shared contents list, and five sections: how to read this page, the core framework, event protocols, published codes, our own judgment. Three tags — Applied, Grounded in, Our judgment — mark which kind of claim each section makes, because keeping those apart is the distinction the tool checks drafts for. The ten dimensions, their weights and their published principles become one table instead of two lists; the account elements become a card linking to the Tool Overview; the protocols move into the main flow as accordions, the first open and the rest closed, each with its checks in a table and its full sources behind a second expander. Every number the page states about scoring is read from the engine's config.
+
 ## 1. Build mandate
 
 Build a working prototype of one review loop, not a product suite. The loop is: intake → evaluate → results. Everything else in this prompt is either a stub or explicitly out of scope.

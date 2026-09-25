@@ -1,7 +1,8 @@
-import { useEffect, useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
 import { DIMENSION_IDS } from "../engine/types.js";
 import { WarningTriangle } from "./Icons.js";
+import { PageNav } from "./PageNav.js";
 import {
   ACCOUNT_ELEMENTS,
   DIMENSIONS_NOTE,
@@ -43,23 +44,11 @@ const MAX_WEIGHT = Math.max(...DIMENSION_IDS.map((id) => DIMENSION_WEIGHTS[id]))
  * what it won't do, what happens to the draft.
  */
 export function ToolOverview({ config, runtimeNote, onStandards }: Props) {
-  const active = useActiveSection(OVERVIEW_SECTIONS.map((s) => s.id));
   const provider = config ? `${config.provider} (${config.model})` : null;
 
   return (
     <div className="page overview">
-      <nav className="toc no-print" aria-label="On this page">
-        <p className="toc-label">On this page</p>
-        <ul>
-          {OVERVIEW_SECTIONS.map((s) => (
-            <li key={s.id}>
-              <a href={`#${s.id}`} className={active === s.id ? "toc-link toc-current" : "toc-link"} aria-current={active === s.id ? "true" : undefined}>
-                {s.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <PageNav sections={OVERVIEW_SECTIONS} />
 
       <main className="overview-main" aria-labelledby="overview-heading">
         <p className="eyebrow">{OVERVIEW_EYEBROW}</p>
@@ -207,43 +196,4 @@ function Section({ id, title, children }: { id: string; title: string; children:
       {children}
     </section>
   );
-}
-
-/**
- * Which section the reader is in, for the contents list.
- *
- * Measured on scroll rather than with an IntersectionObserver. The observer
- * version highlighted the wrong entry twice: two sections are often in the
- * band at once, and at the foot of the page the last section's heading has
- * already scrolled above it, so the reader sits in "Your privacy" while the
- * list still says "What it won't do". This rule has neither problem — the
- * current section is the last one whose heading is above the fold, and the
- * bottom of the page is always the last section.
- */
-function useActiveSection(ids: string[]): string | null {
-  const [active, setActive] = useState<string | null>(ids[0] ?? null);
-  const key = ids.join(",");
-  useEffect(() => {
-    const update = () => {
-      const doc = document.documentElement;
-      if (window.scrollY + window.innerHeight >= doc.scrollHeight - 4) {
-        setActive(ids[ids.length - 1] ?? null);
-        return;
-      }
-      let current = ids[0] ?? null;
-      for (const id of ids) {
-        const top = document.getElementById(id)?.getBoundingClientRect().top;
-        if (top !== undefined && top <= 120) current = id;
-      }
-      setActive(current);
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, [key]);
-  return active;
 }
