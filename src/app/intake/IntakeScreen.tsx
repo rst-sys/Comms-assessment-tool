@@ -16,7 +16,7 @@ import {
   type Stance,
 } from "../../engine/types.js";
 import { AudienceDocuments } from "./AudienceDocuments.js";
-import { COMING_SOON, FEATURES } from "../features.js";
+import { FEATURES } from "../features.js";
 import { Progress } from "../Progress.js";
 import { importUrl, type ImportedPage } from "../api.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
@@ -275,14 +275,13 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
               <textarea rows={2} value={context[key] ?? ""} onChange={(e) => setContext((prev) => ({ ...prev, [key]: e.target.value }))} />
             </Field>
           ))}
+          {/* Switched off features are absent, not greyed out. A control a
+              tester cannot use is a question they have to ask and an answer
+              they have to read past; the feature flag still guards the code,
+              so switching it back on is one line. */}
           {FEATURES.audienceDocuments ? (
             <AudienceDocuments documents={documents} onChange={setDocuments} publicSearch={publicSearch && FEATURES.publicContextSearch} />
-          ) : (
-            <div className="disabled-feature" aria-labelledby="documents-soon">
-              <h3 id="documents-soon" style={{ marginBottom: 4 }}>Attach documents the audience already has</h3>
-              <p className="muted small" style={{ margin: 0 }}>{COMING_SOON}</p>
-            </div>
-          )}
+          ) : null}
         </section>
       </div>
     </div>

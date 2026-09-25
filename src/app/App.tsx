@@ -11,7 +11,7 @@ import { Footer } from "./results/Footer.js";
 import type { EvaluationFailure } from "./intake/rules.js";
 import { WelcomeScreen } from "./WelcomeScreen.js";
 import { SignIn } from "./SignIn.js";
-import { COMING_SOON, FEATURES } from "./features.js";
+import { FEATURES } from "./features.js";
 import { APP_NAME, INTRO } from "./copy.js";
 import { IntakeScreen } from "./intake/IntakeScreen.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
@@ -165,17 +165,16 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
                   Tool Overview
                 </button>
               </li>
-              <li>
-                {FEATURES.compareRevisions ? (
+              {/* A tab that cannot be opened is a question every tester has
+                  to ask. The flag still guards the page, so bringing it back
+                  is a one-line change. */}
+              {FEATURES.compareRevisions ? (
+                <li>
                   <button type="button" className={view === "compare" ? "nav-link nav-active" : "nav-link"} aria-current={view === "compare" ? "page" : undefined} onClick={() => setView("compare")}>
                     Compare Revisions
                   </button>
-                ) : (
-                  <button type="button" className="nav-link nav-soon" disabled title={COMING_SOON}>
-                    Compare Revisions
-                  </button>
-                )}
-              </li>
+                </li>
+              ) : null}
               <li>
                 <button type="button" className={view === "standards" ? "nav-link nav-active" : "nav-link"} aria-current={view === "standards" ? "page" : undefined} onClick={() => setView("standards")}>
                   Standards Library

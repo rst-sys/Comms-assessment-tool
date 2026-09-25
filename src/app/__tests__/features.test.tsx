@@ -19,16 +19,16 @@ describe("features switched off for this round of testing (revision 16)", () => 
     });
   });
 
-  it("marks what is switched off as coming soon rather than removing it silently", () => {
+  it("leaves no trace of a switched-off feature on the intake screen", () => {
+    // Greyed-out controls were worse than absent ones: a tester has to read
+    // each, work out it does nothing, and ask why it is there. The flag still
+    // guards the code, so switching one back on is a one-line change.
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    expect(screen.getAllByText(COMING_SOON).length).toBeGreaterThan(0);
-  });
-
-  it("replaces the document uploader with a coming-soon note and no file input", () => {
-    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    expect(screen.getByText("Attach documents the audience already has")).toBeTruthy();
+    expect(screen.queryAllByText(COMING_SOON)).toHaveLength(0);
+    expect(screen.queryByText("Attach documents the audience already has")).toBeNull();
     expect(screen.queryByRole("button", { name: "Add document" })).toBeNull();
     expect(document.querySelector('input[type="file"]')).toBeNull();
+    expect(document.querySelector(".disabled-feature")).toBeNull();
   });
 
   it("still lets a draft be reviewed, which is the point of the round", () => {
