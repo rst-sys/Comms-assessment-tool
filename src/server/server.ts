@@ -41,7 +41,6 @@ const DIST = join(process.cwd(), "dist");
 const SERVE_STATIC = process.env.ACR_SERVE_STATIC === "1" || process.env.NODE_ENV === "production";
 const MAX_BODY = 1_000_000;
 
-const FORMAT_ERROR = "The analysis did not return in the expected format. Try again.";
 
 function send(res: ServerResponse, status: number, body: unknown): void {
   res.writeHead(status, {
@@ -138,11 +137,14 @@ async function handleEvaluate(req: IncomingMessage, res: ServerResponse): Promis
     if (error instanceof EngineError) {
       console.log(`[${error.requestId}] evaluate failed: ${error.kind} — ${error.message}`);
       const status = error.kind === "auth" ? 503 : error.kind === "refusal" ? 422 : 502;
-      const message =
-        error.kind === "validation" || error.kind === "invalid_json" || error.kind === "truncated" || error.kind === "no_text"
-          ? FORMAT_ERROR
-          : error.message;
-      send(res, status, { error: error.kind, message, request_id: error.requestId });
+      // The engine's own message travels to the browser. It names the kind of
+      // fault and, for a validation failure, the field — "(at
+      // /questions_before_publication)" — and nothing from the draft: every
+      // path is a JSON pointer, and the facts beside it are structural
+      // ("expected exactly 5 personas"). Replacing all four with one sentence
+      // meant a tester could only report a reference number, and every failure
+      // cost a trip to the service log before anyone knew what had happened.
+      send(res, status, { error: error.kind, message: error.message, request_id: error.requestId });
       return;
     }
     console.log(`evaluate failed: ${error instanceof Error ? error.name : "unknown"}`);

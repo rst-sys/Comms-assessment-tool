@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { AnalysisValidationError, contextWasSupplied, decodeStrayEscapes, findVerbatim, validateAnalysis } from "../validate.js";
 import { SAMPLE_DRAFT, sampleAnalysis, sampleFinding } from "./helpers.js";
+import { EngineError } from "../client.js";
+import { finishEvaluation } from "../evaluate.js";
+import { DEMO_1 } from "../fixtures.js";
 
 describe("validateAnalysis", () => {
   it("accepts a well-formed analysis unchanged", () => {
@@ -198,5 +201,29 @@ describe("personas with nothing in them", () => {
 
   it("accepts personas that are actually filled in", () => {
     expect(() => validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, "")).not.toThrow();
+  });
+});
+
+describe("what a failed review tells the tester", () => {
+  it("names the field in the error that reaches the browser, and no draft text", () => {
+    // The server used to replace all four format errors with one sentence, so
+    // a tester could report a reference number and nothing else, and every
+    // failure cost a trip to the service log. The path is a JSON pointer and
+    // the facts beside it are structural, so it is safe to show.
+    const bad = sampleAnalysis();
+    bad.devils_advocate.personas = bad.devils_advocate.personas.slice(0, 3);
+    try {
+      finishEvaluation(bad, { ...DEMO_1.request, draft: SAMPLE_DRAFT }, {
+        requestId: "abc123",
+        provider: { provider: "Anthropic", model: "claude-opus-5" },
+        usage: { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: null, cache_creation_input_tokens: null },
+      });
+      expect.unreachable("expected the review to fail");
+    } catch (error) {
+      expect(error).toBeInstanceOf(EngineError);
+      const message = (error as EngineError).message;
+      expect(message).toContain("/devils_advocate/personas");
+      expect(message).not.toContain(SAMPLE_DRAFT.slice(0, 30));
+    }
   });
 });
