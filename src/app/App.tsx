@@ -262,8 +262,6 @@ function baselineRequest(saved: SavedReview, fallback?: Req): Req {
     locations: splitList(s.locations),
     context: { ...saved.context },
     already_published: s.already_published,
-    stance: s.stance as Req["stance"],
-    reacting_to: s.reacting_to,
     purpose: s.purpose as Req["purpose"],
     audience_documents: [],
   };

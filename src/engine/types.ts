@@ -419,10 +419,6 @@ export interface AudienceDocument {
 export const MAX_AUDIENCE_DOCUMENTS = 8;
 export const MAX_AUDIENCE_DOCUMENT_CHARS = 20_000;
 
-/** Proactive: the organization is initiating. Reactive: it responds to something the audience already knows about (revision 9). */
-export const STANCES = ["proactive", "reactive"] as const;
-export type Stance = (typeof STANCES)[number];
-
 export interface EvaluationRequest {
   draft: string;
   /** Who the organization is. Sets what a reader is entitled to expect. */
@@ -450,9 +446,6 @@ export interface EvaluationRequest {
   context: ContextFields;
   already_published: boolean;
   audience_documents?: AudienceDocument[];
-  stance?: Stance;
-  /** When reactive: what the communication is responding to. */
-  reacting_to?: string;
 }
 
 // ---------------------------------------------------------------------------

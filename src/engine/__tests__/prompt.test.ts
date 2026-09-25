@@ -144,7 +144,7 @@ describe("buildUserMessage", () => {
   });
 });
 
-describe("audience context documents and stance in the user message", () => {
+describe("audience context documents in the user message", () => {
   it("adds a labeled block per document with its kind, delivery and reach, and none when absent", () => {
     const withDocs = buildUserMessage({
       ...DEMO_1.request,
@@ -164,11 +164,12 @@ describe("audience context documents and stance in the user message", () => {
     expect(buildUserMessage(DEMO_1.request)).not.toContain("AUDIENCE CONTEXT DOCUMENTS");
   });
 
-  it("states the stance and, when reactive, what the draft reacts to", () => {
-    expect(buildUserMessage(DEMO_1.request)).toContain("stance: proactive");
-    const reactive = buildUserMessage({ ...DEMO_1.request, stance: "reactive", reacting_to: "A press report claiming 200 roles will go." });
-    expect(reactive).toContain("stance: reactive");
-    expect(reactive).toContain("reacting_to: A press report claiming 200 roles will go.");
+  it("tells the engine what each answer to 'Where do things stand?' means", () => {
+    // The proactive/reactive question is gone; "Already public" carries what
+    // it was for, so the framework has to say what to do with it.
+    expect(SYSTEM_PROMPT).toContain("WHERE THINGS STAND");
+    expect(SYSTEM_PROMPT).toContain("does not present itself as unprompted");
+    expect(SYSTEM_PROMPT).not.toContain("STANCE\n");
   });
 });
 

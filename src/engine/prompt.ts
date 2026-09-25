@@ -149,11 +149,7 @@ export function intakeLines(request: EvaluationRequest): string[] {
     `Where the affected people are: ${request.locations.length > 0 ? request.locations.join(", ") : NOT_SUPPLIED}`,
     `What the draft is mainly trying to do: ${request.purpose}`,
     `already_published: ${request.already_published}`,
-    `stance: ${request.stance ?? "proactive"}`,
   ];
-  if (request.stance === "reactive") {
-    lines.push(`reacting_to: ${request.reacting_to?.trim() || NOT_SUPPLIED}`);
-  }
   // Two employee audiences in one draft is its own test: the people losing
   // something and the people staying read the same words and need different
   // things from them, and a draft written for one usually says nothing to

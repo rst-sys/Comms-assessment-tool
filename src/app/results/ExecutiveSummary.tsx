@@ -61,12 +61,6 @@ export function ExecutiveSummary({ result, request }: Props) {
 
       <ScoringNote result={result} contextSupplied={s.context_supplied} />
 
-      {request.stance === "reactive" ? (
-        <>
-          <div className="label">Reacting to</div>
-          <p className="prose" style={{ margin: 0 }}>{request.reacting_to}</p>
-        </>
-      ) : null}
       {request.audience_documents?.length ? (
         <>
           <div className="label">Audience context considered</div>

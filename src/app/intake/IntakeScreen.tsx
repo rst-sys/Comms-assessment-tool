@@ -6,7 +6,6 @@ import {
   type ContextFields,
   type EvaluationRequest,
   type AudienceDocument,
-  type Stance,
 } from "../../engine/types.js";
 import {
   AudienceQuestion,
@@ -83,8 +82,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const [situationTouched, setSituationTouched] = useState(Boolean(init));
   const [context, setContext] = useState<ContextFields>(init ? { ...init.context } : {});
   const [documents, setDocuments] = useState<AudienceDocument[]>(init?.audience_documents ?? []);
-  const [stance, setStance] = useState<Stance>(init?.stance ?? "proactive");
-  const [reactingTo, setReactingTo] = useState(init?.reacting_to ?? "");
   const [isDemo, setIsDemo] = useState(Boolean(init));
   const [url, setUrl] = useState("");
   const [imported, setImported] = useState<ImportedPage | null>(null);
@@ -92,8 +89,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const [importError, setImportError] = useState<string | null>(null);
 
   const words = wordCount(draft);
-  const stanceOk = stance === "proactive" || reactingTo.trim().length > 0;
-  const ready = canEvaluate(draft, intake, isDemo) && stanceOk && !busy;
+  const ready = canEvaluate(draft, intake, isDemo) && !busy;
   const missing = missingAnswers(intake);
 
   const loadDemo = (fixture: Fixture) => {
@@ -147,8 +143,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       context: Object.fromEntries(Object.entries(context).filter(([, v]) => (v ?? "").trim().length > 0)),
       already_published: imported !== null,
       ...(documents.length > 0 ? { audience_documents: documents } : {}),
-      stance,
-      ...(stance === "reactive" ? { reacting_to: reactingTo.trim() } : {}),
     });
   };
 
@@ -235,23 +229,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
             {isDemo ? " (demo draft)" : ` · ${MIN_WORDS}–${MAX_WORDS.toLocaleString()} words`}
           </div>
 
-          <fieldset className="stance">
-            <legend className="label">Stance</legend>
-            <label className="checkbox">
-              <input type="radio" name="stance" value="proactive" checked={stance === "proactive"} onChange={() => setStance("proactive")} />
-              Proactive: we are initiating this
-            </label>
-            <label className="checkbox">
-              <input type="radio" name="stance" value="reactive" checked={stance === "reactive"} onChange={() => setStance("reactive")} />
-              Reactive: this responds to something the audience already knows about
-            </label>
-            {stance === "reactive" ? (
-              <label className="field">
-                <span className="label">What is this reacting to?</span>
-                <textarea rows={2} value={reactingTo} onChange={(e) => setReactingTo(e.target.value)} placeholder="A press report on 12 September claiming the Denver center will close without notice; employee questions at the town hall." aria-label="What is this reacting to" />
-              </label>
-            ) : null}
-          </fieldset>
 
           {showHighRiskWarning(intake.communication_event, intake.locations) ? (
             <p className="warning" role="note">{HIGH_RISK_WARNING}</p>

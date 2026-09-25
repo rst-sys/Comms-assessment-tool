@@ -37,8 +37,6 @@ export interface SavedSettings {
   locations: string;
   purpose: string;
   already_published: boolean;
-  stance: string;
-  reacting_to: string;
 }
 
 /** The settings, flattened to the strings a saved review stores and compares. */
@@ -57,8 +55,6 @@ function currentSettings(request: EvaluationRequest): SavedSettings {
     locations: [...request.locations].join(", "),
     purpose: request.purpose,
     already_published: request.already_published,
-    stance: request.stance ?? "proactive",
-    reacting_to: request.reacting_to ?? "",
   };
 }
 
@@ -168,8 +164,6 @@ export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
   locations: "Where this is happening",
   purpose: "What the draft is mainly trying to do",
   already_published: "Already published",
-  stance: "Stance",
-  reacting_to: "Reacting to",
 };
 
 /** Settings that differ between the saved review and the current request. */

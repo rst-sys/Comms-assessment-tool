@@ -16,7 +16,6 @@ import {
   ORGANIZATION_TYPES,
   PURPOSES,
   SITUATION_STATUSES,
-  STANCES,
   type EvaluationRequest,
 } from "../engine/types.js";
 
@@ -70,8 +69,6 @@ export const REQUEST_SCHEMA = {
         additionalProperties: false,
       },
     },
-    stance: enumOf(STANCES),
-    reacting_to: { type: "string", maxLength: 2000 },
   },
   required: [
     "draft",

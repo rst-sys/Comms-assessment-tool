@@ -146,10 +146,6 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.label("Retrospective");
     w.paragraph("Already issued", 10.5, 0, "bold");
   }
-  if (request.stance === "reactive" && request.reacting_to) {
-    w.label("Reacting to");
-    w.paragraph(request.reacting_to);
-  }
   if (request.audience_documents?.length) {
     w.label("Audience context considered");
     w.bullets(request.audience_documents.map((d) => `${KIND_LABEL[d.kind]}: ${d.title}${d.description ? ` — ${d.description}` : ""} (${d.delivery || "delivery not described"}; ${REACH_LABEL[d.reach].toLowerCase()}${d.kind === "supporting" ? (d.same_time ? "; same time" : "; later") : ""})`));

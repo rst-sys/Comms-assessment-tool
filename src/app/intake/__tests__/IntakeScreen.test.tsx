@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { IntakeScreen } from "../IntakeScreen.js";
 import { FEATURES, type Features } from "../../features.js";
@@ -171,22 +171,8 @@ describe("IntakeScreen", () => {
     expect(request.audience_documents).toHaveLength(2);
     expect(request.audience_documents[0]).toMatchObject({ kind: "media_report", title: "Trade press story", reach: "some", same_time: false });
     expect(request.audience_documents[1]).toMatchObject({ kind: "supporting", title: "Employee FAQ", reach: "all", same_time: true });
-    expect(request.stance).toBe("proactive");
     fireEvent.click(screen.getByRole("button", { name: "Remove Trade press story" }));
     expect(screen.queryByText("Trade press story")).toBeNull();
-  });
-
-  it("requires a description of the trigger when the stance is reactive", () => {
-    const onEvaluate = vi.fn();
-    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
-    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
-    fireEvent.click(screen.getByLabelText(/Reactive: this responds/));
-    const button = screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement;
-    expect(button.disabled).toBe(true);
-    fireEvent.change(screen.getByLabelText("What is this reacting to"), { target: { value: "A press report claiming 200 roles will go." } });
-    expect(button.disabled).toBe(false);
-    fireEvent.click(button);
-    expect(onEvaluate.mock.calls[0]![0]).toMatchObject({ stance: "reactive", reacting_to: "A press report claiming 200 roles will go." });
   });
 
   it("finds public context and adds chosen results as media reports", async () => {
@@ -203,7 +189,8 @@ describe("IntakeScreen", () => {
       fireEvent.change(screen.getByLabelText("Public context search"), { target: { value: "Northwind layoffs" } });
       fireEvent.click(screen.getByRole("button", { name: "Search the web" }));
       expect(await screen.findByText("Layoffs planned at Northwind")).toBeTruthy();
-      const boxes = screen.getAllByRole("checkbox", { checked: true }).filter((b) => (b as HTMLInputElement).name !== "stance");
+      const results = within(screen.getByRole("list", { name: "Search results" }));
+      const boxes = results.getAllByRole("checkbox", { checked: true });
       fireEvent.click(boxes[boxes.length - 1]!); // deselect the analyst note
       fireEvent.click(screen.getByRole("button", { name: /Add selected as media reports \(1\)/ }));
       fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
