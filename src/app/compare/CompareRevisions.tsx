@@ -32,7 +32,7 @@ export function CompareRevisions({ baseline, onLoad, onClear, onStart }: Props) 
 
   return (
     <main className="page" aria-labelledby="compare-heading">
-      <h2 id="compare-heading">Compare revisions</h2>
+      <h1 id="compare-heading">Compare revisions</h1>
       <p className="prose">
         Review a new version of a draft against a review you saved earlier, and see which problems you closed. Save a
         review from the results page after any review; the file holds what the tool said and the settings you chose, not

@@ -34,6 +34,10 @@
 >
 > **The thirteen labelled context fields are removed** and replaced by one optional box under the draft: "Anything else we should know?", with the helper "Facts, constraints or background the draft doesn't show. What you write here is treated as fact; the draft is treated as claims." It is the same ground truth and the same rules — it lifts the ASSERTED cap exactly as the fields did — asked for once instead of thirteen times. `context` becomes a string.
 
+> 28. **The welcome screen rebuilt, and a design system across every page (replaces Section 11's palette).** One screen that fits a 1440×940 window without scrolling: a hero with the promise, the lede, the button and an amber warning against pasting privileged or material nonpublic information, beside a card listing the six things a review returns; then a two-column strip, privacy on the left and what the tool won't do on the right. Everything the old screen said at length — why it matters, one standard every time, how the three questions work, the full privacy list — is removed, because the Tool Overview already says it.
+>
+> The tokens are the artboard's and apply everywhere: page #F6F4EF, header #FBFAF7, cards #FFFFFF, text #1B1E22 / #3A3F45 / #545A61, one accent #1F5A56 for anything you can press, borders #E2DED5, an amber callout, 16px cards and 10px buttons. Headings are set in Newsreader and everything else in IBM Plex Sans, **served from the app rather than from a font CDN**: the screen promises the draft goes to one place and that nothing tracks the reader, and a stylesheet fetched from a third party on every page load would make that promise smaller. The site header becomes a 72px bar — the mark on the left, the seven areas on the right, collapsing to a menu button under 640px — and it now appears on the welcome screen too, where there was previously no way to reach another tab.
+
 ## 1. Build mandate
 
 Build a working prototype of one review loop, not a product suite. The loop is: intake → evaluate → results. Everything else in this prompt is either a stub or explicitly out of scope.

@@ -12,7 +12,8 @@ import type { EvaluationFailure } from "./intake/rules.js";
 import { WelcomeScreen } from "./WelcomeScreen.js";
 import { SignIn } from "./SignIn.js";
 import { FEATURES } from "./features.js";
-import { APP_NAME, INTRO } from "./copy.js";
+import { APP_NAME } from "./copy.js";
+import { ShieldCheck } from "./Icons.js";
 import { IntakeScreen } from "./intake/IntakeScreen.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 import { ResultsPage } from "./results/ResultsPage.js";
@@ -127,70 +128,30 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
   if (!configLoaded) return <main className="page" aria-busy="true" />;
   if (!signedIn) return <SignIn onDone={() => setSignedIn(true)} />;
 
+  const go = (next: View) => {
+    setView(next);
+    setWelcomeDone(true);
+  };
+
   if (!welcomeDone) {
     return (
-      <WelcomeScreen
-        config={config}
-        runtimeNote={runtimeNote}
-        onStart={() => setWelcomeDone(true)}
-        onOverview={() => {
-          setView("overview");
-          setWelcomeDone(true);
-        }}
-        onStandards={() => {
-          setView("standards");
-          setWelcomeDone(true);
-        }}
-      />
+      <>
+        <SiteHeader view="review" onGo={go} />
+        {/* No footer here: the welcome screen has to fit one desktop window,
+            and everything the footer carries is on the next screen. */}
+        <WelcomeScreen
+          config={config}
+          onStart={() => setWelcomeDone(true)}
+          onOverview={() => go("overview")}
+          onStandards={() => go("standards")}
+        />
+      </>
     );
   }
 
   return (
     <>
-      <header className="site-header no-print">
-        <div className="page" style={{ paddingBottom: 0 }}>
-          <div className="header-head">
-            <h1 style={{ marginBottom: 4 }}>{APP_NAME}</h1>
-            <p className="muted intro" style={{ marginTop: 0 }}>{INTRO}</p>
-          </div>
-          <nav aria-label="Areas">
-            <ul className="nav">
-              <li>
-                <button type="button" className={view === "review" ? "nav-link nav-active" : "nav-link"} aria-current={view === "review" ? "page" : undefined} onClick={() => setView("review")}>
-                  Review
-                </button>
-              </li>
-              <li>
-                <button type="button" className={view === "overview" ? "nav-link nav-active" : "nav-link"} aria-current={view === "overview" ? "page" : undefined} onClick={() => setView("overview")}>
-                  Tool Overview
-                </button>
-              </li>
-              {/* A tab that cannot be opened is a question every tester has
-                  to ask. The flag still guards the page, so bringing it back
-                  is a one-line change. */}
-              {FEATURES.compareRevisions ? (
-                <li>
-                  <button type="button" className={view === "compare" ? "nav-link nav-active" : "nav-link"} aria-current={view === "compare" ? "page" : undefined} onClick={() => setView("compare")}>
-                    Compare Revisions
-                  </button>
-                </li>
-              ) : null}
-              <li>
-                <button type="button" className={view === "standards" ? "nav-link nav-active" : "nav-link"} aria-current={view === "standards" ? "page" : undefined} onClick={() => setView("standards")}>
-                  Standards Library
-                </button>
-              </li>
-              {STUB_PAGES.map((s) => (
-                <li key={s.key}>
-                  <button type="button" className={view === s.key ? "nav-link nav-active" : "nav-link"} aria-current={view === s.key ? "page" : undefined} onClick={() => setView(s.key)}>
-                    {s.title}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <SiteHeader view={view} onGo={setView} />
       {view === "overview" ? (
         <ToolOverview config={config} runtimeNote={runtimeNote} />
       ) : view === "standards" ? (
@@ -213,7 +174,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
         />
       ) : stub ? (
         <main className="page">
-          <h2>{stub.title}</h2>
+          <h1>{stub.title}</h1>
           <p className="prose">{stub.text}</p>
         </main>
       ) : review ? (
@@ -270,4 +231,70 @@ function baselineRequest(saved: SavedReview, fallback?: Req): Req {
 /** A saved review stores lists as one comma-separated line; this reads it back. */
 function splitList(value: string): string[] {
   return value.split(",").map((v) => v.trim()).filter((v) => v.length > 0);
+}
+
+/**
+ * The 72px bar every screen carries: the mark on the left, the areas on the
+ * right. It used to be inside the signed-in branch, so the welcome screen had
+ * no way to reach the other tabs — which is also why the app's name was an
+ * <h1> here and every page had two.
+ */
+function SiteHeader({ view, onGo }: { view: View; onGo: (next: View) => void }) {
+  // Seven areas do not fit a phone. Above 640px the CSS shows the list and
+  // hides the button; below it, the button is the only way in, so the list
+  // has to be closed until it is pressed.
+  const [open, setOpen] = useState(false);
+  const go = (next: View) => {
+    setOpen(false);
+    onGo(next);
+  };
+  return (
+  <header className="site-header no-print">
+    <div className="page">
+      <div className="wordmark">
+        <ShieldCheck />
+        {APP_NAME}
+      </div>
+      <button type="button" className="nav-toggle" aria-expanded={open} aria-controls="main-nav" onClick={() => setOpen((v) => !v)}>
+        Menu
+      </button>
+      <nav aria-label="Main" id="main-nav" className={open ? "nav-open" : undefined}>
+        <ul className="nav">
+          <li>
+            <button type="button" className={view === "review" ? "nav-link nav-active" : "nav-link"} aria-current={view === "review" ? "page" : undefined} onClick={() => go("review")}>
+              Review
+            </button>
+          </li>
+          <li>
+            <button type="button" className={view === "overview" ? "nav-link nav-active" : "nav-link"} aria-current={view === "overview" ? "page" : undefined} onClick={() => go("overview")}>
+              Tool Overview
+            </button>
+          </li>
+          {/* A tab that cannot be opened is a question every tester has
+              to ask. The flag still guards the page, so bringing it back
+              is a one-line change. */}
+          {FEATURES.compareRevisions ? (
+            <li>
+              <button type="button" className={view === "compare" ? "nav-link nav-active" : "nav-link"} aria-current={view === "compare" ? "page" : undefined} onClick={() => go("compare")}>
+                Compare Revisions
+              </button>
+            </li>
+          ) : null}
+          <li>
+            <button type="button" className={view === "standards" ? "nav-link nav-active" : "nav-link"} aria-current={view === "standards" ? "page" : undefined} onClick={() => go("standards")}>
+              Standards Library
+            </button>
+          </li>
+          {STUB_PAGES.map((s) => (
+            <li key={s.key}>
+              <button type="button" className={view === s.key ? "nav-link nav-active" : "nav-link"} aria-current={view === s.key ? "page" : undefined} onClick={() => go(s.key)}>
+                {s.title}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+  </header>
+  );
 }

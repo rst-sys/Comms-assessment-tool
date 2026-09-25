@@ -1,155 +1,129 @@
-import { APP_NAME, INTRO, TAGLINE } from "./copy.js";
-import { CONFIDENTIALITY_NOTICE, NOT_THIS_SHORT, privacyPoints } from "./overviewContent.js";
+import { CONFIDENTIALITY_NOTICE } from "./overviewContent.js";
+import { ArrowRight, CircleSlash, Lock, WarningTriangle } from "./Icons.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
 export { CONFIDENTIALITY_NOTICE };
 
 interface Props {
   config: PrivacyConfig | null;
-  runtimeNote?: string;
   onStart: () => void;
   onOverview: () => void;
   onStandards: () => void;
 }
 
-/** What the reader gets back, in the order the results page shows it. */
-const WHAT_YOU_GET_HERE: string[] = [
-  "A score out of 100 and a headline takeaway",
-  "The findings that matter most, each with what to address",
-  "The most damning reasonable reading of your draft — the reaction you'd least want to see",
-  "How five audiences might read it",
-  "Questions to put to your subject matter experts before you publish",
-  "A PDF of the full assessment to share with your team or bring to the review meeting",
+/**
+ * What the reader gets back, in the order the results page shows it. The
+ * first phrase of each is the promise and is set in bold; the rest qualifies
+ * it.
+ */
+const WHAT_YOU_GET: [string, string][] = [
+  ["A score out of 100", "and a headline takeaway"],
+  ["The findings that matter most,", "each with what to address"],
+  ["The most damning reasonable reading", "of your draft"],
+  ["How five audiences", "might read it"],
+  ["Questions for your experts", "before you publish"],
+  ["A PDF", "to share with your team"],
+];
+
+const PRIVACY_POINTS = (provider: string) => [
+  "Nothing is saved. Close the tab and it's gone.",
+  `Sent once, only to ${provider}, for analysis.`,
+  "No analytics or tracking. Errors are logged without your text.",
+  "Public-coverage searches send only the topic you type.",
+];
+
+const WONT_DO = [
+  "Write or rewrite your message",
+  "Edit for grammar, style or readability",
+  "Give legal, HR or investor-relations advice, or certify compliance",
+  "Judge motives",
 ];
 
 /**
- * The welcome screen (owner's copy, revision 27).
+ * The welcome screen (the owner's desktop artboard, revision 28).
  *
- * Every word here is the owner's. The structure follows it: the problem first,
- * then what you get, then the three things that make the judgment worth
- * having — one standard every time, a standard chosen for the event, and no
- * standard the reader cannot go and read. The three intake questions come
- * last, because they only make sense once you know what they are for.
- *
- * The privacy points and the "what it won't do" list are the shared copy, so
- * this screen and the Tool Overview cannot promise different things.
+ * One screen, no scrolling at desk size: what the tool is, what comes back,
+ * what not to paste into it, and the way in. Everything the old screen said
+ * at length — why it matters, the ten dimensions, how the three questions
+ * work, the full privacy list — now lives on the Tool Overview, which is
+ * where somebody goes when they want it.
  */
-export function WelcomeScreen({ config, runtimeNote, onStart, onOverview, onStandards }: Props) {
-  const privacy = privacyPoints(config ? `${config.provider} (${config.model})` : null, null);
+export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Props) {
   return (
     <main className="page welcome" aria-labelledby="welcome-heading">
-      <header className="page-head">
-        <div>
-          <h1 id="welcome-heading">{APP_NAME}</h1>
-          <p className="welcome-tagline">{TAGLINE}</p>
+      <div className="hero">
+        <div className="hero-main">
+          <p className="eyebrow">Decision support for high-stakes messages</p>
+          <h1 id="welcome-heading" className="hero-title">
+            Know whether your message will be trusted before your audience decides.
+          </h1>
+          <p className="hero-lede">
+            Most messages that lose trust aren't badly written. They sound reassuring without explaining the decision.
+            Paste your draft and context, and see it the way a thoughtful, skeptical reader will.
+          </p>
+          <div className="cta-row">
+            <button type="button" className="primary cta" onClick={onStart} autoFocus>
+              Start a review
+              <ArrowRight />
+            </button>
+            <span className="cta-meta">About a minute · No account · Nothing saved</span>
+          </div>
+          <p className="callout-warning" role="note">
+            <WarningTriangle />
+            <span>
+              <strong>WARNING:</strong> Do not paste privileged, material nonpublic or regulated personal information in
+              the tool. Redact beforehand.
+            </span>
+          </p>
         </div>
-        <p className="welcome-intro">{INTRO}</p>
-      </header>
 
-
-      <div className="card-columns">
-        <section className="card welcome-card" aria-labelledby="why-heading">
-          <h2 id="why-heading">Why it matters</h2>
-          <p className="prose">
-            High-stakes messages rarely fail because they're badly written. They fail because they sound reassuring without
-            explaining anything: what was decided, why, who it affects and what happens next. Readers spot that gap right
-            away. You usually find out later, in the comments, the coverage or the town hall.
-          </p>
-          <p className="prose">
-            {APP_NAME} reads your draft the way a thoughtful, skeptical member of your audience would. It asks one question
-            throughout: does this message give an account of the decision, or does it only sound reassuring?
-          </p>
-        </section>
-
-        <section className="card welcome-card" aria-labelledby="get-heading">
-          <h2 id="get-heading">What you get</h2>
-          <p className="prose">In about a minute, you receive:</p>
-          <ul className="tight prose">
-            {WHAT_YOU_GET_HERE.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="card welcome-card" aria-labelledby="standard-heading">
-          <h2 id="standard-heading">Consistent, tailored and transparent</h2>
-          <p className="prose">
-            <strong>One standard, every time.</strong> Every draft is scored on the same ten weighted dimensions. A message
-            reviewed today and one reviewed next month are held to the same bar.
-          </p>
-          <p className="prose">
-            <strong>Tailored to the moment.</strong> Tell it what kind of event you're communicating about, such as a
-            workforce reduction, a data incident, a product recall, a leadership departure, or one of thirty in all. It applies
-            the checks every serious event needs. Where a standard has been written for that specific event, it applies that
-            standard too. More are being added.
-          </p>
-          <p className="prose">
-            <strong>No black box.</strong> Nothing is applied that you can't see. The{" "}
-            <button type="button" className="linklike" onClick={onStandards}>Standards Library</button> lists every standard
-            in use, what each one checks, the research or regulation behind it, and what it can't judge.
-          </p>
-        </section>
-
-        <section className="card welcome-card" aria-labelledby="how-heading">
-          <h2 id="how-heading">How it works: three questions</h2>
-          <ol className="tight prose">
-            <li>
-              <strong>What happened?</strong> The event determines which standards apply.
-            </li>
-            <li>
-              <strong>What are you writing?</strong> The format (press release, employee announcement, manager toolkit)
-              determines what the document should contain.
-            </li>
-            <li>
-              <strong>Who is it for?</strong> The audience determines who bears the impact.
-            </li>
-          </ol>
-          <p className="prose">
-            Your draft is treated as claims to be tested. The context you provide is treated as fact. The tool never invents
-            a metric, a date or a name.
-          </p>
-        </section>
-
-        <section className="card welcome-card" aria-labelledby="not-heading">
-          <h2 id="not-heading">What it won't do</h2>
-          <p className="prose">It's built to sharpen your judgment, not replace it.</p>
-          <ul className="tight prose">
-            {NOT_THIS_SHORT.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <p className="prose muted">This is decision-support software. The judgment, and the words, stay yours.</p>
-        </section>
-
-        <section className="card callout-privacy" aria-labelledby="privacy-heading">
-          <h2 id="privacy-heading">Your draft stays private</h2>
-          <ul className="tight prose">
-            {privacy.slice(0, 4).map(([lead, rest]) => (
+        <section className="card hero-card" aria-labelledby="get-heading">
+          <h2 id="get-heading">What you'll get</h2>
+          <ol className="numbered">
+            {WHAT_YOU_GET.map(([lead, rest], i) => (
               <li key={lead}>
-                <strong>{lead}</strong> {rest}
+                <span className="numbered-index" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+                <span>
+                  <strong>{lead}</strong> {rest}
+                </span>
               </li>
             ))}
-            <li>
-              <strong>Redaction isn't available yet.</strong> Nothing is removed from your text before it's sent. Don't
-              paste privileged, material nonpublic or regulated personal information without approval from your legal,
-              privacy and security teams.
-            </li>
-          </ul>
+          </ol>
+          <p className="muted small hero-foot">
+            Every draft is scored on the same ten weighted dimensions, plus any standard written for your type of event.{" "}
+            <button type="button" className="linklike" onClick={onStandards}>See every standard in the Standards Library</button>
+          </p>
         </section>
       </div>
 
-      <p className="prose welcome-more">
-        For the full framework, the ten dimensions and a walkthrough of everything you get back, see the{" "}
-        <button type="button" className="linklike" onClick={onOverview}>Tool Overview</button> tab.
-      </p>
-
-      {runtimeNote ? <p className="muted small prose welcome-runtime">{runtimeNote}</p> : null}
-
-      <p className="welcome-start">
-        <button type="button" className="primary" onClick={onStart} autoFocus>
-          Start a review
-        </button>
-      </p>
+      <div className="welcome-strip">
+        <section aria-labelledby="privacy-heading">
+          <h2 id="privacy-heading" className="strip-heading">
+            <Lock />
+            Your draft stays private
+          </h2>
+          <ul className="tight strip-list">
+            {PRIVACY_POINTS(config?.provider ?? "Anthropic").map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        </section>
+        <section aria-labelledby="wont-heading">
+          <h2 id="wont-heading" className="strip-heading">
+            <CircleSlash />
+            What it won't do
+          </h2>
+          <ul className="tight strip-list">
+            {WONT_DO.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+          <p className="strip-close">
+            The judgment, and the words, stay yours.{" "}
+            <button type="button" className="linklike" onClick={onOverview}>Read the full Tool Overview</button>
+          </p>
+        </section>
+      </div>
     </main>
   );
 }

@@ -11,5 +11,8 @@ export default defineConfig({
   build: {
     outDir: "../../dist-artifact",
     emptyOutDir: true,
+    // The claude.ai page is one HTML file; a font emitted as a separate asset
+    // would not be served with it, so inline them.
+    assetsInlineLimit: 200_000,
   },
 });

@@ -12,7 +12,7 @@ export const STUB_PAGES = [
   },
   {
     key: "enterprise-governance",
-    title: "Enterprise Governance Console",
+    title: "Governance Console",
     text: "The Enterprise Governance Console will hold customer-controlled processing, redaction, retention policies, data residency, audit logging, and access controls. It is not in this build; the privacy panel shows only what the code currently enforces.",
   },
   {

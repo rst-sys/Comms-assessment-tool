@@ -1,24 +1,65 @@
-/* Design system, PROMPT.md Section 11.
-   Calm, editorial, executive-grade: serif display, humanist sans interface,
-   ink on paper, cards with a hairline border and no heavy shadow, severity by
-   square and label, no gradients, no imagery, no animation beyond 150 ms.
-   Fonts use the named faces when installed and fall back to system faces;
-   nothing is fetched from a third party. */
+/* Design system, PROMPT.md Section 11 and the owner's desktop artboards.
+
+   Calm, editorial, executive-grade: a display serif for headings, a humanist
+   sans for everything else, ink on warm paper, cards with a hairline border
+   and no heavy shadow, severity by square and label, no gradients, no
+   imagery, no animation beyond 150 ms.
+
+   The two faces are served from this app, not from a font CDN. The screen
+   they sit on promises the draft is "sent once, only to Anthropic" and that
+   nothing tracks the reader; a stylesheet that reaches a third party on every
+   page load would make that promise smaller in a way nobody asked for. Both
+   are variable fonts, latin subset, 69 KB together, and the fallback stacks
+   below still render the page if they fail. */
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("./fonts/newsreader-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("./fonts/ibm-plex-sans-latin.woff2") format("woff2");
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
-  --ink: #14213d;
-  --paper: #faf8f3;
+  /* Ink and paper */
+  --ink: #1b1e22;
+  --ink-2: #3a3f45;
+  --neutral: #545a61;
+  --paper: #f6f4ef;
+  --header-bg: #fbfaf7;
   --surface: #ffffff;
-  --border: #e3dfd6;
-  --neutral: #4a5568;
+  --border: #e2ded5;
+  --divider: #eeebe4;
+
+  /* The one accent: buttons, links, list numbers. */
+  --accent: #1f5a56;
+  --accent-hover: #143c39;
+
+  /* The amber callout */
+  --warn-bg: #fbf1df;
+  --warn-border: #e8cf9e;
+  --warn-text: #5c3d00;
+  --warn-icon: #8a5a00;
+
+  /* Severity and status. The accent is for things you can press; these say
+     how a draft scored, and must not be confused with it — "sound" stayed
+     blue when the accent turned green, or a 3.5 would have been drawn in a
+     deeper colour than a 4.5. */
   --strong: #6b8f71;
   --sound: #4a6fa5;
   --caution: #b8860b;
   --material: #7a1f2b;
   /* Text-safe variants: the spec colors pass AA on paper only for large or non-text use. */
-  --strong-text: #4a6b50;
+  --strong-text: #46654c;
   --sound-text: #3f608f;
-  --caution-text: #8a6508;
+  --caution-text: #7d5c07;
   --material-text: #7a1f2b;
   --tint-weather: #e6edf5;
   --tint-institution: #efe4e6;
@@ -26,8 +67,9 @@
   --tint-passive: #e9e4f2;
   --tint-values: #e4efe6;
   --tint-vague: #f0ecdf;
-  --serif: "Source Serif 4", "Source Serif Pro", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
-  --sans: Inter, "Segoe UI", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+
+  --serif: Newsreader, "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --sans: "IBM Plex Sans", Inter, "Segoe UI", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
   --space: 8px;
   --measure: 68ch;
   /* One readable column is the measure plus a card's own padding. Written
@@ -35,8 +77,9 @@
      to a single column without complaining. */
   --col: calc(var(--measure) + var(--space) * 5);
   --col-gap: calc(var(--space) * 3);
-  --radius: 6px;
-  --shadow: 0 1px 2px rgba(20, 33, 61, 0.06);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(27, 30, 34, 0.05);
   --fast: 150ms;
 }
 
@@ -55,17 +98,17 @@ body {
   line-height: 1.6;
 }
 
-h1, h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; line-height: 1.25; }
+h1, h2 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; }
 h1 { font-size: 32px; margin: 0 0 var(--space); }
 h2 { font-size: 24px; margin: 0 0 calc(var(--space) * 2); }
 h3 { font-size: 18px; font-weight: 600; margin: calc(var(--space) * 3) 0 var(--space); }
 p { margin: 0 0 calc(var(--space) * 1.5); text-wrap: pretty; }
 p:last-child { margin-bottom: 0; }
-a { color: var(--sound-text); text-underline-offset: 2px; }
-a:hover { color: var(--ink); }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { color: var(--accent-hover); }
 button, select, input, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; transition: background-color var(--fast), border-color var(--fast), color var(--fast); }
-:focus-visible { outline: 3px solid var(--sound); outline-offset: 2px; border-radius: 2px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; background: var(--paper); padding: 1px 4px; border-radius: 3px; }
 ul.tight, ol.tight { margin: 0; padding-left: 20px; }
 ul.tight li, ol.tight li { margin-bottom: calc(var(--space) / 2); text-wrap: pretty; }
@@ -76,30 +119,50 @@ q { quotes: "“" "”"; }
 .page > :first-child { margin-top: 0; }
 .prose { max-width: var(--measure); }
 .muted { color: var(--neutral); }
+/* Named for a screen reader, drawn for nobody. The results page carries its
+   heading this way: it needs a first-level heading for the outline, and the
+   design has no room for a title above the score. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .small { font-size: 13px; }
 .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: calc(var(--space) * 2.5); box-shadow: var(--shadow); }
 .label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--neutral); margin: calc(var(--space) * 2) 0 calc(var(--space) / 2); }
 .label:first-child { margin-top: 0; }
 
 /* Buttons */
-.primary { background: var(--ink); color: var(--paper); border: 1px solid var(--ink); border-radius: 4px; padding: 10px 18px; font-weight: 600; }
-.primary:hover:not(:disabled) { background: #0e1830; }
+.primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 10px 18px; font-weight: 600; }
+.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
 .primary:disabled { opacity: 0.45; cursor: not-allowed; }
 button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link):not(.score-number) {
   background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 8px 14px;
 }
 button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link):not(.score-number):hover { border-color: var(--neutral); }
-.linklike { background: none; border: 0; padding: 0; color: var(--sound-text); text-decoration: underline; text-underline-offset: 2px; }
-.linklike:hover { color: var(--ink); }
+.linklike { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.linklike:hover { color: var(--accent-hover); }
 
 /* Site header and nav */
-.site-header { border-bottom: 1px solid var(--border); background: var(--surface); }
-.site-header .page { padding-top: calc(var(--space) * 3); padding-bottom: 0; }
-.intro { max-width: var(--measure); }
-.nav { list-style: none; display: flex; flex-wrap: wrap; gap: 4px calc(var(--space) * 2.5); padding: 0; margin: calc(var(--space) * 1.5) 0 0; }
-.nav-link { background: none; border: 0; padding: 6px 0 10px; color: var(--neutral); border-bottom: 2px solid transparent; font-size: 14px; }
+/* One 72px bar on every page: the mark on the left, the areas on the right.
+   The app's name used to be an <h1> here, which gave every page two first-level
+   headings and pushed the page's own title down the outline. */
+.site-header { border-bottom: 1px solid var(--border); background: var(--header-bg); }
+.site-header .page { display: flex; flex-wrap: wrap; gap: var(--space) calc(var(--space) * 4);
+  align-items: center; justify-content: space-between; min-height: 72px; padding-top: 0; padding-bottom: 0; }
+.wordmark { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; color: var(--ink); }
+.wordmark svg { color: var(--accent); flex: none; }
+.nav { list-style: none; display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 2.5); padding: 0; margin: 0; }
+.nav-link { background: none; border: 0; padding: 24px 0 22px; color: var(--neutral); border-bottom: 2px solid transparent; font-size: 14px; }
 .nav-link:hover { color: var(--ink); }
-.nav-active { color: var(--ink); border-bottom-color: var(--ink); font-weight: 600; }
+.nav-active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+.nav-toggle { display: none; }
+@media (max-width: 640px) {
+  .site-header .page { padding-top: var(--space); padding-bottom: var(--space); min-height: 0; flex-wrap: wrap; }
+  .nav-toggle { display: block; min-height: 44px; }
+  .site-header nav { flex-basis: 100%; display: none; }
+  .site-header nav.nav-open { display: block; }
+  .nav { flex-direction: column; gap: 0; }
+  .nav-link { display: block; width: 100%; text-align: left; padding: 11px 0; border-bottom: 1px solid var(--divider); }
+  .nav-active { border-bottom-color: var(--accent); }
+}
 
 /* Collapsed panels are native disclosure elements. */
 .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
@@ -204,12 +267,12 @@ table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
 .tabs { display: flex; gap: var(--space); margin-bottom: calc(var(--space) * 1.5); }
 .tab { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; color: var(--neutral); }
 .tab:hover { color: var(--ink); }
-.tab-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.tab-active { background: var(--ink); color: #fff; border-color: var(--ink); }
 .url-row { margin-bottom: calc(var(--space) * 1.5); }
 .url-input { display: flex; gap: var(--space); }
 .url-input input { flex: 1; }
 textarea, input[type="url"], input[type="text"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
-textarea:focus, input:focus, select:focus { border-color: var(--sound); outline: none; box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25); }
+textarea:focus, input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(31, 90, 86, 0.2); }
 textarea { resize: vertical; }
 #draft-text { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
 .field { display: block; margin-bottom: calc(var(--space) * 1.5); }
@@ -221,7 +284,7 @@ textarea { resize: vertical; }
 .step { padding: calc(var(--space) * 3.5); }
 .step-head { display: grid; grid-template-columns: 28px 1fr; gap: calc(var(--space) * 1.5);
   align-items: start; margin-bottom: calc(var(--space) * 3); }
-.step-number { width: 26px; height: 26px; border-radius: 999px; background: var(--ink); color: var(--paper);
+.step-number { width: 26px; height: 26px; border-radius: 999px; background: var(--accent); color: #fff;
   font-size: 13px; font-weight: 600; display: grid; place-items: center; margin-top: 2px; }
 .step-head h2 { font-size: 21px; margin: 0 0 2px; }
 .step-hint { margin: 0; }
@@ -236,7 +299,7 @@ textarea { resize: vertical; }
   min-height: 42px; padding: 7px 12px; text-align: left; background: var(--surface); border: 1px solid var(--border);
   border-radius: 4px; color: var(--ink); font: inherit; }
 .menu-control:hover { border-color: var(--neutral); }
-.menu-control-open { border-color: var(--sound); box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.25); }
+.menu-control-open { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(31, 90, 86, 0.2); }
 .menu-value { flex: 1; min-width: 0; }
 .menu-placeholder { color: var(--neutral); }
 .menu-caret { flex: none; width: 9px; height: 9px; border-right: 1.5px solid var(--neutral);
@@ -252,7 +315,7 @@ textarea { resize: vertical; }
 .chip-choice [role="button"]:hover { color: var(--material-text); background: var(--surface); }
 
 .menu-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface);
-  border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 10px 30px rgba(20, 33, 61, 0.16); padding: var(--space); }
+  border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(27, 30, 34, 0.14); padding: var(--space); }
 .menu-search { margin-bottom: var(--space); }
 .menu-options { max-height: 320px; overflow-y: auto; }
 .menu-group + .menu-group { margin-top: var(--space); }
@@ -261,7 +324,7 @@ textarea { resize: vertical; }
   padding: 6px 8px; border-radius: 3px; cursor: pointer; }
 .menu-option:hover, .menu-option:focus-visible { background: var(--paper); outline: none; }
 .menu-option-on { background: var(--paper); }
-.menu-tick { color: var(--sound); font-weight: 700; }
+.menu-tick { color: var(--accent); font-weight: 700; }
 .menu-option-label { display: block; }
 .menu-option-note { display: block; font-size: 13px; color: var(--neutral); line-height: 1.45; }
 .menu-empty, .menu-foot { margin: 6px 8px; }
@@ -278,7 +341,7 @@ textarea { resize: vertical; }
 .choice-box { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--border);
   border-radius: 4px; background: var(--surface); cursor: pointer; }
 .choice-box:hover { border-color: var(--neutral); }
-.choice-box:has(input:checked) { border-color: var(--sound); box-shadow: inset 0 0 0 1px var(--sound); }
+.choice-box:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 
 .split-two { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
 @media (min-width: 720px) { .split-two { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
@@ -301,7 +364,7 @@ textarea { resize: vertical; }
 
 .checkbox { display: flex; gap: 10px; align-items: flex-start; margin: calc(var(--space) * 1.5) 0; max-width: var(--measure); }
 .checkbox input { margin-top: 5px; flex: none; }
-.warning { border-left: 3px solid var(--caution); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); max-width: var(--measure); }
+.warning { border-left: 3px solid var(--caution); padding: var(--space) calc(var(--space) * 1.5); background: var(--warn-bg); color: var(--warn-text); max-width: var(--measure); border-radius: var(--radius-sm); }
 .error { border-left: 3px solid var(--material); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); color: var(--material-text); max-width: var(--measure); }
 .import-info { border: 1px solid var(--border); border-radius: 4px; padding: var(--space) calc(var(--space) * 1.5); margin: var(--space) 0 calc(var(--space) * 1.5); background: var(--paper); word-break: break-word; }
 .demo-link { font-size: 14px; }
@@ -324,13 +387,77 @@ textarea { resize: vertical; }
 /* Personas */
 .persona-headline { margin: 4px 0 8px; font-family: var(--serif); font-size: 20px; line-height: 1.3; text-wrap: balance; }
 
-/* Welcome screen */
-.welcome { max-width: 820px; }
-.welcome h1 { margin-bottom: calc(var(--space) * 0.75); }
-/* The promise, between the name and the explanation: larger than body text,
-   quieter than the heading, and on its own measure so it breaks cleanly. */
-.welcome-tagline { font-family: var(--serif); font-size: 22px; line-height: 1.35; max-width: var(--measure);
-  margin: 0 0 calc(var(--space) * 2); color: var(--ink); }
+/* Welcome screen: one 12-column hero, then a two-column strip.
+
+   It has to fit a 940px-tall desktop window without scrolling, which is why
+   the long explanations moved to the Tool Overview. Nothing here is decoration
+   the reader has to scroll past to reach the button. */
+.page.welcome { max-width: 1440px; padding: 72px 80px 64px; }
+.hero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px; align-items: start; }
+.hero-main { grid-column: span 7; display: grid; gap: 28px; }
+.hero-card { grid-column: span 5; padding: 32px; }
+
+.eyebrow { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--accent); margin: 0; }
+.hero-title { font-size: 60px; line-height: 1.06; letter-spacing: -0.02em; max-width: 720px; margin: 0; }
+.hero-lede { font-size: 19px; line-height: 1.6; color: var(--ink-2); max-width: 620px; margin: 0; }
+
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
+.cta { display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 28px; font-size: 17px; }
+.cta-meta { font-size: 15px; color: var(--neutral); }
+
+.callout-warning { display: flex; gap: 10px; align-items: flex-start; max-width: 620px; margin: 0;
+  background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: var(--radius-sm);
+  padding: 14px 16px; color: var(--warn-text); font-size: 15px; line-height: 1.5; }
+.callout-warning svg { color: var(--warn-icon); flex: none; margin-top: 2px; }
+
+.hero-card h2 { font-size: 26px; margin: 0 0 calc(var(--space) * 1.5); }
+.numbered { list-style: none; margin: 0; padding: 0; }
+.numbered li { display: grid; grid-template-columns: 34px 1fr; gap: 8px; align-items: baseline;
+  font-size: 16px; line-height: 1.5; padding: 12px 0; border-top: 1px solid var(--divider); }
+.numbered li:first-child { border-top: 0; padding-top: 0; }
+.numbered-index { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+.hero-foot { margin: calc(var(--space) * 2) 0 0; padding-top: calc(var(--space) * 2);
+  border-top: 1px solid var(--divider); font-size: 14px; line-height: 1.55; }
+
+.welcome-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;
+  margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); }
+.strip-heading { display: flex; align-items: center; gap: 9px; font-family: var(--sans); font-size: 17px;
+  font-weight: 600; letter-spacing: 0; margin: 0 0 calc(var(--space) * 1.5); }
+.strip-heading svg { color: var(--accent); flex: none; }
+.strip-list { font-size: 15px; line-height: 1.7; color: var(--ink-2); }
+.strip-list li { margin-bottom: 0; }
+.strip-close { font-size: 15px; margin: calc(var(--space) * 1.5) 0 0; }
+
+/* The artboard's spacing is written for a tall window. On a laptop the whole
+   screen still has to fit without scrolling, which is the point of it, so the
+   vertical rhythm tightens rather than the content changing. */
+@media (min-width: 1024px) and (max-height: 1020px) {
+  .page.welcome { padding-top: 44px; padding-bottom: 36px; }
+  .hero-main { gap: 22px; }
+  .hero-title { font-size: 54px; }
+  .welcome-strip { margin-top: 40px; padding-top: 24px; }
+}
+
+@media (max-width: 1023px) {
+  .page.welcome { padding: 40px; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .hero-main, .hero-card { grid-column: auto; }
+  .hero-title { font-size: 48px; }
+  .welcome-strip { grid-template-columns: minmax(0, 1fr); margin-top: 40px; }
+}
+@media (max-width: 640px) {
+  .page.welcome { padding: 32px 16px 48px; }
+  .hero-title { font-size: 40px; }
+  .cta-row { gap: 12px; }
+  .cta { width: 100%; justify-content: center; }
+  .cta-meta { flex-basis: 100%; }
+  .hero-card { padding: 20px; }
+}
+
+/* Shared by the explanatory pages: Tool Overview, Standards Library, sign-in.
+   The welcome screen used to be one of them; it has its own layout now, and
+   these classes stayed because those three still use them. */
 .welcome-intro { font-family: var(--serif); font-size: 19px; line-height: 1.5; max-width: var(--measure); margin-bottom: calc(var(--space) * 4); }
 /* Cards on the explanatory pages are sized to their text, not to the page.
    Capping the prose inside a full-width card leaves a band of empty card to
@@ -352,40 +479,17 @@ textarea { resize: vertical; }
 .weights li { display: flex; justify-content: space-between; gap: var(--space); padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
 .weights li:last-child { border-bottom: 0; }
 .weights .weight { font-variant-numeric: tabular-nums; color: var(--neutral); }
-.callout-privacy { margin-top: calc(var(--space) * 3); border-left: 4px solid var(--sound); background: var(--tint-weather); }
+.callout-privacy { margin-top: calc(var(--space) * 3); border-left: 4px solid var(--accent); background: var(--header-bg); }
 .callout-privacy h2 { margin-bottom: calc(var(--space) * 1.5); }
 .callout-privacy .notice-text { margin-top: calc(var(--space) * 2); padding-top: calc(var(--space) * 1.5); border-top: 1px solid var(--border); font-size: 14px; color: var(--neutral); }
 .welcome-more { margin-top: calc(var(--space) * 3); }
 .welcome-runtime { margin-top: calc(var(--space) * 2); }
-.welcome-start { margin-top: calc(var(--space) * 3); }
 
-/* Footer */
-.site-footer { margin-top: calc(var(--space) * 6); border-top: 1px solid var(--border); padding-top: calc(var(--space) * 3); color: var(--neutral); font-size: 14px; }
-/* The disclaimer had no measure at all and ran the full width of the page —
-   around 170 characters a line. Everything in the footer gets a measure. */
-.site-footer > * { max-width: var(--measure); }
-/* Quiet enough to ignore, present enough to quote when a review misbehaves. */
-.build-stamp { margin-top: calc(var(--space) * 0.75) !important; font-size: 12px; color: var(--neutral); font-variant-numeric: tabular-nums; }
-.site-footer blockquote { margin: 0 0 calc(var(--space) * 1.5); padding-left: calc(var(--space) * 1.5); border-left: 3px solid var(--border); color: var(--ink); font-family: var(--serif); font-size: 16px; max-width: var(--measure); text-wrap: balance; }
-
-/* Print: every panel expanded (done in script), page breaks between sections, no controls. */
-/* ---------------------------------------------------------------------------
-   Two columns on a wide screen.
-
-   The results page was seven screens tall and the content used a third of a
-   1920px window. The fix is not longer lines — past about seventy-five
-   characters the eye starts losing its place on the way back — but a second
-   column. Lines stay at the measure; the width buys fewer screens instead.
-
-   Everything is a grid of two measure-wide columns. Anything that needs the
-   full width says so, and anything that is genuinely prose stays one column
-   wide inside it.
-   --------------------------------------------------------------------------- */
 @media screen and (min-width: 1240px) {
-  /* Both pages were capped at a single measure — .page.results at revision 22
-     and .welcome from the start — which is what left two thirds of a wide
-     window empty. Two columns need two measures. */
-  .page.welcome, .page.results { max-width: calc(var(--measure) * 2 + var(--space) * 17); }
+  /* The results page was capped at a single measure at revision 22, which
+     left two thirds of a wide window empty. Two columns need two measures.
+     The welcome screen sets its own width; it is not a column of cards. */
+  .page.results { max-width: calc(var(--measure) * 2 + var(--space) * 17); }
   /* Cards pack, they do not sit in rows.
 
      A two-column grid gives every row the height of its tallest card, so a
@@ -412,8 +516,7 @@ textarea { resize: vertical; }
     gap: calc(var(--space) * 5) var(--col-gap);
     align-items: start;
   }
-  .welcome > *, .results > * { margin-top: 0; }
-  .welcome-card { margin-top: 0; max-width: none; }
+  .results > * { margin-top: 0; }
 
   /* Findings pack the same way, for the same reason. */
   .finding-list { columns: 2; column-gap: var(--col-gap); }
@@ -423,17 +526,15 @@ textarea { resize: vertical; }
      four-line paragraph both capped at the measure, with six hundred pixels of
      nothing beside them. Same answer as everywhere else — the width holds a
      second thing rather than a longer line. Masthead left, intro right. */
-  .page-head, .header-head {
+  .page-head {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: calc(var(--space) * 2) calc(var(--space) * 4);
     align-items: end;
   }
-  .page-head > *, .header-head > * { margin-top: 0; }
-  .page-head .welcome-intro, .header-head .intro { margin-bottom: 0; max-width: none; }
+  .page-head > * { margin-top: 0; }
 
   /* Full width: headings, running intros, and anything that is one wide thing. */
-  .welcome > .page-head, .welcome > .welcome-more, .welcome > .welcome-runtime, .welcome > .welcome-start,
   .results > .results-actions, .results > .save-note, .results > .error,
   .results > #executive-summary, .results > #findings, .results > .comparison {
     grid-column: 1 / -1;
@@ -672,4 +773,4 @@ a.score-number:hover { text-decoration-color: var(--ink); }
   display: inline-block;
 }
 .stakeholders[open] > summary::before { transform: rotate(90deg); }
-.stakeholders > summary:hover { color: var(--sound-text); }
+.stakeholders > summary:hover { color: var(--accent); }

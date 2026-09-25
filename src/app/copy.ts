@@ -33,7 +33,6 @@ export const APP_NAME = "Trust Assessment Assistant";
 export const HEIGHTENED_NOTICE =
   "This kind of event warrants heightened review. Watch out for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or impact on vulnerable audiences.";
 
-export const TAGLINE = "Know whether your message will be trusted before your audience decides.";
 
 export const INTRO =
   "Paste your draft, add as much context as you can, and sit back as an AI-assisted pair of fresh eyes shows you how well your message explains the decision behind it, where it falls short, and which published standards and best practices it was measured against.";

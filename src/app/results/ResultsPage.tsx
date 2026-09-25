@@ -87,6 +87,7 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
 
   return (
     <main className="page results">
+      <h1 className="sr-only">Review results</h1>
       <div className="no-print results-actions">
         <button type="button" onClick={savePdf} disabled={saving}>{saving ? "Working…" : "Save as PDF"}</button>
         {FEATURES.saveReview ? (

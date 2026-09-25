@@ -44,7 +44,7 @@ describe("the app when the config call fails", () => {
     render(<App />);
     // The server still refuses every paid call without the password, so letting
     // the app render is safe; a page that never loads would not be.
-    expect(await screen.findByRole("heading", { name: "Trust Assessment Assistant", level: 1 })).toBeTruthy();
+    expect(await screen.findByRole("heading", { name: /Know whether your message will be trusted/, level: 1 })).toBeTruthy();
     vi.unstubAllGlobals();
   });
 });

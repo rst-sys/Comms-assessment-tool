@@ -38,7 +38,7 @@ function fakeFetch(evaluateResponse: () => Response) {
  */
 async function renderApp(ui = <App />) {
   render(ui);
-  await screen.findByRole("heading", { name: "Trust Assessment Assistant", level: 1 });
+  await screen.findByRole("heading", { name: /Know whether your message will be trusted/, level: 1 });
 }
 
 let restore: (() => void) | null = null;
@@ -54,10 +54,10 @@ describe("App", () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());
     await renderApp();
-    expect(screen.getByRole("heading", { name: "Trust Assessment Assistant", level: 1 })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: /Know whether your message will be trusted/, level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "What it won't do" })).toBeTruthy();
     expect(screen.getByText(/Nothing is saved\./)).toBeTruthy();
-    expect(screen.getByText(/It doesn't write for you/)).toBeTruthy();
+    expect(screen.getByText("Write or rewrite your message")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Tool Overview" })).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     expect(screen.queryByRole("heading", { name: "What it won't do" })).toBeNull();
@@ -90,19 +90,18 @@ describe("App", () => {
     consoleError.mockRestore();
   });
 
-  it("describes on the welcome screen what the tool now actually does", async () => {
+  it("says on the welcome screen what comes back, what it won't do, and what not to paste", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response("{}", { status: 500 })));
     await renderApp();
-    // The three questions, and the standard the event brings in: the whole
-    // point of the protocol library, and invisible if the first screen
-    // describes the tool as it was before.
-    expect(screen.getByRole("heading", { name: "Consistent, tailored and transparent" })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "How it works: three questions" })).toBeTruthy();
-    expect(screen.getByText(/what kind of event you're communicating about/)).toBeTruthy();
-    expect(screen.getByText(/The event determines which standards apply/)).toBeTruthy();
-    // Claims the redesign made false.
+    expect(screen.getByRole("heading", { name: "What you'll get" })).toBeTruthy();
+    expect(screen.getByText(/A score out of 100/)).toBeTruthy();
+    expect(screen.getByText(/most damning reasonable reading/)).toBeTruthy();
+    // The one thing on this screen a reader must not miss.
+    expect(screen.getByText(/Do not paste privileged, material nonpublic or regulated personal information/)).toBeTruthy();
+    // The long explanations moved to the Tool Overview; none may linger here.
+    expect(screen.queryByText(/Consistent, tailored and transparent/)).toBeNull();
+    expect(screen.queryByText(/How it works: three questions/)).toBeNull();
     expect(screen.queryByText(/two minutes/)).toBeNull();
-    expect(screen.queryByText(/tied to specific passages/)).toBeNull();
   });
 
   it("shows the footer and a build stamp on every screen, not only on results", async () => {
