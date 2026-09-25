@@ -57,6 +57,23 @@ export const FAILURE_EVENTS: ReadonlySet<CommunicationEvent> = new Set<Communica
 ]);
 
 /**
+ * Events where a misstatement carries legal, financial or physical
+ * consequence. They do not change how the draft is scored — the tool used to
+ * have a "heightened review" mode that raised four faults to High severity,
+ * and it is gone. What they do now is put a warning on the results page naming
+ * the specialisms this kind of event tends to touch, which is the part a
+ * reader could act on.
+ */
+export const HEIGHTENED_EVENTS: ReadonlySet<CommunicationEvent> = new Set<CommunicationEvent>([
+  "Workforce reduction or major reorganization",
+  "Cyberattack or data incident",
+  "Workplace safety event or facility emergency",
+  "Regulatory investigation, litigation or ethics allegation",
+  "Acquisition, divestiture or major integration",
+  "Poor financial results, site closure or strategic retreat",
+]);
+
+/**
  * What the document is. Changes what the draft should contain, not the
  * standard it is held to: a holding statement is allowed to be thin where a
  * press release is not.
@@ -104,6 +121,19 @@ export const SETTINGS = [
   "Material corporate event",
 ] as const;
 export type Setting = (typeof SETTINGS)[number];
+
+/** Settings that warrant the same warning as a heightened event. */
+export const HEIGHTENED_SETTINGS: ReadonlySet<Setting> = new Set<Setting>(["Crisis", "Material corporate event"]);
+
+/**
+ * Whether the results page should warn that this review touches ground a
+ * specialist should see. A judgement about the event and the setting, not
+ * about the draft — the tool cannot tell from the words whether a redundancy
+ * consultation is under way.
+ */
+export function warrantsHeightenedReview(event: CommunicationEvent, setting: Setting): boolean {
+  return HEIGHTENED_EVENTS.has(event) || HEIGHTENED_SETTINGS.has(setting);
+}
 
 export const MARKETS = [
   "United States",
@@ -209,7 +239,6 @@ export interface EvaluationRequest {
   goal: Goal;
   audience_scope: AudienceScope;
   context: ContextFields;
-  heightened_review: boolean;
   already_published: boolean;
   audience_documents?: AudienceDocument[];
   stance?: Stance;

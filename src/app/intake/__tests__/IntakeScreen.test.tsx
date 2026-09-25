@@ -33,7 +33,6 @@ describe("IntakeScreen", () => {
   });
 
   it("keeps Evaluate disabled until the demo loader fills every required field", () => {
-    restore = enable("heightenedReview");
     const onEvaluate = vi.fn();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
     const button = screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement;
@@ -42,27 +41,14 @@ describe("IntakeScreen", () => {
     expect(button.disabled).toBe(false);
     expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toMatch(/^Rapid growth brought complexity/);
     expect(screen.getByText(/\(demo draft\)/)).toBeTruthy();
-    expect((screen.getByRole("checkbox", { name: /heightened review/i }) as HTMLInputElement).checked).toBe(true);
     expect(screen.getByText(/typically requires legal, HR, labor, or investor-relations review/)).toBeTruthy();
     fireEvent.click(button);
     expect(onEvaluate).toHaveBeenCalledTimes(1);
     const request = onEvaluate.mock.calls[0]![0];
     expect(request.communication_event).toBe("Workforce reduction or major reorganization");
     expect(request.communication_format).toBe("Employee announcement");
-    expect(request.heightened_review).toBe(true);
     expect(request.already_published).toBe(false);
     expect(request.context).toEqual({});
-  });
-
-  it("auto-checks heightened review for an exposed event and lets the user uncheck it", () => {
-    restore = enable("heightenedReview");
-    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    const event = screen.getAllByRole("combobox")[0] as HTMLSelectElement;
-    fireEvent.change(event, { target: { value: "Cyberattack or data incident" } });
-    const box = screen.getByRole("checkbox", { name: /heightened review/i }) as HTMLInputElement;
-    expect(box.checked).toBe(true);
-    fireEvent.click(box);
-    expect(box.checked).toBe(false);
   });
 
   it("shows a live word count and blocks a short pasted draft", () => {

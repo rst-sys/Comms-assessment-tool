@@ -10,7 +10,7 @@ describe("system prompt text", () => {
   it("carries the verbatim Section 5 prompt", () => {
     expect(SYSTEM_PROMPT.startsWith("You are the evaluation engine for Trust Assessment Assistant.")).toBe(true);
     expect(SYSTEM_PROMPT.trimEnd().endsWith("No prose before or after it.")).toBe(true);
-    for (const heading of ["YOUR EVIDENCE", "THE ACCOUNT", "SCORING", "STATED VERSUS SUBSTANTIATED", "HEIGHTENED REVIEW", "AGENCY AND ABSTRACTION SCAN", "DEVIL'S ADVOCATE", "NON-INVENTION", "LANGUAGE", "OUTPUT"]) {
+    for (const heading of ["YOUR EVIDENCE", "THE ACCOUNT", "SCORING", "STATED VERSUS SUBSTANTIATED", "AGENCY AND ABSTRACTION SCAN", "DEVIL'S ADVOCATE", "NON-INVENTION", "LANGUAGE", "OUTPUT"]) {
       expect(SYSTEM_PROMPT).toContain(`\n${heading}\n`);
     }
   });
@@ -120,7 +120,6 @@ describe("buildUserMessage", () => {
     expect(msg).toContain("Market: United States");
     expect(msg).toContain("Goal: Announce a difficult employment action");
     expect(msg).toContain("Audience scope: Internal");
-    expect(msg).toContain("heightened_review: true");
     expect(msg).toContain("already_published: false");
   });
 

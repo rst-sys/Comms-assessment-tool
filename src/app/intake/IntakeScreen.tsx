@@ -24,7 +24,6 @@ import {
   canEvaluate,
   EMPTY_FIELDS,
   fieldsComplete,
-  heightenedByDefault,
   HIGH_RISK_WARNING,
   MAX_WORDS,
   MIN_WORDS,
@@ -76,7 +75,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       : EMPTY_FIELDS,
   );
   const [context, setContext] = useState<ContextFields>(init ? { ...init.context } : {});
-  const [heightened, setHeightened] = useState(init?.heightened_review ?? false);
   const [documents, setDocuments] = useState<AudienceDocument[]>(init?.audience_documents ?? []);
   const [stance, setStance] = useState<Stance>(init?.stance ?? "proactive");
   const [reactingTo, setReactingTo] = useState(init?.reacting_to ?? "");
@@ -85,11 +83,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const [imported, setImported] = useState<ImportedPage | null>(null);
   const [importing, setImporting] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
-
-  // Auto-check heightened review when the event or setting calls for it; the user may uncheck afterwards.
-  useEffect(() => {
-    if (heightenedByDefault(fields.communication_event, fields.setting)) setHeightened(true);
-  }, [fields.communication_event, fields.setting]);
 
   const words = wordCount(draft);
   const stanceOk = stance === "proactive" || reactingTo.trim().length > 0;
@@ -113,7 +106,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       audience_scope: r.audience_scope,
     });
     setContext({ ...r.context });
-    setHeightened(r.heightened_review);
     setIsDemo(true);
     setImported(null);
   };
@@ -146,7 +138,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       draft: draft.trim(),
       ...fields,
       context: Object.fromEntries(Object.entries(context).filter(([, v]) => (v ?? "").trim().length > 0)),
-      heightened_review: heightened,
       already_published: imported !== null,
       ...(documents.length > 0 ? { audience_documents: documents } : {}),
       stance,
@@ -254,17 +245,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
               </label>
             ) : null}
           </fieldset>
-
-          <label className={FEATURES.heightenedReview ? "checkbox" : "checkbox disabled-feature"}>
-            <input
-              type="checkbox"
-              checked={FEATURES.heightenedReview && heightened}
-              disabled={!FEATURES.heightenedReview}
-              onChange={(e) => setHeightened(e.target.checked)}
-            />
-            Apply heightened review for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or vulnerable audiences.
-            {FEATURES.heightenedReview ? null : <span className="coming-soon"> {COMING_SOON}</span>}
-          </label>
 
           {showHighRiskWarning(fields.communication_event, fields.market) ? (
             <p className="warning" role="note">{HIGH_RISK_WARNING}</p>

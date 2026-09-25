@@ -31,7 +31,6 @@ export interface SavedSettings {
   market: string;
   goal: string;
   audience_scope: string;
-  heightened_review: boolean;
   already_published: boolean;
   stance: string;
   reacting_to: string;
@@ -100,7 +99,6 @@ export function buildSavedReview(
       market: request.market,
       goal: request.goal,
       audience_scope: request.audience_scope,
-      heightened_review: request.heightened_review,
       already_published: request.already_published,
       stance: request.stance ?? "proactive",
       reacting_to: request.reacting_to ?? "",
@@ -138,7 +136,6 @@ export const COMPARABLE_SETTINGS: (keyof SavedSettings)[] = [
   "market",
   "goal",
   "audience_scope",
-  "heightened_review",
 ];
 
 export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
@@ -149,7 +146,6 @@ export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
   market: "Market",
   goal: "Goal",
   audience_scope: "Audience scope",
-  heightened_review: "Heightened review",
   already_published: "Already published",
   stance: "Stance",
   reacting_to: "Reacting to",
@@ -165,7 +161,6 @@ export function settingsDrift(saved: SavedSettings, request: EvaluationRequest):
     market: request.market,
     goal: request.goal,
     audience_scope: request.audience_scope,
-    heightened_review: request.heightened_review,
     already_published: request.already_published,
     stance: request.stance ?? "proactive",
     reacting_to: request.reacting_to ?? "",

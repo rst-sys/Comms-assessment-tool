@@ -1,6 +1,7 @@
 import type { EvaluationResult } from "../../engine/evaluate.js";
+import { HEIGHTENED_NOTICE } from "../copy.js";
 import { ScoringNote } from "./ScoringNote.js";
-import type { EvaluationRequest } from "../../engine/types.js";
+import { warrantsHeightenedReview, type EvaluationRequest } from "../../engine/types.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { Scorecard } from "./Scorecard.js";
 
@@ -53,6 +54,10 @@ export function ExecutiveSummary({ result, request }: Props) {
           ) : null}
         </div>
       </div>
+
+      {warrantsHeightenedReview(request.communication_event, request.setting) ? (
+        <p className="warning heightened-notice" role="note">{HEIGHTENED_NOTICE}</p>
+      ) : null}
 
       <ScoringNote result={result} contextSupplied={s.context_supplied} />
 

@@ -124,7 +124,6 @@ export function buildUserMessage(request: EvaluationRequest): string {
         `Market: ${request.market}`,
         `Goal: ${request.goal}`,
         `Audience scope: ${request.audience_scope}`,
-        `heightened_review: ${request.heightened_review}`,
         `already_published: ${request.already_published}`,
         `stance: ${request.stance ?? "proactive"}`,
         ...(request.stance === "reactive" ? [`reacting_to: ${request.reacting_to?.trim() || NOT_SUPPLIED}`] : []),
@@ -167,9 +166,6 @@ export function buildUserMessage(request: EvaluationRequest): string {
     notes.push(
       "This draft has already been issued. Frame findings retrospectively, describing what may have left readers unclear rather than what to change before issuing. Any suggested revision is a model for future statements or a follow-up, not a fix to the original.",
     );
-  }
-  if (request.heightened_review) {
-    notes.push("heightened_review is true. Apply the stricter thresholds described in HEIGHTENED REVIEW.");
   }
   if (notes.length > 0) parts.push(block("NOTES", notes.join("\n")));
 

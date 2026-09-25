@@ -10,22 +10,13 @@ const config = { provider: "Anthropic", model: "claude-opus-5", processing_mode:
 afterEach(cleanup);
 
 describe("features switched off for this round of testing (revision 16)", () => {
-  it("has the four switched off and heightened review left on", () => {
+  it("has the four switched off", () => {
     expect(FEATURES).toEqual({
       saveReview: false,
       compareRevisions: false,
-      heightenedReview: true,
       audienceDocuments: false,
       publicContextSearch: false,
     });
-  });
-
-  it("leaves heightened review usable, because it is part of what testers are testing", () => {
-    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-    const box = screen.getByRole("checkbox", { name: /Apply heightened review/ }) as HTMLInputElement;
-    expect(box.disabled).toBe(false);
-    fireEvent.click(box);
-    expect(box.checked).toBe(true);
   });
 
   it("marks what is switched off as coming soon rather than removing it silently", () => {

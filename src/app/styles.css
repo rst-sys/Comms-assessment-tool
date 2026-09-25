@@ -567,6 +567,7 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 }
 
 /* Merged scoring note and the footer copyright (revision 23). */
+.heightened-notice { margin: calc(var(--space) * 2) 0 0; }
 .scoring-note { margin-top: calc(var(--space) * 2); }
 .scoring-note h3 { margin: 0 0 4px; }
 .copyright { margin-top: calc(var(--space) * 1.5); }

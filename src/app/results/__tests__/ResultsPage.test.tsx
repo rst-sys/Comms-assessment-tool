@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it } from "vitest";
 import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
-import { REPORTER_QUESTION } from "../../copy.js";
+import { HEIGHTENED_NOTICE, REPORTER_QUESTION } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
 import { ceilingWithoutContext } from "../../../engine/scoring.js";
 
@@ -217,5 +217,26 @@ describe("the Devil's Advocate, opened up (revision 24)", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     const reflect = document.querySelector("#devils-advocate .callout-reflect")!;
     expect(reflect.closest("details")).toBeNull();
+  });
+});
+
+describe("the heightened-review notice", () => {
+  const result = load("demo1");
+
+  it("names the specialisms on an exposed event, and says nothing otherwise", () => {
+    // Replaces the old heightened-review mode, whose tick-box could not be
+    // unticked once a qualifying event set it. This is a property of the event
+    // and the setting, so it must appear and disappear with them.
+    render(<ResultsPage result={result} request={DEMO_1.request} />);
+    expect(screen.getByText(HEIGHTENED_NOTICE)).toBeTruthy();
+    cleanup();
+
+    render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "None of these", setting: "Routine" }} />);
+    expect(screen.queryByText(HEIGHTENED_NOTICE)).toBeNull();
+    cleanup();
+
+    // The setting alone is enough, with no qualifying event.
+    render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "None of these", setting: "Crisis" }} />);
+    expect(screen.getByText(HEIGHTENED_NOTICE)).toBeTruthy();
   });
 });

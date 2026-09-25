@@ -256,7 +256,6 @@ function baselineRequest(saved: SavedReview, fallback?: Req): Req {
     goal: s.goal as Req["goal"],
     audience_scope: s.audience_scope as Req["audience_scope"],
     context: { ...saved.context },
-    heightened_review: s.heightened_review,
     already_published: s.already_published,
     stance: s.stance as Req["stance"],
     reacting_to: s.reacting_to,

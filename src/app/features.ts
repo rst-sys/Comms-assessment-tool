@@ -20,7 +20,6 @@ export interface Features {
   /** Load a saved review and compare a new draft with it. */
   compareRevisions: boolean;
   /** The stricter thresholds for sensitive subjects. */
-  heightenedReview: boolean;
   /** Attach documents the audience already has or will receive. */
   audienceDocuments: boolean;
   /** Search the public web for context (costs an extra provider call). */
@@ -30,7 +29,6 @@ export interface Features {
 export const FEATURES: Features = {
   saveReview: false,
   compareRevisions: false,
-  heightenedReview: true,
   audienceDocuments: false,
   publicContextSearch: false,
 };

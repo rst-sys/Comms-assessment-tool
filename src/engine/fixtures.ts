@@ -45,7 +45,6 @@ const demo1Request: EvaluationRequest = {
   goal: "Announce a difficult employment action",
   audience_scope: "Internal",
   context: {},
-  heightened_review: true,
   already_published: false,
 };
 
@@ -98,7 +97,6 @@ export const DEMO_2: Fixture = {
     goal: "Apologize or repair trust",
     audience_scope: "External",
     context: {},
-    heightened_review: true,
     already_published: false,
   },
   expect: {
@@ -130,7 +128,6 @@ export const DEMO_3: Fixture = {
     goal: "Explain performance or results",
     audience_scope: "External",
     context: {},
-    heightened_review: true,
     already_published: false,
   },
   expect: {
@@ -160,7 +157,6 @@ export const CONTROL: Fixture = {
     goal: "Explain a decision",
     audience_scope: "Internal",
     context: {},
-    heightened_review: false,
     already_published: false,
   },
   expect: {

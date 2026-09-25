@@ -10,7 +10,9 @@ import { DIMENSION_IDS, type EvaluationRequest } from "../../engine/types.js";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/scoring.js";
 import { APP_NAME, COPYRIGHT, CORE_PRINCIPLE, REPORTER_QUESTION } from "../copy.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
+import { warrantsHeightenedReview } from "../../engine/types.js";
 import { reviewTagsFor } from "./model.js";
+import { HEIGHTENED_NOTICE } from "../copy.js";
 import { scoringNoteParagraphs } from "./ScoringNote.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
@@ -135,6 +137,11 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.paragraph(`${result.score} / 100 — ${result.band}`, 12, 0, "bold");
   w.label("Risk level");
   w.paragraph(s.risk_level);
+  // Same notice as the page, or the printed copy a colleague reads says less
+  // than the screen it came from.
+  if (warrantsHeightenedReview(request.communication_event, request.setting)) {
+    w.paragraph(HEIGHTENED_NOTICE, 9.5);
+  }
   if (request.already_published) {
     w.label("Retrospective");
     w.paragraph("Already issued", 10.5, 0, "bold");

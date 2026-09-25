@@ -25,27 +25,6 @@ export function wordCount(text: string): number {
   return trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length;
 }
 
-/**
- * Events that turn heightened review on by default. Not every high-stakes
- * event: these are the ones where a misstatement carries legal, financial or
- * physical consequence, which is what the stricter thresholds are for. The
- * user can always uncheck it.
- */
-const HEIGHTENED_EVENTS: CommunicationEvent[] = [
-  "Workforce reduction or major reorganization",
-  "Cyberattack or data incident",
-  "Workplace safety event or facility emergency",
-  "Regulatory investigation, litigation or ethics allegation",
-  "Acquisition, divestiture or major integration",
-  "Poor financial results, site closure or strategic retreat",
-];
-const HEIGHTENED_SETTINGS: Setting[] = ["Crisis", "Material corporate event"];
-
-/** Auto-check heightened review for these events and settings; the user can uncheck it. */
-export function heightenedByDefault(event: CommunicationEvent | "", setting: Setting | ""): boolean {
-  return (event !== "" && HEIGHTENED_EVENTS.includes(event)) || (setting !== "" && HEIGHTENED_SETTINGS.includes(setting));
-}
-
 const HIGH_RISK_EVENTS: CommunicationEvent[] = [
   "Workforce reduction or major reorganization",
   "Cyberattack or data incident",

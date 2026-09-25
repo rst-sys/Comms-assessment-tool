@@ -40,7 +40,6 @@ describe("buildSavedReview", () => {
     const saved = buildSavedReview(result, request);
     expect(saved.score).toBe(result.score);
     expect(saved.settings.communication_event).toBe("Workforce reduction or major reorganization");
-    expect(saved.settings.heightened_review).toBe(true);
     expect(saved.context.known_facts).toBe("The executive team decided.");
     expect(saved.dimensions).toHaveLength(10);
     expect(saved.findings.length).toBe(result.analysis.findings.length);
@@ -84,9 +83,9 @@ describe("settingsDrift", () => {
     expect(settingsDrift(saved.settings, DEMO_1.request)).toEqual([]);
   });
   it("names the settings that changed", () => {
-    expect(settingsDrift(saved.settings, { ...DEMO_1.request, primary_audience: "Media", heightened_review: false })).toEqual([
+    expect(settingsDrift(saved.settings, { ...DEMO_1.request, primary_audience: "Media", market: "Germany" })).toEqual([
       "Primary audience",
-      "Heightened review",
+      "Market",
     ]);
   });
 });

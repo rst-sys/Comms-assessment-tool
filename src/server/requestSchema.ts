@@ -39,7 +39,6 @@ export const REQUEST_SCHEMA = {
       properties: Object.fromEntries(CONTEXT_FIELDS.map(([key]) => [key, { type: "string", maxLength: 10_000 }])),
       additionalProperties: false,
     },
-    heightened_review: { type: "boolean" },
     already_published: { type: "boolean" },
     audience_documents: {
       type: "array",
@@ -72,7 +71,6 @@ export const REQUEST_SCHEMA = {
     "goal",
     "audience_scope",
     "context",
-    "heightened_review",
     "already_published",
   ],
   additionalProperties: false,
