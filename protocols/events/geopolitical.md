@@ -3,11 +3,12 @@ id: geopolitical
 name: Geopolitical event affecting operations or employee welfare
 layer: event
 family: external
-version: 1.0.0
+version: 1.1.0
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.0 — narrows core.central_fact_first, replacing the dead plain-naming pointer. Danger and protective steps now replaces the people-harmed overlay's general version. No check reworded."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   EU worker-information directives and US WARN, official guidance with no force of law, and three studies.
@@ -44,6 +45,7 @@ elements:
     dimension: corrective_action_proof
     basis: unclassified
     sources: []
+    replaces: [people-harmed.danger_and_protection]
 
   - id: geopolitical.status-of-open-decisions
     name: Status of open decisions
@@ -121,7 +123,7 @@ questions:
     review: [Legal, Local market, Information security]
 
 narrows:
-  - plain-naming
+  - core.central_fact_first
 ---
 
 ## Source

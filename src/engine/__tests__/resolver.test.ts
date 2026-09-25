@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { parse as parseYaml } from "yaml";
-import { activeTriggers, elementApplies, PROTOCOLS, resolveProtocols } from "../protocols.js";
+import { activeTriggers, elementApplies, elementById, MOVED_ELEMENT_IDS, PROTOCOLS, protocolsFor, resolveProtocols } from "../protocols.js";
 import { ELEMENT_CAPS } from "../protocolFormat.js";
 import { DEMOS } from "../fixtures.js";
-import { DIMENSION_IDS, EVENT_TAXONOMY, type EvaluationRequest } from "../types.js";
+import { COMMUNICATION_EVENTS, DIMENSION_IDS, EVENT_BY_LABEL, EVENT_TAXONOMY, type EvaluationRequest } from "../types.js";
 
 const base = DEMOS[0]!.request;
 const listed = { type: "Publicly listed company", headquarters: "United States" } as const;
@@ -43,7 +43,15 @@ describe("the resolved bundle", () => {
       purpose: "Apologize and take responsibility",
     };
     expect(activeTriggers(everything)).toHaveLength(5);
-    expect(resolveProtocols(everything).protocols.map((p) => p.id)).toEqual(["cyber-incident", "apology"]);
+    // personal-data and stage-unfolding are among the five rules that fired,
+    // and are still stubs, so neither reaches the bundle.
+    expect(resolveProtocols(everything).protocols.map((p) => p.id)).toEqual([
+      "core",
+      "cyber-incident",
+      "apology",
+      "listed-company",
+      "people-harmed",
+    ]);
     for (const p of resolveProtocols(everything).protocols) expect(p.status).toBe("active");
   });
 
@@ -132,6 +140,89 @@ describe("a death is not a departure", () => {
     // the separation terms were. Neither question survives contact with a death.
     const applied = resolveProtocols({ ...base, communication_event: "Death of a leader or employee" }).protocols;
     expect(applied.map((p) => p.id)).not.toContain("ceo-departure");
-    expect(applied).toEqual([]);
+    // The core applies because the event is named and has a family; nothing
+    // else does. The leadership family is still a stub.
+    expect(applied.map((p) => p.id)).toEqual(["core"]);
+  });
+});
+
+describe("phase 2: the core, the three overlays and how they combine", () => {
+  const base = DEMOS[0]!.request;
+  const req = (over: Partial<EvaluationRequest>): EvaluationRequest => ({ ...base, ...over });
+  const ids = (r: EvaluationRequest) => protocolsFor(r).map((p) => p.id);
+  const elementIds = (r: EvaluationRequest) => resolveProtocols(r).protocols.flatMap((p) => p.elements.map((e) => e.id));
+
+  it("applies the core to every named event, and to no event at all", () => {
+    for (const event of COMMUNICATION_EVENTS) {
+      const applied = ids(req({ communication_event: event }));
+      const named = EVENT_BY_LABEL.get(event)?.family !== null;
+      expect(applied.includes("core"), event).toBe(named);
+    }
+    // "Something else" has no family, so there is nothing for the core to be
+    // the core of: it is judged on the framework and whatever overlays hold.
+    expect(ids(req({ communication_event: "Something else" }))).not.toContain("core");
+  });
+
+  it("fires the workforce overlay on job-affecting events, and never on a dispute or a policy change", () => {
+    const fires = (event: (typeof COMMUNICATION_EVENTS)[number], audiences: string[]) =>
+      activeTriggers(req({ communication_event: event, audiences: audiences as never })).includes("workforce-impact");
+
+    for (const event of ["Layoffs or job cuts", "Restructuring or reorganization", "Site, office or store closure"] as const) {
+      expect(fires(event, ["All employees"]), event).toBe(true);
+      // The three job-affecting events fire whoever the message is addressed to.
+      expect(fires(event, ["Customers"]), event).toBe(true);
+    }
+    // The commercial three need employees in the room.
+    for (const event of ["Financial difficulty or cost-cutting", "Change of strategy or exit from a market", "Merger, acquisition or sale"] as const) {
+      expect(fires(event, ["All employees"]), event).toBe(true);
+      expect(fires(event, ["Customers"]), event).toBe(false);
+    }
+    // Both are in the workforce family, which is why the rule names events
+    // rather than the family: nobody's role ends in either.
+    for (const event of ["Strike or labor dispute", "Major policy change (e.g. return to office, benefits)"] as const) {
+      expect(fires(event, ["All employees"]), event).toBe(false);
+      expect(fires(event, ["Customers"]), event).toBe(false);
+    }
+  });
+
+  it("drops the overlay element an event protocol has the sharper version of", () => {
+    const cyber = req({ communication_event: "Cyber incident or data breach", people_at_risk: true });
+    expect(elementIds(cyber)).toContain("cyber-incident.support-matched-to-harm");
+    expect(elementIds(cyber)).not.toContain("people-harmed.support");
+    // Only that one: the rest of the overlay still applies.
+    expect(elementIds(cyber)).toContain("people-harmed.harm_acknowledged");
+
+    const geo = req({ communication_event: "Geopolitical event (war, sanctions, unrest)", people_at_risk: true });
+    expect(elementIds(geo)).toContain("geopolitical.danger-and-protective-steps");
+    expect(elementIds(geo)).not.toContain("people-harmed.danger_and_protection");
+
+    // With no overlay in play there is nothing to drop, and the event keeps its own.
+    const safe = req({ communication_event: "Cyber incident or data breach", people_at_risk: false });
+    expect(elementIds(safe)).toContain("cyber-incident.support-matched-to-harm");
+  });
+
+  it("holds the EU notice element back unless the place and the format both match", () => {
+    const listed = { ...base.organization, type: "Publicly listed company" as const };
+    const eu = (communication_format: EvaluationRequest["communication_format"], headquarters: string) =>
+      elementIds(req({ organization: { ...listed, headquarters }, communication_format })).includes("listed-company.eu_notice_form");
+
+    expect(eu("Investor or market disclosure", "Germany")).toBe(true);
+    expect(eu("Press release or public statement", "Germany")).toBe(true);
+    // Right place, wrong form: a holding statement is not the disclosure.
+    expect(eu("Holding statement", "Germany")).toBe(false);
+    // Right form, outside the EU.
+    expect(eu("Investor or market disclosure", "United States")).toBe(false);
+    // The rest of the overlay is unaffected either way.
+    expect(elementIds(req({ organization: { ...listed, headquarters: "United States" } }))).toContain("listed-company.no_half_truth");
+  });
+
+  it("still finds an element whose id moved to the overlay, so old saved reviews display", () => {
+    for (const [oldId, newId] of Object.entries(MOVED_ELEMENT_IDS)) {
+      const found = elementById(oldId);
+      expect(found, oldId).toBeDefined();
+      expect(found!.id, oldId).toBe(newId);
+    }
+    expect(elementById("workforce-reduction.support-for-those-leaving")?.id).toBe("workforce-reduction.support-for-those-leaving");
+    expect(elementById("nothing.at-all")).toBeUndefined();
   });
 });

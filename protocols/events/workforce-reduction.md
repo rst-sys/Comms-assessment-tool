@@ -3,48 +3,17 @@ id: workforce-reduction
 name: Workforce reduction and restructuring
 layer: event
 family: workforce
-version: 1.0.0
+version: 2.0.0
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "2.0.0 — five elements, four triggers and three questions moved to the workforce-impact overlay, which applies them to every job-affecting event. The euphemism trigger now narrows core.central_fact_first."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   EEOC and US Labor Department guidance, Fair Work Australia and CIPD, plus three studies, none of them about wording.
 
 elements:
-  - id: workforce-reduction.decision-status
-    name: Decision status
-    means: Whether the decision is final, proposed, or in consultation.
-    weight: core
-    dimension: accountability_agency
-    basis: unclassified
-    sources: []
-
-  - id: workforce-reduction.scope-of-impact
-    name: Scope of impact
-    means: How many are affected, in which functions, sites and countries, or that the group is still being set.
-    weight: core
-    dimension: stakeholder_respect_impact
-    basis: unclassified
-    sources: []
-
-  - id: workforce-reduction.selection-basis-and-alternatives
-    name: Selection basis and alternatives
-    means: How roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.
-    weight: core
-    dimension: fairness_independence_conflicts
-    basis: unclassified
-    sources: []
-
-  - id: workforce-reduction.individual-notice-timing-and-terms
-    name: Individual notice, timing and terms
-    means: How and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.
-    weight: core
-    dimension: stakeholder_respect_impact
-    basis: unclassified
-    sources: []
-
   - id: workforce-reduction.support-for-those-leaving
     name: Support for those leaving
     means: Named support for people whose roles end, with a provider, owner and date.
@@ -52,7 +21,6 @@ elements:
     dimension: corrective_action_proof
     basis: unclassified
     sources: []
-
   - id: workforce-reduction.the-remaining-workforce
     name: The remaining workforce
     means: What work stops, moves or changes owner for the people who stay, and who decides.
@@ -60,15 +28,6 @@ elements:
     dimension: corrective_action_proof
     basis: unclassified
     sources: []
-
-  - id: workforce-reduction.voice-and-what-can-still-change
-    name: Voice and what can still change
-    means: What employees or their representatives can still influence, kept separate from what leadership has already decided.
-    weight: core
-    dimension: listening_employee_voice
-    basis: unclassified
-    sources: []
-
   - id: workforce-reduction.leadership-exposure
     name: Leadership exposure
     means: Whether leadership roles, pay or incentives are affected by the same decision.
@@ -78,29 +37,13 @@ elements:
     sources: []
 
 triggers:
-  - check: The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation.
-    dimension: accountability_agency
-    review: [HR, Labor]
-
-  - check: The draft calls the decision final and also invites employee input, feedback or consultation, without saying what remains open to change.
-    dimension: listening_employee_voice
-    review: [HR, Labor]
-
-  - check: The draft reaches a wider audience than the affected group without saying how or when affected people are told individually.
-    dimension: stakeholder_respect_impact
-    review: [HR]
-
-  - check: The draft gives no notice date, last working day or date by which dates will come, no pay terms, and no place to find either.
-    dimension: clarity_plain_language
-    review: [HR, Labor]
-
   - check: >-
       The draft never says in plain terms that roles or employment end, reaching
       instead for rightsizing, workforce optimization, simplification, efficiency,
       synergies, realignment, organizational health, agile or leaner organization,
       fewer layers, streamlining, cost discipline, transition, impacted or exit.
     dimension: stakeholder_respect_impact
-
+    narrows: core.central_fact_first
   - check: >-
       Employee feedback, an engagement survey or consultation is cited as a reason
       for the reduction without an explicit statement that leadership, not
@@ -109,16 +52,10 @@ triggers:
     review: [HR]
 
 questions:
-  - ask: Which entities, countries, states or agreements may require notice, consultation or a filing?
-    review: [Legal, Labor, Local market]
-  - ask: Has anyone reviewed whether the affected group is uneven across protected groups, and who?
-    review: [HR, Legal]
   - ask: What leadership decisions, incentives or governance conditions produced the structure being removed?
   - ask: Can you support any statement about future reductions or job security, and who approved it?
     review: [Executive]
   - ask: What can managers confirm today, what can they not, and where do their questions go?
-    review: [HR]
-  - ask: Were affected employees assessed for internal mobility or redeployment before selection?
     review: [HR]
 ---
 
@@ -159,8 +96,9 @@ No single standard governs communication about workforce restructuring. This pro
 - **EEOC waiver Q&A.** A government agency's plain-language explanation of existing law, with worked examples and a sample waiver. It does not bind courts or the public.
 - **EEOC, DOL, Fair Work, CIPD, Page.** Two US agencies, one Australian agency, the UK HR professional body, and a US communications society. The first three say what employers must or should do in their own jurisdictions. CIPD and Page are practitioner standards. The Page Society's own page says Page did not write the principles.
 
-## 5. Elements
+## Drafting notes: elements considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 Importance uses Core, Important and Supporting, so it is not confused with the Low, Moderate and High severity scale. "Bears on" gives the scored dimension.
 
 | Element | What it means | Importance | Bears on |
@@ -184,8 +122,9 @@ Importance uses Core, Important and Supporting, so it is not confused with the L
 
 Support for the Stated reason element is Example 8 in the EEOC waiver Q&A. An employee was told the cut was a "reorganization", later heard a performance reason, and the court found fraud. That is an illustration in the guidance, not a rule the tool applies. The group people were chosen from is what the guidance calls the "decisional unit" and CIPD calls the selection pool.
 
-## 6. High-severity triggers
+## Drafting notes: triggers considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 Raise a High-severity finding when any of these is true. If the layoff protocol has already raised the same gap, merge the findings instead of duplicating them.
 
 1. The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation.
@@ -213,8 +152,9 @@ Raise a High-severity finding when any of these is true. If the layoff protocol 
 
 **Raise Low when** the draft says nothing about what will change in practice to reduce recurrence.
 
-## 7. Questions before publication
+## Drafting notes: questions considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 Always include these:
 
 1. Is the decision final, proposed, or in consultation, and who confirmed that? *(HR or Labor; Legal)*

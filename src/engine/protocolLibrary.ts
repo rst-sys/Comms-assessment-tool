@@ -13,17 +13,18 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "core",
       "name": "Core protocol",
       "layer": "core",
-      "version": "0.4.0",
-      "status": "draft",
+      "version": "0.5.0",
+      "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
+      "rests_on": "Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.",
       "changelog": [
+        "0.5.0 (2026-09-25): made to pass the build checker. Added rests_on; removed the frontmatter narrows (the core sits directly under the framework and can't narrow it; the relationship is described in the body); added a Source section. No element, trigger or question changed.",
         "0.4.0 (2026-09-25): cleared to activate without Seeger (2006) and Ma & Zhan (2016) in the original; limitation recorded.",
         "0.3.0 (2026-09-25): wording refined after testing on two versions of a workforce-reduction memo. Central fact must come in the first two or three sentences, in ordinary words; a one-line signpost is allowed; euphemism now fires the trigger. Reputation-first trigger broadened to strategy and ambitions.",
         "0.2.0 (2026-09-25): cut to what the framework prompt (SYSTEM_PROMPT) does not already check. Removed who decided, who is affected, what readers should do, what is being done and next update, which the framework's account and agency calibration already cover. Kept two narrowing elements and three triggers.",
         "0.1.0 (2026-09-25): first draft from the core protocol source review."
       ],
-      "rests_on": "A plain-language standard, WHO and CDC emergency guidance applied by analogy, and two research findings. No effectiveness study.",
       "elements": [
         {
           "id": "core.central_fact_first",
@@ -81,7 +82,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "ask": "If a reader read only the first two sentences, would they know what happened or what was decided?"
         }
       ],
-      "prose": "## What this protocol is\n\nThe framework prompt already asks every draft to make the account visible: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol does not repeat any of that. It narrows two framework elements for every named event:\n\n- The decision (framework account element). The decision must come in the first two or three sentences and in ordinary words, not after context or behind euphemism.\n- What is known and not yet known (framework rule for \"still unfolding\"). The framework applies this only when the situation is still unfolding. The core applies it at every stage, because planned announcements also contain forecasts and estimates.\n\nIt adds one trigger with its own basis: leading with the organization's strategy, ambitions, record or values before the people affected (Coombs 2007).\n\n## Basis\n\nThe central fact first rests on a plain-language standard (ISO 24495-1), WHO's recommendation against technical explanation, and research showing organizations write less plainly when the news is bad (Li 2008).\n\nEstimates marked as estimates rests on WHO's strong recommendation to \"indicate what is known and not known at a given time\", CDC CERC's \"Be Right\" and Seeger's (2006) \"Accept uncertainty and ambiguity\". This guidance was written for public authorities in health emergencies; the tool applies it to organizational communication by analogy.\n\nThe reputation-first trigger rests on Coombs (2007): \"The first priority in any crisis is to protect stakeholders from harm, not to protect the reputation.\"\n\n## Source\n\nFull sources and limits: `sources/core-protocol-source-review.md`.\n\n### Sources not read in the original\n\n- Seeger (2006) was not available. Its best practices are cited as quoted in a peer-reviewed secondary source, Veil et al. (2020). Only `core.estimates_as_estimates` relies on it, alongside WHO (2017) and CDC CERC, which were read.\n- Ma & Zhan (2016), the main meta-analysis of crisis-response research, could not be opened. No element relies on it. It would have tested whether the crisis-response literature supports or contradicts these checks; that remains unchecked.\n\nDecision (25 September 2026): activate without them, with this note. Revisit if either becomes available.\n\n## What this protocol does not cover\n\n- Everything the framework prompt already checks (see the source review's addendum, which maps its sources onto those framework elements).\n- Timing (whether the organization spoke first): Stage overlay.\n- Acknowledging harm in words: People harmed overlay.\n- Apology: apology overlay and the Allegations family.\n- Legal obligations: overlays.\n\n## Existing protocols that already narrow these checks\n\nNot yet applied. The mechanism these three need does not exist in the format yet, and two different things are being asked for; see the note below.\n\n- `geopolitical` has `narrows: [plain-naming]`, written for the old event core's plain-naming check, which no longer exists. Point it at `core.central_fact_first`. Its narrowing (general wording about locations or people in a danger zone may be a security decision, not euphemism) still applies.\n- `workforce-reduction`'s euphemism trigger (rightsizing, realignment, impacted…) is a narrower, event-specific form of `core.central_fact_first`. Mark it as narrowing that element, so one gap produces one finding.\n- `cyber-incident`'s trigger on categorical outcomes (\"no data was compromised\", \"contained\") while the investigation is ongoing is a narrower form of `core.estimates_as_estimates`. Mark it the same way.\n\n`ceo-departure` also carries `narrows: [plain-naming]`, for the same dead check, and is not listed above.\n\n## Before this protocol is marked active\n\n- ~~Add the source ids to `sources/registry.yaml`.~~ Done: all five are in the registry, `seeger-2006` marked `not_opened` with the Veil et al. (2020) note.\n- Decide what `narrows` should mean for the four protocols above, and set `status: active`."
+      "prose": "## What this protocol is\n\nThe framework prompt already asks every draft to make the account visible: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol does not repeat any of that. It **narrows** two framework elements for every named event:\n\n- **The decision** must come in the first two or three sentences and in ordinary words, not after context or behind euphemism.\n- **What is known and not yet known.** The framework applies this only when the situation is still unfolding. The core applies it at every stage, because planned announcements also contain forecasts and estimates.\n\nIt adds one trigger with its own basis: leading with the organization's strategy, ambitions, record or values before the people affected (Coombs 2007).\n\n## Source\n\n**Regulator and agency guidance (official, not binding), read:**\n\n- World Health Organization, *Communicating risk in public health emergencies: a WHO guideline for emergency risk communication (ERC) policy and practice* (2017). https://www.who.int/publications/i/item/9789241550208 — recommendations A.1, A.2, C4.1 and C4.3.\n- US Centers for Disease Control and Prevention, *Crisis and Emergency Risk Communication (CERC) Manual: Introduction* (2018 update). https://www.cdc.gov/cerc/media/pdfs/CERC_Introduction.pdf — the six CERC principles.\n\n**Standards body, read in part:**\n\n- ISO 24495-1:2023, *Plain language — Part 1: Governing principles and guidelines*. https://www.iso.org/standard/78907.html — catalogue page and abstract only.\n\n**Research:**\n\n- Coombs, W. T. (2007). \"Protecting organization reputations during a crisis.\" *Corporate Reputation Review*, 10(3), 163–176. https://link.springer.com/article/10.1057/palgrave.crr.1550049 — read in the relevant sections.\n- Li, F. (2008). \"Annual report readability, current earnings, and earnings persistence.\" *Journal of Accounting and Economics*, 45(2–3), 221–247. https://www.sciencedirect.com/science/article/abs/pii/S0165410108000141 — abstract read.\n- Seeger, M. W. (2006). \"Best practices in crisis communication: An expert panel process.\" *Journal of Applied Communication Research*, 34(3), 232–244. https://www.tandfonline.com/doi/abs/10.1080/00909880600769944 — **not opened**; quoted from Veil et al. (2020).\n\n**Declared professional judgement:** the wording of each trigger, the \"first two or three sentences\" threshold, and the choice of these two checks from the wider guidance.\n\nFull source review, including what could not be read: `sources/reviews/core-protocol-source-review.md`.\n\n## Basis\n\n*The central fact first* rests on a plain-language standard (ISO 24495-1), WHO's recommendation against technical explanation, and research showing organizations write less plainly when the news is bad (Li 2008).\n\n*Estimates marked as estimates* rests on WHO's strong recommendation to \"indicate what is known and not known at a given time\", CDC CERC's \"Be Right\" and Seeger's (2006) \"Accept uncertainty and ambiguity\". This guidance was written for public authorities in health emergencies; **the tool applies it to organizational communication by analogy.**\n\nThe reputation-first trigger rests on Coombs (2007): \"The first priority in any crisis is to protect stakeholders from harm, not to protect the reputation.\"\n\n\n## What this protocol does not cover\n\n- Everything the framework prompt already checks (see the source review's addendum, which maps its sources onto those framework elements).\n- **Timing** (whether the organization spoke first): Stage overlay.\n- **Acknowledging harm in words:** People harmed overlay.\n- **Apology:** apology overlay and the Allegations family.\n- **Legal obligations:** overlays.\n\n## How other protocols relate to these checks\n\n- The geopolitical protocol narrows *The central fact first*: general wording about locations or people in a danger zone may be a security decision, not euphemism.\n- The workforce-reduction protocol's list of euphemisms (rightsizing, realignment, impacted…) is a sharper, event-specific form of *The central fact first*.\n- The cyber-incident protocol's check on categorical claims (\"no data was compromised\", \"contained\") during an investigation is a sharper, event-specific form of *Estimates marked as estimates*.\n\nWhere both fire, the tool raises one finding, not two.\n\n## Sources not read in the original\n\n- **Seeger (2006)** was not available. Its best practices are cited as quoted in a peer-reviewed secondary source, Veil et al. (2020). Only `core.estimates_as_estimates` relies on it, alongside WHO (2017) and CDC CERC, which were read.\n- **Ma & Zhan (2016)**, the main meta-analysis of crisis-response research, could not be opened. No element relies on it. It would have tested whether the crisis-response literature supports or contradicts these checks; that remains unchecked.\n\nDecision (25 September 2026): activate without them, with this note. Revisit if either becomes available."
     },
     {
       "id": "ceo-departure",
@@ -267,11 +268,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Cyber incident and data breach",
       "layer": "event",
       "family": "incident",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
       "rests_on": "US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgment. None of it measures which notices work better.",
@@ -310,7 +312,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "weight": "supporting",
           "dimension": "stakeholder_respect_impact",
           "basis": "unclassified",
-          "sources": []
+          "sources": [],
+          "replaces": [
+            "people-harmed.support"
+          ]
         },
         {
           "id": "cyber-incident.authenticity",
@@ -338,7 +343,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "review": [
             "Information security",
             "Legal"
-          ]
+          ],
+          "narrows": "core.estimates_as_estimates"
         },
         {
           "check": "The draft says data was involved but does not name the categories, and does not say the categories are not yet known.",
@@ -416,11 +422,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Geopolitical event affecting operations or employee welfare",
       "layer": "event",
       "family": "external",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.1.0 — narrows core.central_fact_first, replacing the dead plain-naming pointer. Danger and protective steps now replaces the people-harmed overlay's general version. No check reworded.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
       "rests_on": "EU worker-information directives and US WARN, official guidance with no force of law, and three studies.",
@@ -459,7 +466,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "weight": "core",
           "dimension": "corrective_action_proof",
           "basis": "unclassified",
-          "sources": []
+          "sources": [],
+          "replaces": [
+            "people-harmed.danger_and_protection"
+          ]
         },
         {
           "id": "geopolitical.status-of-open-decisions",
@@ -585,7 +595,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
         }
       ],
       "narrows": [
-        "plain-naming"
+        "core.central_fact_first"
       ],
       "prose": "## Source\n\n**Binding law, read in full or in the parts cited.**\n\n- Council Directive 89/391/EEC on safety and health of workers at work, Articles 8, 10 and 11. https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A31989L0391 — the employer must inform workers as soon as possible of serious and imminent danger *and of the steps taken or to be taken as regards protection*, must give all necessary information on risks and protective measures, and must consult in advance and in good time. This is the anchor for the danger-and-protective-steps element and for the trigger on support offered without protection.\n- Council Directive 98/59/EC on collective redundancies, Article 2. Read from the UK retained copy at https://www.legislation.gov.uk/eudr/1998/59/article/2 because EUR-Lex repeatedly served a different document. Article 2(3) requires the reasons, numbers, period and *selection criteria* in writing. Article 2(4) provides that the obligation applies whether the decision was taken by the employer or by a controlling undertaking, and that ignorance of the parent's decision is no defense — the documentary basis for the trigger on attributing a decision upward. Articles 3 and 4 were not read.\n- Directive 2002/14/EC establishing a general framework for informing and consulting employees, Articles 4 and 6. https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32002L0014 — information and consultation on the undertaking's economic situation, on threats to employment, and on decisions likely to change work organization. Article 6 permits withholding where disclosure would seriously harm the undertaking, as an exception the employer must justify.\n- Directive (EU) 2025/2450 amending the European Works Councils Directive, read as the Official Journal PDF at https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202502450. It adds a duty to state the reasons for a confidentiality claim and its duration. **It does not apply until 2029**, and the article numbering returned by extraction was not independently confirmed. It is cited here as evidence that bare confidentiality claims were common enough to legislate against, not as a current obligation.\n- 20 CFR 639.7 and 639.9 (WARN). https://www.ecfr.gov/current/title-20/chapter-V/part-639/section-639.7 and https://www.ecfr.gov/current/title-20/chapter-V/part-639/section-639.9 — a literal content specification for a notice, including a *named company official with a telephone number*, and, where notice is shortened under unforeseeable business circumstances, a brief statement of the reason for the reduction.\n- California Labor Code § 1137, read via https://codes.findlaw.com/ca/labor-code/lab-sect-1137/ because the official bill page disallows automated fetching. It prohibits retaliation against an employee who declines to attend a meeting or receive communications about the employer's opinion on political matters. **Its current enforceability is unknown** — it was reported preliminarily enjoined in late 2025 by secondary sources only, which were not relied on. Comparable laws in other US states were not surveyed. The trigger on compelled attendance is framed as a drafting check, not as a statement of what the law requires.\n\n**Official guidance, no force of law.**\n\n- SEC Division of Corporation Finance, sample letter on disclosures pertaining to Russia's invasion of Ukraine, 3 May 2022. https://www.sec.gov/corpfin/sample-letter-companies-pertaining-to-ukraine. The letter carries an emphatic staff disclaimer — it \"has no legal force or effect\". It is used here only as the most detailed official articulation of what an organization should be able to account for after a geopolitical event, including the board's role in overseeing the risks *expressly including employees*. That is the basis for the question about consistency between the message and the filings.\n- CISA, Shields Up guidance for corporate leaders and CEOs. https://www.cisa.gov/shields-guidance-corporate-leaders-and-ceos. Advisory; the page carried no visible date. It establishes facts that should exist, not message content, and says nothing about communicating with employees.\n\n**Research.**\n\n- Bamiatzi, Brieger, Karakulak, Kinderman and Manning (2024), \"The rise of partisan CSR — corporate responses to the Russia–Ukraine war\", *Journal of Business Ethics* 198, 263–291. https://link.springer.com/article/10.1007/s10551-024-05795-9. Read in abstract, method and findings. It documents peer imitation as a driver of corporate response, and an \"opportunistically neutral\" response type. This supports the basis-for-speaking element.\n- Braga, Tardin, Grinstein and Perin (2026), \"Corporate sociopolitical activism as a signal — a meta-analysis\", *Journal of Business Research* 210, 116147. https://www.sciencedirect.com/science/article/pii/S0148296326001815. Employees respond least favorably of all stakeholder groups. Treated as a caution toward restraint and specificity, not as a specification.\n- Hamelberg, de Ruyter, van Dolen and Konuş (2024), \"Finding the right voice\", *Journal of Public Policy and Marketing* 44(1). https://journals.sagepub.com/doi/10.1177/07439156241230910. Measures Twitter engagement, not credibility, and points the opposite way from the meta-analysis on CEO versus brand voice. **Nothing in this protocol rests on it.**\n\n**Professional codes**, used only as background on character rather than content — the Page Principles (https://page.org/who-we-are/page-principles/), the PRSA Code of Ethics (undated in its own PDF, https://www.prsa.org/docs/default-source/about/ethics/prsa_code_of_ethics.pdf?sfvrsn=c9b66a6b_2) and the IABC Code of Ethics (undated, https://www.iabc.com/about/what-we-do/standards/code-of-ethics). SHRM's \"Navigating International Crises\" hub (https://www.shrm.org/topics-tools/topics/international-crisis) is the closest professional guidance to this event class and is the reason the protocol tests for support offered in place of an account — all five of its recommendations concern support and none asks the employer to state a decision.\n\n**Not read, and therefore not relied on.** ISO 22361 clause 8, ISO 31030 and ISO 22301 are paywalled; only catalogue pages and a table of contents were seen, so no claim here rests on what those standards say. Coombs, *Ongoing Crisis Communication* (6th ed., 2021), was identified from the publisher page only. The Equinor In Amenas investigation report itself could not be opened — only the announcement page — so nothing is claimed about what it says regarding communication with employees or next of kin.\n\n**Resting on professional judgment rather than a published source.** Four of the drafting checks come from the structure of the obligations above rather than from any document that catalogues them — the agentless-causation trigger, the compliance-framing trigger, the support-without-protection trigger, and the question about commercial reason versus stated reason. No source was found that catalogues evasions specific to this event class. That absence is itself part of the picture.\n\n## Basis\n\nThe legal instruments bind Member States and covered US employers and are enforceable, but they are triggered by *consequences* — redundancy, physical danger, material effect on an issuer — not by the geopolitical event itself. An organization can communicate at length about a war, a coup, a sanctions regime or a border closure and touch none of them. For many drafts this protocol sees, none of the binding sources will apply, and the checks are then drafting discipline drawn from them by analogy rather than compliance tests.\n\nThe EU directives take effect through national transposition, which varies materially between Member States and was not examined. German, French, Dutch and Nordic works-council law in particular goes well beyond the directive floor.\n\nThe regulator guidance is explicitly not law, says so in its own text, and in the SEC's case is specific to one event in 2022 and has not been reissued or generalized.\n\nThe research is about the wrong outcome. The meta-analysis covers 88 studies and 501 effect sizes but reports an overall effect of r = 0.084 with heterogeneity of I² = 98.9%, across a construct — sociopolitical activism — much broader than geopolitical events. The Journal of Business Ethics paper is a qualitative coding of 140 firms with no outcome measurement and no counterfactual; it is a taxonomy, not evidence that anything works. The third study measures engagement on one platform among 608 experimental participants in one country. **No study was found that measures the effect of message content on employee trust after a geopolitical event.** The strongest research-derived claim available is negative — that employees are the least receptive audience for corporate stances — which argues for specificity and restraint rather than for any particular content.\n\nSo: the elements, triggers and questions here are assembled from adjacent legal obligations and from professional judgment. They are not validated against measured outcomes, and no source claims they are.\n\n## What this protocol does not cover\n\nIt cannot tell you whether the organization should take a position on this event at all. No source distinguishes an event on which an employer has standing to speak from one on which it does not. The protocol can ask what the basis is; a human has to judge whether that basis holds.\n\nIt cannot judge a message it cannot compare to anything. The single strongest test available for this event class — whether the employee message says less about the impact on employees than the securities filing does — requires the filing, which the tool does not have. It is raised as a question for the author to settle, not scored.\n\nIt cannot judge the interval between decision and announcement, which is where most of the deception in this event class sits. No source establishes when an organization deliberating an exit, suspension or relocation must say so. The protocol asks; it cannot detect concealment from the draft alone.\n\nIt cannot judge accuracy that has decayed. Statements that were true when written go false as a geopolitical situation moves, and the professional codes address correction of *errors*, not of superseded truth.\n\nIt cannot decide which entity is accountable when the decision was made by a parent in another jurisdiction. Directive 98/59/EC forecloses upward attribution for redundancies only. For suspending operations, moving staff or changing a market position, no source establishes whether the local entity, the parent or a named executive is the party a message must identify. The protocol flags an unnamed accountable owner on the reader's side as a finding, and leaves the resolution to counsel and leadership.\n\nIt cannot resolve a message read simultaneously by staff on opposing sides of a conflict. Every source examined assumes a workforce with a single relationship to the event.\n\nTwo narrows apply. **On naming who decided**, the core check asks for a named decision-maker. In a cross-border group the deciding entity and the person a reader can hold to it may not be the same, and naming only the parent is itself the evasion Directive 98/59/EC Article 2(4) exists to close. This protocol therefore asks for both — the entity where the decision sat and an accountable owner reachable on the reader's side — and does not treat a named parent alone as satisfying the check. **On stating the central fact in ordinary words**, vagueness about a specific site, route, convoy or named individual may be a security decision taken to protect people, not evasion. Where the draft is specific about the decision and its owner but general about locations or individuals in a danger zone, that should not be read as euphemism. Generality about *what was decided* is not covered by this narrowing and remains a finding.\n\nNothing here is legal advice. Where an obligation may apply — collective redundancy information, health and safety information and consultation, works-council consultation, WARN notice content, sanctions and export control, employee data protection, or any restriction on compelling employees to receive political communications — counsel must confirm whether it applies and what it requires. Jurisdictions outside the EU and the US were not examined at all, including the jurisdiction where the event is actually happening, which is where staff are most exposed."
     },
@@ -594,51 +604,16 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Workforce reduction and restructuring",
       "layer": "event",
       "family": "workforce",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "2.0.0 — five elements, four triggers and three questions moved to the workforce-impact overlay, which applies them to every job-affecting event. The euphemism trigger now narrows core.central_fact_first.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
       "rests_on": "EEOC and US Labor Department guidance, Fair Work Australia and CIPD, plus three studies, none of them about wording.",
       "elements": [
-        {
-          "id": "workforce-reduction.decision-status",
-          "name": "Decision status",
-          "means": "Whether the decision is final, proposed, or in consultation.",
-          "weight": "core",
-          "dimension": "accountability_agency",
-          "basis": "unclassified",
-          "sources": []
-        },
-        {
-          "id": "workforce-reduction.scope-of-impact",
-          "name": "Scope of impact",
-          "means": "How many are affected, in which functions, sites and countries, or that the group is still being set.",
-          "weight": "core",
-          "dimension": "stakeholder_respect_impact",
-          "basis": "unclassified",
-          "sources": []
-        },
-        {
-          "id": "workforce-reduction.selection-basis-and-alternatives",
-          "name": "Selection basis and alternatives",
-          "means": "How roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.",
-          "weight": "core",
-          "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
-          "sources": []
-        },
-        {
-          "id": "workforce-reduction.individual-notice-timing-and-terms",
-          "name": "Individual notice, timing and terms",
-          "means": "How and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.",
-          "weight": "core",
-          "dimension": "stakeholder_respect_impact",
-          "basis": "unclassified",
-          "sources": []
-        },
         {
           "id": "workforce-reduction.support-for-those-leaving",
           "name": "Support for those leaving",
@@ -658,15 +633,6 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": []
         },
         {
-          "id": "workforce-reduction.voice-and-what-can-still-change",
-          "name": "Voice and what can still change",
-          "means": "What employees or their representatives can still influence, kept separate from what leadership has already decided.",
-          "weight": "core",
-          "dimension": "listening_employee_voice",
-          "basis": "unclassified",
-          "sources": []
-        },
-        {
           "id": "workforce-reduction.leadership-exposure",
           "name": "Leadership exposure",
           "means": "Whether leadership roles, pay or incentives are affected by the same decision.",
@@ -678,39 +644,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       ],
       "triggers": [
         {
-          "check": "The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation.",
-          "dimension": "accountability_agency",
-          "review": [
-            "HR",
-            "Labor"
-          ]
-        },
-        {
-          "check": "The draft calls the decision final and also invites employee input, feedback or consultation, without saying what remains open to change.",
-          "dimension": "listening_employee_voice",
-          "review": [
-            "HR",
-            "Labor"
-          ]
-        },
-        {
-          "check": "The draft reaches a wider audience than the affected group without saying how or when affected people are told individually.",
-          "dimension": "stakeholder_respect_impact",
-          "review": [
-            "HR"
-          ]
-        },
-        {
-          "check": "The draft gives no notice date, last working day or date by which dates will come, no pay terms, and no place to find either.",
-          "dimension": "clarity_plain_language",
-          "review": [
-            "HR",
-            "Labor"
-          ]
-        },
-        {
           "check": "The draft never says in plain terms that roles or employment end, reaching instead for rightsizing, workforce optimization, simplification, efficiency, synergies, realignment, organizational health, agile or leaner organization, fewer layers, streamlining, cost discipline, transition, impacted or exit.",
-          "dimension": "stakeholder_respect_impact"
+          "dimension": "stakeholder_respect_impact",
+          "narrows": "core.central_fact_first"
         },
         {
           "check": "Employee feedback, an engagement survey or consultation is cited as a reason for the reduction without an explicit statement that leadership, not employees, made the decision.",
@@ -722,21 +658,6 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       ],
       "questions": [
         {
-          "ask": "Which entities, countries, states or agreements may require notice, consultation or a filing?",
-          "review": [
-            "Legal",
-            "Labor",
-            "Local market"
-          ]
-        },
-        {
-          "ask": "Has anyone reviewed whether the affected group is uneven across protected groups, and who?",
-          "review": [
-            "HR",
-            "Legal"
-          ]
-        },
-        {
           "ask": "What leadership decisions, incentives or governance conditions produced the structure being removed?"
         },
         {
@@ -747,12 +668,6 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
         },
         {
           "ask": "What can managers confirm today, what can they not, and where do their questions go?",
-          "review": [
-            "HR"
-          ]
-        },
-        {
-          "ask": "Were affected employees assessed for internal mobility or redeployment before selection?",
           "review": [
             "HR"
           ]
@@ -1005,39 +920,204 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
     },
     {
       "id": "listed-company",
-      "name": "Listed company",
+      "name": "Listed company disclosure",
       "layer": "overlay",
       "trigger": "listed-company",
-      "version": "0.1.0",
-      "status": "draft",
-      "last_reviewed": null,
-      "review_by": null,
+      "version": "0.2.0",
+      "status": "active",
+      "last_reviewed": "2026-09-25",
+      "review_by": "2027-03-25",
+      "rests_on": "US and EU securities disclosure law, applied to every message from a listed organization; its extension to employees and partners is professional judgement.",
       "changelog": [
-        "0.1.0 — stub. Structure only; no checks written."
+        "0.2.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
+        "0.1.0 (2026-09-25): first draft, built from sources already opened in the CEO departure source review. No new research."
       ],
-      "rests_on": "Nothing yet. This is a stub and applies to no review until it has content and a status of active.",
-      "elements": [],
-      "triggers": [],
-      "questions": [],
-      "prose": "# Listed company\n\nSwitched on when the organization type is a publicly listed company.\nAn overlay is chosen by the intake answers, not by the event.\n\n## Source\n\nNot yet written. This file exists so the layer is in place and the resolver\nskips it; it carries no checks and reaches no review while its status is\ndraft.\n\n## Basis\n\nNot yet written."
+      "elements": [
+        {
+          "id": "listed-company.no_half_truth",
+          "name": "Nothing left out that makes the rest misleading",
+          "means": "Where the draft describes the financial effect, cause or outlook of the event, it doesn't leave out a fact the supplied context shows would change how a reader understands what it does say.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline",
+          "basis": "law",
+          "sources": [
+            "sec-rule-10b5"
+          ]
+        },
+        {
+          "id": "listed-company.same_to_all",
+          "name": "The same material facts for every audience",
+          "means": "The material facts in the draft match what the organization is telling investors and the market, and the draft doesn't give one audience (employees, analysts, partners) material information that the others don't get at the same time.",
+          "weight": "core",
+          "dimension": "fairness_independence_conflicts",
+          "basis": "law",
+          "sources": [
+            "sec-regulation-fd",
+            "eu-impl-reg-2016-1055"
+          ]
+        },
+        {
+          "id": "listed-company.eu_notice_form",
+          "name": "Named sender, date and time (EU inside information)",
+          "means": "Where the draft is the public disclosure of inside information, it names the person making the notification with their position, gives the date and time, and says that it contains inside information.",
+          "weight": "supporting",
+          "dimension": "verification_follow_through",
+          "basis": "law",
+          "sources": [
+            "eu-impl-reg-2016-1055"
+          ],
+          "applies_if": {
+            "jurisdiction": [
+              "EU"
+            ],
+            "format": [
+              "Investor or market disclosure",
+              "Press release or public statement"
+            ]
+          }
+        }
+      ],
+      "triggers": [
+        {
+          "check": "The draft describes the event as having little or no financial effect, or gives a positive outlook, while the supplied context shows costs, losses, liabilities or uncertainty the draft doesn't mention.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "check": "The draft is addressed to employees, customers or partners and contains figures, dates or decisions that the supplied context doesn't show being released to the market at the same time.",
+          "dimension": "fairness_independence_conflicts",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Is anything in this draft inside information or material non-public information, and has counsel confirmed when and how it must be released to the market? Counsel must confirm which rules apply.",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "ask": "Will the market, employees and other audiences receive the material facts at the same time? If not, who hears first, and is that permitted?",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "ask": "Will a later filing (an annual report, proxy statement or remuneration report) show something this draft contradicts or leaves out?",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        }
+      ],
+      "prose": "## What this overlay does\n\nIt adds the checks that securities disclosure rules make relevant to **any** message from a listed organization, whatever the event. Rules written for one event (for example the Form 8-K departure deadline, or the EU rule that a board's removal decision triggers disclosure) stay in that event's protocol.\n\nThe framework prompt already flags securities questions for specialist review. This overlay doesn't judge compliance. It checks whether the message's content is complete and consistent enough to raise the questions counsel must answer.\n\n## Source\n\n- **Nothing left out that makes the rest misleading:** US Rule 10b-5(b), 17 CFR 240.10b-5, which bars omitting \"a material fact necessary in order to make the statements made, in the light of the circumstances under which they were made, not misleading.\" Opened and read (CEO review 2.4).\n- **Same facts for every audience:** US Regulation FD, 17 CFR Part 243, which requires public disclosure \"simultaneously\" when material non-public information is disclosed intentionally to certain market professionals and holders (CEO review 2.3). EU Implementing Regulation 2016/1055, which requires inside information to be disseminated \"to as wide a public as possible on a non-discriminatory basis\" and \"simultaneously throughout the Union\" (CEO review 2.7).\n- **Named sender, date and time:** EU Implementing Regulation 2016/1055, Article 2 (CEO review 2.7).\n\nReg FD's selective-disclosure rule covers market professionals and securityholders, not employees as such. The *same facts for every audience* element extends its logic to employees and partners because a leak from those audiences is the usual route to selective disclosure. That extension is **professional judgement** and should be labelled so in the Library.\n\n## Limits\n\n- **MAR Article 17 was not read in the original** (CEO review §7): the \"as soon as possible\" duty and the conditions for delay are known only through instruments that cite it. Read it before this overlay is marked active.\n- US coverage is SEC registrants and NYSE-listed companies. **Nasdaq rules and foreign private issuers (Form 6-K) were not verified.**\n- EU coverage is issuers within MAR's scope. National rules in most member states were not reviewed. The UK is not covered.\n- The overlay can't tell from the draft whether information is material or inside information. It asks."
     },
     {
       "id": "people-harmed",
       "name": "People harmed or at risk",
       "layer": "overlay",
       "trigger": "people-harmed",
-      "version": "0.1.0",
-      "status": "draft",
-      "last_reviewed": null,
-      "review_by": null,
+      "version": "0.3.0",
+      "status": "active",
+      "last_reviewed": "2026-09-25",
+      "review_by": "2027-03-25",
+      "rests_on": "The EU workplace-safety directive (binding only for EU employers toward their workers) and US CDC emergency-communication guidance applied by analogy, plus crisis-communication theory.",
       "changelog": [
-        "0.1.0 — stub. Structure only; no checks written."
+        "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
+        "0.2.0 (2026-09-25): combination rule with the geopolitical and cyber protocols set: their event-specific elements replace this overlay's equivalents when both apply.",
+        "0.1.0 (2026-09-25): first draft, built from sources already opened in the geopolitical and core protocol source reviews. No new research."
       ],
-      "rests_on": "Nothing yet. This is a stub and applies to no review until it has content and a status of active.",
-      "elements": [],
-      "triggers": [],
-      "questions": [],
-      "prose": "# People harmed or at risk\n\nSwitched on when the intake says people have been harmed or put at risk.\nAn overlay is chosen by the intake answers, not by the event.\n\n## Source\n\nNot yet written. This file exists so the layer is in place and the resolver\nskips it; it carries no checks and reaches no review while its status is\ndraft.\n\n## Basis\n\nNot yet written."
+      "elements": [
+        {
+          "id": "people-harmed.harm_acknowledged",
+          "name": "Harm acknowledged in plain words",
+          "means": "The draft says plainly that people were harmed or put at risk, and who, rather than describing only an \"incident\", \"event\" or \"impact\".",
+          "weight": "core",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "guidance",
+          "sources": [
+            "cdc-cerc-intro-2018",
+            "coombs-2007"
+          ]
+        },
+        {
+          "id": "people-harmed.danger_and_protection",
+          "name": "The danger now, and the protective steps",
+          "means": "For people who may still be at risk, the draft states the danger as currently assessed, the protective steps taken or planned, and who is responsible for them.",
+          "weight": "core",
+          "dimension": "corrective_action_proof",
+          "basis": "law",
+          "sources": [
+            "eu-directive-89-391",
+            "cdc-cerc-intro-2018"
+          ]
+        },
+        {
+          "id": "people-harmed.support",
+          "name": "Support people can actually reach",
+          "means": "Where support is offered, the draft says what it is, who provides it, how to get it and for how long, and offers only what the supplied context confirms exists.",
+          "weight": "supporting",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "research",
+          "sources": [
+            "coombs-2007"
+          ]
+        }
+      ],
+      "triggers": [
+        {
+          "check": "Harm is described only in impersonal terms (\"individuals were impacted\", \"an incident occurred\") and the draft never says that people were hurt or put at risk.",
+          "dimension": "stakeholder_respect_impact"
+        },
+        {
+          "check": "The draft calls the harm or risk \"minor\", \"isolated\" or \"limited\" while the supplied context doesn't establish its extent.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "Health and safety"
+          ]
+        },
+        {
+          "check": "The draft describes effects on operations, customers or results before it says anything about the people harmed.",
+          "dimension": "stakeholder_respect_impact"
+        },
+        {
+          "check": "Support is mentioned (\"support is available\", \"we are here for our people\") with no provider, route or contact.",
+          "dimension": "stakeholder_respect_impact"
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Have the people harmed, and where relevant their families, been told directly before this message goes out?",
+          "review": [
+            "HR",
+            "Health and safety"
+          ]
+        },
+        {
+          "ask": "Are the protective steps described in the draft actually in place today, and who confirmed it?",
+          "review": [
+            "Health and safety",
+            "Legal"
+          ]
+        },
+        {
+          "ask": "Does any legal duty to inform workers or a regulator about the danger apply here, and has it been met? Counsel must confirm which rules apply.",
+          "review": [
+            "Legal",
+            "Health and safety"
+          ]
+        }
+      ],
+      "prose": "## What this overlay does\n\nIt adds what a message owes people who were hurt or are still at risk. The framework already asks who is affected and what readers should do. This overlay narrows both: harm must be named as harm, and people still at risk must be told the danger and what is being done about it.\n\n## Source\n\n- **Harm acknowledged:** CDC CERC, \"Express Empathy: Crises create harm, and the suffering should be acknowledged in words\" (core review 2.2). Coombs (2007): \"The first priority in any crisis is to protect stakeholders from harm, not to protect the reputation\" (core review 5.2). Guidance and theory, not measured effect.\n- **Danger and protective steps:** EU OSH Framework Directive 89/391/EEC, Article 8, which requires employers to inform workers \"as soon as possible\" of \"the serious and imminent danger\" and \"the steps taken or to be taken as regards protection\" (geopolitical review 1.3). **Binding only for employers in the EU and only toward their workers.** For other readers and places, the element applies CERC guidance and the same reasoning by analogy.\n- **Support people can reach:** Coombs (2007), adjusting information. The requirement to offer only what context confirms comes from the framework's non-invention rule.\n\n## How it combines with event protocols\n\nTwo active event protocols already have their own, event-specific version of an element here:\n\n- `geopolitical.danger-and-protective-steps` (people in or near a conflict area) → replaces `people-harmed.danger_and_protection`\n- `cyber-incident.support-matched-to-harm` (support that fits the data exposed) → replaces `people-harmed.support`\n\nRule: when an event protocol and an overlay both apply, and the event protocol's element is marked `replaces: [<overlay element id>]`, the resolver drops the overlay's element and keeps the event's. The event protocols keep their wording; the overlay covers every other event where people are harmed. Add the `replaces` field to those two elements in the same change that activates this overlay.\n\n## Limits\n\n- US workplace-safety duties (OSHA) were not reviewed.\n- The overlay only fires when the intake box is ticked. It can't detect harm the author didn't declare.\n- Nothing reviewed addresses notifying next of kin; the first question is professional judgement."
     },
     {
       "id": "personal-data",
@@ -1080,17 +1160,171 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Workforce impact",
       "layer": "overlay",
       "trigger": "workforce-impact",
-      "version": "0.1.0",
-      "status": "draft",
-      "last_reviewed": null,
-      "review_by": null,
+      "version": "0.3.0",
+      "status": "active",
+      "last_reviewed": "2026-09-25",
+      "review_by": "2027-03-25",
+      "rests_on": "EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.",
       "changelog": [
-        "0.1.0 — stub. Structure only; no checks written."
+        "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
+        "0.2.0 (2026-09-25): reconciled with workforce-reduction 1.0.0. Takes over its five law-related elements word for word (adding only \"where roles end\" / \"no roles are affected\" so they fit events where job loss isn't certain), four of its triggers and three of its questions. Adds EU and US law as sources, and four new triggers. Trigger narrowed: policy-change and labor-dispute no longer fire it.",
+        "0.1.0 (2026-09-25): first draft from the geopolitical source review."
       ],
-      "rests_on": "Nothing yet. This is a stub and applies to no review until it has content and a status of active.",
-      "elements": [],
-      "triggers": [],
-      "questions": [],
-      "prose": "# Workforce impact\n\nSwitched on when the event bears on employees: any workforce-family event, or a\nfinancial-difficulty, market-exit or merger event sent to an employee audience.\nAn overlay is chosen by the intake answers, not by the event.\n\n## Source\n\nNot yet written. This file exists so the layer is in place and the resolver\nskips it; it carries no checks and reaches no review while its status is\ndraft.\n\n## Basis\n\nNot yet written."
+      "elements": [
+        {
+          "id": "workforce-impact.decision-status",
+          "name": "Decision status",
+          "means": "Whether the decision is final, proposed, or in consultation.",
+          "weight": "core",
+          "dimension": "accountability_agency",
+          "basis": "law",
+          "sources": [
+            "eu-directive-2002-14",
+            "eu-directive-98-59"
+          ]
+        },
+        {
+          "id": "workforce-impact.scope-of-impact",
+          "name": "Scope of impact",
+          "means": "How many are affected, in which functions, sites and countries, or that the group is still being set, or plainly that no roles are affected.",
+          "weight": "core",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "law",
+          "sources": [
+            "eu-directive-98-59",
+            "us-warn-20-cfr-639"
+          ]
+        },
+        {
+          "id": "workforce-impact.selection-basis-and-alternatives",
+          "name": "Selection basis and alternatives",
+          "means": "Where roles end, how roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.",
+          "weight": "core",
+          "dimension": "fairness_independence_conflicts",
+          "basis": "law",
+          "sources": [
+            "eu-directive-98-59"
+          ]
+        },
+        {
+          "id": "workforce-impact.individual-notice-timing-and-terms",
+          "name": "Individual notice, timing and terms",
+          "means": "Where roles end, how and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.",
+          "weight": "core",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "law",
+          "sources": [
+            "us-warn-20-cfr-639",
+            "eu-directive-98-59"
+          ]
+        },
+        {
+          "id": "workforce-impact.voice-and-what-can-still-change",
+          "name": "Voice and what can still change",
+          "means": "What employees or their representatives can still influence, kept separate from what leadership has already decided.",
+          "weight": "core",
+          "dimension": "listening_employee_voice",
+          "basis": "law",
+          "sources": [
+            "eu-directive-2002-14",
+            "eu-directive-98-59"
+          ]
+        }
+      ],
+      "triggers": [
+        {
+          "check": "The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation.",
+          "dimension": "accountability_agency",
+          "review": [
+            "HR",
+            "Labor"
+          ]
+        },
+        {
+          "check": "The draft calls the decision final and also invites employee input, feedback or consultation, without saying what remains open to change.",
+          "dimension": "listening_employee_voice",
+          "review": [
+            "HR",
+            "Labor"
+          ]
+        },
+        {
+          "check": "The draft reaches a wider audience than the affected group without saying how or when affected people are told individually.",
+          "dimension": "stakeholder_respect_impact",
+          "review": [
+            "HR"
+          ]
+        },
+        {
+          "check": "The draft gives no notice date, last working day or date by which dates will come, no pay terms, and no place to find either.",
+          "dimension": "clarity_plain_language",
+          "review": [
+            "HR",
+            "Labor"
+          ]
+        },
+        {
+          "check": "The decision is attributed to a parent company, head office or group (\"the group has decided\", \"as directed by our parent\") and the draft doesn't say what the local organization decided or owns.",
+          "dimension": "accountability_agency",
+          "review": [
+            "Legal",
+            "HR"
+          ]
+        },
+        {
+          "check": "The draft gives less notice than planned or says the change takes effect immediately, and gives no reason for the shortened notice.",
+          "dimension": "causation_explanation",
+          "review": [
+            "Legal",
+            "HR"
+          ]
+        },
+        {
+          "check": "The draft withholds information on grounds of confidentiality without saying why or for how long.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal"
+          ]
+        },
+        {
+          "check": "The draft says employees or representatives have been consulted, or that consultation is complete, while the supplied context shows it hasn't started or finished.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "HR"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Which entities, countries, states or agreements may require notice, consultation or a filing?",
+          "review": [
+            "Legal",
+            "Labor",
+            "Local market"
+          ]
+        },
+        {
+          "ask": "Has anyone reviewed whether the affected group is uneven across protected groups, and who?",
+          "review": [
+            "HR",
+            "Legal"
+          ]
+        },
+        {
+          "ask": "Were affected employees assessed for internal mobility or redeployment before selection?",
+          "review": [
+            "HR"
+          ]
+        },
+        {
+          "ask": "Does this draft match the formal notice given to employee representatives or authorities, and what they were told in writing?",
+          "review": [
+            "HR",
+            "Legal"
+          ]
+        }
+      ],
+      "prose": "## What this overlay does\n\nIt carries the checks every job-affecting decision needs, whatever the event: whether the decision is final, who is affected, how people were chosen, how and when each person hears, and what can still change. They were written for the workforce-reduction protocol and are moved here word for word, so they also apply to site closures, and to cost-cutting, market exits and mergers when employees are an audience.\n\n## Source\n\nThe five elements were written as professional judgement and practitioner guidance in the workforce-reduction protocol (EEOC, US Department of Labor, Fair Work Ombudsman, CIPD). That protocol states that **nothing in it rests on EU collective-redundancy rules.** This overlay adds that basis:\n\n- **Decision status; Voice and what can still change:** Directive 2002/14/EC, Article 4 (information and consultation \"in particular where there is a threat to employment\"); Directive 98/59/EC (consultation on collective redundancies). Geopolitical review 1.1, 1.2.\n- **Scope of impact:** Directive 98/59/EC, Article 2(3): number and categories affected and the period. 20 CFR 639.7: job titles, numbers per classification, dates and schedule. Geopolitical review 1.2, 1.5.\n- **Selection basis:** Directive 98/59/EC, Article 2(3): \"the criteria proposed for the selection of the workers to be made redundant.\"\n- **Individual notice, timing and terms:** 20 CFR 639.7 (dates and schedule); Directive 98/59/EC, Article 2(3) (method for calculating payments).\n- **New triggers:** Directive 98/59/EC Art. 2(4) (parent-company decisions); 20 CFR 639.9 (reason for shortened notice); Directive 2002/14/EC Art. 6 and Directive (EU) 2025/2450 (reasons for confidentiality; applicable from 2029, article number unverified).\n\n**These laws govern formal notices to representatives and authorities, not employee messages.** Applying their content to a message is professional judgement: an employee message that says less than the formal notice is a checkable gap. Label it that way in the Library.\n\nThe workforce-reduction protocol's guidance sources (EEOC, DOL, Fair Work, CIPD) were not re-read for this overlay and are not attached to individual elements here; they stay listed on that protocol.\n\n## Limits\n\n- Directive 98/59/EC read from the UK retained copy, Article 2 only.\n- EU national transposition, US state mini-WARN laws and Directive 2009/38/EC (European Works Councils) were not reviewed.\n- Labor-relations law during strikes and bargaining was not reviewed; the overlay does not fire for \"Strike or labor dispute\" or \"Major policy change\"."
     }
   ];

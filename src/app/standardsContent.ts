@@ -253,3 +253,65 @@ export function ownJudgment(): [string, string][] {
     ],
   ];
 }
+
+/**
+ * What kind of authority each protocol element rests on, for the Library card.
+ *
+ * The label is the element's own `basis` field, read from the protocol. The
+ * note is the qualification the protocol's own Source section attaches to it,
+ * quoted rather than paraphrased: several of these checks rest on guidance
+ * written for a different situation, or extend a rule past what it covers, and
+ * the page that exists to say where a standard comes from has to say so on the
+ * element rather than three paragraphs down. No label is upgraded here.
+ */
+export const BASIS_LABELS: Record<string, string> = {
+  law: "Law",
+  guidance: "Official guidance",
+  standard: "Standard",
+  research: "Research",
+  code: "Professional code",
+  judgement: "Our judgment",
+  unclassified: "Unclassified",
+};
+
+export const ELEMENT_BASIS_NOTES: Record<string, string> = {
+  "core.estimates_as_estimates":
+    "Written for public authorities in health emergencies; applied to organizational communication by analogy.",
+  "core.central_fact_first":
+    "The “first two or three sentences” threshold is professional judgement; the standard and the research do not set one.",
+  "people-harmed.danger_and_protection":
+    "The directive binds only employers in the EU, and only toward their workers. For other readers and places, the element applies CDC guidance and the same reasoning by analogy.",
+  "people-harmed.harm_acknowledged": "Guidance and theory, not measured effect.",
+  "people-harmed.support": "Theory, not measured effect.",
+  "listed-company.same_to_all":
+    "Regulation FD covers market professionals and securityholders, not employees as such. Extending it to employees and partners is professional judgement.",
+  "workforce-impact.decision-status": WORKFORCE_LAW_NOTE(),
+  "workforce-impact.scope-of-impact": WORKFORCE_LAW_NOTE(),
+  "workforce-impact.selection-basis-and-alternatives": WORKFORCE_LAW_NOTE(),
+  "workforce-impact.individual-notice-timing-and-terms": WORKFORCE_LAW_NOTE(),
+  "workforce-impact.voice-and-what-can-still-change": WORKFORCE_LAW_NOTE(),
+};
+
+function WORKFORCE_LAW_NOTE(): string {
+  return "These laws govern formal notices to representatives and authorities, not employee messages. Applying their content to a message is professional judgement.";
+}
+
+/**
+ * The framework elements the core protocol's source review grounds, from its
+ * addendum. Five of the review's seven checks were already in the framework
+ * prompt, so the sources it gathered ground those instead of becoming
+ * protocol checks of their own. Basis labels are the addendum's, unchanged.
+ */
+export const FRAMEWORK_GROUNDING: { element: string; sources: string; basis: string }[] = [
+  { element: "Who had authority over it", sources: "Fausey & Boroditsky 2010", basis: "judgement, supported by research" },
+  { element: "Who is affected and how", sources: "CDC CERC “Express Empathy”; WHO A.1; Coombs 2007", basis: "guidance + research" },
+  { element: "What the reader should do now", sources: "WHO C4.3; CDC CERC “Promote Action”; Seeger 2006; Coombs 2007", basis: "guidance + research" },
+  { element: "What will change, who owns it", sources: "CDC CERC “Be Right”; Coombs 2007", basis: "guidance + research" },
+  { element: "When the next update comes, where, how to ask", sources: "WHO A.1 (“timely”); Seeger 2006 (“remain accessible”)", basis: "judgement" },
+  { element: "Known vs not yet known (still unfolding)", sources: "WHO A.2; CDC CERC “Be Right”; Seeger 2006", basis: "guidance" },
+];
+
+export const FRAMEWORK_GROUNDING_INTRO =
+  "The account is the framework's own, applied to every draft. The core protocol's source review gathered published guidance for five of these; it grounds them rather than repeating them as protocol checks, which would count them twice.";
+
+export const SOURCES_NOT_READ_HEADING = "Sources not read in the original";

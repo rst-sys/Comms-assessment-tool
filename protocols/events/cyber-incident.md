@@ -3,11 +3,12 @@ id: cyber-incident
 name: Cyber incident and data breach
 layer: event
 family: incident
-version: 1.0.0
+version: 1.1.0
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgment. None of it measures which notices work better.
@@ -44,6 +45,7 @@ elements:
     dimension: stakeholder_respect_impact
     basis: unclassified
     sources: []
+    replaces: [people-harmed.support]
 
   - id: cyber-incident.authenticity
     name: Authenticity
@@ -65,6 +67,7 @@ triggers:
   - check: The draft states a categorical outcome — no data was compromised, the incident is contained, systems are secure — while also saying the investigation is ongoing, or with no basis given.
     dimension: truthfulness_factual_discipline
     review: [Information security, Legal]
+    narrows: core.estimates_as_estimates
 
   - check: The draft says data was involved but does not name the categories, and does not say the categories are not yet known.
     dimension: truthfulness_factual_discipline
@@ -113,8 +116,9 @@ Not cited because not read: the CISA/FBI "Communicating Under Pressure" guidance
 ## 4. Basis
 NIST SP 800-61r3 is a federal technical guidance document. It sets recommendations, not binding rules. The SEC rule and the HIPAA rule are binding regulation, applying only to SEC registrants and HIPAA covered entities or business associates respectively. The FTC guide is regulator business guidance and is not binding. None of these was produced from an empirical study of which notices work better. Those judgments are consensus, not measured effect.
 
-## 5. Elements
+## Drafting notes: elements considered (not applied)
 
+The checks the tool applies are the ones listed on this card.
 | Element | What it means | Importance | Dimensions |
 |---|---|---|---|
 | Claim status | Each material claim is marked, by wording or structure, as confirmed, assessed, unknown, or a commitment. | Essential | truthfulness_factual_discipline |
@@ -132,7 +136,9 @@ NIST SP 800-61r3 is a federal technical guidance document. It sets recommendatio
 | Post-incident account | It commits to a review of what failed, names who owns it and when it will be reported, and says whether it is independent. | Medium | future_readiness_learning, verification_follow_through |
 | Cross-audience consistency | Facts, dates and scope agree with any other communications supplied for the same incident. | High | truthfulness_factual_discipline, accountability_agency |
 
-## 6. High-severity triggers
+## Drafting notes: triggers considered (not applied)
+
+The checks the tool applies are the ones listed on this card.
 Raise a High-severity finding when any of these is true:
 
 - The draft states a categorical outcome ("no data was compromised", "the incident is contained", "systems are secure", or similar) while also saying the investigation is ongoing, or gives no basis for the claim.
@@ -158,7 +164,9 @@ Set specialist_review_needed to true on the following findings:
 - **HR or Labor:** any finding where the affected group is employees.
 - **Local market:** any finding where affected people are in more than one country.
 
-## 7. Questions before publication
+## Drafting notes: questions considered (not applied)
+
+The checks the tool applies are the ones listed on this card.
 Always include these:
 
 - What is confirmed, and who owns each confirmed fact? (Information security)

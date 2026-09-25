@@ -18,11 +18,15 @@ describe("system prompt text", () => {
 });
 
 describe("buildSystemBlocks", () => {
-  it("sends the framework, then the event protocol, then the rules, then the output notes", () => {
+  it("sends the framework, then the protocols by layer, then the rules, then the output notes", () => {
     const blocks = buildSystemBlocks(DEMO_1.request).map((b) => b.text);
     expect(blocks[0]).toBe(SYSTEM_PROMPT);
-    expect(blocks[1]).toContain("WORKFORCE REDUCTION AND RESTRUCTURING");
-    expect(blocks[2]).toBe(PROTOCOL_RULES);
+    expect(blocks.slice(1, -2).map((t) => t.split("\n")[0])).toEqual([
+      "CORE PROTOCOL (core protocol)",
+      "WORKFORCE REDUCTION AND RESTRUCTURING (event protocol)",
+      "WORKFORCE IMPACT (overlay protocol)",
+    ]);
+    expect(blocks[blocks.length - 2]).toBe(PROTOCOL_RULES);
     expect(blocks[blocks.length - 1]).toBe(OUTPUT_NOTES);
   });
 
@@ -57,7 +61,9 @@ describe("buildSystemBlocks", () => {
 
   it("sends the shared rules once however many protocols apply", () => {
     const blocks = buildSystemBlocks({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((b) => b.text);
-    expect(protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" })).toHaveLength(2);
+    // Core, the event protocol, and two overlays: the apology the purpose
+    // switched on and the workforce overlay the event did.
+    expect(protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" })).toHaveLength(4);
     expect(blocks.filter((t) => t === PROTOCOL_RULES)).toHaveLength(1);
   });
 });
@@ -65,22 +71,22 @@ describe("buildSystemBlocks", () => {
 describe("the protocol library", () => {
   it("selects one event and one posture from the intake, never by reading the draft", () => {
     const applied = protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((p) => p.id);
-    expect(applied).toEqual(["workforce-reduction", "apology"]);
+    // Core first, then the event, then the overlays sorted by id.
+    expect(applied).toEqual(["core", "workforce-reduction", "apology", "workforce-impact"]);
 
+    // "Something else" has no family, so it gets no core and no family either,
+    // and this request switches on no overlay.
     expect(protocolsFor({ ...DEMO_1.request, communication_event: "Something else" })).toEqual([]);
   });
 
-  it("sends no protocol at all for an event that has no file yet, leaving the framework to it", () => {
-    const applied = protocolsFor({
-      ...DEMO_1.request,
-      communication_event: "Board change or governance dispute",
-    });
-    expect(applied).toEqual([]);
-    const blocks = buildSystemBlocks({
-      ...DEMO_1.request,
-      communication_event: "Board change or governance dispute",
-    }).map((b) => b.text);
-    expect(blocks).toEqual([SYSTEM_PROMPT, OUTPUT_NOTES]);
+  it("sends the core and nothing more for an event that has no file yet", () => {
+    const request = { ...DEMO_1.request, communication_event: "Board change or governance dispute" as const };
+    // Its family, leadership, is still a stub, and no overlay rule holds.
+    expect(protocolsFor(request).map((p) => p.id)).toEqual(["core"]);
+    const blocks = buildSystemBlocks(request).map((b) => b.text);
+    expect(blocks[0]).toBe(SYSTEM_PROMPT);
+    expect(blocks[1]!.startsWith("CORE PROTOCOL")).toBe(true);
+    expect(blocks[blocks.length - 1]).toBe(OUTPUT_NOTES);
   });
 
   it("maps every element and trigger in the library to a dimension the engine scores", () => {

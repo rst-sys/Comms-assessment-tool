@@ -131,7 +131,7 @@ describe("the checker", () => {
     expect(checkProtocol("a.md", { ...good, narrows: ["plain-naming"] }, prose)).toEqual([]);
 
     const message = messages({ ...good, narrows: ["Who decided"] });
-    expect(message).toContain("not a framework check that may be narrowed");
+    expect(message).toContain("neither a framework check that may be narrowed nor a core protocol element");
     expect(message).toContain("The framework allows: plain-naming");
   });
 

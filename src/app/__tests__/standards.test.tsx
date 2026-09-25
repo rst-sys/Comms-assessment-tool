@@ -107,7 +107,7 @@ describe("the page, and the line it must not cross", () => {
     // standards the tool does not run.
     for (const protocol of ACTIVE) {
       expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
-      expect(screen.getAllByText(new RegExp(`Applied when .*Version ${protocol.version}`)).length, protocol.id).toBeGreaterThan(0);
+      expect(screen.getAllByText(new RegExp(`Applied when.*Version ${protocol.version}`)).length, protocol.id).toBeGreaterThan(0);
     }
     for (const protocol of PROTOCOLS.filter((p) => p.status !== "active")) {
       expect(screen.queryByRole("heading", { name: protocol.name }), protocol.id).toBeNull();

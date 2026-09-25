@@ -65,14 +65,20 @@ describe("evaluateDraft", () => {
     const outputConfig = params.output_config as { effort: string; format: { type: string } };
     expect(outputConfig.effort).toBe("high");
     expect(outputConfig.format.type).toBe("json_schema");
-    // Framework, the event protocol, the shared rules, the output notes. The
+    // Framework, then the protocols in the order the layers apply — core, the
+    // event, the overlays — then the shared rules and the output notes. The
     // framework comes first so the provider's cache covers as long a prefix as
-    // possible.
+    // possible. Demo 1 is a layoffs draft, so the workforce overlay applies
+    // alongside the event's own protocol.
     const system = params.system as { text: string }[];
-    expect(system).toHaveLength(4);
-    expect(system[0]!.text.startsWith("You are the evaluation engine")).toBe(true);
-    expect(system[1]!.text.startsWith("WORKFORCE REDUCTION AND RESTRUCTURING")).toBe(true);
-    expect(system[system.length - 1]!.text.startsWith("OUTPUT STRUCTURE")).toBe(true);
+    expect(system.map((b) => b.text.split("\n")[0])).toEqual([
+      expect.stringContaining("You are the evaluation engine"),
+      "CORE PROTOCOL (core protocol)",
+      "WORKFORCE REDUCTION AND RESTRUCTURING (event protocol)",
+      "WORKFORCE IMPACT (overlay protocol)",
+      "HOW TO APPLY THE PROTOCOLS ABOVE",
+      expect.stringContaining("OUTPUT STRUCTURE"),
+    ]);
   });
 
   it("fails loudly on malformed JSON without echoing the body", async () => {

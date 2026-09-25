@@ -36,3 +36,32 @@ export const COUNTRIES: readonly string[] = [
   "United Kingdom", "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City",
   "Venezuela", "Vietnam", "Yemen", "Zambia", "Zimbabwe",
 ];
+
+/**
+ * Blocs a protocol may name in `applies_if: { jurisdiction: [...] }`, and the
+ * countries the intake offers for each.
+ *
+ * The intake asks for countries, never for "the EU", so a rule written as
+ * `jurisdiction: [EU]` would match nothing at all and the element would be
+ * silently dead — the worst kind of failure here, because the card still
+ * promises the check. A protocol names the bloc its law actually covers, and
+ * this says which answers that means.
+ *
+ * Names are the spellings in COUNTRIES above; the test checks that every one
+ * of them is really on the list.
+ */
+export const JURISDICTION_BLOCS: Record<string, readonly string[]> = {
+  EU: [
+    "Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia",
+    "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia",
+    "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania",
+    "Slovakia", "Slovenia", "Spain", "Sweden",
+  ],
+  US: ["United States"],
+  UK: ["United Kingdom"],
+};
+
+/** The places an `applies_if` jurisdiction entry covers: a bloc, or itself. */
+export function jurisdictionCountries(entry: string): readonly string[] {
+  return JURISDICTION_BLOCS[entry] ?? [entry];
+}

@@ -617,6 +617,13 @@ textarea { resize: vertical; }
 .check-table tbody td { color: var(--ink-2); padding-right: calc(var(--space) * 3); }
 .check-table tbody td:last-child { width: 220px; padding-right: 0; }
 .chip-dimension { display: inline-block; background: #f2efe8; border-radius: 6px; padding: 3px 8px; font-size: 13px; color: var(--ink); }
+/* What kind of authority a check rests on, beside the dimension it scores
+   under. Outlined rather than filled so it reads as a qualifier of the chip
+   above it, not a second category of the same weight. */
+.chip-basis { display: inline-block; margin-top: 4px; border: 1px solid var(--rule); border-radius: 6px; padding: 2px 7px; font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+/* The protocol's own caveat on a check: applied by analogy, or an extension
+   that is the author's judgement. Set apart from the check it qualifies. */
+.basis-note { display: block; margin-top: 6px; font-size: 13px; color: var(--ink-soft); font-style: italic; }
 
 .rests-row { margin-top: calc(var(--space) * 3); }
 .rests-row p { margin: 0; font-size: 15px; color: var(--ink-2); max-width: var(--measure); }

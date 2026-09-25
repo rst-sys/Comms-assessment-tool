@@ -84,6 +84,23 @@ export const ELEMENT_CAPS: Record<ProtocolLayer, number> = {
 };
 
 /**
+ * How many triggers each layer may carry.
+ *
+ * Per-layer for the same reason the element caps are. An overlay is switched
+ * on by one intake answer but applies across every event that answer reaches,
+ * so what it carries is the union of what those events have in common — the
+ * workforce overlay took four triggers from workforce-reduction and added four
+ * of its own for site closures, market exits and mergers. An event protocol
+ * speaks to one event and has no such union to carry, so it stays at six.
+ */
+export const TRIGGER_CAPS: Record<ProtocolLayer, number> = {
+  core: PROTOCOL_CAPS.triggers,
+  family: PROTOCOL_CAPS.triggers,
+  event: PROTOCOL_CAPS.triggers,
+  overlay: 8,
+};
+
+/**
  * The whole compiled instruction set — core plus the longest event plus the
  * longest posture — must stay under the length of the framework itself.
  *
@@ -132,13 +149,31 @@ export interface ProtocolElement {
   /** Ids from sources/registry.yaml. */
   sources: string[];
   /** Conditions under which the element applies at all; absent means always. */
-  applies_if?: { org_type?: string[]; jurisdiction?: string[] };
+  applies_if?: { org_type?: string[]; jurisdiction?: string[]; format?: string[] };
+  /**
+   * Overlay element ids this element supersedes.
+   *
+   * An overlay carries the general form of a check and an event protocol the
+   * sharper one — support that fits the data exposed, rather than support in
+   * general. Where both apply, sending both asks the model to find the same
+   * gap twice and invites two findings for one hole in the draft. The event's
+   * element wins and the overlay's is dropped, because the event knows more.
+   */
+  replaces?: string[];
 }
 
 export interface ProtocolTrigger {
   check: string;
   dimension: DimensionId;
   review?: SpecialistReviewType[];
+  /**
+   * A core protocol element id this trigger is the event-specific form of.
+   *
+   * The core says the central fact must not hide behind euphemism;
+   * workforce-reduction lists the euphemisms. One gap in the draft, two ways
+   * of describing it, and without this the model is invited to raise it twice.
+   */
+  narrows?: string;
 }
 
 export interface ProtocolQuestion {
@@ -175,7 +210,11 @@ export interface ProtocolFile {
   elements: ProtocolElement[];
   triggers: ProtocolTrigger[];
   questions: ProtocolQuestion[];
-  /** Framework check ids this protocol turns into a question instead. */
+  /**
+   * What this protocol softens, as framework check ids, core element ids, or
+   * both. A framework check becomes a question; a core element is replaced by
+   * this protocol's narrower reading of it.
+   */
   narrows?: string[];
   /** Everything below the front matter: source, basis, limits. For the page, never the engine. */
   prose: string;
@@ -277,11 +316,20 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       if (!one(e.basis, ELEMENT_BASES)) err(`${at} basis must be one of ${ELEMENT_BASES.join(", ")}. Got ${JSON.stringify(e.basis)}`);
       if (!isArr(e.sources)) err(`${at} needs a sources list, even if it is empty`);
       else for (const src of e.sources) if (typeof src !== "string") err(`${at} lists a source that is not an id`);
+      if (e.replaces !== undefined) {
+        if (!isArr(e.replaces)) err(`${at} replaces must be a list of overlay element ids this one supersedes`);
+        else {
+          if (layer !== "event") err(`${at} names replaces, which only an event protocol's element may do: it is the sharper reading that wins`);
+          for (const r of e.replaces) if (typeof r !== "string") err(`${at} replaces an entry that is not an element id`);
+        }
+      }
       if (e.applies_if !== undefined) {
         if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
         else {
           for (const key of Object.keys(e.applies_if)) {
-            if (key !== "org_type" && key !== "jurisdiction") err(`${at} applies_if does not understand "${key}"; it takes org_type and jurisdiction`);
+            if (key !== "org_type" && key !== "jurisdiction" && key !== "format") {
+              err(`${at} applies_if does not understand "${key}"; it takes org_type, jurisdiction and format`);
+            }
           }
         }
       }
@@ -291,14 +339,18 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
   // Triggers.
   if (!isArr(d.triggers)) err("needs a triggers list, even if it is empty");
   else {
-    if (d.triggers.length > PROTOCOL_CAPS.triggers) {
-      err(`has ${d.triggers.length} triggers; the most allowed is ${PROTOCOL_CAPS.triggers}. If everything is serious, nothing is.`);
+    const triggerCap = TRIGGER_CAPS[layer];
+    if (d.triggers.length > triggerCap) {
+      err(`has ${d.triggers.length} triggers; the most a ${layer} protocol may carry is ${triggerCap}. If everything is serious, nothing is.`);
     }
     d.triggers.forEach((raw, i) => {
       const t = raw as Record<string, unknown>;
       const at = `trigger ${i + 1}`;
       if (!isStr(t.check)) err(`${at} needs "check": what to look for, checkable by reading the draft`);
       if (!one(t.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(t.dimension)} is not one of the ten scored dimensions`);
+      if (t.narrows !== undefined && !(typeof t.narrows === "string" && t.narrows.startsWith("core."))) {
+        err(`${at} narrows ${JSON.stringify(t.narrows)}. A trigger may only sharpen a core protocol element, named by its id, such as core.central_fact_first.`);
+      }
       reviewList(t.review, at, err);
     });
   }
@@ -327,10 +379,11 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
     else if (layer === "core") err("the core protocol cannot narrow the framework it sits directly under");
     else {
       for (const n of d.narrows) {
-        if (typeof n !== "string" || !(n in FRAMEWORK_NARROWABLE)) {
+        if (typeof n !== "string" || !(n in FRAMEWORK_NARROWABLE || n.startsWith("core."))) {
           err(
-            `narrows ${JSON.stringify(n)}, which is not a framework check that may be narrowed. ` +
-              `The framework allows: ${Object.keys(FRAMEWORK_NARROWABLE).join(", ")}. Name the id, not the wording.`,
+            `narrows ${JSON.stringify(n)}, which is neither a framework check that may be narrowed nor a core protocol element. ` +
+              `The framework allows: ${Object.keys(FRAMEWORK_NARROWABLE).join(", ")}. A core element is named by its id, such as core.central_fact_first. ` +
+              `Name the id, not the wording.`,
           );
         }
       }
@@ -345,7 +398,12 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
   if (prose.trim().length === 0) {
     err("has no prose below the front matter. Source, Basis and Limits are what the Standards Library page shows.");
   } else {
-    for (const heading of ["Source", "Basis"]) {
+    // Every protocol shows its sources. Only an event protocol needs the
+    // separate Basis heading: rests_on, which every protocol now carries,
+    // already names what kind of authority it rests on, and the event
+    // protocols are where the distinction between binding law and professional
+    // consensus is long enough to need a section of its own.
+    for (const heading of layer === "event" ? ["Source", "Basis"] : ["Source"]) {
       if (!new RegExp(`^#+\\s*(\\d+\\.\\s*)?${heading}\\b`, "im").test(prose)) {
         err(`has no "${heading}" section. A protocol that cannot name what it rests on does not go in the library.`);
       }
@@ -409,6 +467,29 @@ export function checkLibrary(
         }
       }
     }
+  }
+
+  // Every `replaces` and every core-element `narrows` must point at an element
+  // that exists. A dangling pointer is silent: the overlay element is never
+  // dropped, or the model is told to fold a finding into a check that is not
+  // there, and the only sign is two findings for one gap.
+  const elementIds = new Set(files.flatMap(({ data }) => data.elements.map((e) => e.id)));
+  for (const { file, data } of files) {
+    for (const e of data.elements) {
+      for (const target of e.replaces ?? []) {
+        if (!elementIds.has(target)) errors.push({ file, message: `element ${e.id} replaces "${target}", which no protocol defines` });
+      }
+    }
+    for (const n of data.narrows ?? []) {
+      if (n.startsWith("core.") && !elementIds.has(n)) {
+        errors.push({ file, message: `narrows "${n}", which the core protocol does not define` });
+      }
+    }
+    data.triggers.forEach((t, i) => {
+      if (t.narrows && !elementIds.has(t.narrows)) {
+        errors.push({ file, message: `trigger ${i + 1} narrows "${t.narrows}", which the core protocol does not define` });
+      }
+    });
   }
 
   // The taxonomy and the folder have to agree in both directions.

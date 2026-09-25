@@ -7,13 +7,21 @@ import { CONTROL, DEMOS } from "../fixtures.js";
 import { COMMUNICATION_EVENTS, PURPOSES, type EvaluationRequest } from "../types.js";
 
 /**
- * The layered protocol framework must not change a single review.
+ * No review changes unless a change to the protocols was intended.
  *
- * `npm run protocols:baseline` captured, before any of it was built, which
- * protocols each event and each purpose selects and the exact text of every
- * system block that goes with them. This compares today's engine against that
- * file, for all thirty-one events, all six purposes and every fixture — not
- * only the three demo drafts.
+ * `npm run protocols:baseline` captures which protocols each event and each
+ * purpose selects and the exact text of every system block that goes with
+ * them, for all thirty-two events, all six purposes and every fixture — not
+ * only the three demo drafts. This compares today's engine against that file.
+ *
+ * The baseline was recaptured for phase 2, which switched on the core protocol
+ * and three overlays and moved five checks from workforce-reduction to the
+ * workforce overlay. That change was measured before it was taken, not after:
+ * baseline/protocol-bundles-phase1.json is the pre-phase-2 capture, kept so
+ * the move can still be read off the two files, and resolver.test.ts asserts
+ * the phase 2 rules themselves — the core on every named event, which events
+ * the workforce overlay fires for, and which overlay elements an event
+ * protocol supersedes — which a frozen blob cannot.
  *
  * Rebuild the baseline only when a change to the protocols is intended, and
  * say so in the commit.
@@ -26,29 +34,8 @@ interface Baseline {
 const baseline: Baseline = JSON.parse(readFileSync("src/engine/__tests__/baseline/protocol-bundles.json", "utf8"));
 const sha = (t: string) => createHash("sha256").update(t).digest("hex").slice(0, 16);
 
-/**
- * The two changes the layered framework was allowed to make, both agreed
- * before it was built. Everything else must be byte-identical.
- *
- * Ids: three files were renamed to match protocols/events.yaml. Same file,
- * same words — and the prompt never carries an id, only a name.
- *
- * Wording: each protocol block opens `NAME (layer protocol)`, so turning the
- * apology from a posture into an overlay changes that one word and nothing
- * else in the block.
- */
-const RENAMED: Record<string, string> = {
-  "workforce-restructuring": "workforce-reduction",
-  "geopolitical-operations-employee-welfare": "geopolitical",
-  "public-apology": "apology",
-};
-const ACCEPTED_WORDING: [string, string][] = [["(posture protocol)", "(overlay protocol)"]];
-
-/** The baseline's text, with the agreed wording change applied. */
 function expectedText(hash: string): string {
-  let text = baseline.texts[hash] ?? `(unknown block ${hash})`;
-  for (const [was, now] of ACCEPTED_WORDING) text = text.replace(was, now);
-  return text;
+  return baseline.texts[hash] ?? `(unknown block ${hash})`;
 }
 
 function current(request: EvaluationRequest): { ids: string[]; blocks: string[] } {
@@ -74,35 +61,28 @@ const cases: [string, EvaluationRequest][] = [
 ];
 
 /**
- * Events added since the baseline was captured.
+ * Cases the baseline does not hold.
  *
- * Adding one is allowed; it must arrive with no protocol, so it cannot change
- * how any existing draft is reviewed. Anything else the baseline holds must
- * still match word for word.
+ * Adding an event is allowed, but the baseline must be recaptured in the same
+ * change, so this list is empty in a healthy tree. A name here means an event
+ * or a purpose arrived without the capture being rerun, and the cases below
+ * are silently not checking it.
  */
 const ADDED = cases.map(([key]) => key).filter((key) => !(key in baseline.cases));
 
-describe("the protocol bundle, against the baseline captured before the layered framework", () => {
-  it("still covers every case the baseline holds, and names anything new", () => {
+describe("the protocol bundle, against the captured baseline", () => {
+  it("still covers every case the baseline holds, and nothing is unchecked", () => {
     const keys = cases.map(([key]) => key);
     for (const key of Object.keys(baseline.cases)) expect(keys, `${key} disappeared`).toContain(key);
-    // The one intended addition: a death is not a departure.
-    expect(ADDED).toEqual(["event:Death of a leader or employee"]);
+    expect(ADDED, "recapture the baseline: npm run protocols:baseline").toEqual([]);
   });
-
-  for (const key of ADDED) {
-    it(`adds ${key} with no protocol, so it changes no existing review`, () => {
-      const request = cases.find(([k]) => k === key)![1];
-      expect(protocolsFor(request)).toEqual([]);
-    });
-  }
 
   for (const [key, request] of cases.filter(([key]) => key in baseline.cases)) {
     it(`selects the same protocols and sends the same words for ${key}`, () => {
       const was = baseline.cases[key];
       expect(was, `${key} is missing from the baseline`).toBeDefined();
       const now = current(request);
-      expect(now.ids, `${key}: protocols selected`).toEqual(was!.ids.map((id) => RENAMED[id] ?? id));
+      expect(now.ids, `${key}: protocols selected`).toEqual(was!.ids);
       // Text, not hashes: a failure has to show which words moved.
       const nowText = buildSystemBlocks(request).map((b) => b.text);
       expect(nowText, `${key}: system blocks`).toEqual(was!.blocks.map(expectedText));
@@ -121,7 +101,7 @@ describe("every event a protocol matches today", () => {
     expect(matched.length).toBeGreaterThan(0);
     for (const [event, ids] of matched) {
       const now = protocolsFor({ ...base, communication_event: event as never, purpose: "Announce a decision or change" });
-      expect(now.map((p) => p.id), event).toEqual(ids.map((id) => RENAMED[id] ?? id));
+      expect(now.map((p) => p.id), event).toEqual(ids);
     }
   });
 });

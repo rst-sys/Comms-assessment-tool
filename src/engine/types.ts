@@ -191,6 +191,9 @@ export const AUDIENCE_GROUPS = [
 ] as const;
 
 export const AUDIENCES = AUDIENCE_GROUPS.flatMap(([, list]) => list);
+
+/** The audiences under the intake's "Employees" heading, as the menu shows them. */
+export const EMPLOYEE_AUDIENCES = AUDIENCE_GROUPS.find(([group]) => group === "Employees")![1];
 export type Audience = (typeof AUDIENCES)[number];
 
 export const AUDIENCE_DESCRIPTIONS: Partial<Record<Audience, string>> = {
@@ -424,6 +427,7 @@ export const SPECIALIST_REVIEW_TYPES = [
   "Information security",
   "Investor relations",
   "Local market",
+  "Health and safety",
   "Executive",
 ] as const;
 export type SpecialistReviewType = (typeof SPECIALIST_REVIEW_TYPES)[number];

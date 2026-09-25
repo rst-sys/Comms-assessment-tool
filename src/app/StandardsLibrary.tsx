@@ -7,6 +7,11 @@ import { PageNav } from "./PageNav.js";
 import { Clock } from "./Icons.js";
 import { proseBlocks, protocolSection } from "./protocolProse.js";
 import {
+  BASIS_LABELS,
+  ELEMENT_BASIS_NOTES,
+  FRAMEWORK_GROUNDING,
+  FRAMEWORK_GROUNDING_INTRO,
+  SOURCES_NOT_READ_HEADING,
   ACCOUNT_CARD,
   CLAIM_LABELS,
   CODES,
@@ -106,6 +111,29 @@ export function StandardsLibrary({ onOverview }: { onOverview?: () => void }) {
             <p className="muted small weights-total">
               Weights add up to 100. No published code assigns weights; they are <a href="#judgement">our own judgment</a>.
             </p>
+          </div>
+
+          <div className="card">
+            <h3>Where the account itself is grounded</h3>
+            <p className="prose">{FRAMEWORK_GROUNDING_INTRO}</p>
+            <table className="check-table">
+              <thead>
+                <tr>
+                  <th scope="col">Framework element</th>
+                  <th scope="col">Grounded in</th>
+                  <th scope="col">Basis</th>
+                </tr>
+              </thead>
+              <tbody>
+                {FRAMEWORK_GROUNDING.map((g) => (
+                  <tr key={g.element}>
+                    <th scope="row">{g.element}</th>
+                    <td>{g.sources}</td>
+                    <td><span className="chip-basis">{g.basis}</span></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           <div className="tile-grid">
@@ -226,7 +254,7 @@ function appliedWhen(p: ProtocolFile): string {
 const OVERLAY_WHEN: Record<string, string> = {
   "listed-company": "the organization is a publicly listed company",
   "people-harmed": "people have been harmed or put at risk",
-  "workforce-impact": "the event bears on employees",
+  "workforce-impact": "the event is layoffs, restructuring or a site closure, or it is cost-cutting, a market exit or a merger and employees are an audience",
   "personal-data": "the event is a cyber incident or data breach",
   "stage-unfolding": "the situation is not yet public, or still unfolding",
   apology: "the draft is mainly trying to apologize and take responsibility",
@@ -234,7 +262,7 @@ const OVERLAY_WHEN: Record<string, string> = {
 
 /** The four layers, in the order the engine applies them. */
 const LAYER_SECTIONS: { layer: ProtocolFile["layer"]; title: string }[] = [
-  { layer: "core", title: "Core protocol" },
+  { layer: "core", title: "Core" },
   { layer: "family", title: "Families" },
   { layer: "event", title: "Event protocols" },
   { layer: "overlay", title: "Overlays" },
@@ -291,9 +319,21 @@ function ProtocolCard({ protocol, openByDefault }: { protocol: ProtocolFile; ope
               {protocol.elements.map((e) => (
                 <tr key={e.name}>
                   <th scope="row">{e.name}</th>
-                  <td>{e.means}</td>
+                  <td>
+                    {e.means}
+                    {/* The qualification the protocol's own Source section puts
+                        on this check — applied by analogy, or an extension that
+                        is professional judgement. It belongs on the element, not
+                        three paragraphs down behind an expander. */}
+                    {ELEMENT_BASIS_NOTES[e.id] ? (
+                      <span className="basis-note"> {ELEMENT_BASIS_NOTES[e.id]}</span>
+                    ) : null}
+                  </td>
                   <td>
                     <span className="chip-dimension">{DIMENSION_LABELS[e.dimension]}</span>
+                    {e.basis !== "unclassified" ? (
+                      <span className="chip-basis">{BASIS_LABELS[e.basis] ?? e.basis}</span>
+                    ) : null}
                     {e.weight === "supporting" ? <span className="muted small"> supporting</span> : null}
                   </td>
                 </tr>
@@ -305,6 +345,26 @@ function ProtocolCard({ protocol, openByDefault }: { protocol: ProtocolFile; ope
             <div className="label">Rests on</div>
             <p>{protocol.rests_on}</p>
           </div>
+
+          {/* Not behind the sources expander. A protocol resting partly on
+              something nobody opened is the first thing a reader weighing it
+              needs, not the last. */}
+          {protocolSection(protocol.prose, SOURCES_NOT_READ_HEADING) ? (
+            <div className="rests-row">
+              <div className="label">{SOURCES_NOT_READ_HEADING}</div>
+              {proseBlocks(protocolSection(protocol.prose, SOURCES_NOT_READ_HEADING)).map((b, i) =>
+                b.kind === "list" ? (
+                  <ul key={i} className="tight prose small">
+                    {(b.items ?? []).map((item, j) => (
+                      <li key={j}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p key={i} className="prose small">{b.text}</p>
+                ),
+              )}
+            </div>
+          ) : null}
 
           <Sources protocol={protocol} />
         </div>

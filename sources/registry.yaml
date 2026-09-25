@@ -463,64 +463,162 @@ sources:
     review_by: null
     notes: "Used by geopolitical as background on character rather than content."
 
-  # ---------------------------------------------------------------- core
-  - id: iso-24495-1-2023
-    title: "ISO 24495-1:2023, Plain language — Part 1: Governing principles and guidelines"
-    issuer: International Organization for Standardization
-    tier: 3
-    jurisdiction: []
-    binding: false
-    url: https://www.iso.org/standard/78907.html
-    version_or_date: "2023"
-    read_status: read
-    last_checked: null
-    review_by: null
-    notes: "Cited by core.central_fact_first as the plain-language standard. Already summarized on the Standards Library page as a published code."
+  # ---------------------------------------------------------------- core protocol and the new overlays
   - id: who-erc-2017
     title: "Communicating risk in public health emergencies: a WHO guideline for emergency risk communication (ERC) policy and practice"
     issuer: World Health Organization
     tier: 2
-    jurisdiction: []
+    jurisdiction: [international]
     binding: false
     url: https://www.who.int/publications/i/item/9789241550208
-    version_or_date: "2017"
+    version_or_date: "2017 (catalogue 10 Jan 2018)"
     read_status: read
-    last_checked: null
-    review_by: null
-    notes: "Cited by both core elements: the recommendation against technical explanation, and the strong recommendation to indicate what is known and not known at a given time. Written for public authorities in health emergencies; the core protocol applies it to organizational communication by analogy."
-  - id: li-2008
-    title: "Annual report readability, current earnings, and earnings persistence"
-    issuer: "Li, F., Journal of Accounting and Economics 45, 221–247"
-    tier: 5
-    jurisdiction: []
-    binding: false
-    url: https://care-mendoza.nd.edu/assets/152198/li_jae_2008.pdf
-    version_or_date: "2008"
-    read_status: read
-    last_checked: null
-    review_by: null
-    notes: "Cited by core.central_fact_first as evidence that organizations write less plainly when the news is bad. Documented behavior, not a standard."
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Read: recommendations and method. Written for health emergencies; applied to organizational communication by analogy. Cited by core.central_fact_first and core.estimates_as_estimates."
   - id: cdc-cerc-intro-2018
-    title: "Crisis and Emergency Risk Communication (CERC): Introduction"
+    title: "Crisis and Emergency Risk Communication (CERC) Manual, Introduction"
     issuer: US Centers for Disease Control and Prevention
     tier: 2
     jurisdiction: [US]
     binding: false
     url: https://www.cdc.gov/cerc/media/pdfs/CERC_Introduction.pdf
-    version_or_date: "2018 update"
+    version_or_date: "2018 update (index page dated Nov 2024)"
     read_status: read
-    last_checked: null
-    review_by: null
-    notes: "Cited by core.estimates_as_estimates for the \"Be Right\" principle. Written for public health responders; applied to organizational communication by analogy."
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Read: principles section. Written for emergencies; applied by analogy; conflicting dates between the PDF and the index page. Cited by core.estimates_as_estimates and people-harmed.harm_acknowledged."
+  - id: iso-24495-1-2023
+    title: "ISO 24495-1:2023 Plain language — Part 1: Governing principles and guidelines"
+    issuer: ISO
+    tier: 3
+    jurisdiction: [international]
+    binding: false
+    url: https://www.iso.org/standard/78907.html
+    version_or_date: "June 2023"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Catalogue page and abstract only; full text paywalled. Cited by core.central_fact_first."
   - id: seeger-2006
-    title: "Best Practices in Crisis Communication: An Expert Panel Process"
-    issuer: "Seeger, M. W., Journal of Applied Communication Research 34(3), 232–244"
+    title: "Best practices in crisis communication: An expert panel process. Journal of Applied Communication Research 34(3), 232–244"
+    issuer: "Seeger, M. W."
     tier: 5
-    jurisdiction: []
+    jurisdiction: [US]
     binding: false
     url: https://www.tandfonline.com/doi/abs/10.1080/00909880600769944
     version_or_date: "2006"
     read_status: not_opened
-    last_checked: null
-    review_by: null
-    notes: "Cited by core.estimates_as_estimates for \"Accept uncertainty and ambiguity\". Not available in the original; cited as quoted in a peer-reviewed secondary source, Veil et al. (2020). The owner decided on 25 September 2026 to proceed without it, recorded in the protocol. The element also rests on who-erc-2017 and cdc-cerc-intro-2018, both read."
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Practices quoted from Veil et al. (2020), Handbook of Applied Communication Research. Cited by core.estimates_as_estimates."
+  - id: coombs-2007
+    title: "Protecting organization reputations during a crisis: The development and application of Situational Crisis Communication Theory. Corporate Reputation Review 10(3), 163–176"
+    issuer: "Coombs, W. T."
+    tier: 5
+    jurisdiction: [international]
+    binding: false
+    url: https://link.springer.com/article/10.1057/palgrave.crr.1550049
+    version_or_date: "2007"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Read: relevant sections, via a full-text copy. Theory and ethical argument, not measured effect. Cited by people-harmed.harm_acknowledged and people-harmed.support, and by the core protocol's reputation-first trigger."
+  - id: li-2008
+    title: "Annual report readability, current earnings, and earnings persistence. Journal of Accounting and Economics 45(2–3), 221–247"
+    issuer: "Li, F."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sciencedirect.com/science/article/abs/pii/S0165410108000141
+    version_or_date: "2008"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Abstract only. Annual reports, not crisis messages; correlational. Cited by core.central_fact_first."
+  - id: fausey-boroditsky-2010
+    title: "Subtle linguistic cues influence perceived blame and financial liability. Psychonomic Bulletin & Review 17(5), 644–650"
+    issuer: "Fausey, C. M., & Boroditsky, L."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://link.springer.com/article/10.3758/PBR.17.5.644
+    version_or_date: "2010"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Abstract read. Replication (Tonković et al. 2022) reported by a secondary source, not read. Grounds the framework's \"who had authority over it\" element; cited by no protocol element."
+
+  # ------------------------------------------------- ceo-departure: missed by the phase 1 seed
+  - id: eu-impl-reg-2016-1055
+    title: "Commission Implementing Regulation (EU) 2016/1055, Articles 2 and 3"
+    issuer: European Commission
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R1055
+    version_or_date: "2016"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Amendment after the Listing Act not verified. Cited by ceo-departure and by listed-company.same_to_all and listed-company.eu_notice_form."
+  - id: eu-directive-2007-36-art-9b
+    title: "Directive 2007/36/EC as amended by Directive (EU) 2017/828, Article 9b"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02007L0036-20170609
+    version_or_date: "consolidated 9 June 2017"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding through national transposition. Remuneration reporting covering former directors and termination payments. Cited by ceo-departure."
+  - id: nyse-2026-guidance-letter
+    title: "2026 Annual Listed Company Compliance Guidance Letter"
+    issuer: NYSE Regulation
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.nyse.com/publicdocs/nyse/markets/nyse/NYSE_2026_Annual_Guidance_Letter.pdf
+    version_or_date: "27 January 2026"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "The letter was read, not the Listed Company Manual. The Manual binds NYSE-listed companies; the letter itself is guidance. Cited by ceo-departure."
+  - id: graffin-2011-strategic-noise
+    title: "What's all that (strategic) noise? Anticipatory impression management in CEO succession. Strategic Management Journal 32(7), 748–770"
+    issuer: "Graffin, S. D., Carpenter, M. A., & Boivie, S."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://terry.uga.edu/sites/default/files/inline-files/Graffin_Carpenter__Boivie_2011.pdf
+    version_or_date: "2011"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Basis for ceo-departure's clean-channel element and its second trigger. Documented behavior, not a standard."
+  - id: tayan-2017-retired-or-fired
+    title: "Retired or Fired: How Can Investors Tell If the CEO Left Voluntarily? Harvard Law School Forum on Corporate Governance"
+    issuer: "Tayan, B., with Gow, I. D., & Larcker, D. F."
+    tier: 6
+    jurisdiction: [US]
+    binding: false
+    url: https://corpgov.law.harvard.edu/2017/06/08/retired-or-fired-how-can-investors-tell-if-the-ceo-left-voluntarily
+    version_or_date: "8 June 2017"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "A summary of Stanford GSB Working Paper No. 3547, which was not read. Basis for ceo-departure's stock phrases and its first trigger."
+  - id: wells-fargo-2017-investigation
+    title: "Sales Practices Investigation Report"
+    issuer: Independent Directors of the Board of Wells Fargo & Company
+    tier: 6
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/Archives/edgar/data/72971/000119312517118654/d375947ddefa14a.htm
+    version_or_date: "10 April 2017"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "A documented gap between a board's own finding and its public statement. Basis for ceo-departure's last question."
