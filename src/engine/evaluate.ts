@@ -1,12 +1,13 @@
 /**
- * The evaluation loop: build the prompt, call the model once, parse, validate,
- * enforce the code-side constraints, compute the score.
+ * The evaluation loop: build the prompt, call the model, parse, validate,
+ * enforce the code-side constraints, compute the score. A reply the engine
+ * cannot use costs one more call, not the whole review.
  */
 import type Anthropic from "@anthropic-ai/sdk";
 import { normalizeAnalysis } from "./normalize.js";
-import { callModel, EngineError, newRequestId, type ModelUsage } from "./client.js";
+import { callModel, EngineError, newRequestId, type EngineErrorKind, type ModelUsage } from "./client.js";
 import { getEngineConfig, type EngineConfig } from "./config.js";
-import { buildSystemBlocks, buildUserMessage } from "./prompt.js";
+import { buildSystemBlocks, buildUserMessage, type SystemBlock } from "./prompt.js";
 import { computeScore, confidenceLabel, scoreBand, type BandName } from "./scoring.js";
 import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
 import type { Analysis, EvaluationRequest } from "./types.js";
@@ -95,6 +96,21 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   };
 }
 
+/**
+ * Faults a second attempt can fix.
+ *
+ * All four mean the same thing: the provider wrote a reply the engine cannot
+ * use. Nothing about the request is wrong, so asking again is not a retry in
+ * the usual sense — it is the same question, and the odds of a second bad
+ * reply are the square of the first. Auth, refusals, rate limits and overload
+ * are excluded: a second immediate call to those fails the same way and wastes
+ * another minute of the reader's time.
+ */
+const WORTH_ASKING_AGAIN: ReadonlySet<EngineErrorKind> = new Set(["validation", "invalid_json", "truncated", "no_text"]);
+
+/** How many times the engine will ask. Two: one retry, never a loop. */
+export const MAX_ATTEMPTS = 2;
+
 export async function evaluateDraft(request: EvaluationRequest, options: EvaluateOptions = {}): Promise<EvaluationResult> {
   assertRequest(request);
   const config = options.config ?? getEngineConfig();
@@ -104,7 +120,30 @@ export async function evaluateDraft(request: EvaluationRequest, options: Evaluat
   const system = buildSystemBlocks(request);
   const user = buildUserMessage(request);
 
-  const call = await callModel({ system, user, config, client: options.client, requestId, log });
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await askOnce({ request, system, user, config, requestId, log, client: options.client });
+    } catch (error) {
+      const again = attempt < MAX_ATTEMPTS && error instanceof EngineError && WORTH_ASKING_AGAIN.has(error.kind);
+      if (!again) throw error;
+      log(`[${requestId}] attempt ${attempt} came back unusable (${(error as EngineError).kind}); asking once more`);
+    }
+  }
+}
+
+interface AskOptions {
+  request: EvaluationRequest;
+  system: SystemBlock[];
+  user: string;
+  config: EngineConfig;
+  requestId: string;
+  log: (line: string) => void;
+  client?: Anthropic;
+}
+
+/** One call to the provider, parsed, validated and scored. */
+async function askOnce({ request, system, user, config, requestId, log, client }: AskOptions): Promise<EvaluationResult> {
+  const call = await callModel({ system, user, config, client, requestId, log });
 
   let raw: unknown;
   try {
@@ -115,5 +154,10 @@ export async function evaluateDraft(request: EvaluationRequest, options: Evaluat
   // Normalized on this path too, not only on the claude.ai page. The provider's
   // grammar no longer carries the permitted values (see schema.ts), so the
   // casing repair both runtimes need now happens in one place for both.
-  return finishEvaluation(normalizeAnalysis(raw), request, { requestId, provider: { provider: config.provider, model: call.model }, usage: call.usage, log });
+  return finishEvaluation(normalizeAnalysis(raw), request, {
+    requestId,
+    provider: { provider: config.provider, model: call.model },
+    usage: call.usage,
+    log,
+  });
 }

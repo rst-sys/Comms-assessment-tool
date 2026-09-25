@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type Anthropic from "@anthropic-ai/sdk";
-import { evaluateDraft } from "../evaluate.js";
+import { evaluateDraft, MAX_ATTEMPTS } from "../evaluate.js";
 import { EngineError } from "../client.js";
 import type { EngineConfig } from "../config.js";
 import { DEMO_1 } from "../fixtures.js";
@@ -93,10 +93,76 @@ describe("evaluateDraft", () => {
       // The path travels with the message: it names the field, never the draft.
       message: "The analysis did not return in the expected format (at /dimensions). Try again.",
     });
-    // The latency line, then the validation failure with its path.
-    expect(logs).toHaveLength(2);
-    expect(logs[1]).toMatch(/validation failed at \/dimensions/);
+    // Two attempts, each logging its latency and the path it failed at, plus
+    // the line saying it asked again.
+    expect(logs.filter((l) => /validation failed at \/dimensions/.test(l))).toHaveLength(2);
     expect(logs.join("\n")).not.toContain("Rapid growth");
+  });
+
+  it("asks once more when the reply is unusable, and gives up after that", async () => {
+    // What a tester hit on a good cyber draft: 80 seconds of work thrown away
+    // because one reply came back malformed, and a straight retry succeeded.
+    // The engine does that retry now.
+    const bad = sampleAnalysis();
+    bad.dimensions = bad.dimensions.slice(0, 9);
+    let calls = 0;
+    const flaky = {
+      messages: {
+        create: async () => {
+          calls += 1;
+          const analysis = calls === 1 ? bad : sampleAnalysis();
+          return {
+            id: "msg_test", type: "message", role: "assistant", model: "test-model-served",
+            content: [{ type: "text", text: JSON.stringify(analysis), citations: null }],
+            stop_reason: "end_turn", stop_sequence: null,
+            usage: { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: null, cache_creation_input_tokens: null },
+          } as unknown as Anthropic.Message;
+        },
+      },
+    } as unknown as Anthropic;
+    const logs: string[] = [];
+    const result = await evaluateDraft(DEMO_1.request, { config, client: flaky, log: (l) => logs.push(l) });
+    expect(calls).toBe(2);
+    expect(result.score).toBeGreaterThan(0);
+    expect(logs.join("\n")).toMatch(/came back unusable \(validation\); asking once more/);
+
+    // Twice is the limit: a second bad reply is reported, not a third attempt.
+    let always = 0;
+    const broken = {
+      messages: {
+        create: async () => {
+          always += 1;
+          return {
+            id: "msg_test", type: "message", role: "assistant", model: "test-model-served",
+            content: [{ type: "text", text: JSON.stringify(bad), citations: null }],
+            stop_reason: "end_turn", stop_sequence: null,
+            usage: { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: null, cache_creation_input_tokens: null },
+          } as unknown as Anthropic.Message;
+        },
+      },
+    } as unknown as Anthropic;
+    await expect(evaluateDraft(DEMO_1.request, { config, client: broken })).rejects.toMatchObject({ kind: "validation" });
+    expect(always).toBe(MAX_ATTEMPTS);
+  });
+
+  it("does not ask again when a second call would fail the same way", async () => {
+    // A refusal is the provider's answer, not a bad reply; asking again spends
+    // another minute of the reader's time to be told the same thing.
+    let calls = 0;
+    const refused = {
+      messages: {
+        create: async () => {
+          calls += 1;
+          return {
+            id: "msg_test", type: "message", role: "assistant", model: "test-model-served",
+            content: [], stop_reason: "refusal", stop_sequence: null,
+            usage: { input_tokens: 10, output_tokens: 20, cache_read_input_tokens: null, cache_creation_input_tokens: null },
+          } as unknown as Anthropic.Message;
+        },
+      },
+    } as unknown as Anthropic;
+    await expect(evaluateDraft(DEMO_1.request, { config, client: refused })).rejects.toMatchObject({ kind: "refusal" });
+    expect(calls).toBe(1);
   });
 
   it("surfaces a refusal and a truncated response as distinct errors", async () => {
