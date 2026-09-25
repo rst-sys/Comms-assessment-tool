@@ -2,43 +2,64 @@
 id: cyber-incident
 name: Cyber incident and data breach
 layer: event
-events:
-  - Cyber incident or data breach
-version: 1
+family: incident
+version: 1.0.0
 status: active
+last_reviewed: 2026-09-25
+review_by: null
+changelog:
+  - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   US regulator guidance — NIST, the SEC, HHS and the FTC — plus professional judgment. None of it measures which notices work better.
 
 elements:
-  - name: What and when
+  - id: cyber-incident.what-and-when
+    name: What and when
     means: The draft gives the discovery date, the incident period if known, and time zones.
     weight: core
     dimension: truthfulness_factual_discipline
+    basis: unclassified
+    sources: []
 
-  - name: Nature of exposure
+  - id: cyber-incident.nature-of-exposure
+    name: Nature of exposure
     means: The draft says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined, and names the data categories involved.
     weight: core
     dimension: truthfulness_factual_discipline
+    basis: unclassified
+    sources: []
 
-  - name: Present response
+  - id: cyber-incident.present-response
+    name: Present response
     means: The draft describes what is being done now, specific enough to check, including containment and who is investigating.
     weight: core
     dimension: corrective_action_proof
+    basis: unclassified
+    sources: []
 
-  - name: Support matched to harm
+  - id: cyber-incident.support-matched-to-harm
+    name: Support matched to harm
     means: Any support offered fits the data involved, with its terms, its duration and how to claim it.
     weight: supporting
     dimension: stakeholder_respect_impact
+    basis: unclassified
+    sources: []
 
-  - name: Authenticity
+  - id: cyber-incident.authenticity
+    name: Authenticity
     means: The draft tells recipients how to confirm the notice is genuine, and how the organization will and will not contact them.
     weight: supporting
     dimension: verification_follow_through
+    basis: unclassified
+    sources: []
 
-  - name: Attribution discipline
+  - id: cyber-incident.attribution-discipline
+    name: Attribution discipline
     means: Any claim about who was responsible, or that a vendor was at fault, carries a stated basis and does not displace the organization's own role.
     weight: core
     dimension: fairness_independence_conflicts
+    basis: unclassified
+    sources: []
 
 triggers:
   - check: The draft states a categorical outcome — no data was compromised, the incident is contained, systems are secure — while also saying the investigation is ongoing, or with no basis given.

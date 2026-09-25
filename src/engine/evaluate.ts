@@ -8,6 +8,7 @@ import { normalizeAnalysis } from "./normalize.js";
 import { callModel, EngineError, newRequestId, type EngineErrorKind, type ModelUsage } from "./client.js";
 import { getEngineConfig, type EngineConfig } from "./config.js";
 import { buildSystemBlocks, buildUserMessage, type SystemBlock } from "./prompt.js";
+import { resolveProtocols } from "./protocols.js";
 import { computeScore, confidenceLabel, scoreBand, type BandName } from "./scoring.js";
 import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
 import type { Analysis, EvaluationRequest } from "./types.js";
@@ -15,6 +16,14 @@ import { AnalysisValidationError, validateAnalysis, type ValidationAdjustments }
 
 export interface EvaluationResult {
   request_id: string;
+  /**
+   * Which protocol versions this review was run against.
+   *
+   * A score without it is a number nobody can re-derive: the protocols change,
+   * and six months later there is no way to tell whether a draft scored badly
+   * or was judged by a different standard.
+   */
+  bundle_hash: string;
   analysis: Analysis;
   /** Accountable Communication Score, 0-100. */
   score: number;
@@ -86,6 +95,7 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   const score = computeScore(analysis.dimensions);
   return {
     request_id: requestId,
+    bundle_hash: resolveProtocols(request).hash,
     analysis,
     score,
     band: scoreBand(score),

@@ -31,7 +31,7 @@ describe("protocols add instructions, never output", () => {
 
   it("still applies the apology protocol, routing it through the ordinary findings", () => {
     const applied = protocolsFor(DEMO_2.request);
-    expect(applied.map((p) => p.id)).toContain("public-apology");
+    expect(applied.map((p) => p.id)).toContain("apology");
 
     const blocks = buildSystemBlocks(DEMO_2.request).map((b) => b.text).join("\n");
     expect(blocks).toContain("PUBLIC APOLOGY");

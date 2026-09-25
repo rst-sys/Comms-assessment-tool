@@ -1,0 +1,93 @@
+# The event taxonomy.
+#
+# One entry per event the intake offers. This file is the single source for
+# both the "What's happening?" menu and the resolver, so the options a user
+# sees and the protocols the engine applies cannot drift apart.
+#
+# Fields
+#   id              kebab-case, stable. Never reuse or repurpose one: it is
+#                   what a saved review and a bundle hash point at.
+#   label           the exact text shown in the menu.
+#   family          which of the seven families the event belongs to.
+#   event_protocol  optional. Only some events have a protocol of their own,
+#                   holding what differs from the family.
+#   ui_groups       the menu headings it appears under. "most-common" is a
+#                   group, not a separate option: an event listed there is
+#                   still one event with one id.
+#
+# Placing a new event
+#
+#   1. Incident vs external. If the organization's own operations, products or
+#      systems failed, it is `incident`, even when something outside caused the
+#      failure. If the organization is affected but nothing of its own failed,
+#      it is `external`.
+#
+#   2. Allegations vs scrutiny. A specific claim of wrongdoing — illegal,
+#      unethical, or against policy — is `allegations`. Criticism of a choice
+#      or a statement is `scrutiny`.
+#
+#   3. Workforce vs commercial. Place by who bears the main cost of the
+#      decision. Employees, `workforce`. Customers, investors or the market,
+#      `commercial`. The workforce-impact overlay covers the rest.
+#
+# The intake allows one event per draft. Where more than one fits, the user is
+# asked to choose the event the message mainly announces.
+
+families:
+  - { id: leadership,  name: Leadership change }
+  - { id: workforce,   name: Workforce and organization change }
+  - { id: incident,    name: Incident and disruption }
+  - { id: allegations, name: Allegations and misconduct }
+  - { id: commercial,  name: Commercial and financial decisions }
+  - { id: scrutiny,    name: Public scrutiny and reputation }
+  - { id: external,    name: External events and societal issues }
+
+# Menu headings, in the order the intake shows them.
+ui_groups:
+  - { id: most-common,           name: Most common }
+  - { id: leadership-governance, name: Leadership and governance }
+  - { id: people-workplace,      name: People and workplace }
+  - { id: operations-safety,     name: Operations and safety }
+  - { id: business-finance,      name: Business and finance }
+  - { id: legal-reputation,      name: Legal and reputation }
+  - { id: external-events,       name: External events }
+
+events:
+  - { id: ceo-departure,                  label: "CEO or senior leader departure",                        family: leadership,  event_protocol: ceo-departure,       ui_groups: [most-common, leadership-governance] }
+  - { id: leadership-appointment,         label: "New CEO or leadership appointment",                     family: leadership,  ui_groups: [leadership-governance] }
+  - { id: board-governance-dispute,       label: "Board change or governance dispute",                    family: leadership,  ui_groups: [leadership-governance] }
+  - { id: leader-allegations,             label: "Allegations against a leader",                          family: allegations, ui_groups: [leadership-governance] }
+  # A death is not a departure: no event_protocol, so the CEO departure checks
+  # — character of the departure, separation terms, who chose to go — never
+  # reach it. It appears under two headings because it belongs to both.
+  - { id: death-leader-employee,          label: "Death of a leader or employee",                         family: leadership,  ui_groups: [leadership-governance, people-workplace] }
+  - { id: layoffs,                        label: "Layoffs or job cuts",                                   family: workforce,   event_protocol: workforce-reduction, ui_groups: [most-common, people-workplace] }
+  - { id: restructuring,                  label: "Restructuring or reorganization",                       family: workforce,   event_protocol: workforce-reduction, ui_groups: [most-common, people-workplace] }
+  # Carries the workforce protocol because it does today; dropping it would
+  # have been a silent change to how a site-closure draft is reviewed.
+  - { id: site-closure,                   label: "Site, office or store closure",                         family: workforce,   event_protocol: workforce-reduction, ui_groups: [people-workplace] }
+  - { id: workplace-accident,             label: "Workplace accident or serious injury",                  family: incident,    ui_groups: [people-workplace] }
+  - { id: harassment-culture-allegations, label: "Harassment, discrimination or culture allegations",     family: allegations, ui_groups: [people-workplace] }
+  - { id: labor-dispute,                  label: "Strike or labor dispute",                               family: workforce,   ui_groups: [people-workplace] }
+  - { id: policy-change,                  label: "Major policy change (e.g. return to office, benefits)", family: workforce,   ui_groups: [people-workplace] }
+  - { id: cyber-incident,                 label: "Cyber incident or data breach",                         family: incident,    event_protocol: cyber-incident,      ui_groups: [most-common, operations-safety] }
+  - { id: system-outage,                  label: "System outage or service disruption",                   family: incident,    ui_groups: [operations-safety] }
+  - { id: product-recall,                 label: "Product recall or safety issue",                        family: incident,    ui_groups: [most-common, operations-safety] }
+  - { id: environmental-incident,         label: "Environmental incident",                                family: incident,    ui_groups: [operations-safety] }
+  - { id: supply-chain-disruption,        label: "Supply chain disruption",                               family: incident,    ui_groups: [operations-safety] }
+  - { id: merger-acquisition,             label: "Merger, acquisition or sale",                           family: commercial,  ui_groups: [most-common, business-finance] }
+  - { id: profit-warning,                 label: "Disappointing results or profit warning",               family: commercial,  ui_groups: [business-finance] }
+  - { id: price-terms-change,             label: "Price increase or change to terms",                     family: commercial,  ui_groups: [business-finance] }
+  - { id: financial-difficulty,           label: "Financial difficulty or cost-cutting",                  family: commercial,  ui_groups: [business-finance] }
+  - { id: strategy-market-exit,           label: "Change of strategy or exit from a market",              family: commercial,  ui_groups: [business-finance] }
+  - { id: investigation-litigation,       label: "Investigation, lawsuit or regulatory action",           family: allegations, ui_groups: [legal-reputation] }
+  - { id: fraud-misconduct,               label: "Fraud or financial misconduct",                         family: allegations, ui_groups: [legal-reputation] }
+  - { id: backlash,                       label: "Backlash to something the organization said or did",    family: scrutiny,    ui_groups: [legal-reputation] }
+  - { id: misinformation,                 label: "Rumor or misinformation about the organization",        family: scrutiny,    ui_groups: [legal-reputation] }
+  - { id: activist-pressure,              label: "Pressure from activists, campaigners or investors",     family: scrutiny,    ui_groups: [legal-reputation] }
+  - { id: geopolitical-event,             label: "Geopolitical event (war, sanctions, unrest)",           family: external,    event_protocol: geopolitical,        ui_groups: [external-events] }
+  - { id: natural-disaster,               label: "Natural disaster or extreme weather",                   family: external,    ui_groups: [external-events] }
+  - { id: public-health-emergency,        label: "Public health emergency",                               family: external,    ui_groups: [external-events] }
+  - { id: social-political-issue,         label: "Social or political issue (deciding whether to speak)", family: external,    ui_groups: [external-events] }
+  # Not on the list. No family, so the core protocol alone applies.
+  - { id: something-else,                 label: "Something else",                                        family: null,        ui_groups: [] }

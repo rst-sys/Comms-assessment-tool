@@ -135,6 +135,12 @@ identifier. A protocol is a lens on these ten, never an eleventh score.
 Specialist review types, spelled exactly: `Legal`, `HR`, `Labor`, `Privacy`,
 `Information security`, `Investor relations`, `Local market`, `Executive`.
 
+## Element caps by layer
+
+A core protocol may carry 8 elements, a family 6, an event 8, an overlay 5. A
+family says what its events share; an event holds only what differs from its
+family; an overlay only what one intake answer adds.
+
 ## Hard limits
 
 A checker rejects the file if it breaks these.
@@ -184,20 +190,30 @@ Give me one Markdown file. Nothing before the first `---`.
 ---
 id: short-name-with-hyphens
 name: The name shown in the Standards Library
-layer: event
-events:                  # one or more, spelled exactly as the list above spells them
-  - <an event this protocol covers>
-version: 1
-status: active
+layer: event             # core | family | event | overlay
+family: incident         # event protocols only: the family it sits under
+                         # overlays instead carry: trigger: <rule id>
+                         # An event protocol never names its events. protocols/events.yaml
+                         # points at it, so the menu and the engine cannot disagree.
+version: 1.0.0
+status: active           # draft until it has content and has been read
+last_reviewed: 2026-09-25
+review_by: null
+changelog:
+  - "1.0.0 — first version."
 rests_on: >-
   One line, at most 30 words, naming what KIND of authority this rests on and
   how strong it is. Not a summary of the sources.
 
 elements:
-  - name: Short name
+  - id: <protocol-id>.short-name     # stable; a finding and a changelog point at it
+    name: Short name
     means: One sentence saying what it is.
-    weight: core            # core or supporting
+    weight: core                     # core or supporting
     dimension: accountability_agency
+    basis: unclassified              # law | guidance | standard | research | code | judgement | unclassified
+    sources: []                      # ids from sources/registry.yaml
+    # applies_if: { org_type: [publicly_listed], jurisdiction: [US, EU] }   # optional
 
 triggers:
   - check: Something checkable by reading the draft.

@@ -142,7 +142,7 @@ export function EventQuestion({ state, onChange }: QuestionProps) {
     <div>
       <Menu
         label="What's happening?"
-        hint="Searchable, grouped by category. One choice."
+        hint="If more than one applies, choose the event your message mainly announces."
         placeholder="Choose the closest match"
         groups={EVENT_MENU}
         searchable

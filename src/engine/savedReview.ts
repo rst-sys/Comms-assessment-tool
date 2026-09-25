@@ -77,6 +77,8 @@ export interface SavedReview {
   /** True when the verbatim excerpt and scan-phrase fields were kept. */
   excerpts_included: boolean;
   provider: { provider: string; model: string };
+  /** The protocol versions this review was run against. */
+  bundle_hash?: string;
   score: number;
   band: string;
   confidence_label: string;
@@ -109,6 +111,7 @@ export function buildSavedReview(
     saved_at: now.toISOString(),
     excerpts_included: includeExcerpts,
     provider: result.provider,
+    bundle_hash: result.bundle_hash,
     score: result.score,
     band: result.band,
     confidence_label: result.confidence_label,

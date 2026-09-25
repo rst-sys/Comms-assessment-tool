@@ -1,54 +1,81 @@
 ---
-id: geopolitical-operations-employee-welfare
+id: geopolitical
 name: Geopolitical event affecting operations or employee welfare
 layer: event
-events:
-  - Geopolitical event (war, sanctions, unrest)
-version: 1
+family: external
+version: 1.0.0
 status: active
+last_reviewed: 2026-09-25
+review_by: null
+changelog:
+  - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   EU worker-information directives and US WARN, official guidance with no force of law, and three studies.
 
 elements:
-  - name: Basis for speaking
+  - id: geopolitical.basis-for-speaking
+    name: Basis for speaking
     means: The draft says what connects this organization to this event — its people, its sites, its supply, its obligations — rather than speaking because others are speaking.
     weight: core
     dimension: fairness_independence_conflicts
+    basis: unclassified
+    sources: []
 
-  - name: Discretion inside compliance
+  - id: geopolitical.discretion-inside-compliance
+    name: Discretion inside compliance
     means: Where the organization was compelled by law, sanctions or government direction, and where it chose — whether to exit, when, on what terms, and what happens to local staff.
     weight: core
     dimension: accountability_agency
+    basis: unclassified
+    sources: []
 
-  - name: Exposure separated from event
+  - id: geopolitical.exposure-separated-from-event
+    name: Exposure separated from event
     means: What follows from the event itself and what follows from the organization's own prior positioning — where it sited operations, how concentrated its suppliers or staff are.
     weight: core
     dimension: causation_explanation
+    basis: unclassified
+    sources: []
 
-  - name: Danger and protective steps
+  - id: geopolitical.danger-and-protective-steps
+    name: Danger and protective steps
     means: For people in or near the affected area, the risk as currently assessed, the protective steps taken or planned, and who is responsible for them.
     weight: core
     dimension: corrective_action_proof
+    basis: unclassified
+    sources: []
 
-  - name: Status of open decisions
+  - id: geopolitical.status-of-open-decisions
+    name: Status of open decisions
     means: What has been decided, what is under consideration, and what would cause the next decision to be made.
     weight: core
     dimension: truthfulness_factual_discipline
+    basis: unclassified
+    sources: []
 
-  - name: Divided workforce
+  - id: geopolitical.divided-workforce
+    name: Divided workforce
     means: The draft is written for a workforce holding different relationships to the conflict, and is clear about what applies to everyone regardless of where they sit.
     weight: supporting
     dimension: stakeholder_respect_impact
+    basis: unclassified
+    sources: []
 
-  - name: Route for personal circumstances
+  - id: geopolitical.route-for-personal-circumstances
+    name: Route for personal circumstances
     means: A way for affected staff to tell the organization facts about their own situation — location, family, travel, immigration status — that would change its response, and what happens to what they report.
     weight: supporting
     dimension: listening_employee_voice
+    basis: unclassified
+    sources: []
 
-  - name: Conditions for revisiting
+  - id: geopolitical.conditions-for-revisiting
+    name: Conditions for revisiting
     means: What would cause this position or operational decision to change, and when it will next be reviewed.
     weight: supporting
     dimension: verification_follow_through
+    basis: unclassified
+    sources: []
 
 triggers:
   - check: An operational change is attributed to the event itself — the conflict, the sanctions, the border closure — with no decision by the organization named alongside it.

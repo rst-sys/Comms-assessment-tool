@@ -31,104 +31,54 @@ export interface OrganizationProfile {
 }
 
 /**
- * What happened, grouped the way the intake shows it.
+ * What happened.
  *
- * Thirty events in six groups, replacing the thirteen the tool shipped with.
- * The thirteen were the right axis and too coarse a grain: "workforce
- * reduction or major reorganization" covered layoffs, a reorganization and a
- * site closure, which arrive with different duties and different first
- * questions. This is the axis the protocol library is organized on, and a
- * protocol now claims a list of events rather than one.
- *
- * The group names are stored in ordinary case and shown in capitals by the
- * stylesheet, so a screen reader says "Leadership and governance" rather than
- * spelling it out.
+ * The list, the groups and the family each event belongs to all come from
+ * protocols/events.yaml, compiled into eventTaxonomy.ts at build time. One
+ * file feeds the menu and the resolver, so the options a user sees and the
+ * protocols the engine applies cannot drift apart.
  */
-export const EVENT_GROUPS = [
-  [
-    "Leadership and governance",
-    [
-      "CEO or senior leader departure",
-      "New CEO or leadership appointment",
-      "Board change or governance dispute",
-      "Allegations against a leader",
-    ],
-  ],
-  [
-    "People and workplace",
-    [
-      "Layoffs or job cuts",
-      "Restructuring or reorganization",
-      "Site, office or store closure",
-      "Workplace accident or serious injury",
-      "Harassment, discrimination or culture allegations",
-      "Strike or labor dispute",
-      "Major policy change (e.g. return to office, benefits)",
-    ],
-  ],
-  [
-    "Operations and safety",
-    [
-      "Cyber incident or data breach",
-      "System outage or service disruption",
-      "Product recall or safety issue",
-      "Environmental incident",
-      "Supply chain disruption",
-    ],
-  ],
-  [
-    "Business and finance",
-    [
-      "Merger, acquisition or sale",
-      "Disappointing results or profit warning",
-      "Price increase or change to terms",
-      "Financial difficulty or cost-cutting",
-      "Change of strategy or exit from a market",
-    ],
-  ],
-  [
-    "Legal and reputation",
-    [
-      "Investigation, lawsuit or regulatory action",
-      "Fraud or financial misconduct",
-      "Backlash to something the organization said or did",
-      "Rumor or misinformation about the organization",
-      "Pressure from activists, campaigners or investors",
-    ],
-  ],
-  [
-    "External events",
-    [
-      "Geopolitical event (war, sanctions, unrest)",
-      "Natural disaster or extreme weather",
-      "Public health emergency",
-      "Social or political issue (deciding whether to speak)",
-    ],
-  ],
-] as const;
+import {
+  COMMUNICATION_EVENTS,
+  EVENT_TAXONOMY,
+  EVENT_UI_GROUPS,
+  type EventEntry,
+} from "./eventTaxonomy.js";
 
-/** The event chosen when nothing on the list fits; the user then types what happened. */
-export const OTHER_EVENT = "Something else";
-
-export const COMMUNICATION_EVENTS = [
-  ...EVENT_GROUPS.flatMap(([, events]) => events),
+export {
+  COMMUNICATION_EVENTS,
+  EVENT_FAMILIES,
+  EVENT_TAXONOMY,
+  EVENT_UI_GROUPS,
   OTHER_EVENT,
-] as const;
+  type EventEntry,
+  type EventFamilyId,
+} from "./eventTaxonomy.js";
 export type CommunicationEvent = (typeof COMMUNICATION_EVENTS)[number];
 
+/** The event by its label, for anything that starts from what the user picked. */
+export const EVENT_BY_LABEL: ReadonlyMap<string, EventEntry> = new Map(EVENT_TAXONOMY.map((e) => [e.label, e]));
+export const EVENT_BY_ID: ReadonlyMap<string, EventEntry> = new Map(EVENT_TAXONOMY.map((e) => [e.id, e]));
+
 /**
- * The six events shown at the top of the menu, repeated from their groups.
- * Not a category: a shortcut past thirty radio buttons for the events a
- * communications team meets most.
+ * The menu, as the intake draws it: the group heading and the events under it,
+ * in taxonomy order. "Most common" is a group like any other — an event in it
+ * is the same event with the same id, not a second option.
  */
-export const MOST_COMMON_EVENTS: readonly CommunicationEvent[] = [
-  "CEO or senior leader departure",
-  "Layoffs or job cuts",
-  "Cyber incident or data breach",
-  "Restructuring or reorganization",
-  "Merger, acquisition or sale",
-  "Product recall or safety issue",
-];
+export const EVENT_GROUPS: readonly (readonly [string, readonly CommunicationEvent[]])[] = EVENT_UI_GROUPS.filter(
+  (g) => g.id !== "most-common",
+).map(
+  (g) =>
+    [g.name, EVENT_TAXONOMY.filter((e) => e.ui_groups.includes(g.id)).map((e) => e.label as CommunicationEvent)] as const,
+);
+
+/**
+ * The events shown at the top of the menu, repeated from their groups. Not a
+ * category: a shortcut past thirty radio buttons.
+ */
+export const MOST_COMMON_EVENTS: readonly CommunicationEvent[] = EVENT_TAXONOMY.filter((e) =>
+  e.ui_groups.includes("most-common"),
+).map((e) => e.label as CommunicationEvent);
 
 /**
  * Events where people are directly affected in a way the draft has to speak

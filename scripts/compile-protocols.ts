@@ -9,7 +9,7 @@
  * bundle for the claude.ai page, and the tests. None of them can agree on a
  * file system, and all of them can read a plain TypeScript module.
  */
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import {
@@ -17,12 +17,29 @@ import {
   checkProtocol,
   protocolWordBudget,
   type CheckError,
+  type EventEntry,
   type ProtocolFile,
 } from "../src/engine/protocolFormat.js";
-import { buildProtocolBlock, protocolWordCount } from "../src/engine/protocolPrompt.js";
+import { buildProtocolBlock, PROTOCOL_RULES, protocolWordCount } from "../src/engine/protocolPrompt.js";
 
 const DIR = "protocols";
 const OUT = "src/engine/protocolLibrary.ts";
+const EVENTS_IN = "protocols/events.yaml";
+const EVENTS_OUT = "src/engine/eventTaxonomy.ts";
+const REGISTRY = "sources/registry.yaml";
+
+/**
+ * The most a whole bundle may cost, in tokens.
+ *
+ * Instructions are cached and read in parallel, so this is not a speed limit;
+ * it is about attention. Let the protocol layers outgrow the framework and
+ * every review is mostly protocol, whatever the draft in front of it needs.
+ * Four English characters to the token is the usual rule of thumb and is what
+ * the report below assumes.
+ */
+const TOKEN_BUDGET = Number.parseInt(process.env.ACR_PROTOCOL_TOKEN_BUDGET ?? "2500", 10);
+const CHARS_PER_TOKEN = 4;
+const estimateTokens = (text: string) => Math.ceil(text.length / CHARS_PER_TOKEN);
 
 /** Splits `---\n<yaml>\n---\n<prose>`. Returns null when there is no front matter. */
 export function splitFrontMatter(text: string): { yaml: string; prose: string } | null {
@@ -37,15 +54,40 @@ export function splitFrontMatter(text: string): { yaml: string; prose: string } 
 export interface CompiledLibrary {
   protocols: ProtocolFile[];
   errors: CheckError[];
+  /** The heaviest bundle the resolver could assemble, for the build report. */
+  worst?: { words: number; tokens: number; wordBudget: number; tokenBudget: number };
+}
+
+/** Every .md under the folder, deepest last, README excluded. */
+function markdownFiles(dir: string, prefix = ""): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir).sort()) {
+    const full = join(dir, entry);
+    if (statSync(full).isDirectory()) out.push(...markdownFiles(full, `${prefix}${entry}/`));
+    else if (entry.endsWith(".md") && entry !== "README.md") out.push(`${prefix}${entry}`);
+  }
+  return out;
+}
+
+export function readEvents(file = EVENTS_IN): { events: EventEntry[]; families: { id: string; name: string }[]; uiGroups: { id: string; name: string }[] } {
+  const raw = parseYaml(readFileSync(file, "utf8")) as {
+    events: EventEntry[];
+    families: { id: string; name: string }[];
+    ui_groups: { id: string; name: string }[];
+  };
+  return { events: raw.events, families: raw.families, uiGroups: raw.ui_groups };
+}
+
+export function readSourceIds(file = REGISTRY): string[] {
+  const raw = parseYaml(readFileSync(file, "utf8")) as { sources: { id: string }[] };
+  return raw.sources.map((s) => s.id);
 }
 
 export function compile(dir = DIR): CompiledLibrary {
   const errors: CheckError[] = [];
   const protocols: ProtocolFile[] = [];
 
-  const files = readdirSync(dir)
-    .filter((f) => f.endsWith(".md") && f !== "README.md")
-    .sort();
+  const files = markdownFiles(dir);
 
   for (const file of files) {
     const text = readFileSync(join(dir, file), "utf8");
@@ -69,24 +111,51 @@ export function compile(dir = DIR): CompiledLibrary {
     }
   }
 
-  errors.push(...checkLibrary(protocols.map((data, i) => ({ file: files[i] ?? data.id, data }))));
+  const { events, families } = readEvents();
+  errors.push(
+    ...checkLibrary(
+      protocols.map((data, i) => ({ file: files[i] ?? data.id, data })),
+      events,
+      families.map((f) => f.id),
+      readSourceIds(),
+    ),
+  );
 
-  // Budget: the heaviest event plus the heaviest posture, the most that can
-  // apply to one draft.
-  const heaviest = (layer: ProtocolFile["layer"]) =>
-    Math.max(0, ...protocols.filter((p) => p.layer === layer).map((p) => protocolWordCount(buildProtocolBlock(p))));
-  const worst = heaviest("event") + heaviest("posture");
+  // Worst case: the core, the heaviest family, the heaviest event and every
+  // overlay at once, plus the rules block sent with them.
+  const active = protocols.filter((p) => p.status === "active");
+  const blockOf = (p: ProtocolFile) => buildProtocolBlock(p);
+  const heaviest = (layer: ProtocolFile["layer"]) => {
+    const texts = active.filter((p) => p.layer === layer).map(blockOf);
+    return texts.length === 0 ? "" : texts.reduce((a, b) => (b.length > a.length ? b : a));
+  };
+  const worstTexts = [
+    heaviest("core"),
+    heaviest("family"),
+    heaviest("event"),
+    ...active.filter((p) => p.layer === "overlay").map(blockOf),
+    PROTOCOL_RULES,
+  ].filter((t) => t.length > 0);
+  const worstText = worstTexts.join("\n\n");
+  const worstWords = protocolWordCount(worstText);
+  const worstTokens = estimateTokens(worstText);
   const budget = protocolWordBudget();
-  if (worst > budget) {
+  if (worstWords > budget) {
     errors.push({
       file: "(whole library)",
       message:
-        `the worst case — the longest event plus the longest posture — is ${worst} words, ` +
-        `over the ${budget}-word budget. The protocols must stay shorter than the framework they sit under.`,
+        `the worst case is ${worstWords} words, over the ${budget}-word budget. ` +
+        "The protocols must stay shorter than the framework they sit under.",
+    });
+  }
+  if (worstTokens > TOKEN_BUDGET) {
+    errors.push({
+      file: "(whole library)",
+      message: `the worst case is about ${worstTokens} tokens, over the ${TOKEN_BUDGET}-token budget (ACR_PROTOCOL_TOKEN_BUDGET).`,
     });
   }
 
-  return { protocols, errors };
+  return { protocols, errors, worst: { words: worstWords, tokens: worstTokens, wordBudget: budget, tokenBudget: TOKEN_BUDGET } };
 }
 
 export function render(protocols: ProtocolFile[]): string {
@@ -105,9 +174,79 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = ${body};
 `;
 }
 
+/** Sources whose review_by date has passed, for the build warning. */
+export function staleSources(file = REGISTRY, today = new Date()): string[] {
+  const raw = parseYaml(readFileSync(file, "utf8")) as { sources: { id: string; review_by?: string | null }[] };
+  return raw.sources
+    .filter((s) => s.review_by && new Date(s.review_by) < today)
+    .map((s) => `${s.id} was due for review on ${s.review_by}`);
+}
+
+/** Emits the taxonomy as TypeScript, so the three runtimes share it without a file system. */
+export function renderEvents(
+  events: EventEntry[],
+  families: { id: string; name: string }[],
+  uiGroups: { id: string; name: string }[],
+): string {
+  const j = (v: unknown) => JSON.stringify(v);
+  const rows = events
+    .map((e) => {
+      const parts = [`id: ${j(e.id)}`, `label: ${j(e.label)}`, `family: ${j(e.family)}`];
+      if (e.event_protocol) parts.push(`event_protocol: ${j(e.event_protocol)}`);
+      parts.push(`ui_groups: [${e.ui_groups.map(j).join(", ")}]`);
+      return `  { ${parts.join(", ")} },`;
+    })
+    .join("\n");
+  const named = events.filter((e) => e.family !== null);
+  return `/**
+ * GENERATED FILE — do not edit.
+ *
+ * Built from protocols/events.yaml by scripts/compile-protocols.ts. Change an
+ * event by editing that file and running \`npm run protocols\`. A test fails if
+ * this file and the YAML disagree.
+ *
+ * The labels are written out as literals rather than derived, because
+ * CommunicationEvent is a union of them and every enum, record and switch in
+ * the app depends on it.
+ */
+
+export interface EventEntry {
+  readonly id: string;
+  readonly label: string;
+  readonly family: string | null;
+  readonly event_protocol?: string;
+  readonly ui_groups: readonly string[];
+}
+
+export const EVENT_FAMILIES = [
+${families.map((f) => `  { id: ${j(f.id)}, name: ${j(f.name)} },`).join("\n")}
+] as const;
+export type EventFamilyId = (typeof EVENT_FAMILIES)[number]["id"];
+
+export const EVENT_UI_GROUPS = [
+${uiGroups.map((g) => `  { id: ${j(g.id)}, name: ${j(g.name)} },`).join("\n")}
+] as const;
+
+export const EVENT_TAXONOMY: readonly EventEntry[] = [
+${rows}
+];
+
+/** Every event label, in taxonomy order. The union the whole app is typed on. */
+export const COMMUNICATION_EVENTS = [
+${events.map((e) => `  ${j(e.label)},`).join("\n")}
+] as const;
+
+/** The event chosen when nothing on the list fits; the user then types what happened. */
+export const OTHER_EVENT = ${j(events.find((e) => e.family === null)?.label ?? "Something else")};
+
+/** Events that name something, for anywhere "Something else" is not a real answer. */
+export const NAMED_EVENT_COUNT = ${named.length};
+`;
+}
+
 function main(): void {
   const check = process.argv.includes("--check");
-  const { protocols, errors } = compile();
+  const { protocols, errors, worst } = compile();
 
   if (errors.length > 0) {
     console.error(`\n${errors.length} problem${errors.length === 1 ? "" : "s"} in the protocol files:\n`);
@@ -115,21 +254,36 @@ function main(): void {
     process.exit(1);
   }
 
+  const { events, families, uiGroups } = readEvents();
   const rendered = render(protocols);
+  const renderedEvents = renderEvents(events, families, uiGroups);
   if (check) {
-    const current = readFileSync(OUT, "utf8");
-    if (current !== rendered) {
-      console.error(`${OUT} is out of date. Run: npm run protocols`);
-      process.exit(1);
+    for (const [file, text] of [[OUT, rendered], [EVENTS_OUT, renderedEvents]] as const) {
+      if (readFileSync(file, "utf8") !== text) {
+        console.error(`${file} is out of date. Run: npm run protocols`);
+        process.exit(1);
+      }
     }
-    console.log(`${OUT} is up to date (${protocols.length} protocol${protocols.length === 1 ? "" : "s"}).`);
+    console.log(`${OUT} and ${EVENTS_OUT} are up to date (${protocols.length} protocols, ${events.length} events).`);
     return;
   }
 
+  writeFileSync(EVENTS_OUT, renderedEvents);
   writeFileSync(OUT, rendered);
-  const names = protocols.map((p) => `${p.id} (${p.layer}${p.status === "draft" ? ", draft" : ""})`);
+  console.log(`Wrote ${EVENTS_OUT} with ${events.length} events in ${families.length} families.`);
   console.log(`Wrote ${OUT} with ${protocols.length} protocol${protocols.length === 1 ? "" : "s"}:`);
-  for (const n of names) console.log(`  ${n}`);
+  for (const layer of ["core", "family", "event", "overlay"] as const) {
+    for (const p of protocols.filter((x) => x.layer === layer)) {
+      console.log(`  ${p.layer.padEnd(8)} ${p.id.padEnd(22)} v${p.version}${p.status === "active" ? "" : `  (${p.status})`}`);
+    }
+  }
+  if (worst) {
+    console.log(
+      `\nWorst-case bundle: ${worst.words} words, about ${worst.tokens} tokens ` +
+        `(budgets: ${worst.wordBudget} words, ${worst.tokenBudget} tokens).`,
+    );
+  }
+  for (const s of staleSources()) console.warn(`  warning: source ${s}`);
 }
 
 if (process.argv[1]?.endsWith("compile-protocols.ts")) main();

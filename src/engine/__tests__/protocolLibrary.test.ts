@@ -38,10 +38,12 @@ describe("the protocol library", () => {
 
 describe("the checker", () => {
   const good = {
-    id: "example", name: "Example", layer: "event", version: 1, status: "active",
+    id: "example", name: "Example", layer: "event", family: "incident", version: "1.0.0", status: "active",
+    last_reviewed: "2026-09-25", review_by: null, changelog: ["1.0.0 — first version."],
     rests_on: "Regulator guidance plus professional judgment.",
-    events: ["Cyber incident or data breach"],
-    elements: [{ name: "A", means: "B.", weight: "core", dimension: "accountability_agency" }],
+    elements: [
+      { id: "example.a", name: "A", means: "B.", weight: "core", dimension: "accountability_agency", basis: "unclassified", sources: [] },
+    ],
     triggers: [{ check: "C.", dimension: "accountability_agency", review: ["Legal"] }],
     questions: [{ ask: "D?" }],
   };
@@ -62,18 +64,43 @@ describe("the checker", () => {
     expect(messages(bad)).toContain("Information security");
   });
 
-  it("rejects an event that is not on the list, and the not-on-the-list placeholder", () => {
-    expect(messages({ ...good, events: ["A bad day"] })).toContain("Spell it exactly");
-    expect(messages({ ...good, events: ["Something else"] })).toContain("no protocol may claim it");
-    expect(messages({ ...good, events: [] })).toContain("needs events");
+  it("refuses a protocol that still names its own events, now the taxonomy does", () => {
+    // One direction only: protocols/events.yaml points at a protocol, never
+    // the other way, so the menu and the engine cannot drift apart.
+    expect(messages({ ...good, events: ["Cyber incident or data breach"] })).toContain("no longer named here");
+    expect(messages({ ...good, purposes: ["Apologize and take responsibility"] })).toContain("no longer named here");
   });
 
-  it("lets one protocol cover several events, and catches a repeat", () => {
-    // Layoffs, a reorganization and a site closure are three things on the
-    // menu and one duty in practice, so one file covers all three.
-    const three = { ...good, events: ["Layoffs or job cuts", "Restructuring or reorganization", "Site, office or store closure"] };
-    expect(checkProtocol("f.md", three, prose)).toEqual([]);
-    expect(messages({ ...good, events: ["Layoffs or job cuts", "Layoffs or job cuts"] })).toContain("twice");
+  it("insists an event protocol names its family, and an overlay its trigger", () => {
+    const { family: _f, ...noFamily } = good;
+    expect(messages(noFamily)).toContain("needs family");
+    expect(messages({ ...noFamily, layer: "overlay", trigger: "apology" })).toEqual("");
+    expect(messages({ ...noFamily, layer: "overlay", trigger: "whenever" })).toContain("an overlay needs trigger");
+    expect(messages({ ...good, trigger: "apology" })).toContain("only a protocol with layer: overlay names a trigger");
+  });
+
+  it("holds a different element cap for each layer", () => {
+    const many = (n: number) =>
+      Array.from({ length: n }, (_, i) => ({ ...good.elements[0], id: `example.e${i}`, name: `E${i}` }));
+    const { family: _f, ...base } = good;
+    // A family says what its events share, so it is the smallest.
+    expect(messages({ ...base, layer: "family", elements: many(7) })).toContain("the most a family protocol may carry is 6");
+    expect(messages({ ...base, layer: "overlay", trigger: "apology", elements: many(6) })).toContain("may carry is 5");
+    expect(messages({ ...good, elements: many(9) })).toContain("may carry is 8");
+    expect(checkProtocol("f.md", { ...good, elements: many(8) }, prose)).toEqual([]);
+  });
+
+  it("wants a stable id on every element, prefixed by the protocol's own", () => {
+    expect(messages({ ...good, elements: [{ ...good.elements[0], id: undefined }] })).toContain("needs an id");
+    expect(messages({ ...good, elements: [{ ...good.elements[0], id: "other.a" }] })).toContain('must start with "example."');
+    expect(messages({ ...good, elements: [good.elements[0], { ...good.elements[0], name: "B" }] })).toContain("repeats the id");
+  });
+
+  it("wants a semver version and a changelog, so a review can be traced to a version", () => {
+    expect(messages({ ...good, version: 1 })).toContain("must be semver");
+    expect(messages({ ...good, version: "1.0" })).toContain("must be semver");
+    expect(messages({ ...good, changelog: [] })).toContain("needs a changelog");
+    expect(messages({ ...good, last_reviewed: "yesterday" })).toContain("must be a date");
   });
 
   it("holds the caps", () => {
@@ -108,17 +135,44 @@ describe("the checker", () => {
     expect(message).toContain("The framework allows: plain-naming");
   });
 
-  it("refuses two protocols claiming the same event, or the same id", () => {
+  it("refuses two protocols with the same id, or two overlays on one rule", () => {
     const a = { file: "a.md", data: { ...good, prose } as never };
-    const b = { file: "b.md", data: { ...good, id: "other", prose } as never };
-    expect(checkLibrary([a, b]).map((e) => e.message).join(" | ")).toContain("already covered by a.md");
     expect(checkLibrary([a, { ...a, file: "c.md" }]).map((e) => e.message).join(" | ")).toContain('id "example" is already used');
+
+    const overlay = { ...good, layer: "overlay", trigger: "apology", family: undefined, prose };
+    const two = [
+      { file: "x.md", data: overlay as never },
+      { file: "y.md", data: { ...overlay, id: "other" } as never },
+    ];
+    expect(checkLibrary(two).map((e) => e.message).join(" | ")).toContain('trigger "apology" is already claimed by x.md');
   });
 
-  it("accepts only the two layers that remain", () => {
-    // "core" was a third layer that duplicated the framework; it is gone, and
-    // a file still claiming it should fail rather than be quietly ignored.
-    expect(messages({ ...good, layer: "core" })).toContain('layer must be "event"');
+  it("makes the taxonomy and the folder agree in both directions", () => {
+    const events = [
+      { id: "cyber-incident", label: "Cyber incident or data breach", family: "incident", event_protocol: "example", ui_groups: [] },
+      { id: "outage", label: "System outage", family: "incident", ui_groups: [] },
+    ];
+    const files = [{ file: "a.md", data: { ...good, prose } as never }];
+    // The family every event needs must exist as a file.
+    expect(checkLibrary(files, events, ["incident"], []).map((e) => e.message).join(" | ")).toContain(
+      "protocols/families/incident.md does not exist",
+    );
+    // And an event protocol nothing points at can never apply.
+    expect(checkLibrary(files, [events[1]!], ["incident"], []).map((e) => e.message).join(" | ")).toContain(
+      'no event in events.yaml points at "example"',
+    );
+  });
+
+  it("refuses an element that cites a source the registry does not hold", () => {
+    const bad = { ...good, elements: [{ ...good.elements[0], sources: ["made-up-source"] }] };
+    const message = checkLibrary([{ file: "a.md", data: { ...bad, prose } as never }], [], [], ["real-source"])
+      .map((e) => e.message)
+      .join(" | ");
+    expect(message).toContain('cites source "made-up-source"');
+  });
+
+  it("accepts only the four layers", () => {
+    expect(messages({ ...good, layer: "posture" })).toContain("layer must be one of core, family, event, overlay");
   });
 
   it("insists on a one-line summary of what the protocol rests on, and keeps it short", () => {

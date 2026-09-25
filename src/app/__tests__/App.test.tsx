@@ -209,11 +209,13 @@ describe("App", () => {
     expect(screen.getByRole("heading", { name: "The core framework" })).toBeTruthy();
     // Every protocol the engine can send is named, and opening one shows every
     // element it checks: the library must not claim a standard the tool does
-    // not apply, nor apply one it does not show.
-    for (const protocol of PROTOCOLS) {
+    // not apply, nor apply one it does not show. Drafts are neither sent nor
+    // shown.
+    const active = PROTOCOLS.filter((p) => p.status === "active");
+    for (const protocol of active) {
       expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
     }
-    for (const protocol of PROTOCOLS) {
+    for (const protocol of active) {
       const head = screen.getByRole("button", { name: new RegExp(protocol.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")) });
       if (head.getAttribute("aria-expanded") === "false") fireEvent.click(head);
       for (const element of protocol.elements) {

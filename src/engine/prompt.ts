@@ -82,6 +82,13 @@ Persona names are short role labels of one to four words, such as "Affected empl
 
 export interface SystemBlock {
   text: string;
+  /**
+   * Whether the provider should cache everything up to and including this
+   * block. The framework prompt is one, because it is identical on every
+   * review; the last block is another, because a second review of the same
+   * event then re-reads nothing.
+   */
+  cache?: boolean;
 }
 
 /**
@@ -98,11 +105,19 @@ export interface SystemBlock {
  * that standard rather than two saying nearly the same thing.
  */
 export function buildSystemBlocks(request: EvaluationRequest): SystemBlock[] {
-  const blocks: SystemBlock[] = [{ text: SYSTEM_PROMPT }];
+  // The framework prompt is the cache boundary every review shares. The
+  // protocol blocks that follow vary by event, so caching only at the end
+  // would give each event its own entry and nothing in common.
+  //
+  // The order is deliberately unchanged: the output notes still come after
+  // the protocols, where they have always been. Moving them ahead would make
+  // the prompt "stable parts first" and would also rewrite it, which is a
+  // scoring change, not a plumbing one.
+  const blocks: SystemBlock[] = [{ text: SYSTEM_PROMPT, cache: true }];
   for (const text of protocolBlocksFor(request)) {
     blocks.push({ text });
   }
-  blocks.push({ text: OUTPUT_NOTES });
+  blocks.push({ text: OUTPUT_NOTES, cache: true });
   return blocks;
 }
 

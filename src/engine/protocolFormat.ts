@@ -39,10 +39,49 @@ import {
  * elements apiece.
  */
 export const PROTOCOL_CAPS = {
-  elements: 8,
   triggers: 6,
   questions: 6,
 } as const;
+
+export function protocolWordBudget(): number {
+  return SYSTEM_PROMPT.trim().split(/\s+/).filter(Boolean).length;
+}
+
+export const PROTOCOL_LAYERS = ["core", "family", "event", "overlay"] as const;
+export type ProtocolLayer = (typeof PROTOCOL_LAYERS)[number];
+
+/** Where an element's authority comes from. Set by the owner, never inferred. */
+export const ELEMENT_BASES = ["law", "guidance", "standard", "research", "code", "judgement", "unclassified"] as const;
+export type ElementBasis = (typeof ELEMENT_BASES)[number];
+
+/**
+ * The intake answers an overlay can be switched on by. The resolver holds the
+ * rule for each; this list is what a protocol file is allowed to name.
+ */
+export const OVERLAY_TRIGGERS = [
+  "listed-company",
+  "people-harmed",
+  "workforce-impact",
+  "personal-data",
+  "stage-unfolding",
+  "apology",
+] as const;
+export type OverlayTrigger = (typeof OVERLAY_TRIGGERS)[number];
+
+/**
+ * How many elements each layer may carry.
+ *
+ * A family says what its events share, so it is the smallest; an event holds
+ * only what differs from its family, and an overlay only what one intake
+ * answer adds. Without these the layers grow until every review is mostly
+ * protocol, which is the failure the word budget below also guards against.
+ */
+export const ELEMENT_CAPS: Record<ProtocolLayer, number> = {
+  core: 8,
+  family: 6,
+  event: 8,
+  overlay: 5,
+};
 
 /**
  * The whole compiled instruction set — core plus the longest event plus the
@@ -60,11 +99,7 @@ export const PROTOCOL_CAPS = {
  * protocols stay the smaller voice — and stays true when the framework
  * changes.
  */
-export function protocolWordBudget(): number {
-  return SYSTEM_PROMPT.trim().split(/\s+/).filter(Boolean).length;
-}
 
-export type ProtocolLayer = "event" | "posture";
 
 /**
  * The framework checks an event protocol may soften, and what softening means.
@@ -86,10 +121,18 @@ export const FRAMEWORK_NARROWABLE: Record<string, string> = {
 export type ElementWeight = "core" | "supporting";
 
 export interface ProtocolElement {
+  /** Stable, `<protocol>.<slug>`. What a finding or a changelog points at. */
+  id: string;
   name: string;
   means: string;
   weight: ElementWeight;
   dimension: DimensionId;
+  /** What kind of authority this rests on. "unclassified" until the owner says. */
+  basis: ElementBasis;
+  /** Ids from sources/registry.yaml. */
+  sources: string[];
+  /** Conditions under which the element applies at all; absent means always. */
+  applies_if?: { org_type?: string[]; jurisdiction?: string[] };
 }
 
 export interface ProtocolTrigger {
@@ -107,19 +150,18 @@ export interface ProtocolFile {
   id: string;
   name: string;
   layer: ProtocolLayer;
-  version: number;
-  status: "draft" | "active";
-  /**
-   * Event layer: the events this protocol owns.
-   *
-   * A list, not one event. Layoffs, a reorganization and a site closure are
-   * three things on the menu and one duty in practice — tell the people
-   * losing something what was decided, by whom, and what happens to them —
-   * so one file covers all three rather than three files drifting apart.
-   */
-  events?: CommunicationEvent[];
-  /** Posture layer: the purposes that bring it in, on top of any event. */
-  purposes?: Purpose[];
+  /** Event protocols: the family they sit under. */
+  family?: string;
+  /** Overlay protocols: the intake rule that switches them on. */
+  trigger?: OverlayTrigger;
+  /** Semver. The minor turns when checks change, the patch when wording does. */
+  version: string;
+  status: "draft" | "active" | "retired";
+  /** When a human last read this against its sources. Null if never. */
+  last_reviewed?: string | null;
+  /** When it should be read again. Null until the owner sets a cadence. */
+  review_by?: string | null;
+  changelog: string[];
   /**
    * One line naming what kind of authority this protocol rests on.
    *
@@ -172,54 +214,77 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
   } else if ((d.rests_on as string).trim().split(/\s+/).length > 30) {
     err(`rests_on is ${(d.rests_on as string).trim().split(/\s+/).length} words; keep it to 30. It is the line a reader sees instead of the full sources, not a summary of them.`);
   }
-  if (typeof d.version !== "number") err("needs a version number, starting at 1 and going up whenever the protocol changes");
-  if (!one(d.status, ["draft", "active"] as const)) err('status must be "draft" or "active"');
-  if (!one(d.layer, ["event", "posture"] as const)) {
-    err('layer must be "event" (one event) or "posture" (a stance on top of any event)');
+  if (!isStr(d.version) || !/^\d+\.\d+\.\d+$/.test(d.version as string)) {
+    err(`version must be semver, such as 1.0.0. Got ${JSON.stringify(d.version)}`);
+  }
+  if (!one(d.status, ["draft", "active", "retired"] as const)) err('status must be "draft", "active" or "retired"');
+  for (const field of ["last_reviewed", "review_by"] as const) {
+    const v = d[field];
+    if (v !== null && v !== undefined && !(typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v))) {
+      err(`${field} must be a date as YYYY-MM-DD, or null. Got ${JSON.stringify(v)}`);
+    }
+  }
+  if (!isArr(d.changelog) || d.changelog.length === 0) {
+    err('needs a changelog: a list of lines, starting with the version, such as "1.0.0 — first version."');
+  }
+
+  if (!one(d.layer, PROTOCOL_LAYERS)) {
+    err(`layer must be one of ${PROTOCOL_LAYERS.join(", ")}. Got ${JSON.stringify(d.layer)}`);
     return errors;
   }
+  const layer = d.layer;
 
-  if (d.layer === "event") {
-    if (!isArr(d.events) || d.events.length === 0) {
-      err("an event protocol needs events: a list of the events it covers, each spelled exactly as the intake spells it");
-    } else {
-      for (const e of d.events) {
-        if (!one(e, COMMUNICATION_EVENTS)) {
-          err(`event ${JSON.stringify(e)} is not one of the communication events. Spell it exactly as the intake spells it.`);
-        } else if (e === OTHER_EVENT) {
-          err(`"${OTHER_EVENT}" means the event is not on the list, so no protocol may claim it`);
-        }
-      }
-      const seen = new Set<string>();
-      for (const e of d.events as string[]) {
-        if (seen.has(e)) err(`lists "${e}" twice`);
-        seen.add(e);
-      }
-    }
-  } else if (d.events !== undefined) {
-    err("only a protocol with layer: event names events");
+  // An event protocol names its family; the taxonomy names its events. One
+  // direction only, so the menu and the engine cannot drift apart.
+  if (layer === "event") {
+    if (!isStr(d.family)) err("an event protocol needs family: the family id it sits under");
+  } else if (d.family !== undefined) {
+    err("only a protocol with layer: event names a family");
+  }
+  if (d.events !== undefined || d.purposes !== undefined) {
+    err("events and purposes are no longer named here. protocols/events.yaml points at an event protocol; an overlay names a trigger.");
   }
 
-  if (d.layer === "posture") {
-    if (!isArr(d.purposes) || d.purposes.length === 0) err("a posture protocol needs purposes: the intake purposes that bring it in");
-    else for (const g of d.purposes) if (!one(g, PURPOSES)) err(`purpose ${JSON.stringify(g)} is not one of the intake purposes`);
-  } else if (d.purposes !== undefined) {
-    err("only a protocol with layer: posture names purposes");
+  if (layer === "overlay") {
+    if (!one(d.trigger, OVERLAY_TRIGGERS)) {
+      err(`an overlay needs trigger: one of ${OVERLAY_TRIGGERS.join(", ")}. Got ${JSON.stringify(d.trigger)}`);
+    }
+  } else if (d.trigger !== undefined) {
+    err("only a protocol with layer: overlay names a trigger");
   }
 
   // Elements.
-  if (!isArr(d.elements) || d.elements.length === 0) err("needs at least one element");
+  if (!isArr(d.elements)) err("needs an elements list, even if it is empty");
   else {
-    if (d.elements.length > PROTOCOL_CAPS.elements) {
-      err(`has ${d.elements.length} elements; the most allowed is ${PROTOCOL_CAPS.elements}. Keep the ones this event turns on and let the core carry the rest.`);
+    const cap = ELEMENT_CAPS[layer];
+    if (d.elements.length > cap) {
+      err(`has ${d.elements.length} elements; the most a ${layer} protocol may carry is ${cap}. Keep the ones this layer turns on and let the layer above carry the rest.`);
     }
+    const seenIds = new Set<string>();
     d.elements.forEach((raw, i) => {
       const e = raw as Record<string, unknown>;
       const at = `element ${i + 1}`;
+      if (!isStr(e.id)) err(`${at} needs an id, such as ${isStr(d.id) ? d.id : "protocol"}.what-it-checks`);
+      else {
+        if (seenIds.has(e.id)) err(`${at} repeats the id "${e.id}"`);
+        seenIds.add(e.id);
+        if (isStr(d.id) && !e.id.startsWith(`${d.id}.`)) err(`${at} id "${e.id}" must start with "${d.id}."`);
+      }
       if (!isStr(e.name)) err(`${at} needs a name`);
       if (!isStr(e.means)) err(`${at} needs "means": one sentence saying what it is`);
       if (!one(e.weight, ["core", "supporting"] as const)) err(`${at} weight must be "core" or "supporting"`);
       if (!one(e.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(e.dimension)} is not one of the ten scored dimensions`);
+      if (!one(e.basis, ELEMENT_BASES)) err(`${at} basis must be one of ${ELEMENT_BASES.join(", ")}. Got ${JSON.stringify(e.basis)}`);
+      if (!isArr(e.sources)) err(`${at} needs a sources list, even if it is empty`);
+      else for (const src of e.sources) if (typeof src !== "string") err(`${at} lists a source that is not an id`);
+      if (e.applies_if !== undefined) {
+        if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
+        else {
+          for (const key of Object.keys(e.applies_if)) {
+            if (key !== "org_type" && key !== "jurisdiction") err(`${at} applies_if does not understand "${key}"; it takes org_type and jurisdiction`);
+          }
+        }
+      }
     });
   }
 
@@ -259,7 +324,7 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
 
   if (d.narrows !== undefined) {
     if (!isArr(d.narrows)) err("narrows must be a list of framework check ids this protocol softens");
-    else if (d.layer !== "event") err("only an event protocol may narrow a framework check");
+    else if (layer === "core") err("the core protocol cannot narrow the framework it sits directly under");
     else {
       for (const n of d.narrows) {
         if (typeof n !== "string" || !(n in FRAMEWORK_NARROWABLE)) {
@@ -303,22 +368,66 @@ function reviewList(value: unknown, at: string, err: (m: string) => void): void 
   }
 }
 
+/** What the taxonomy says about an event; the compiler passes it in. */
+export interface EventEntry {
+  id: string;
+  label: string;
+  family: string | null;
+  event_protocol?: string;
+  ui_groups: string[];
+}
+
 /** Problems that only show up across the whole library, not in one file. */
-export function checkLibrary(files: { file: string; data: ProtocolFile }[]): CheckError[] {
+export function checkLibrary(
+  files: { file: string; data: ProtocolFile }[],
+  events: EventEntry[] = [],
+  families: string[] = [],
+  sourceIds: string[] = [],
+): CheckError[] {
   const errors: CheckError[] = [];
   const byId = new Map<string, string>();
-  const byEvent = new Map<CommunicationEvent, string>();
+  const byTrigger = new Map<string, string>();
+  const known = new Set(sourceIds);
+
   for (const { file, data } of files) {
     const seenId = byId.get(data.id);
     if (seenId) errors.push({ file, message: `id "${data.id}" is already used by ${seenId}` });
     byId.set(data.id, file);
 
-    if (data.layer === "event") {
-      for (const event of data.events ?? []) {
-        const seen = byEvent.get(event);
-        if (seen) errors.push({ file, message: `"${event}" is already covered by ${seen}. One protocol per event.` });
-        byEvent.set(event, file);
+    if (data.layer === "overlay" && data.trigger) {
+      const seen = byTrigger.get(data.trigger);
+      if (seen) errors.push({ file, message: `trigger "${data.trigger}" is already claimed by ${seen}. One overlay per rule.` });
+      byTrigger.set(data.trigger, file);
+    }
+    if (data.layer === "event" && data.family && families.length > 0 && !families.includes(data.family)) {
+      errors.push({ file, message: `family "${data.family}" is not one of the families in events.yaml: ${families.join(", ")}` });
+    }
+    if (sourceIds.length > 0) {
+      for (const e of data.elements) {
+        for (const src of e.sources ?? []) {
+          if (!known.has(src)) errors.push({ file, message: `element ${e.id} cites source "${src}", which is not in sources/registry.yaml` });
+        }
       }
+    }
+  }
+
+  // The taxonomy and the folder have to agree in both directions.
+  for (const event of events) {
+    if (event.family === null) continue;
+    if (families.length > 0 && !families.includes(event.family)) {
+      errors.push({ file: "protocols/events.yaml", message: `event "${event.id}" names family "${event.family}", which is not declared` });
+    }
+    if (families.includes(event.family) && !byId.has(event.family)) {
+      errors.push({ file: "protocols/events.yaml", message: `event "${event.id}" needs family "${event.family}", but protocols/families/${event.family}.md does not exist` });
+    }
+    if (event.event_protocol && !byId.has(event.event_protocol)) {
+      errors.push({ file: "protocols/events.yaml", message: `event "${event.id}" points at protocol "${event.event_protocol}", which does not exist` });
+    }
+  }
+  const claimed = new Set(events.flatMap((e) => (e.event_protocol ? [e.event_protocol] : [])));
+  for (const { file, data } of files) {
+    if (data.layer === "event" && !claimed.has(data.id)) {
+      errors.push({ file, message: `no event in events.yaml points at "${data.id}", so it can never apply` });
     }
   }
   return errors;

@@ -1,41 +1,49 @@
 # The protocol library
 
-One file per protocol. The engine reads the settings block between the `---`
-lines; the prose below it is what the Standards Library page shows.
+Four layers, applied in this order whenever a review runs:
 
-## Adding one
+| Layer | Where | Applies when | Element cap |
+|---|---|---|---|
+| **core** | `core-protocol.md` | an event is named | 8 |
+| **family** | `families/<id>.md` | the event belongs to that family | 6 |
+| **event** | `events/<id>.md` | the event points at it in `events.yaml` | 8 |
+| **overlay** | `overlays/<id>.md` | an intake answer switches it on | 5 |
+
+A layer may add an element, or narrow one above it through `narrows`. None may
+delete one, and none adds a score: every element maps to one of the ten
+dimensions the engine already scores.
+
+## events.yaml is the source of truth for what happened
+
+One entry per event the intake offers, carrying its id, its exact menu label,
+its family, its protocol if it has one, and the menu headings it appears under.
+The intake menu and the resolver both read it, so the options a user sees and
+the protocols the engine applies cannot drift apart. A protocol never names its
+own events; the taxonomy points at the protocol.
+
+The comments at the top of that file say how to place a new event.
+
+## Adding a protocol
 
 1. Find the sources with `RESEARCH-PROMPT.md`, in its own Claude conversation,
    with web search on.
 2. Write the protocol with `PROTOCOL-PROMPT.md`, in a second conversation,
    pasting in what step 1 returned.
-3. Save the reply here as `<event-name>.md`.
-4. Upload it to GitHub and say so.
+3. Save it in the folder for its layer, and register any new source in
+   `sources/registry.yaml`.
+4. Run `npm run protocols`. The file is checked before it goes anywhere near a
+   review: a dimension that does not exist, a misspelled review type, too many
+   elements for its layer, a source id nothing resolves to, an overlay claiming
+   a rule another overlay already has, or a missing Source section all fail by
+   name.
 
-The file is checked before it goes anywhere near a review: a dimension that
-does not exist, a misspelled review type, too many triggers, two protocols
-claiming the same event, or a missing Source section all fail by name.
-
-## The layers
-
-- **event** — carries only what the event adds to the framework. It names the
-  events it covers in `events:`, a list, and may cover several where they carry
-  the same duty. Selected by "What's happening?" at intake.
-- **posture** — a stance that sits on top of any event, such as an apology. It
-  names the intake purposes that bring it in, in `purposes:`. Selected by "What
-  is this draft mainly trying to do?".
-
-There is no third layer. A "core" protocol existed briefly and was removed:
-six of its eight checks were already in the framework, two of them word for
-word. What was genuinely new moved into the framework instead.
+A protocol is skipped while its `status` is `draft`, so a stub in the folder
+changes no review and appears nowhere in the Standards Library.
 
 ## Running the checker
 
 ```
-npm run protocols          # check the folder and rebuild the engine's copy
-npm run protocols -- --check   # check only, change nothing
+npm run protocols               # check, rebuild the engine's copy, report the worst-case bundle
+npm run protocols -- --check    # check only, change nothing
+npm run protocols:baseline      # re-record the selection baseline, only when a change is intended
 ```
-
-Nothing here takes effect until `npm run protocols` has been run and the
-result committed. A test fails if the folder and the engine's copy disagree,
-so a forgotten rebuild is caught before a tester sees it.

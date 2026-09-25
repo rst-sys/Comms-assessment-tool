@@ -588,6 +588,10 @@ textarea { resize: vertical; }
 .principle-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .principle-list li { font-size: 15px; line-height: 1.5; color: var(--ink-2); }
 
+.layer-group { margin-top: calc(var(--space) * 3); }
+.layer-heading { font-family: var(--sans); font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--neutral); margin: 0 0 var(--space); }
+
 /* One protocol per card, closed until asked for. */
 .protocol-card { padding: 0; margin-bottom: calc(var(--space) * 2); overflow: hidden; }
 .protocol-head { display: flex; gap: calc(var(--space) * 2); align-items: flex-start; justify-content: space-between;

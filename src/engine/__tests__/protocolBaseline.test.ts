@@ -26,6 +26,31 @@ interface Baseline {
 const baseline: Baseline = JSON.parse(readFileSync("src/engine/__tests__/baseline/protocol-bundles.json", "utf8"));
 const sha = (t: string) => createHash("sha256").update(t).digest("hex").slice(0, 16);
 
+/**
+ * The two changes the layered framework was allowed to make, both agreed
+ * before it was built. Everything else must be byte-identical.
+ *
+ * Ids: three files were renamed to match protocols/events.yaml. Same file,
+ * same words — and the prompt never carries an id, only a name.
+ *
+ * Wording: each protocol block opens `NAME (layer protocol)`, so turning the
+ * apology from a posture into an overlay changes that one word and nothing
+ * else in the block.
+ */
+const RENAMED: Record<string, string> = {
+  "workforce-restructuring": "workforce-reduction",
+  "geopolitical-operations-employee-welfare": "geopolitical",
+  "public-apology": "apology",
+};
+const ACCEPTED_WORDING: [string, string][] = [["(posture protocol)", "(overlay protocol)"]];
+
+/** The baseline's text, with the agreed wording change applied. */
+function expectedText(hash: string): string {
+  let text = baseline.texts[hash] ?? `(unknown block ${hash})`;
+  for (const [was, now] of ACCEPTED_WORDING) text = text.replace(was, now);
+  return text;
+}
+
 function current(request: EvaluationRequest): { ids: string[]; blocks: string[] } {
   return {
     ids: protocolsFor(request).map((p) => p.id),
@@ -48,25 +73,39 @@ const cases: [string, EvaluationRequest][] = [
   ...[...DEMOS, CONTROL].map((f) => [`fixture:${f.key}`, f.request] as [string, EvaluationRequest]),
 ];
 
+/**
+ * Events added since the baseline was captured.
+ *
+ * Adding one is allowed; it must arrive with no protocol, so it cannot change
+ * how any existing draft is reviewed. Anything else the baseline holds must
+ * still match word for word.
+ */
+const ADDED = cases.map(([key]) => key).filter((key) => !(key in baseline.cases));
+
 describe("the protocol bundle, against the baseline captured before the layered framework", () => {
-  it("covers every event, every purpose and every fixture", () => {
-    expect(cases.map(([key]) => key).sort()).toEqual(Object.keys(baseline.cases).sort());
+  it("still covers every case the baseline holds, and names anything new", () => {
+    const keys = cases.map(([key]) => key);
+    for (const key of Object.keys(baseline.cases)) expect(keys, `${key} disappeared`).toContain(key);
+    // The one intended addition: a death is not a departure.
+    expect(ADDED).toEqual(["event:Death of a leader or employee"]);
   });
 
-  for (const [key, request] of cases) {
+  for (const key of ADDED) {
+    it(`adds ${key} with no protocol, so it changes no existing review`, () => {
+      const request = cases.find(([k]) => k === key)![1];
+      expect(protocolsFor(request)).toEqual([]);
+    });
+  }
+
+  for (const [key, request] of cases.filter(([key]) => key in baseline.cases)) {
     it(`selects the same protocols and sends the same words for ${key}`, () => {
       const was = baseline.cases[key];
       expect(was, `${key} is missing from the baseline`).toBeDefined();
       const now = current(request);
-      expect(now.ids, `${key}: protocols selected`).toEqual(was!.ids);
-      // Hashes first: a mismatch names the block. The text comparison that
-      // follows is what makes the failure readable.
-      if (now.blocks.join() !== was!.blocks.join()) {
-        const nowText = buildSystemBlocks(request).map((b) => b.text);
-        const wasText = was!.blocks.map((h) => baseline.texts[h] ?? `(unknown block ${h})`);
-        expect(nowText, `${key}: system blocks`).toEqual(wasText);
-      }
-      expect(now.blocks, `${key}: system blocks`).toEqual(was!.blocks);
+      expect(now.ids, `${key}: protocols selected`).toEqual(was!.ids.map((id) => RENAMED[id] ?? id));
+      // Text, not hashes: a failure has to show which words moved.
+      const nowText = buildSystemBlocks(request).map((b) => b.text);
+      expect(nowText, `${key}: system blocks`).toEqual(was!.blocks.map(expectedText));
     });
   }
 });
@@ -82,7 +121,7 @@ describe("every event a protocol matches today", () => {
     expect(matched.length).toBeGreaterThan(0);
     for (const [event, ids] of matched) {
       const now = protocolsFor({ ...base, communication_event: event as never, purpose: "Announce a decision or change" });
-      expect(now.map((p) => p.id), event).toEqual(ids);
+      expect(now.map((p) => p.id), event).toEqual(ids.map((id) => RENAMED[id] ?? id));
     }
   });
 });

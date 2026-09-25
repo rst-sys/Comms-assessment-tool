@@ -1,39 +1,57 @@
 ---
-id: public-apology
+id: apology
 name: Public apology
-layer: posture
-purposes:
-  - Apologize and take responsibility
-version: 1
+layer: overlay
+trigger: apology
+version: 1.0.0
 status: active
+last_reviewed: 2026-09-25
+review_by: null
+changelog:
+  - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   One 2016 study of 755 people, known here through a press account, plus the tool author's own standard.
 
 elements:
-  - name: Acknowledged responsibility
+  - id: apology.acknowledged-responsibility
+    name: Acknowledged responsibility
     means: The organization or a named leader says it is responsible for the conduct, decision or failure — not merely that the outcome is regrettable.
     weight: core
     dimension: accountability_agency
+    basis: unclassified
+    sources: []
 
-  - name: Repair offered
+  - id: apology.repair-offered
+    name: Repair offered
     means: A remedy for the people affected — restitution, correction, recall, support or access — proportionate to the harm.
     weight: core
     dimension: corrective_action_proof
+    basis: unclassified
+    sources: []
 
-  - name: Direct regret
+  - id: apology.direct-regret
+    name: Direct regret
     means: An unconditional apology for the organization's own conduct, not conditional on how anyone reacted.
     weight: core
     dimension: stakeholder_respect_impact
+    basis: unclassified
+    sources: []
 
-  - name: Conduct rejected
+  - id: apology.conduct-rejected
+    name: Conduct rejected
     means: The draft says the conduct was wrong, not only that the reaction was unfortunate.
     weight: supporting
     dimension: accountability_agency
+    basis: unclassified
+    sources: []
 
-  - name: Restraint in the ask
+  - id: apology.restraint-in-the-ask
+    name: Restraint in the ask
     means: The draft does not demand forgiveness, understanding or moving on, and does not ask before repair is stated.
     weight: supporting
     dimension: fairness_independence_conflicts
+    basis: unclassified
+    sources: []
 
 triggers:
   - check: No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern.

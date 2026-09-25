@@ -65,7 +65,7 @@ describe("buildSystemBlocks", () => {
 describe("the protocol library", () => {
   it("selects one event and one posture from the intake, never by reading the draft", () => {
     const applied = protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((p) => p.id);
-    expect(applied).toEqual(["workforce-restructuring", "public-apology"]);
+    expect(applied).toEqual(["workforce-reduction", "apology"]);
 
     expect(protocolsFor({ ...DEMO_1.request, communication_event: "Something else" })).toEqual([]);
   });

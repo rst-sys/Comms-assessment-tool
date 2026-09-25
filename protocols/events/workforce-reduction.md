@@ -1,56 +1,81 @@
 ---
-id: workforce-restructuring
+id: workforce-reduction
 name: Workforce reduction and restructuring
 layer: event
-events:
-  - Layoffs or job cuts
-  - Restructuring or reorganization
-  - Site, office or store closure
-version: 1
+family: workforce
+version: 1.0.0
 status: active
+last_reviewed: 2026-09-25
+review_by: null
+changelog:
+  - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
   EEOC and US Labor Department guidance, Fair Work Australia and CIPD, plus three studies, none of them about wording.
 
 elements:
-  - name: Decision status
+  - id: workforce-reduction.decision-status
+    name: Decision status
     means: Whether the decision is final, proposed, or in consultation.
     weight: core
     dimension: accountability_agency
+    basis: unclassified
+    sources: []
 
-  - name: Scope of impact
+  - id: workforce-reduction.scope-of-impact
+    name: Scope of impact
     means: How many are affected, in which functions, sites and countries, or that the group is still being set.
     weight: core
     dimension: stakeholder_respect_impact
+    basis: unclassified
+    sources: []
 
-  - name: Selection basis and alternatives
+  - id: workforce-reduction.selection-basis-and-alternatives
+    name: Selection basis and alternatives
     means: How roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.
     weight: core
     dimension: fairness_independence_conflicts
+    basis: unclassified
+    sources: []
 
-  - name: Individual notice, timing and terms
+  - id: workforce-reduction.individual-notice-timing-and-terms
+    name: Individual notice, timing and terms
     means: How and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.
     weight: core
     dimension: stakeholder_respect_impact
+    basis: unclassified
+    sources: []
 
-  - name: Support for those leaving
+  - id: workforce-reduction.support-for-those-leaving
+    name: Support for those leaving
     means: Named support for people whose roles end, with a provider, owner and date.
     weight: core
     dimension: corrective_action_proof
+    basis: unclassified
+    sources: []
 
-  - name: The remaining workforce
+  - id: workforce-reduction.the-remaining-workforce
+    name: The remaining workforce
     means: What work stops, moves or changes owner for the people who stay, and who decides.
     weight: supporting
     dimension: corrective_action_proof
+    basis: unclassified
+    sources: []
 
-  - name: Voice and what can still change
+  - id: workforce-reduction.voice-and-what-can-still-change
+    name: Voice and what can still change
     means: What employees or their representatives can still influence, kept separate from what leadership has already decided.
     weight: core
     dimension: listening_employee_voice
+    basis: unclassified
+    sources: []
 
-  - name: Leadership exposure
+  - id: workforce-reduction.leadership-exposure
+    name: Leadership exposure
     means: Whether leadership roles, pay or incentives are affected by the same decision.
     weight: supporting
     dimension: fairness_independence_conflicts
+    basis: unclassified
+    sources: []
 
 triggers:
   - check: The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation.

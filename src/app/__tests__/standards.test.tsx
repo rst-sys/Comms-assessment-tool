@@ -2,6 +2,8 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { PROTOCOLS } from "../../engine/protocols.js";
+
+const ACTIVE = PROTOCOLS.filter((p) => p.status === "active");
 import { StandardsLibrary } from "../StandardsLibrary.js";
 import { CODES, CODES_BY_ID, GROUNDING, ownJudgment } from "../standardsContent.js";
 import { DIMENSION_IDS } from "../../engine/types.js";
@@ -101,10 +103,14 @@ describe("the page, and the line it must not cross", () => {
 
   it("still lists the protocols the engine really does apply, and what each rests on", () => {
     render(<StandardsLibrary />);
-    for (const protocol of PROTOCOLS) {
+    // Only the ones switched on: a library listing empty drafts would promise
+    // standards the tool does not run.
+    for (const protocol of ACTIVE) {
       expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
-      // Its own words for when it applies, built from the fields that select it.
-      expect(screen.getAllByText(new RegExp(`Applied when the (event|purpose) is .*Version ${protocol.version}`)).length).toBeGreaterThan(0);
+      expect(screen.getAllByText(new RegExp(`Applied when .*Version ${protocol.version}`)).length, protocol.id).toBeGreaterThan(0);
+    }
+    for (const protocol of PROTOCOLS.filter((p) => p.status !== "active")) {
+      expect(screen.queryByRole("heading", { name: protocol.name }), protocol.id).toBeNull();
     }
   });
 
@@ -114,11 +120,11 @@ describe("the page, and the line it must not cross", () => {
     // sources, wait to be asked for.
     render(<StandardsLibrary />);
     const heads = screen.getAllByRole("button", { expanded: false });
-    expect(heads.length).toBeGreaterThan(PROTOCOLS.length - 1);
+    expect(heads.length).toBeGreaterThanOrEqual(ACTIVE.length - 1);
     expect(screen.getAllByRole("button", { expanded: true })).toHaveLength(1);
 
     // The first protocol's checks are the engine's own, not a copy.
-    const first = PROTOCOLS[0]!;
+    const first = ACTIVE.find((p) => p.layer === "event")!;
     for (const element of first.elements) {
       expect(screen.getAllByText(element.name).length, element.name).toBeGreaterThan(0);
     }

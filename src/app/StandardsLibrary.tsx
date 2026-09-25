@@ -1,8 +1,8 @@
 import { useId, useState, type ReactNode } from "react";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
-import { PROTOCOLS } from "../engine/protocols.js";
+import { HAS_DRAFT_PROTOCOLS, PROTOCOLS } from "../engine/protocols.js";
 import type { ProtocolFile } from "../engine/protocolFormat.js";
-import { DIMENSION_IDS } from "../engine/types.js";
+import { DIMENSION_IDS, EVENT_TAXONOMY } from "../engine/types.js";
 import { PageNav } from "./PageNav.js";
 import { Clock } from "./Icons.js";
 import { proseBlocks, protocolSection } from "./protocolProse.js";
@@ -129,15 +129,29 @@ export function StandardsLibrary({ onOverview }: { onOverview?: () => void }) {
           {PROTOCOLS_INTRO.map((text) => (
             <p className="prose" key={text}>{text}</p>
           ))}
-          {PROTOCOLS.map((protocol, i) => (
-            <ProtocolCard key={protocol.id} protocol={protocol} openByDefault={i === 0} />
-          ))}
-          <p className="planned-note" role="note">
-            <Clock />
-            <span>
-              <strong>{PROTOCOLS_PLANNED[0]}</strong> {PROTOCOLS_PLANNED[1]}
-            </span>
-          </p>
+          {/* Grouped by layer, in the order the engine applies them, and only
+              the ones switched on: a library that listed empty drafts would be
+              promising standards the tool does not run. */}
+          {LAYER_SECTIONS.map(({ layer, title }) => {
+            const inLayer = PROTOCOLS.filter((p) => p.status === "active" && p.layer === layer);
+            if (inLayer.length === 0) return null;
+            return (
+              <div key={layer} className="layer-group">
+                <h3 className="layer-heading">{title}</h3>
+                {inLayer.map((protocol, i) => (
+                  <ProtocolCard key={protocol.id} protocol={protocol} openByDefault={layer === "event" && i === 0} />
+                ))}
+              </div>
+            );
+          })}
+          {HAS_DRAFT_PROTOCOLS ? (
+            <p className="planned-note" role="note">
+              <Clock />
+              <span>
+                <strong>{PROTOCOLS_PLANNED[0]}</strong> {PROTOCOLS_PLANNED[1]}
+              </span>
+            </p>
+          ) : null}
         </Section>
 
         <Section id="codes" title="Published codes" tag="grounded">
@@ -195,16 +209,36 @@ function Tag({ kind }: { kind: ClaimKind }) {
   return <span className={`tag tag-${kind}`}>{CLAIM_LABELS[kind]}</span>;
 }
 
-/** When a protocol applies, from its own selection fields. */
+/** When a protocol applies, read from the taxonomy rather than from the file. */
 function appliedWhen(p: ProtocolFile): string {
-  if (p.layer === "posture") {
-    const purposes = (p.purposes ?? []).map((g) => `"${g}"`).join(" or ");
-    return `Applied when the purpose is ${purposes}, on top of any event or none`;
+  if (p.layer === "core") return "Applied whenever an event is named";
+  if (p.layer === "overlay") return `Applied when ${OVERLAY_WHEN[p.trigger ?? ""] ?? "its rule holds"}, on top of any event or none`;
+  if (p.layer === "family") {
+    const events = EVENT_TAXONOMY.filter((e) => e.family === p.id);
+    return `Applied to every ${p.name.toLowerCase()} event · ${events.length} event${events.length === 1 ? "" : "s"}`;
   }
-  const events = (p.events ?? []).map((e) => `"${e}"`);
-  const list = events.length <= 1 ? events.join("") : `${events.slice(0, -1).join(", ")} or ${events[events.length - 1]}`;
+  const labels = EVENT_TAXONOMY.filter((e) => e.event_protocol === p.id).map((e) => `"${e.label}"`);
+  const list = labels.length <= 1 ? labels.join("") : `${labels.slice(0, -1).join(", ")} or ${labels[labels.length - 1]}`;
   return `Applied when the event is ${list}`;
 }
+
+/** What each overlay rule means, in the words the intake uses. */
+const OVERLAY_WHEN: Record<string, string> = {
+  "listed-company": "the organization is a publicly listed company",
+  "people-harmed": "people have been harmed or put at risk",
+  "workforce-impact": "the event bears on employees",
+  "personal-data": "the event is a cyber incident or data breach",
+  "stage-unfolding": "the situation is not yet public, or still unfolding",
+  apology: "the draft is mainly trying to apologize and take responsibility",
+};
+
+/** The four layers, in the order the engine applies them. */
+const LAYER_SECTIONS: { layer: ProtocolFile["layer"]; title: string }[] = [
+  { layer: "core", title: "Core protocol" },
+  { layer: "family", title: "Families" },
+  { layer: "event", title: "Event protocols" },
+  { layer: "overlay", title: "Overlays" },
+];
 
 /**
  * One protocol, closed until asked for.

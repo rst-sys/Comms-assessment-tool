@@ -123,10 +123,12 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
     const params = {
       model: config.model,
       max_tokens: config.maxOutputTokens,
-      // The verbatim system prompt is stable across requests; cache it. The
-      // draft lives in the user message, after the cache breakpoint.
+      // Cache boundaries are chosen by whoever built the blocks: the framework
+      // prompt, which every review shares, and the last block, so a second
+      // review of the same event re-reads nothing. The draft lives in the user
+      // message, after them both.
       system: options.system.map((b, i, all) =>
-        i === all.length - 1
+        b.cache ?? i === all.length - 1
           ? { type: "text" as const, text: b.text, cache_control: { type: "ephemeral" as const } }
           : { type: "text" as const, text: b.text },
       ),
