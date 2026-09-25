@@ -64,8 +64,10 @@ function Described({ label, children }: { label: string; children: ReactNode }) 
 // Step 1: before you start
 // ---------------------------------------------------------------------------
 
+/** The country list as the shared dropdown wants it. */
+const COUNTRY_MENU: MenuGroup[] = [{ label: "", options: COUNTRIES.map((c) => ({ value: c, label: c })) }];
+
 export function OrganizationQuestion({ state, onChange }: QuestionProps) {
-  const hqId = useId();
   const listedId = useId();
   const setType = (type: OrganizationType) => {
     const next: IntakeState = { ...state, organization_type: type };
@@ -93,20 +95,17 @@ export function OrganizationQuestion({ state, onChange }: QuestionProps) {
         </div>
       </div>
       <div>
-        <label className="field">
-          <span className="label" id={hqId}>Headquarters</span>
-          <input
-            type="text"
-            value={state.headquarters}
-            aria-labelledby={hqId}
-            list="country-list"
-            placeholder="Type a country…"
-            onChange={(e) => onChange({ ...state, headquarters: e.target.value })}
-          />
-          <span className="muted small">Where the organization is based. Used to pick the rules that apply.</span>
-        </label>
+        <Menu
+          label="Headquarters"
+          hint="Where the organization is based. Used to pick the rules that apply."
+          placeholder="Choose a country"
+          groups={COUNTRY_MENU}
+          searchable
+          value={state.headquarters}
+          onChange={(headquarters) => onChange({ ...state, headquarters })}
+        />
         {state.organization_type === "Publicly listed company" ? (
-          <label className="field">
+          <label className="field listed-field">
             <span className="label" id={listedId}>Where is it listed?</span>
             <input
               type="text"
@@ -117,20 +116,8 @@ export function OrganizationQuestion({ state, onChange }: QuestionProps) {
             />
           </label>
         ) : null}
-        <CountryList />
       </div>
     </div>
-  );
-}
-
-/** One shared datalist of country names; several inputs point at it. */
-export function CountryList() {
-  return (
-    <datalist id="country-list">
-      {COUNTRIES.map((c) => (
-        <option key={c} value={c} />
-      ))}
-    </datalist>
   );
 }
 

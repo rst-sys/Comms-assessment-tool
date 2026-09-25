@@ -104,7 +104,7 @@ describe("IntakeScreen", () => {
       expect(chosen("What's happening?", "Choose the closest match")).toBe(true);
 
       fireEvent.click(screen.getByRole("radio", { name: "Private company" }));
-      fireEvent.change(screen.getByLabelText("Headquarters"), { target: { value: "United Kingdom" } });
+      menu("Headquarters").pick("United Kingdom");
       menu("What's happening?").pick("Price increase or change to terms");
       menu("Where do things stand?").pick(/Already public/);
       const where = menu("Where is this happening?");

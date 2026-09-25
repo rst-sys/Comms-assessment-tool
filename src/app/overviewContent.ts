@@ -41,9 +41,10 @@ export const VALUE_POINTS: [string, string][] = [
   ["A record you can share", "The PDF gives counsel, HR or leadership a common reference for what's still unresolved."],
 ];
 
+/** In the order the Review screen asks for them: the questions, then the draft. */
 export const REVIEW_STEPS: [string, string][] = [
-  ["Paste your draft", "Add as much context as you can: the facts, supporting documents, earlier communications and coverage."],
   ["Answer the setup questions", "Including what happened, what you're writing and who it's for. Your answers decide which standards apply."],
+  ["Paste your draft", "Add as much context as you can: the facts, supporting documents, earlier communications and coverage."],
   ["Read your review", "In about a minute. Download the PDF to share with your team."],
 ];
 

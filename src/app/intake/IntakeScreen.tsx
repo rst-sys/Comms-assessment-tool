@@ -4,7 +4,6 @@ import type { SavedReview } from "../../engine/savedReview.js";
 import { type EvaluationRequest, type AudienceDocument } from "../../engine/types.js";
 import {
   AudienceQuestion,
-  CountryList,
   EventQuestion,
   FormatQuestion,
   LocationQuestion,
@@ -312,7 +311,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       </div>
 
       <PrivacyPanel config={config} />
-      <CountryList />
     </div>
   );
 }

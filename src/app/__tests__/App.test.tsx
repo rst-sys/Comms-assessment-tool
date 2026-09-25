@@ -111,7 +111,8 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     // A tester has to be able to answer "am I on the build you just pushed?"
     // before running anything, not only after a review has succeeded.
-    expect(screen.getByText(CORE_PRINCIPLE)).toBeTruthy();
+    // The closing principle left the on-screen footer; it still closes the PDF.
+    expect(screen.queryByText(CORE_PRINCIPLE)).toBeNull();
     expect(screen.getByText("© 2026 Richard Thompson")).toBeTruthy();
     expect(screen.getByText(/^Build /)).toBeTruthy();
   });
