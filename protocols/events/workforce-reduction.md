@@ -3,11 +3,12 @@ id: workforce-reduction
 name: Workforce reduction and restructuring
 layer: event
 family: workforce
-version: 2.0.0
+version: 2.0.1
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "2.0.1 — Evidence labels added; no check changed."
   - "2.0.0 — five elements, four triggers and three questions moved to the workforce-impact overlay, which applies them to every job-affecting event. The euphemism trigger now narrows core.central_fact_first."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
@@ -19,21 +20,25 @@ elements:
     means: Named support for people whose roles end, with a provider, owner and date.
     weight: core
     dimension: corrective_action_proof
-    basis: unclassified
-    sources: []
+    basis: guidance
+    sources: [fair-work-redundancy, cipd-redundancy-factsheet]
+    basis_note: "Practitioner and regulator guidance on redundancy support; not binding."
+
   - id: workforce-reduction.the-remaining-workforce
     name: The remaining workforce
     means: What work stops, moves or changes owner for the people who stay, and who decides.
     weight: supporting
     dimension: corrective_action_proof
-    basis: unclassified
-    sources: []
+    basis: research
+    sources: [lee-2023-layoff-survivors]
+    basis_note: "Qualitative study of 15 layoff survivors at one company; shows fairness and follow-through matter, not what a message must say."
+
   - id: workforce-reduction.leadership-exposure
     name: Leadership exposure
     means: Whether leadership roles, pay or incentives are affected by the same decision.
     weight: supporting
     dimension: fairness_independence_conflicts
-    basis: unclassified
+    basis: judgement
     sources: []
 
 triggers:
@@ -57,6 +62,7 @@ questions:
     review: [Executive]
   - ask: What can managers confirm today, what can they not, and where do their questions go?
     review: [HR]
+
 ---
 
 ## 3. Source

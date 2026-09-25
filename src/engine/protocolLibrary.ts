@@ -89,11 +89,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "CEO or senior-leader departure",
       "layer": "event",
       "family": "leadership",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.1.1 — Evidence labels added; no check changed.",
         "1.1.0 — two listed-company disclosure questions removed; the listed-company overlay now asks them.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
@@ -105,8 +106,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft says whether the leader chose to go, was asked to go, left by negotiated agreement or was removed, or says plainly that this is not being disclosed.",
           "weight": "core",
           "dimension": "truthfulness_factual_discipline",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "No law, standard or code requires it. PRSA and IABC are consistent with it but don't address departures."
         },
         {
           "id": "ceo-departure.reason-or-declared-withholding-of-it",
@@ -114,8 +116,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft either gives the reason for the departure or states that the reason is not being given, rather than leaving the gap unacknowledged or filling it with a stock phrase.",
           "weight": "core",
           "dimension": "causation_explanation",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "The SEC considered requiring reasons for officer departures in 2004 and decided against it."
         },
         {
           "id": "ceo-departure.decision-date-and-effective-date",
@@ -123,8 +126,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft distinguishes when the decision was taken or notice given from when the departure takes effect.",
           "weight": "core",
           "dimension": "truthfulness_factual_discipline",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "law",
+          "sources": [
+            "sec-form-8k",
+            "sec-cdi-form-8k",
+            "eu-delegated-reg-2026-789"
+          ],
+          "basis_note": "Binding only for listed companies in the US and EU; applied by analogy elsewhere."
         },
         {
           "id": "ceo-departure.who-holds-the-authority-now",
@@ -132,7 +140,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft names who holds the departing leader's authority from the departure date, whether that arrangement is interim, and how and roughly when a permanent appointment will be made.",
           "weight": "core",
           "dimension": "accountability_agency",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         },
         {
@@ -141,7 +149,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The account of the departure comes from the body that made or accepted the decision, not only from a quotation attributed to the departing leader.",
           "weight": "supporting",
           "dimension": "accountability_agency",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         },
         {
@@ -150,8 +158,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "Where there is a separation agreement, payment, consultancy or continuing role, the draft says it exists and where its terms are or will be disclosed.",
           "weight": "supporting",
           "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "law",
+          "sources": [
+            "sec-reg-sk-402j",
+            "eu-directive-2007-36-art-9b"
+          ],
+          "basis_note": "Binding only for listed companies in the US and EU, and in later filings rather than the announcement; applied by analogy."
         },
         {
           "id": "ceo-departure.continuity-of-the-leaders-commitments",
@@ -159,7 +171,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft says whether strategies, commitments or relationships closely tied to the departing leader continue, are under review, or end.",
           "weight": "supporting",
           "dimension": "stakeholder_respect_impact",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         },
         {
@@ -168,8 +180,11 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The departure is not announced in the same document as unrelated significant news that would draw attention away from it.",
           "weight": "supporting",
           "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "research",
+          "sources": [
+            "graffin-2011-strategic-noise"
+          ],
+          "basis_note": "Documents a pattern (unrelated news released alongside 20% of CEO successions); justifies suspicion, not a standard."
         }
       ],
       "triggers": [
@@ -254,11 +269,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Cyber incident and data breach",
       "layer": "event",
       "family": "incident",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.1.1 — Evidence labels added; no check changed.",
         "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
@@ -270,8 +286,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft gives the discovery date, the incident period if known, and time zones.",
           "weight": "core",
           "dimension": "truthfulness_factual_discipline",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [
+            "nist-sp-800-61r3",
+            "sec-cyber-small-entity-guide",
+            "hhs-breach-notification-rule",
+            "ftc-data-breach-response"
+          ],
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
         },
         {
           "id": "cyber-incident.nature-of-exposure",
@@ -279,8 +301,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined, and names the data categories involved.",
           "weight": "core",
           "dimension": "truthfulness_factual_discipline",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [
+            "nist-sp-800-61r3",
+            "sec-cyber-small-entity-guide",
+            "hhs-breach-notification-rule",
+            "ftc-data-breach-response"
+          ],
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
         },
         {
           "id": "cyber-incident.present-response",
@@ -288,8 +316,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft describes what is being done now, specific enough to check, including containment and who is investigating.",
           "weight": "core",
           "dimension": "corrective_action_proof",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [
+            "nist-sp-800-61r3",
+            "sec-cyber-small-entity-guide",
+            "hhs-breach-notification-rule",
+            "ftc-data-breach-response"
+          ],
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
         },
         {
           "id": "cyber-incident.support-matched-to-harm",
@@ -297,11 +331,17 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "Any support offered fits the data involved, with its terms, its duration and how to claim it.",
           "weight": "supporting",
           "dimension": "stakeholder_respect_impact",
-          "basis": "unclassified",
-          "sources": [],
+          "basis": "judgement",
+          "sources": [
+            "nist-sp-800-61r3",
+            "sec-cyber-small-entity-guide",
+            "hhs-breach-notification-rule",
+            "ftc-data-breach-response"
+          ],
           "replaces": [
             "people-harmed.support"
-          ]
+          ],
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
         },
         {
           "id": "cyber-incident.authenticity",
@@ -309,8 +349,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft tells recipients how to confirm the notice is genuine, and how the organization will and will not contact them.",
           "weight": "supporting",
           "dimension": "verification_follow_through",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [
+            "nist-sp-800-61r3",
+            "sec-cyber-small-entity-guide",
+            "hhs-breach-notification-rule",
+            "ftc-data-breach-response"
+          ],
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
         },
         {
           "id": "cyber-incident.attribution-discipline",
@@ -318,8 +364,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "Any claim about who was responsible, or that a vendor was at fault, carries a stated basis and does not displace the organization's own role.",
           "weight": "core",
           "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [
+            "nist-sp-800-61r3",
+            "sec-cyber-small-entity-guide",
+            "hhs-breach-notification-rule",
+            "ftc-data-breach-response"
+          ],
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
         }
       ],
       "triggers": [
@@ -408,11 +460,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Geopolitical event affecting operations or employee welfare",
       "layer": "event",
       "family": "external",
-      "version": "1.1.0",
+      "version": "1.1.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.1.1 — Evidence labels added; no check changed.",
         "1.1.0 — narrows core.central_fact_first, replacing the dead plain-naming pointer. Danger and protective steps now replaces the people-harmed overlay's general version. No check reworded.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
@@ -424,8 +477,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft says what connects this organization to this event — its people, its sites, its supply, its obligations — rather than speaking because others are speaking.",
           "weight": "core",
           "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "research",
+          "sources": [
+            "bamiatzi-2024-partisan-csr",
+            "braga-2026-sociopolitical-activism"
+          ],
+          "basis_note": "Descriptive research (peer imitation; employees the least receptive audience); a caution, not a standard."
         },
         {
           "id": "geopolitical.discretion-inside-compliance",
@@ -433,8 +490,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "Where the organization was compelled by law, sanctions or government direction, and where it chose — whether to exit, when, on what terms, and what happens to local staff.",
           "weight": "core",
           "dimension": "accountability_agency",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "Built from the structure of sanctions and consultation obligations; no source catalogues this evasion."
         },
         {
           "id": "geopolitical.exposure-separated-from-event",
@@ -442,7 +500,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "What follows from the event itself and what follows from the organization's own prior positioning — where it sited operations, how concentrated its suppliers or staff are.",
           "weight": "core",
           "dimension": "causation_explanation",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         },
         {
@@ -451,11 +509,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "For people in or near the affected area, the risk as currently assessed, the protective steps taken or planned, and who is responsible for them.",
           "weight": "core",
           "dimension": "corrective_action_proof",
-          "basis": "unclassified",
-          "sources": [],
+          "basis": "law",
+          "sources": [
+            "eu-directive-89-391"
+          ],
           "replaces": [
             "people-harmed.danger_and_protection"
-          ]
+          ],
+          "basis_note": "Binding for EU employers toward their workers; applied by analogy elsewhere."
         },
         {
           "id": "geopolitical.status-of-open-decisions",
@@ -463,8 +524,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "What has been decided, what is under consideration, and what would cause the next decision to be made.",
           "weight": "core",
           "dimension": "truthfulness_factual_discipline",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "No source establishes when a decision under consideration must be disclosed."
         },
         {
           "id": "geopolitical.divided-workforce",
@@ -472,8 +534,9 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "The draft is written for a workforce holding different relationships to the conflict, and is clear about what applies to everyone regardless of where they sit.",
           "weight": "supporting",
           "dimension": "stakeholder_respect_impact",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "judgement",
+          "sources": [],
+          "basis_note": "No source addresses a workforce on opposing sides of a conflict."
         },
         {
           "id": "geopolitical.route-for-personal-circumstances",
@@ -481,7 +544,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "A way for affected staff to tell the organization facts about their own situation — location, family, travel, immigration status — that would change its response, and what happens to what they report.",
           "weight": "supporting",
           "dimension": "listening_employee_voice",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         },
         {
@@ -490,7 +553,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "What would cause this position or operational decision to change, and when it will next be reviewed.",
           "weight": "supporting",
           "dimension": "verification_follow_through",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         }
       ],
@@ -590,11 +653,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Workforce reduction and restructuring",
       "layer": "event",
       "family": "workforce",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "2.0.1 — Evidence labels added; no check changed.",
         "2.0.0 — five elements, four triggers and three questions moved to the workforce-impact overlay, which applies them to every job-affecting event. The euphemism trigger now narrows core.central_fact_first.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
       ],
@@ -606,8 +670,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "Named support for people whose roles end, with a provider, owner and date.",
           "weight": "core",
           "dimension": "corrective_action_proof",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "guidance",
+          "sources": [
+            "fair-work-redundancy",
+            "cipd-redundancy-factsheet"
+          ],
+          "basis_note": "Practitioner and regulator guidance on redundancy support; not binding."
         },
         {
           "id": "workforce-reduction.the-remaining-workforce",
@@ -615,8 +683,11 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "What work stops, moves or changes owner for the people who stay, and who decides.",
           "weight": "supporting",
           "dimension": "corrective_action_proof",
-          "basis": "unclassified",
-          "sources": []
+          "basis": "research",
+          "sources": [
+            "lee-2023-layoff-survivors"
+          ],
+          "basis_note": "Qualitative study of 15 layoff survivors at one company; shows fairness and follow-through matter, not what a message must say."
         },
         {
           "id": "workforce-reduction.leadership-exposure",
@@ -624,7 +695,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "means": "Whether leadership roles, pay or incentives are affected by the same decision.",
           "weight": "supporting",
           "dimension": "fairness_independence_conflicts",
-          "basis": "unclassified",
+          "basis": "judgement",
           "sources": []
         }
       ],

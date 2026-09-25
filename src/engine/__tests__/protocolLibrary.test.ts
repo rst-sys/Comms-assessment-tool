@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { compile, render, splitFrontMatter } from "../../../scripts/compile-protocols.js";
+import { compile, readSourceIds, render, splitFrontMatter } from "../../../scripts/compile-protocols.js";
 import { checkLibrary, checkProtocol, PROTOCOL_CAPS, protocolWordBudget } from "../protocolFormat.js";
 import { buildProtocolBlock, protocolWordCount } from "../protocolPrompt.js";
 import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
@@ -264,4 +264,56 @@ describe("what the protocols ask the model to produce", () => {
       .reduce((n, p) => n + p.questions.length, 0);
     expect(offered).toBeGreaterThan(MAX_QUESTIONS);
   }, 60_000);
+});
+
+describe("evidence labels", () => {
+  const LABELLED = ["ceo-departure", "cyber-incident", "geopolitical", "workforce-reduction"];
+
+  it("leaves no element in the labelled protocols unclassified", () => {
+    for (const id of LABELLED) {
+      const p = PROTOCOL_LIBRARY.find((x) => x.id === id)!;
+      const unclassified = p.elements.filter((e) => e.basis === "unclassified").map((e) => e.name);
+      expect(unclassified, id).toEqual([]);
+    }
+  });
+
+  it("resolves every source id an element cites against the registry", () => {
+    const known = new Set(readSourceIds());
+    const dangling: string[] = [];
+    for (const p of PROTOCOL_LIBRARY) {
+      for (const e of p.elements) for (const src of e.sources) if (!known.has(src)) dangling.push(`${e.id}: ${src}`);
+    }
+    expect(dangling).toEqual([]);
+    // Not vacuous: the labelled protocols really do cite sources now.
+    const cited = LABELLED.flatMap((id) => PROTOCOL_LIBRARY.find((x) => x.id === id)!.elements.flatMap((e) => e.sources));
+    expect(new Set(cited).size).toBeGreaterThan(8);
+  });
+
+  it("keeps basis, sources and basis_note out of the prompt entirely", () => {
+    // The whole point of the field: it says where the evidence came from, which
+    // is the reader's business and not the model's. If any of it reached the
+    // prompt, adding a label would change reviews.
+    for (const p of PROTOCOL_LIBRARY) {
+      const block = buildProtocolBlock(p);
+      for (const e of p.elements) {
+        if (e.basis_note) expect(block, `${e.id} basis_note`).not.toContain(e.basis_note);
+        for (const src of e.sources) expect(block, `${e.id} source ${src}`).not.toContain(src);
+      }
+      // "law", "research" and the rest are ordinary words that can appear in a
+      // check, so the label is matched only in the shape a block would print it.
+      expect(block).not.toMatch(/\b(basis|basis_note|sources)\s*[:=]/i);
+    }
+  });
+
+  it("carries a note wherever a label overstates what the source covers", () => {
+    // Every element resting on law in these four is binding somewhere narrower
+    // than the tool is used, so each must say where.
+    for (const id of LABELLED) {
+      const p = PROTOCOL_LIBRARY.find((x) => x.id === id)!;
+      for (const e of p.elements.filter((x) => x.basis === "law")) {
+        expect(e.basis_note, `${e.id} rests on law and must say where it binds`).toBeTruthy();
+        expect(e.basis_note!, e.id).toMatch(/binding/i);
+      }
+    }
+  });
 });

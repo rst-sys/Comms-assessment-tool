@@ -3,11 +3,12 @@ id: geopolitical
 name: Geopolitical event affecting operations or employee welfare
 layer: event
 family: external
-version: 1.1.0
+version: 1.1.1
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — narrows core.central_fact_first, replacing the dead plain-naming pointer. Danger and protective steps now replaces the people-harmed overlay's general version. No check reworded."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
@@ -19,23 +20,25 @@ elements:
     means: The draft says what connects this organization to this event — its people, its sites, its supply, its obligations — rather than speaking because others are speaking.
     weight: core
     dimension: fairness_independence_conflicts
-    basis: unclassified
-    sources: []
+    basis: research
+    sources: [bamiatzi-2024-partisan-csr, braga-2026-sociopolitical-activism]
+    basis_note: "Descriptive research (peer imitation; employees the least receptive audience); a caution, not a standard."
 
   - id: geopolitical.discretion-inside-compliance
     name: Discretion inside compliance
     means: Where the organization was compelled by law, sanctions or government direction, and where it chose — whether to exit, when, on what terms, and what happens to local staff.
     weight: core
     dimension: accountability_agency
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "Built from the structure of sanctions and consultation obligations; no source catalogues this evasion."
 
   - id: geopolitical.exposure-separated-from-event
     name: Exposure separated from event
     means: What follows from the event itself and what follows from the organization's own prior positioning — where it sited operations, how concentrated its suppliers or staff are.
     weight: core
     dimension: causation_explanation
-    basis: unclassified
+    basis: judgement
     sources: []
 
   - id: geopolitical.danger-and-protective-steps
@@ -43,32 +46,35 @@ elements:
     means: For people in or near the affected area, the risk as currently assessed, the protective steps taken or planned, and who is responsible for them.
     weight: core
     dimension: corrective_action_proof
-    basis: unclassified
-    sources: []
+    basis: law
+    sources: [eu-directive-89-391]
     replaces: [people-harmed.danger_and_protection]
+    basis_note: "Binding for EU employers toward their workers; applied by analogy elsewhere."
 
   - id: geopolitical.status-of-open-decisions
     name: Status of open decisions
     means: What has been decided, what is under consideration, and what would cause the next decision to be made.
     weight: core
     dimension: truthfulness_factual_discipline
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "No source establishes when a decision under consideration must be disclosed."
 
   - id: geopolitical.divided-workforce
     name: Divided workforce
     means: The draft is written for a workforce holding different relationships to the conflict, and is clear about what applies to everyone regardless of where they sit.
     weight: supporting
     dimension: stakeholder_respect_impact
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "No source addresses a workforce on opposing sides of a conflict."
 
   - id: geopolitical.route-for-personal-circumstances
     name: Route for personal circumstances
     means: A way for affected staff to tell the organization facts about their own situation — location, family, travel, immigration status — that would change its response, and what happens to what they report.
     weight: supporting
     dimension: listening_employee_voice
-    basis: unclassified
+    basis: judgement
     sources: []
 
   - id: geopolitical.conditions-for-revisiting
@@ -76,7 +82,7 @@ elements:
     means: What would cause this position or operational decision to change, and when it will next be reviewed.
     weight: supporting
     dimension: verification_follow_through
-    basis: unclassified
+    basis: judgement
     sources: []
 
 triggers:
@@ -124,6 +130,7 @@ questions:
 
 narrows:
   - core.central_fact_first
+
 ---
 
 ## Source

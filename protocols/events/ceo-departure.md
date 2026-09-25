@@ -3,11 +3,12 @@ id: ceo-departure
 name: CEO or senior-leader departure
 layer: event
 family: leadership
-version: 1.1.0
+version: 1.1.1
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — two listed-company disclosure questions removed; the listed-company overlay now asks them."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
@@ -19,57 +20,69 @@ elements:
     means: The draft says whether the leader chose to go, was asked to go, left by negotiated agreement or was removed, or says plainly that this is not being disclosed.
     weight: core
     dimension: truthfulness_factual_discipline
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "No law, standard or code requires it. PRSA and IABC are consistent with it but don't address departures."
+
   - id: ceo-departure.reason-or-declared-withholding-of-it
     name: Reason, or declared withholding of it
     means: The draft either gives the reason for the departure or states that the reason is not being given, rather than leaving the gap unacknowledged or filling it with a stock phrase.
     weight: core
     dimension: causation_explanation
-    basis: unclassified
+    basis: judgement
     sources: []
+    basis_note: "The SEC considered requiring reasons for officer departures in 2004 and decided against it."
+
   - id: ceo-departure.decision-date-and-effective-date
     name: Decision date and effective date
     means: The draft distinguishes when the decision was taken or notice given from when the departure takes effect.
     weight: core
     dimension: truthfulness_factual_discipline
-    basis: unclassified
-    sources: []
+    basis: law
+    sources: [sec-form-8k, sec-cdi-form-8k, eu-delegated-reg-2026-789]
+    basis_note: "Binding only for listed companies in the US and EU; applied by analogy elsewhere."
+
   - id: ceo-departure.who-holds-the-authority-now
     name: Who holds the authority now
     means: The draft names who holds the departing leader's authority from the departure date, whether that arrangement is interim, and how and roughly when a permanent appointment will be made.
     weight: core
     dimension: accountability_agency
-    basis: unclassified
+    basis: judgement
     sources: []
+
   - id: ceo-departure.the-organizations-own-voice
     name: The organization's own voice
     means: The account of the departure comes from the body that made or accepted the decision, not only from a quotation attributed to the departing leader.
     weight: supporting
     dimension: accountability_agency
-    basis: unclassified
+    basis: judgement
     sources: []
+
   - id: ceo-departure.separation-terms-acknowledged
     name: Separation terms acknowledged
     means: Where there is a separation agreement, payment, consultancy or continuing role, the draft says it exists and where its terms are or will be disclosed.
     weight: supporting
     dimension: fairness_independence_conflicts
-    basis: unclassified
-    sources: []
+    basis: law
+    sources: [sec-reg-sk-402j, eu-directive-2007-36-art-9b]
+    basis_note: "Binding only for listed companies in the US and EU, and in later filings rather than the announcement; applied by analogy."
+
   - id: ceo-departure.continuity-of-the-leaders-commitments
     name: Continuity of the leader's commitments
     means: The draft says whether strategies, commitments or relationships closely tied to the departing leader continue, are under review, or end.
     weight: supporting
     dimension: stakeholder_respect_impact
-    basis: unclassified
+    basis: judgement
     sources: []
+
   - id: ceo-departure.a-clean-channel
     name: A clean channel
     means: The departure is not announced in the same document as unrelated significant news that would draw attention away from it.
     weight: supporting
     dimension: fairness_independence_conflicts
-    basis: unclassified
-    sources: []
+    basis: research
+    sources: [graffin-2011-strategic-noise]
+    basis_note: "Documents a pattern (unrelated news released alongside 20% of CEO successions); justifies suspicion, not a standard."
 
 triggers:
   - check: The departure is described as a retirement, a personal choice or a mutual decision, yet the same draft says it takes effect immediately, names an interim leader with no transition period, or refers to an investigation, review or board inquiry — and does not reconcile the two.
@@ -102,6 +115,7 @@ questions:
 
 narrows:
   - plain-naming
+
 ---
 
 ## What this protocol narrows

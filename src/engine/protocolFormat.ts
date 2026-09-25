@@ -146,6 +146,20 @@ export interface ProtocolElement {
   dimension: DimensionId;
   /** What kind of authority this rests on. "unclassified" until the owner says. */
   basis: ElementBasis;
+  /**
+   * One sentence qualifying that label, for the Standards Library card.
+   *
+   * The label alone overstates several of these checks: "law" is right for an
+   * element resting on the EU worker-information directive, and wrong for the
+   * reader who does not know it binds only EU employers toward their own
+   * workers. A note says so on the element rather than three paragraphs down
+   * behind an expander.
+   *
+   * It never reaches the model. A protocol changes what the engine looks for;
+   * where the evidence came from is the reader's business, not the model's,
+   * and sending it would change reviews that this field exists not to change.
+   */
+  basis_note?: string;
   /** Ids from sources/registry.yaml. */
   sources: string[];
   /** Conditions under which the element applies at all; absent means always. */
@@ -314,6 +328,12 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       if (!one(e.weight, ["core", "supporting"] as const)) err(`${at} weight must be "core" or "supporting"`);
       if (!one(e.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(e.dimension)} is not one of the ten scored dimensions`);
       if (!one(e.basis, ELEMENT_BASES)) err(`${at} basis must be one of ${ELEMENT_BASES.join(", ")}. Got ${JSON.stringify(e.basis)}`);
+      if (e.basis_note !== undefined) {
+        if (!isStr(e.basis_note)) err(`${at} basis_note must be one short sentence qualifying the basis label`);
+        else if ((e.basis_note as string).trim().split(/\s+/).length > 40) {
+          err(`${at} basis_note is ${(e.basis_note as string).trim().split(/\s+/).length} words; keep it to 40. It is the line under the label, not the Source section.`);
+        }
+      }
       if (!isArr(e.sources)) err(`${at} needs a sources list, even if it is empty`);
       else for (const src of e.sources) if (typeof src !== "string") err(`${at} lists a source that is not an id`);
       if (e.replaces !== undefined) {

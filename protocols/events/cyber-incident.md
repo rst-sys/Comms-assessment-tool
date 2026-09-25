@@ -3,11 +3,12 @@ id: cyber-incident
 name: Cyber incident and data breach
 layer: event
 family: incident
-version: 1.1.0
+version: 1.1.1
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
@@ -19,49 +20,55 @@ elements:
     means: The draft gives the discovery date, the incident period if known, and time zones.
     weight: core
     dimension: truthfulness_factual_discipline
-    basis: unclassified
-    sources: []
+    basis: judgement
+    sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
+    basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
 
   - id: cyber-incident.nature-of-exposure
     name: Nature of exposure
     means: The draft says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined, and names the data categories involved.
     weight: core
     dimension: truthfulness_factual_discipline
-    basis: unclassified
-    sources: []
+    basis: judgement
+    sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
+    basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
 
   - id: cyber-incident.present-response
     name: Present response
     means: The draft describes what is being done now, specific enough to check, including containment and who is investigating.
     weight: core
     dimension: corrective_action_proof
-    basis: unclassified
-    sources: []
+    basis: judgement
+    sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
+    basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
 
   - id: cyber-incident.support-matched-to-harm
     name: Support matched to harm
     means: Any support offered fits the data involved, with its terms, its duration and how to claim it.
     weight: supporting
     dimension: stakeholder_respect_impact
-    basis: unclassified
-    sources: []
+    basis: judgement
+    sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
     replaces: [people-harmed.support]
+    basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
 
   - id: cyber-incident.authenticity
     name: Authenticity
     means: The draft tells recipients how to confirm the notice is genuine, and how the organization will and will not contact them.
     weight: supporting
     dimension: verification_follow_through
-    basis: unclassified
-    sources: []
+    basis: judgement
+    sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
+    basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
 
   - id: cyber-incident.attribution-discipline
     name: Attribution discipline
     means: Any claim about who was responsible, or that a vendor was at fault, carries a stated basis and does not displace the organization's own role.
     weight: core
     dimension: fairness_independence_conflicts
-    basis: unclassified
-    sources: []
+    basis: judgement
+    sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
+    basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
 
 triggers:
   - check: The draft states a categorical outcome — no data was compromised, the incident is contained, systems are secure — while also saying the investigation is ongoing, or with no basis given.
@@ -99,6 +106,7 @@ questions:
   - ask: Do the website, customer letter, call-center script, employee talking points and regulator notice agree on facts, dates and scope?
   - ask: If employees are affected, have they been told before external release?
     review: [HR]
+
 ---
 
 ## 3. Source
