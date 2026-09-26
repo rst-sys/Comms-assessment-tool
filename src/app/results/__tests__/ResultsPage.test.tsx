@@ -104,7 +104,9 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
     const panels = Array.from(container.querySelectorAll("details.panel"));
     // Devil's Advocate is no longer a panel: its damning interpretation shows
     // on load, with only the stakeholder voices behind an expander.
-    expect(panels.map((p) => p.id)).toEqual(["questions"]);
+    // The reviewer checklist sits directly after the model's questions: the
+    // generic half of the same job, built by the app rather than the model.
+    expect(panels.map((p) => p.id)).toEqual(["questions", "reviewer-checklist"]);
     expect(panels.every((p) => !(p as HTMLDetailsElement).open)).toBe(true);
     // The footer moved to the app shell so it is there before a review too;
     // App.test covers it.

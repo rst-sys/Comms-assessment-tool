@@ -17,6 +17,7 @@ import type {
   Severity,
 } from "./types.js";
 import type { EvaluationResult } from "./evaluate.js";
+import { checklistForHash } from "./checklist.js";
 
 export const SAVED_REVIEW_FORMAT = "trust-assessment-review";
 export const SAVED_REVIEW_VERSION = 1;
@@ -95,6 +96,27 @@ export interface SavedReview {
   dimensions: { id: string; score: number; rationale: string; would_raise: string }[];
   findings: SavedFinding[];
   specialist_review_summary: string[];
+  /**
+   * The reviewer checklist this review showed.
+   *
+   * Recovered from bundle_hash rather than rebuilt from the intake, so the
+   * file records the questions that actually applied when it was run. Absent
+   * when the hash names protocol versions the library no longer has: showing
+   * today's checklist in its place would misdescribe what was checked.
+   */
+  reviewer_checklist?: { name: string; questions: { ask: string; also: string[] }[] }[];
+}
+
+/** The checklist for a stored bundle hash, in the saved file's shape. */
+function checklistOf(hash: string | undefined): Pick<SavedReview, "reviewer_checklist"> {
+  const groups = checklistForHash(hash);
+  if (!groups) return {};
+  return {
+    reviewer_checklist: groups.map((g) => ({
+      name: g.name,
+      questions: g.questions.map((q) => ({ ask: q.ask, also: [...q.also] })),
+    })),
+  };
 }
 
 export function buildSavedReview(
@@ -137,6 +159,7 @@ export function buildSavedReview(
       specialist_review_type: f.specialist_review_type,
     })),
     specialist_review_summary: [...a.specialist_review_summary],
+    ...checklistOf(result.bundle_hash),
   };
 }
 
@@ -193,6 +216,9 @@ const SAVED_REVIEW_SCHEMA = {
     dimensions: { type: "array" },
     findings: { type: "array" },
     specialist_review_summary: { type: "array" },
+    // Optional: absent on reviews saved before the checklist existed, and on
+    // any whose bundle hash the current library cannot resolve.
+    reviewer_checklist: { type: "array" },
   },
   required: ["format", "format_version", "score", "settings", "summary", "dimensions", "findings"],
 } as const;

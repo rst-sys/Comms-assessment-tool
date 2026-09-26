@@ -50,12 +50,12 @@ export function buildProtocolBlock(p: ProtocolFile): string {
     }
   }
 
-  if (p.questions.length > 0) {
-    lines.push("", "QUESTIONS");
-    for (const q of p.questions) {
-      lines.push(`- ${q.ask}${q.review && q.review.length > 0 ? ` (${q.review.join(", ")})` : ""}`);
-    }
-  }
+  // A protocol's questions are NOT sent. They are fixed text the model could
+  // only choose among — twenty-two candidates for eight slots, so most were
+  // discarded and the survivors changed between runs of the same draft. The
+  // app shows all of them instead, grouped by reviewer, from the same resolved
+  // bundle (see checklist.ts). What the model still writes is the questions
+  // this particular draft raises, which is the part that needs judgment.
 
   const framework = (p.narrows ?? []).filter((n) => n in FRAMEWORK_NARROWABLE);
   const core = (p.narrows ?? []).filter((n) => n.startsWith("core."));
@@ -88,7 +88,6 @@ A protocol applies to this draft because of the event or the goal the author sel
 
 ELEMENTS are what a credible communication of that kind contains. The dimension in brackets is the one each bears on.
 HIGH-SEVERITY TRIGGERS are gaps to raise as High-severity findings when the draft meets them, on the dimension named. Where a review type is named, set specialist_review_needed true with that type.
-QUESTIONS are candidates for questions_before_publication, not obligations: include one only where this draft leaves it genuinely open, and let it compete with the questions the draft itself raises. A question the draft already answers is noise.
 NARROWS THIS FRAMEWORK CHECK means the event makes the named requirement unsafe to assert; raise it as a question rather than a finding.
 NARROWS THIS CORE CHECK, and the same note on a single trigger, means this protocol carries the sharper, event-specific reading of a check the core protocol above states generally. Apply this protocol's reading. Where the same gap in the draft would satisfy both, raise ONE finding, worded from this protocol, not one for each.
 

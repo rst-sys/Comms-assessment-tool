@@ -12,6 +12,7 @@ import { APP_NAME, COPYRIGHT, CORE_PRINCIPLE, REPORTER_QUESTION } from "../copy.
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { warrantsHeightenedReview } from "../../engine/types.js";
 import { reviewTagsFor } from "./model.js";
+import { CHECKLIST_INTRO, CHECKLIST_TITLE, checklistFor, checklistSize } from "../../engine/checklist.js";
 import { HEIGHTENED_NOTICE } from "../copy.js";
 import { scoringNoteParagraphs } from "./ScoringNote.js";
 
@@ -202,6 +203,18 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     }),
     true,
   );
+
+  // The protocols' own questions, the same list the page shows. Built from the
+  // request, not from the analysis: the model never saw them.
+  const checklist = checklistFor(request);
+  if (checklistSize(checklist) > 0) {
+    w.heading(CHECKLIST_TITLE, 15);
+    w.paragraph(CHECKLIST_INTRO, 10);
+    for (const group of checklist) {
+      w.paragraph(`${group.name} (${group.questions.length})`, 11, 0, "bold");
+      w.bullets(group.questions.map((q) => (q.also.length ? `${q.ask}  [also ${q.also.join(", ")}]` : q.ask)));
+    }
+  }
 
   w.space(6);
   w.rule();

@@ -624,6 +624,17 @@ textarea { resize: vertical; }
 /* The protocol's own caveat on a check: applied by analogy, or an extension
    that is the author's judgement. Set apart from the check it qualifies. */
 .basis-note { display: block; margin-top: 6px; font-size: 13px; color: var(--ink-soft); font-style: italic; }
+/* The reviewer checklist: one collapsed group per review function. Indented
+   under the panel so the groups read as a list inside it rather than as more
+   panels, and the counts sit right where a reader looks for the weight. */
+.checklist-group { border-top: 1px solid var(--rule); padding: 2px 0; }
+.checklist-group > summary { display: flex; align-items: baseline; gap: 10px; cursor: pointer; padding: 10px 2px; list-style: none; }
+.checklist-group > summary::-webkit-details-marker { display: none; }
+.checklist-group > summary::before { content: "\25B8"; color: var(--ink-soft); font-size: 12px; transition: transform 120ms ease; }
+.checklist-group[open] > summary::before { transform: rotate(90deg); }
+.checklist-group-name { font-weight: 600; }
+.checklist-group ul { margin: 0 0 12px 24px; }
+@media print { .checklist-group > summary::before { content: ""; } }
 
 .rests-row { margin-top: calc(var(--space) * 3); }
 .rests-row p { margin: 0; font-size: 15px; color: var(--ink-2); max-width: var(--measure); }

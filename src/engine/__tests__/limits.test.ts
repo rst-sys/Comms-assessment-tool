@@ -76,10 +76,14 @@ describe("the output budget", () => {
     const blocks = buildSystemBlocks(DEMO_1.request).map((b) => b.text).join("\n");
     expect(blocks).toContain(`findings contains at most ${MAX_FINDINGS} entries`);
     expect(blocks).toContain(`at least ${MIN_QUESTIONS} questions and at most ${MAX_QUESTIONS}`);
-    // A protocol supplies candidates, not obligations, or the cap fills with
-    // boilerplate — said once, in the shared rules, not twice.
-    expect(blocks).toContain("not obligations");
-    expect(blocks.match(/not obligations/g)).toHaveLength(1);
+    // The cap used to fill with protocol boilerplate, so the rules explained
+    // that a protocol's questions were candidates rather than obligations.
+    // They are not sent at all now — the app shows every one of them as the
+    // reviewer checklist — so the instruction is that the model's questions
+    // are about this draft, and the rule that governed the choice is gone.
+    expect(blocks).toContain("Every one of them is about THIS draft");
+    expect(blocks).toContain("A fixed reviewer checklist for this kind of situation is shown to the reader separately");
+    expect(blocks).not.toContain("not obligations");
     // And the floor is stated as a floor, or the sparing rule wins and the
     // review comes back under it. Four cyber reviews died that way.
     expect(blocks).toContain("is a floor, not a target");

@@ -12,6 +12,8 @@ import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
 import { Questions } from "./Questions.js";
+import { ReviewerChecklist } from "./ReviewerChecklist.js";
+import { checklistFor } from "../../engine/checklist.js";
 
 interface Props {
   result: EvaluationResult;
@@ -115,6 +117,10 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
       <Findings findings={a.findings} />
       <DevilsAdvocate data={a.devils_advocate} />
       <Questions questions={a.questions_before_publication} />
+      {/* Built here from the intake, not by the model: same answers, same
+          checklist, every time. Directly after the draft-specific questions,
+          because it is the generic half of the same job. */}
+      <ReviewerChecklist groups={checklistFor(request)} />
       {/* Reference material, below the analysis rather than between the reader and it. */}
       <PrivacyPanel config={config} />
     </main>

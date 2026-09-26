@@ -111,7 +111,9 @@ describe("the protocol library", () => {
     expect(block).toContain("rightsizing");
     expect(block).toContain("synergies");
     expect(block).toMatch(/feedback[^.]*without an explicit statement that leadership/i);
-    expect(block).toContain("internal mobility");
+    // "internal mobility" is a workforce-impact QUESTION, and questions are no
+    // longer sent: the app shows them as the reviewer checklist instead.
+    expect(block).not.toContain("internal mobility");
   });
 
   it("never supplies wording and never asks for a section of its own", () => {
