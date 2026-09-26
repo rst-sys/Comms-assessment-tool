@@ -22,6 +22,8 @@ interface Props {
   config?: PrivacyConfig | null;
   /** Clears all state and returns to a blank intake (Section 4). */
   onDiscard?: () => void;
+  /** Back to the intake with the settings and context kept, for the next draft. */
+  onReviewAnother?: () => void;
   /** The saved review this one was compared against, when there is one. */
   baseline?: SavedReview | null;
   comparison?: ComparisonResult | null;
@@ -33,7 +35,7 @@ interface Props {
  * open; the remaining sections are collapsed disclosure panels. Printing
  * expands every panel and restores the previous state afterwards.
  */
-export function ResultsPage({ result, request, config = null, onDiscard, baseline = null, comparison = null, comparisonError = null }: Props) {
+export function ResultsPage({ result, request, config = null, onDiscard, onReviewAnother, baseline = null, comparison = null, comparisonError = null }: Props) {
   const a = result.analysis;
 
   useEffect(() => {
@@ -91,6 +93,9 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
     <main className="page results">
       <h1 className="sr-only">Review results</h1>
       <div className="no-print results-actions">
+        {onReviewAnother ? (
+          <button type="button" className="primary" onClick={onReviewAnother}>Review another draft</button>
+        ) : null}
         <button type="button" onClick={savePdf} disabled={saving}>{saving ? "Working…" : "Save as PDF"}</button>
         {FEATURES.saveReview ? (
           <button type="button" onClick={saveReview} disabled={saving}>Save this review</button>
@@ -104,6 +109,13 @@ export function ResultsPage({ result, request, config = null, onDiscard, baselin
         {onDiscard ? <button type="button" onClick={onDiscard}>Discard and start over</button> : null}
         {saveStatus ? <span className="status" role="status">{saveStatus}</span> : null}
       </div>
+      {onReviewAnother ? (
+        <p className="no-print muted small prose save-note">
+          “Review another draft” keeps your answers in <em>Before you start</em> and <em>About this message</em>,
+          and anything you wrote in <em>Anything else we should know?</em>. Your draft stays in the box, so you can edit
+          it or paste a new version over it. “Discard and start over” clears everything.
+        </p>
+      ) : null}
       {FEATURES.saveReview ? (
         <p className="no-print muted small prose save-note">
           A saved review holds the score, the findings and your settings, not your draft and not the contents of any

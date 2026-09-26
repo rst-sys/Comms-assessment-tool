@@ -1,5 +1,4 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { DEMOS, type Fixture } from "../../engine/fixtures.js";
+import { useState, type ReactNode } from "react";
 import type { SavedReview } from "../../engine/savedReview.js";
 import { type EvaluationRequest, type AudienceDocument } from "../../engine/types.js";
 import {
@@ -14,11 +13,9 @@ import {
 import { AudienceDocuments } from "./AudienceDocuments.js";
 import { FEATURES } from "../features.js";
 import { Progress } from "../Progress.js";
-import { importUrl, type ImportedPage } from "../api.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import {
   canEvaluate,
-  defaultAudiences,
   EMPTY_INTAKE,
   HIGH_RISK_WARNING,
   intakeComplete,
@@ -38,17 +35,15 @@ interface Props {
   busy: boolean;
   error: EvaluationFailure | null;
   onEvaluate: (request: EvaluationRequest) => void;
-  /** Settings and context to load on first render (a demo, or a saved review's settings). */
+  /** Settings and context to load on first render (a previous review's, or a saved review's settings). */
   initialRequest?: EvaluationRequest;
+  /** Whether initialRequest is the settings and context carried over from the last review. */
+  carriedOver?: boolean;
   /** A saved review this draft will be compared against. */
   baseline?: SavedReview | null;
-  /** Whether Import from URL is available in this runtime. */
-  urlImport?: boolean;
   /** Whether the hosted web search for public context is available. */
   publicSearch?: boolean;
 }
-
-type SourceTab = "paste" | "url";
 
 /**
  * The Review screen: three steps down one column.
@@ -66,9 +61,8 @@ type SourceTab = "paste" | "url";
  * All state lives in this component; nothing is written to storage, the URL
  * or the page title.
  */
-export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, baseline = null, urlImport = true, publicSearch = true }: Props) {
+export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, carriedOver = false, baseline = null, publicSearch = true }: Props) {
   const init = initialRequest;
-  const [tab, setTab] = useState<SourceTab>("paste");
   const [draft, setDraft] = useState(init?.draft ?? "");
   const [intake, setIntake] = useState<IntakeState>(init ? intakeFromRequest(init) : EMPTY_INTAKE);
   // Smart defaults stop as soon as the user has an opinion: the format
@@ -80,14 +74,9 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   const [situationTouched, setSituationTouched] = useState(Boolean(init));
   const [context, setContext] = useState(init?.context ?? "");
   const [documents, setDocuments] = useState<AudienceDocument[]>(init?.audience_documents ?? []);
-  const [isDemo, setIsDemo] = useState(Boolean(init));
-  const [url, setUrl] = useState("");
-  const [imported, setImported] = useState<ImportedPage | null>(null);
-  const [importing, setImporting] = useState(false);
-  const [importError, setImportError] = useState<string | null>(null);
 
   const words = wordCount(draft);
-  const ready = canEvaluate(draft, intake, isDemo) && !busy;
+  const ready = canEvaluate(draft, intake) && !busy;
   const missing = missingAnswers(intake);
 
   /**
@@ -100,48 +89,6 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
     document.getElementById(step)?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const loadDemo = (fixture: Fixture) => {
-    const r = fixture.request;
-    setTab("paste");
-    setDraft(r.draft);
-    setIntake(intakeFromRequest(r));
-    setAudiencesTouched(true);
-    setSituationTouched(true);
-    setContext(r.context);
-    setIsDemo(true);
-    setImported(null);
-  };
-
-  const onDraftChange = (value: string) => {
-    setDraft(value);
-    setIsDemo(false);
-    if (value.trim().length === 0) setImported(null);
-  };
-
-  const doImport = async () => {
-    setImporting(true);
-    setImportError(null);
-    try {
-      const page = await importUrl(url);
-      setDraft(page.text);
-      setImported(page);
-      setIsDemo(false);
-      // The same smart default a click on that format would have applied:
-      // the import fills the menu, so it fills what the menu fills.
-      if (page.suggested_format && intake.communication_format === "") {
-        const format = page.suggested_format;
-        setIntake((prev) => {
-          const next: IntakeState = { ...prev, communication_format: format };
-          if (!audiencesTouched) next.audiences = defaultAudiences(format, next);
-          return next;
-        });
-      }
-    } catch (e) {
-      setImportError(e instanceof Error ? e.message : "Couldn't extract readable text from this page. Paste the text instead.");
-    } finally {
-      setImporting(false);
-    }
-  };
 
   const submit = () => {
     if (!intakeComplete(intake) || !ready) return;
@@ -149,7 +96,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       draft: draft.trim(),
       ...intakeFields(intake),
       context: context.trim(),
-      already_published: imported !== null,
+      already_published: false,
       ...(documents.length > 0 ? { audience_documents: documents } : {}),
     });
   };
@@ -162,6 +109,17 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
           <p className="prose">Three steps. Tell us who you are, describe the situation, then paste your draft.</p>
         </div>
       </header>
+
+      {carriedOver && !baseline ? (
+        <div className="card baseline-banner" role="note">
+          <div className="label">Carried over from your last review</div>
+          <p style={{ margin: 0 }}>
+            Your answers in steps 1 and 2, and anything you wrote in <em>Anything else we should know?</em>, are the same
+            as last time. Your draft is still in step 3 — edit it, or paste a new version over it, then evaluate again.
+            Use <em>Discard and start over</em> on a results page to clear everything instead.
+          </p>
+        </div>
+      ) : null}
 
       {baseline ? (
         <div className="card baseline-banner" role="note">
@@ -203,62 +161,18 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
         n={3}
         id="step-draft"
         title="Your draft"
-        hint={`Paste the text or import it from a URL. ${MIN_WORDS} to ${MAX_WORDS.toLocaleString()} words.`}
+        hint={`Paste the text of your draft. ${MIN_WORDS} to ${MAX_WORDS.toLocaleString()} words.`}
       >
-        <div className="draft-head">
-          <div className="tabs no-print" role="tablist" aria-label="Draft source">
-            <button type="button" role="tab" aria-selected={tab === "paste"} className={tab === "paste" ? "tab tab-active" : "tab"} onClick={() => setTab("paste")}>
-              Paste text
-            </button>
-            {urlImport ? (
-              <button type="button" role="tab" aria-selected={tab === "url"} className={tab === "url" ? "tab tab-active" : "tab"} onClick={() => setTab("url")}>
-                Import from URL
-              </button>
-            ) : null}
-          </div>
-          <p className="demo-link no-print">
-            Try a demo:{" "}
-            {DEMOS.map((d, i) => (
-              <span key={d.key}>
-                {i > 0 ? " · " : ""}
-                <button type="button" className="linklike" onClick={() => loadDemo(d)}>{d.name.replace(/^Demo \d — /, "")}</button>
-              </span>
-            ))}
-          </p>
-        </div>
-        {tab === "url" ? (
-          <div className="url-row">
-            <label htmlFor="import-url" className="label">Address of a published page</label>
-            <div className="url-input">
-              <input id="import-url" type="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="https://example.com/newsroom/statement" disabled={importing} />
-              <button type="button" onClick={doImport} disabled={importing || url.trim().length === 0}>
-                {importing ? "Fetching…" : "Fetch text"}
-              </button>
-            </div>
-            {importError ? <p className="error" role="alert">{importError}</p> : null}
-            <p className="muted small">The page is fetched once and its main text is placed below for you to review and trim. The engine never sees the address or the page itself.</p>
-          </div>
-        ) : null}
-        {imported ? (
-          <div className="import-info" aria-live="polite">
-            <div className="label">Imported from</div>
-            <div>{imported.source_url}</div>
-            {imported.title ? <div><strong>{imported.title}</strong></div> : null}
-            {imported.published ? <div className="muted small">Published {imported.published}</div> : null}
-            <div className="muted small">This draft is already issued; findings will be framed retrospectively.</div>
-          </div>
-        ) : null}
         <textarea
           id="draft-text"
           aria-label="Draft text"
           value={draft}
-          onChange={(e) => onDraftChange(e.target.value)}
+          onChange={(e) => setDraft(e.target.value)}
           rows={16}
           placeholder="Paste the draft message here."
         />
         <div className="muted small word-count" aria-live="polite">
-          {words} {words === 1 ? "word" : "words"}
-          {isDemo ? " (demo draft)" : ` · ${MIN_WORDS}–${MAX_WORDS.toLocaleString()}`}
+          {words} {words === 1 ? "word" : "words"} · {MIN_WORDS}–{MAX_WORDS.toLocaleString()}
         </div>
 
         <label className="field context-field">

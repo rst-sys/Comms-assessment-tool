@@ -23,8 +23,6 @@ import type { EvaluationRequest as Req } from "../engine/types.js";
 export interface AppOptions {
   /** Settings and draft to load on first render. */
   initialRequest?: Req;
-  /** Whether Import from URL is available in this runtime. */
-  urlImport?: boolean;
   /** Whether the hosted web search for public context is available. */
   publicSearch?: boolean;
   /** Extra line for the intake screen describing this runtime, if any. */
@@ -43,7 +41,7 @@ interface Review {
  * no storage, no URL parameters, no page-title changes. "Discard" remounts
  * the intake screen blank.
  */
-export function App({ initialRequest, urlImport = true, publicSearch = true, runtimeNote }: AppOptions = {}) {
+export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOptions = {}) {
   const [view, setView] = useState<View>("review");
   const [config, setConfig] = useState<PrivacyConfig | null>(null);
   const [welcomeDone, setWelcomeDone] = useState(false);
@@ -52,6 +50,9 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
   const [error, setError] = useState<EvaluationFailure | null>(null);
   const [intakeKey, setIntakeKey] = useState(0);
   const [baseline, setBaseline] = useState<SavedReview | null>(null);
+  // The settings and context of the review just shown, kept so the next draft
+  // can be measured against the same situation without re-answering anything.
+  const [carriedOver, setCarriedOver] = useState<EvaluationRequest | null>(null);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [comparisonError, setComparisonError] = useState<string | null>(null);
   const [signedIn, setSignedIn] = useState(false);
@@ -116,6 +117,24 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
     setBaseline(null);
     setComparison(null);
     setComparisonError(null);
+    setCarriedOver(null);
+    setIntakeKey((k) => k + 1);
+    setView("review");
+    window.scrollTo({ top: 0 });
+  };
+
+  /**
+   * Back to the intake with steps 1 and 2 and the context box exactly as they
+   * were, and the draft still in the box to edit or replace. Most reviews are
+   * the second or third pass at the same message; re-answering eight questions
+   * to change one paragraph was the commonest complaint from testing.
+   */
+  const reviewAnotherDraft = () => {
+    if (review) setCarriedOver(review.request);
+    setReview(null);
+    setError(null);
+    setComparison(null);
+    setComparisonError(null);
     setIntakeKey((k) => k + 1);
     setView("review");
     window.scrollTo({ top: 0 });
@@ -178,7 +197,7 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
           <p className="prose">{stub.text}</p>
         </main>
       ) : review ? (
-        <ResultsPage result={review.result} request={review.request} config={config} onDiscard={discard} baseline={baseline} comparison={comparison} comparisonError={comparisonError} />
+        <ResultsPage result={review.result} request={review.request} config={config} onDiscard={discard} onReviewAnother={reviewAnotherDraft} baseline={baseline} comparison={comparison} comparisonError={comparisonError} />
       ) : (
         <>
           {runtimeNote ? <p className="page muted small" style={{ paddingBottom: 0 }}>{runtimeNote}</p> : null}
@@ -188,9 +207,9 @@ export function App({ initialRequest, urlImport = true, publicSearch = true, run
             busy={busy}
             error={error}
             onEvaluate={runEvaluation}
-            initialRequest={baseline ? baselineRequest(baseline, initialRequest) : initialRequest}
+            initialRequest={baseline ? baselineRequest(baseline, initialRequest) : (carriedOver ?? initialRequest)}
+            carriedOver={carriedOver !== null}
             baseline={baseline}
-            urlImport={urlImport}
             publicSearch={publicSearch}
           />
         </>

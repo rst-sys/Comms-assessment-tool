@@ -227,14 +227,12 @@ export function intakeComplete(state: IntakeState): boolean {
 }
 
 /**
- * The Evaluate button stays disabled until every question is answered.
- * The draft counts as ready when it is within the word range, or, for the
- * Section 12 demo drafts (which are under 50 words by design), non-empty.
+ * The Evaluate button stays disabled until every question is answered and
+ * the draft is within the word range.
  */
-export function canEvaluate(draft: string, state: IntakeState, isDemo: boolean): boolean {
+export function canEvaluate(draft: string, state: IntakeState): boolean {
   const words = wordCount(draft);
-  const draftOk = isDemo ? words > 0 && words <= MAX_WORDS : words >= MIN_WORDS && words <= MAX_WORDS;
-  return draftOk && intakeComplete(state);
+  return words >= MIN_WORDS && words <= MAX_WORDS && intakeComplete(state);
 }
 
 /** The answers, as the engine's request carries them. Call only when the intake is complete. */
@@ -280,7 +278,7 @@ export function intakeFields(
   };
 }
 
-/** The screen's state, restored from a request (a demo, or a saved review's settings). */
+/** The screen's state, restored from a request (a previous review's, or a saved review's settings). */
 export function intakeFromRequest(request: EvaluationRequest): IntakeState {
   return {
     organization_type: request.organization.type,

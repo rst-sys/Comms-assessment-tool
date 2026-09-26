@@ -133,10 +133,10 @@ q { quotes: "“" "”"; }
 .primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 10px 18px; font-weight: 600; }
 .primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
 .primary:disabled { opacity: 0.45; cursor: not-allowed; }
-button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link):not(.score-number) {
+button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.nav-link):not(.score-number) {
   background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 8px 14px;
 }
-button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link):not(.score-number):hover { border-color: var(--neutral); }
+button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.nav-link):not(.score-number):hover { border-color: var(--neutral); }
 .linklike { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 .linklike:hover { color: var(--accent-hover); }
 
@@ -264,14 +264,10 @@ table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
 .callout-material { border: 2px solid var(--material); border-radius: var(--radius); padding: calc(var(--space) * 1.5) calc(var(--space) * 2); margin-top: calc(var(--space) * 2); max-width: var(--measure); }
 
 /* Intake */
-.tabs { display: flex; gap: var(--space); margin-bottom: calc(var(--space) * 1.5); }
-.tab { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; color: var(--neutral); }
-.tab:hover { color: var(--ink); }
-.tab-active { background: var(--ink); color: #fff; border-color: var(--ink); }
-.url-row { margin-bottom: calc(var(--space) * 1.5); }
+/* Still used by the public-context search box, not by URL import, which is gone. */
 .url-input { display: flex; gap: var(--space); }
 .url-input input { flex: 1; }
-textarea, input[type="url"], input[type="text"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
+textarea, input[type="text"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
 textarea:focus, input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(31, 90, 86, 0.2); }
 textarea { resize: vertical; }
 #draft-text { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
@@ -347,9 +343,6 @@ textarea { resize: vertical; }
 .split-two { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
 @media (min-width: 720px) { .split-two { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
 
-.draft-head { display: flex; flex-wrap: wrap; gap: var(--space) calc(var(--space) * 2); align-items: center;
-  justify-content: space-between; margin-bottom: calc(var(--space) * 1.5); }
-.draft-head .tabs, .draft-head .demo-link { margin: 0; }
 .word-count { text-align: right; margin-top: 4px; }
 .context-field { margin-top: calc(var(--space) * 3); }
 .label-optional { text-transform: none; letter-spacing: 0; font-weight: 400; }
@@ -367,8 +360,6 @@ textarea { resize: vertical; }
 .checkbox input { margin-top: 5px; flex: none; }
 .warning { border-left: 3px solid var(--caution); padding: var(--space) calc(var(--space) * 1.5); background: var(--warn-bg); color: var(--warn-text); max-width: var(--measure); border-radius: var(--radius-sm); }
 .error { border-left: 3px solid var(--material); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); color: var(--material-text); max-width: var(--measure); }
-.import-info { border: 1px solid var(--border); border-radius: 4px; padding: var(--space) calc(var(--space) * 1.5); margin: var(--space) 0 calc(var(--space) * 1.5); background: var(--paper); word-break: break-word; }
-.demo-link { font-size: 14px; }
 
 /* Privacy panel */
 .privacy-heading { display: flex; align-items: center; gap: 7px; margin-top: 0; }

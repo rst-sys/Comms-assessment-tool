@@ -3,7 +3,7 @@
  * viewer's own claude.ai account via the page's `sample` capability instead
  * of the application server. No API key is involved; the viewer's usage is
  * spent and claude.ai asks their consent on the first call. There is no
- * network from such a page, so Import from URL is unavailable.
+ * network from such a page, so the public-context web search is unavailable.
  */
 import { ApiError, type ApiImplementation } from "../app/api.js";
 import type { EvaluationRequest } from "../engine/types.js";
@@ -136,10 +136,6 @@ export const sampleApi: ApiImplementation = {
     } catch (e) {
       throw toApiError(e, "The evaluation failed. Try again.");
     }
-  },
-
-  async importUrl() {
-    throw new ApiError("Import from URL is not available on this page. Paste the text instead.", 501, "unavailable");
   },
 
   async saveFile(filename, data) {

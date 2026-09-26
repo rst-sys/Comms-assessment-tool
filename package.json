@@ -2,7 +2,7 @@
   "name": "accountable-communications-review",
   "version": "0.1.0",
   "private": true,
-  "description": "Trust Assessment Assistant \u2014 does this message give an account?",
+  "description": "Trust Assessment Assistant — does this message give an account?",
   "type": "module",
   "engines": {
     "node": ">=20"
@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.127.0",
-    "@mozilla/readability": "^0.6.0",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "jsdom": "^30.1.0",

@@ -12,7 +12,7 @@ Built in the order PROMPT.md Section 1 requires.
 | --- | --- |
 | 1. Evaluation engine (Sections 5–8), tested against the Section 12 fixtures | Done. Live run captured in `fixture-reports/`; 48 of 48 checks pass after hand review (see `DEVIATIONS.md`, item 16). |
 | 2. Results page (Section 9) | Done. `src/app/results/`, rendered from a captured sample until step 3 supplies live results. |
-| 3. Intake screen (Section 3) with the privacy panel (Section 4) | Done. `src/app/intake/`, `src/app/PrivacyPanel.tsx`, and the server in `src/server/` (evaluate, URL import, config). Verified end to end in a browser against the live provider. |
+| 3. Intake screen (Section 3) with the privacy panel (Section 4) | Done. `src/app/intake/`, `src/app/PrivacyPanel.tsx`, and the server in `src/server/` (evaluate, config). Verified end to end in a browser against the live provider. |
 | 4. Minimal-Risk redraft mode | Removed after the owner's testing: the tool never proposes wording (see the revisions note in `PROMPT.md`). |
 | 5. Design polish (Section 11) | Done. Tokens, type scale, spacing, print stylesheet and responsive layout in `src/app/styles.css`; contrast checked (see `DEVIATIONS.md`, item 25). |
 
@@ -44,14 +44,13 @@ To change the model, set `ACR_MODEL` to another model id. The UI reads provider 
 src/app/
   main.tsx, App.tsx   entry point; intake → evaluating → results, plus the stub pages
   intake/             the intake screen and its rules (word range, heightened review,
-                      high-risk warning, demo loader, URL import, audience context documents, stance, public-context search)
+                      high-risk warning, audience context documents, stance, public-context search)
   results/            the results page: summary, top findings, register, scorecard,
                       agency scan, devil's advocate, questions, footer
   PrivacyPanel.tsx    the Section 4 panel, provider and model read from the server
   ConfidentialityNotice.tsx, stubs.ts, api.ts, copy.ts, styles.css
 src/server/
-  server.ts           POST /api/evaluate, /api/import, /api/public-context, /api/compare; GET /api/config; serves dist/ in production
-  import.ts           stateless fetch-and-extract for URL import (Readability)
+  server.ts           POST /api/evaluate, /api/public-context, /api/compare; GET /api/config; serves dist/ in production
   requestSchema.ts    validation of the intake request
 src/engine/
   types.ts        intake enumerations and the analysis shape (Sections 3, 6)
@@ -103,7 +102,7 @@ The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code
 | Stubbed areas show a nav entry and a one-paragraph page, nothing more | Met. |
 | Keyboard-only navigation reaches every control; contrast passes AA | Met. Verified by keyboard in a browser; contrast measured, see `DEVIATIONS.md` item 25. |
 | Every results page and print view ends with the core principle and the decision-support disclaimer | Met; the PDF export ends with them too. |
-| URL import extracts readable text from a public press release, shows a plain error on a paywalled page, sets the retrospective framing, and the proxy logs only domain and status | Met in tests with sample pages (article, paywall, PDF) and in the browser with a stubbed response; a live fetch of a public site could not be exercised from the build sandbox, whose outbound proxy blocks external sites. |
+| URL import | Removed after testing, with the demo drafts. The intake takes pasted text only; `/api/import` and `src/server/import.ts` are gone. |
 
 ## Preview on claude.ai
 

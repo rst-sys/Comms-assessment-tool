@@ -7,6 +7,7 @@ import { OVERVIEW_SECTIONS } from "../overviewContent.js";
 import { CORE_PRINCIPLE } from "../copy.js";
 import { PROTOCOLS } from "../../engine/protocols.js";
 import { FEATURES, type Features } from "../features.js";
+import { chosen, fillLayoffIntake, LONG_DRAFT } from "./fillIntake.js";
 
 /** Switches a feature on for one test; see the note in features.ts. */
 function enable(...keys: (keyof Features)[]) {
@@ -64,7 +65,7 @@ describe("App", () => {
     expect(screen.queryByRole("heading", { name: "What it won't do" })).toBeNull();
 
     expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
-    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fillLayoffIntake();
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
 
     expect(await screen.findByText("Risk level")).toBeTruthy();
@@ -78,12 +79,51 @@ describe("App", () => {
     expect(screen.queryByText("Risk level")).toBeNull();
   });
 
+  it("keeps the settings, the context and the draft when Review another draft is pressed", async () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
+    vi.stubGlobal("scrollTo", vi.fn());
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
+    fillLayoffIntake();
+    fireEvent.change(screen.getByPlaceholderText(/what's confirmed so far/), {
+      target: { value: "Board signed off on 18 September." },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    expect(await screen.findByText("Risk level")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Review another draft" }));
+    expect(screen.queryByText("Risk level")).toBeNull();
+    expect(screen.getByText(/Carried over from your last review/)).toBeTruthy();
+
+    // Steps 1 and 2, the context box and the draft all survived.
+    expect((screen.getByRole("radio", { name: "Private company" }) as HTMLInputElement).checked).toBe(true);
+    expect(chosen("What's happening?", "Layoffs or job cuts")).toBe(true);
+    expect(chosen("What are you drafting?", "Employee announcement")).toBe(true);
+    expect((screen.getByPlaceholderText(/what's confirmed so far/) as HTMLTextAreaElement).value).toBe(
+      "Board signed off on 18 September.",
+    );
+    expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toBe(LONG_DRAFT);
+
+    // A new draft goes straight in: nothing needs answering again.
+    const next = `${LONG_DRAFT} and then some`;
+    fireEvent.change(screen.getByLabelText("Draft text"), { target: { value: next } });
+    expect((screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement).disabled).toBe(false);
+
+    // Discard still clears everything.
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    expect(await screen.findByText("Risk level")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Discard and start over" }));
+    expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toBe("");
+    expect(screen.queryByText(/Carried over from your last review/)).toBeNull();
+  });
+
   it("shows the server's plain error and stays on intake when evaluation fails", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify({ error: "validation", message: "The analysis did not return in the expected format. Try again.", request_id: "abc" }), { status: 502 })));
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
-    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fillLayoffIntake();
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
     expect(await screen.findByRole("alert")).toBeTruthy();
     expect(screen.getByText(/did not return in the expected format/)).toBeTruthy();
@@ -130,7 +170,7 @@ describe("App", () => {
     vi.stubGlobal("scrollTo", vi.fn());
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
-    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fillLayoffIntake();
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
 
     expect(await screen.findByText("Provider error 529: overloaded")).toBeTruthy();
@@ -178,7 +218,7 @@ describe("App", () => {
       await renderApp();
       fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
       expect(screen.getByRole("button", { name: "Compare Revisions" })).toBeTruthy();
-      fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+      fillLayoffIntake();
       fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
       expect(await screen.findByText("Risk level")).toBeTruthy();
       fireEvent.click(screen.getByRole("button", { name: "Save this review" }));

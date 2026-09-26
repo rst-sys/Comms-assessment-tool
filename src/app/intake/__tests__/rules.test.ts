@@ -102,15 +102,15 @@ describe("the conditionals", () => {
 
 describe("canEvaluate", () => {
   it("requires every answer and a draft in range", () => {
-    expect(canEvaluate(words(100), full, false)).toBe(true);
-    expect(canEvaluate(words(49), full, false)).toBe(false);
-    expect(canEvaluate(words(5001), full, false)).toBe(false);
-    expect(canEvaluate(words(100), { ...full, purpose: "" }, false)).toBe(false);
-    expect(canEvaluate(words(100), EMPTY_INTAKE, false)).toBe(false);
+    expect(canEvaluate(words(100), full)).toBe(true);
+    expect(canEvaluate(words(49), full)).toBe(false);
+    expect(canEvaluate(words(5001), full)).toBe(false);
+    expect(canEvaluate(words(100), { ...full, purpose: "" })).toBe(false);
+    expect(canEvaluate(words(100), EMPTY_INTAKE)).toBe(false);
   });
-  it("lets a demo draft through under the minimum but not when empty", () => {
-    expect(canEvaluate(words(30), full, true)).toBe(true);
-    expect(canEvaluate("", full, true)).toBe(false);
+  it("has no exception for a short draft now the demos are gone", () => {
+    expect(canEvaluate(words(30), full)).toBe(false);
+    expect(canEvaluate("", full)).toBe(false);
   });
 });
 

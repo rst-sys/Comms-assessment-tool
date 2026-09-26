@@ -3,6 +3,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { IntakeScreen } from "../IntakeScreen.js";
 import { FEATURES, type Features } from "../../features.js";
+import { chosen, fillLayoffIntake, LONG_DRAFT, menu } from "../../__tests__/fillIntake.js";
 
 /**
  * Switches a feature on for one test. The features below are off for the
@@ -24,35 +25,6 @@ afterEach(() => {
   restore = null;
 });
 
-/**
- * Opens one of the six dropdowns in step 2 and returns a picker for its
- * options. The control's accessible name is the question plus whatever is
- * chosen, so it is matched on the question alone.
- */
-function menu(question: string | RegExp) {
-  const control = screen.getByRole("button", { name: typeof question === "string" ? new RegExp(`^${question}`) : question });
-  if (control.getAttribute("aria-expanded") !== "true") fireEvent.click(control);
-  const panel = screen.getByRole("listbox", { name: question });
-  return {
-    control,
-    pick(option: string | RegExp) {
-      // An event can sit in Most common and in its own group, and a country
-      // can be a quick pick and a country; either copy will do.
-      fireEvent.click(within(panel).getAllByRole("option", { name: option })[0]!);
-    },
-    close() {
-      fireEvent.keyDown(document, { key: "Escape" });
-    },
-  };
-}
-
-/** Whether a dropdown currently shows this answer as chosen. */
-function chosen(question: string | RegExp, option: string | RegExp): boolean {
-  const control = screen.getByRole("button", { name: typeof question === "string" ? new RegExp(`^${question}`) : question });
-  const text = control.textContent ?? "";
-  return typeof option === "string" ? text.includes(option) : option.test(text);
-}
-
 describe("IntakeScreen", () => {
   it("shows the privacy panel with the configured provider and model before anything is typed", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
@@ -61,15 +33,13 @@ describe("IntakeScreen", () => {
     expect(screen.getByText(/planned and not in this build/)).toBeTruthy();
   });
 
-  it("keeps Evaluate disabled until the demo loader fills every required field", () => {
+  it("keeps Evaluate disabled until every required field is answered", () => {
     const onEvaluate = vi.fn();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
     const button = screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement;
     expect(button.disabled).toBe(true);
-    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fillLayoffIntake();
     expect(button.disabled).toBe(false);
-    expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toMatch(/^Rapid growth brought complexity/);
-    expect(screen.getByText(/\(demo draft\)/)).toBeTruthy();
     expect(screen.getByText(/typically requires legal, HR, labor, or investor-relations review/)).toBeTruthy();
     fireEvent.click(button);
     expect(onEvaluate).toHaveBeenCalledTimes(1);
@@ -80,49 +50,25 @@ describe("IntakeScreen", () => {
     expect(request.context).toBe("");
   });
 
+  it("offers no demo drafts and no URL import", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    expect(screen.queryByText(/Try a demo/)).toBeNull();
+    expect(screen.queryByRole("tab", { name: "Import from URL" })).toBeNull();
+    expect(screen.queryByLabelText("Address of a published page")).toBeNull();
+  });
+
+  it("says when the answers were carried over from the last review, and stays quiet otherwise", () => {
+    const { rerender } = render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    expect(screen.queryByText(/Carried over from your last review/)).toBeNull();
+    rerender(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} carriedOver />);
+    expect(screen.getByText(/Carried over from your last review/)).toBeTruthy();
+  });
+
   it("shows a live word count and blocks a short pasted draft", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     fireEvent.change(screen.getByLabelText("Draft text"), { target: { value: "one two three" } });
     expect(screen.getByText(/^3 words/)).toBeTruthy();
     expect((screen.getByRole("button", { name: "Evaluate draft" }) as HTMLButtonElement).disabled).toBe(true);
-  });
-
-  it("imports a page, fills the draft, suggests the format and marks the draft as already published", async () => {
-    const onEvaluate = vi.fn();
-    const text = Array.from({ length: 60 }, (_, i) => `word${i}`).join(" ");
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ source_url: "https://example.com/newsroom/x", title: "A statement", published: "2026-09-01", text, suggested_format: "Press release or public statement" }), { status: 200, headers: { "content-type": "application/json" } })));
-    try {
-      render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
-      fireEvent.click(screen.getByRole("tab", { name: "Import from URL" }));
-      fireEvent.change(screen.getByLabelText("Address of a published page"), { target: { value: "https://example.com/newsroom/x" } });
-      fireEvent.click(screen.getByRole("button", { name: "Fetch text" }));
-      expect(await screen.findByText("A statement")).toBeTruthy();
-      expect(screen.getByText(/already issued/)).toBeTruthy();
-      // The URL suggests a format, never an event: a newsroom page tells you
-      // what the document is, not what happened.
-      expect(chosen("What are you drafting?", "Press release or public statement")).toBe(true);
-      expect(chosen("What's happening?", "Choose the closest match")).toBe(true);
-
-      fireEvent.click(screen.getByRole("radio", { name: "Private company" }));
-      menu("Headquarters").pick("United Kingdom");
-      menu("What's happening?").pick("Price increase or change to terms");
-      menu("Where do things stand?").pick(/Already public/);
-      const where = menu("Where is this happening?");
-      where.pick("United Kingdom");
-      where.close();
-      menu(/What is this mainly trying to do/).pick(/Announce a decision or change/);
-      fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
-
-      const request = onEvaluate.mock.calls[0]![0];
-      expect(request.already_published).toBe(true);
-      expect(request.communication_format).toBe("Press release or public statement");
-      // The format pre-selected who it goes to, and nothing the user did
-      // afterwards overwrote it.
-      expect(request.audiences).toEqual(["Media", "General public and communities"]);
-      expect(request.locations).toEqual(["United Kingdom"]);
-    } finally {
-      vi.unstubAllGlobals();
-    }
   });
 
   it("pre-selects the audiences a format goes to, and stops as soon as the user has an opinion", () => {
@@ -198,7 +144,7 @@ describe("IntakeScreen", () => {
     restore = enable("audienceDocuments");
     const onEvaluate = vi.fn();
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
-    fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+    fillLayoffIntake();
     fireEvent.change(screen.getByLabelText("Document kind"), { target: { value: "media_report" } });
     fireEvent.change(screen.getByPlaceholderText("Employee FAQ"), { target: { value: "Trade press story" } });
     fireEvent.change(screen.getByLabelText("What the document is"), { target: { value: "Reports layoffs are planned" } });
@@ -229,7 +175,7 @@ describe("IntakeScreen", () => {
     }));
     try {
       render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
-      fireEvent.click(screen.getByRole("button", { name: "Restructuring memo" }));
+      fillLayoffIntake();
       fireEvent.change(screen.getByLabelText("Public context search"), { target: { value: "Northwind layoffs" } });
       fireEvent.click(screen.getByRole("button", { name: "Search the web" }));
       expect(await screen.findByText("Layoffs planned at Northwind")).toBeTruthy();
@@ -254,17 +200,4 @@ describe("IntakeScreen", () => {
     expect(screen.getByRole("alert").textContent).toMatch(/Add the document's text/);
   });
 
-  it("shows the plain import error when the page is not readable", async () => {
-    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({ error: "not_readable", message: "Couldn't extract readable text from this page. Paste the text instead." }), { status: 422, headers: { "content-type": "application/json" } })));
-    try {
-      render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
-      fireEvent.click(screen.getByRole("tab", { name: "Import from URL" }));
-      fireEvent.change(screen.getByLabelText("Address of a published page"), { target: { value: "https://example.com/paywalled" } });
-      fireEvent.click(screen.getByRole("button", { name: "Fetch text" }));
-      expect(await screen.findByRole("alert")).toBeTruthy();
-      expect(screen.getByText(/Paste the text instead/)).toBeTruthy();
-    } finally {
-      vi.unstubAllGlobals();
-    }
-  });
 });

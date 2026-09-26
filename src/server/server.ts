@@ -1,7 +1,7 @@
 /**
- * The application server: one evaluation endpoint that calls the engine, one
- * stateless fetch-and-extract endpoint for URL import, and a config endpoint
- * for the privacy panel. In production it also serves the built app.
+ * The application server: one evaluation endpoint that calls the engine and a
+ * config endpoint for the privacy panel. In production it also serves the
+ * built app.
  *
  * Privacy rules (PROMPT.md Section 4) enforced here:
  * - nothing is written to disk; draft text lives only in the request
@@ -20,7 +20,6 @@ import { findPublicContext } from "../engine/publicContext.js";
 import { settingsDrift, type SavedReview } from "../engine/savedReview.js";
 import type { EvaluationResult } from "../engine/evaluate.js";
 import { loadEnvFile } from "./env.js";
-import { allowedUrl, extractReadable, fetchPage, IMPORT_ERROR } from "./import.js";
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
 import {
   chargeOne,
@@ -223,36 +222,6 @@ async function handlePublicContext(req: IncomingMessage, res: ServerResponse): P
   }
 }
 
-async function handleImport(req: IncomingMessage, res: ServerResponse): Promise<void> {
-  let body: unknown;
-  try {
-    body = await readJson(req);
-  } catch {
-    send(res, 400, { error: "bad_request", message: "The request could not be read." });
-    return;
-  }
-  const raw = typeof body === "object" && body !== null && typeof (body as { url?: unknown }).url === "string" ? (body as { url: string }).url : "";
-  const url = allowedUrl(raw);
-  if (!url) {
-    send(res, 400, { error: "bad_url", message: "Enter a public http or https address." });
-    return;
-  }
-  const domain = url.hostname;
-  try {
-    const page = await fetchPage(url);
-    const extracted = page.html ? extractReadable(page.html, page.finalUrl) : null;
-    console.log(`import domain=${domain} status=${page.status} readable=${extracted ? "yes" : "no"}`);
-    if (page.status >= 400 || !extracted) {
-      send(res, 422, { error: "not_readable", message: IMPORT_ERROR });
-      return;
-    }
-    send(res, 200, extracted);
-  } catch {
-    console.log(`import domain=${domain} status=fetch_failed`);
-    send(res, 422, { error: "not_readable", message: IMPORT_ERROR });
-  }
-}
-
 function handleConfig(req: IncomingMessage, res: ServerResponse): void {
   const c = getEngineConfig();
   send(res, 200, {
@@ -289,7 +258,7 @@ function serveStatic(pathname: string, res: ServerResponse): boolean {
   return true;
 }
 
-/** The endpoints that call the provider and therefore cost money. URL import does not. */
+/** The endpoints that call the provider and therefore cost money. */
 const PAID = new Set(["/api/evaluate", "/api/compare", "/api/public-context"]);
 
 export const server = createServer(async (req, res) => {
@@ -315,7 +284,6 @@ export const server = createServer(async (req, res) => {
     });
   }
   if (url.pathname === "/api/evaluate" && method === "POST") return handleEvaluate(req, res);
-  if (url.pathname === "/api/import" && method === "POST") return handleImport(req, res);
   if (url.pathname === "/api/public-context" && method === "POST") return handlePublicContext(req, res);
   if (url.pathname === "/api/compare" && method === "POST") return handleCompare(req, res);
   if (url.pathname.startsWith("/api/")) return send(res, 404, { error: "not_found", message: "No such endpoint." });

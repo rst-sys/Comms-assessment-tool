@@ -57,9 +57,9 @@ describe("server endpoints", () => {
     expect(res.status).toBe(400);
   });
 
-  it("refuses a private import address", async () => {
-    const res = await fetch(`${base}/api/import`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: "http://127.0.0.1/" }) });
-    expect(res.status).toBe(400);
+  it("returns 404 JSON for the removed import endpoint", async () => {
+    const res = await fetch(`${base}/api/import`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ url: "https://example.com/" }) });
+    expect(res.status).toBe(404);
   });
 
   it("returns 404 JSON for unknown api paths", async () => {

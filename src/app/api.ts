@@ -57,7 +57,6 @@ async function post<T>(path: string, body: unknown, fallback: string): Promise<T
 /** How the app reaches the engine. The default talks to the application server; another runtime can swap it. */
 export interface ApiImplementation {
   evaluate(request: EvaluationRequest): Promise<EvaluationResult>;
-  importUrl(url: string): Promise<ImportedPage>;
   fetchConfig(): Promise<PrivacyConfig | null>;
   /** Hands a generated file to the viewer. Resolves when the save was offered or completed. */
   saveFile(filename: string, data: Blob): Promise<void>;
@@ -71,7 +70,6 @@ export interface ApiImplementation {
 
 export const serverApi: ApiImplementation = {
   evaluate: (request) => post<EvaluationResult>("/api/evaluate", request, "The evaluation failed. Try again."),
-  importUrl: (url) => post<ImportedPage>("/api/import", { url }, "Couldn't extract readable text from this page. Paste the text instead."),
   async fetchConfig() {
     try {
       const res = await fetch("/api/config");
@@ -109,7 +107,6 @@ export function configureApi(impl: ApiImplementation): void {
 }
 
 export const evaluate = (request: EvaluationRequest) => current.evaluate(request);
-export const importUrl = (url: string) => current.importUrl(url);
 export const fetchConfig = () => current.fetchConfig();
 export const saveFile = (filename: string, data: Blob) => current.saveFile(filename, data);
 export const findPublicContext = (query: string) => current.findPublicContext(query);
