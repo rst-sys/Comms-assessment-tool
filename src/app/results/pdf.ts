@@ -13,7 +13,7 @@ import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { warrantsHeightenedReview } from "../../engine/types.js";
 import { reviewTagsFor } from "./model.js";
 import { CHECKLIST_INTRO, CHECKLIST_TITLE, checklistFor, checklistSize } from "../../engine/checklist.js";
-import { HEIGHTENED_NOTICE } from "../copy.js";
+import { HEIGHTENED_NOTICE, NO_DRAFT_QUESTIONS } from "../copy.js";
 import { scoringNoteParagraphs } from "./ScoringNote.js";
 
 const PAGE = { width: 210, height: 297, margin: 18 };
@@ -196,13 +196,17 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   w.pageBreak();
   w.heading("Questions worth asking", 15);
   // Tagged in place rather than repeated in a separate specialist checklist.
-  w.bullets(
-    a.questions_before_publication.map((q) => {
-      const tags = reviewTagsFor(q);
-      return tags.length ? `${q}  [${tags.join(", ")}]` : q;
-    }),
-    true,
-  );
+  if (a.questions_before_publication.length === 0) {
+    w.paragraph(NO_DRAFT_QUESTIONS, 10.5);
+  } else {
+    w.bullets(
+      a.questions_before_publication.map((q) => {
+        const tags = reviewTagsFor(q);
+        return tags.length ? `${q}  [${tags.join(", ")}]` : q;
+      }),
+      true,
+    );
+  }
 
   // The protocols' own questions, the same list the page shows. Built from the
   // request, not from the analysis: the model never saw them.

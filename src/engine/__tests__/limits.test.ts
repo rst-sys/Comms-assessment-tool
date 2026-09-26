@@ -75,18 +75,26 @@ describe("the output budget", () => {
   it("asks for the same numbers in the prompt that the code enforces", () => {
     const blocks = buildSystemBlocks(DEMO_1.request).map((b) => b.text).join("\n");
     expect(blocks).toContain(`findings contains at most ${MAX_FINDINGS} entries`);
-    expect(blocks).toContain(`at least ${MIN_QUESTIONS} questions and at most ${MAX_QUESTIONS}`);
-    // The cap used to fill with protocol boilerplate, so the rules explained
-    // that a protocol's questions were candidates rather than obligations.
-    // They are not sent at all now — the app shows every one of them as the
-    // reviewer checklist — so the instruction is that the model's questions
-    // are about this draft, and the rule that governed the choice is gone.
+    expect(blocks).toContain(`at most ${MAX_QUESTIONS} questions`);
     expect(blocks).toContain("Every one of them is about THIS draft");
-    expect(blocks).toContain("A fixed reviewer checklist for this kind of situation is shown to the reader separately");
+    expect(blocks).toContain(`Aim for ${MIN_QUESTIONS}; if the draft is short, fewer is fine.`);
     expect(blocks).not.toContain("not obligations");
-    // And the floor is stated as a floor, or the sparing rule wins and the
-    // review comes back under it. Four cyber reviews died that way.
-    expect(blocks).toContain("is a floor, not a target");
+
+    // There is no floor any more, and the reason is worth keeping written down.
+    //
+    // The floor was added because a sparing rule elsewhere pulled reviews
+    // under it; four cyber reviews died that way. It then collided with the
+    // instruction to leave the checklist's standard questions alone: on a
+    // short, formulaic leadership announcement the model could satisfy one
+    // only by breaking the other, and returned nothing. Three live reviews
+    // died that way, each after two full attempts.
+    //
+    // So the floor is an aim, the suppression is a preference, and an empty
+    // list is no longer fatal. All three have to hold together, or the next
+    // change reintroduces the collision.
+    expect(blocks).not.toContain("is a floor, not a target");
+    expect(blocks).not.toContain("do not produce questions of that kind");
+    expect(blocks).not.toContain(`at least ${MIN_QUESTIONS}`);
     expect(blocks).toContain("it never raises the ceiling");
   });
 });

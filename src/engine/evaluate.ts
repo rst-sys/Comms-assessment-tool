@@ -94,8 +94,8 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   if (adjustments.dropped_findings > 0) {
     log(`[${requestId}] dropped ${adjustments.dropped_findings} finding(s) with non-verbatim excerpts`);
   }
-  if (adjustments.thin_questions > 0) {
-    log(`[${requestId}] only ${adjustments.thin_questions} question(s) returned, below the ${MIN_QUESTIONS} asked for`);
+  if (adjustments.thin_questions !== null) {
+    log(`[${requestId}] only ${adjustments.thin_questions} question(s) returned, below the ${MIN_QUESTIONS} aimed for`);
   }
   if (adjustments.trimmed_findings > 0) {
     log(`[${requestId}] trimmed ${adjustments.trimmed_findings} finding(s) past the ${MAX_FINDINGS}-finding cap`);

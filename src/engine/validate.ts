@@ -45,8 +45,8 @@ export interface ValidationAdjustments {
   context_flag_corrected: boolean;
   /** Findings beyond MAX_FINDINGS, trimmed from the end of an already-ranked list. */
   trimmed_findings: number;
-  /** How many questions came back when fewer than MIN_QUESTIONS did; 0 when the count was fine. */
-  thin_questions: number;
+  /** How many questions came back when fewer than MIN_QUESTIONS did, 0 included. Null when the count was fine. */
+  thin_questions: number | null;
 }
 
 export interface ValidatedAnalysis {
@@ -158,14 +158,20 @@ export function validateAnalysis(raw: unknown, draft: string, context: string): 
   if (input.devils_advocate.most_damaging_interpretation.trim().length === 0) {
     fail("/devils_advocate/most_damaging_interpretation", "is empty");
   }
-  // Empty is broken; thin is not. The range asked for in the prompt is a
-  // quality preference, and throwing away a complete, correct review because
-  // it asked four good questions instead of five costs the reader everything
-  // and gains nothing. Recorded and logged, so a run of thin reviews is
-  // visible rather than silent.
+  // Thin is not broken, and neither is empty any more.
+  //
+  // Throwing away a complete, correct review because it asked four good
+  // questions instead of five costs the reader everything and gains nothing.
+  // None at all used to be the exception, on the grounds that the section
+  // would be empty — but since the reviewer checklist began rendering below
+  // it, an empty model list costs the draft-specific half of the questions,
+  // not the whole section. Three live reviews died on this rule for the sake
+  // of one array, each after two full attempts.
+  //
+  // Recorded either way, so a run of thin or empty reviews is visible rather
+  // than silent. Null means the count was fine: 0 is a real count now.
   const q = input.questions_before_publication.length;
-  if (q === 0) fail("/questions_before_publication", "no questions were returned");
-  const thinQuestions = q < MIN_QUESTIONS ? q : 0;
+  const thinQuestions = q < MIN_QUESTIONS ? q : null;
 
   // Findings: excerpt/omission rule, unique ids, verbatim excerpts.
   const findingIds = new Set<string>();

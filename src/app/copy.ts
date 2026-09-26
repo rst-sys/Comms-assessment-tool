@@ -36,3 +36,13 @@ export const HEIGHTENED_NOTICE =
 
 export const INTRO =
   "Paste your draft, add as much context as you can, and sit back as an AI-assisted pair of fresh eyes shows you how well your message explains the decision behind it, where it falls short, and which published standards and best practices it was measured against.";
+
+/**
+ * Shown where the model's own questions would be, when it returned none.
+ *
+ * It returns none on a short, formulaic draft whose standard questions the
+ * reviewer checklist already carries — a leadership announcement, most often.
+ * That used to fail the whole review; the reader now loses the draft-specific
+ * half of one section and is pointed at the half that is still there.
+ */
+export const NO_DRAFT_QUESTIONS = "No further questions specific to this draft. See the reviewer checklist below.";

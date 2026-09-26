@@ -13,7 +13,7 @@ describe("validateAnalysis", () => {
       dropped_findings: 0,
       context_flag_corrected: false,
       trimmed_findings: 0,
-      thin_questions: 0,
+      thin_questions: null,
     });
   });
 
@@ -65,9 +65,19 @@ describe("validateAnalysis", () => {
     expect(adjustments.thin_questions).toBe(4);
   });
 
-  it("rejects a review with no questions at all, which has nothing to show", () => {
+  it("keeps a review whose model asked no questions, and records it", () => {
+    // This rule cost three live reviews, each after two full attempts, for the
+    // sake of one empty array. The reviewer checklist renders below these, so
+    // an empty model list loses the draft-specific half of one section, not
+    // the ten dimensions, the findings and the Devil's Advocate with it.
     const none = sampleAnalysis({ questions_before_publication: [] });
-    expect(() => validateAnalysis(none, SAMPLE_DRAFT, "")).toThrow(/no questions were returned/);
+    const { analysis, adjustments } = validateAnalysis(none, SAMPLE_DRAFT, "");
+    expect(analysis.questions_before_publication).toEqual([]);
+    expect(adjustments.thin_questions).toBe(0);
+    // 0 is a real count, not the "count was fine" sentinel: null is that.
+    expect(validateAnalysis(sampleAnalysis(), SAMPLE_DRAFT, "").adjustments.thin_questions).toBeNull();
+    // The scored half of the review is untouched.
+    expect(analysis.dimensions).toHaveLength(10);
   });
 
   it("rejects a finding with neither excerpt nor omission", () => {

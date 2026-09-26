@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { reviewTagsFor } from "./model.js";
 import { Panel } from "./Panel.js";
+import { NO_DRAFT_QUESTIONS } from "../copy.js";
 
 /**
  * Questions worth asking (revision 21).
@@ -31,6 +32,7 @@ export function Questions({ questions }: { questions: string[] }) {
 
   return (
     <Panel id="questions" title="Questions worth asking" note={`${questions.length}`}>
+      {questions.length === 0 ? <p className="prose" style={{ marginTop: 0 }}>{NO_DRAFT_QUESTIONS}</p> : null}
       {needingReview > 0 ? (
         <p className="muted prose" style={{ marginTop: 0 }}>
           {needingReview} of these name a review function. Settle those before this is issued.
@@ -46,9 +48,11 @@ export function Questions({ questions }: { questions: string[] }) {
           </li>
         ))}
       </ol>
-      <p className="no-print">
-        <button type="button" onClick={copy}>{copied ? "Copied" : "Copy questions"}</button>
-      </p>
+      {questions.length > 0 ? (
+        <p className="no-print">
+          <button type="button" onClick={copy}>{copied ? "Copied" : "Copy questions"}</button>
+        </p>
+      ) : null}
     </Panel>
   );
 }
