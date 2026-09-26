@@ -47,6 +47,7 @@ describe("the resolved bundle", () => {
     // and are still stubs, so neither reaches the bundle.
     expect(resolveProtocols(everything).protocols.map((p) => p.id)).toEqual([
       "core",
+      "incident",
       "cyber-incident",
       "apology",
       "listed-company",
@@ -188,6 +189,13 @@ describe("phase 2: the core, the three overlays and how they combine", () => {
     const cyber = req({ communication_event: "Cyber incident or data breach", people_at_risk: true });
     expect(elementIds(cyber)).toContain("cyber-incident.support-matched-to-harm");
     expect(elementIds(cyber)).not.toContain("people-harmed.support");
+    // And downwards as well as upwards: the event's own "What and when"
+    // replaces the incident family's general version of the same check.
+    expect(elementIds(cyber)).toContain("cyber-incident.what-and-when");
+    expect(elementIds(cyber)).not.toContain("incident.what-happened-and-when");
+    // Every other incident event keeps the family's version.
+    expect(elementIds(req({ communication_event: "Product recall or safety issue" })))
+      .toContain("incident.what-happened-and-when");
     // Only that one: the rest of the overlay still applies.
     expect(elementIds(cyber)).toContain("people-harmed.harm_acknowledged");
 

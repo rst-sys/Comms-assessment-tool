@@ -684,3 +684,41 @@ sources:
     last_checked: 2026-09-25
     review_by: 2027-03-25
     notes: "States it has no force of law; explains the ADA. Whether it has been revised since 2002 was not checked. Cited by workforce.route-for-individual-circumstances."
+
+  # ---------------------------------------------------------------- incident family
+  - id: eu-gpsr-2023-988
+    title: "Regulation (EU) 2023/988 on general product safety, Articles 36 and 37(1)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32023R0988
+    version_or_date: "10 May 2023; applies from 13 December 2024"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Implementing regulation 2024/1435, the recall-notice template, was not read. Cited by incident.risk-stated-plainly, incident.remedy and incident.what-happened-and-when."
+  - id: cpsc-16-cfr-1115-27
+    title: "16 CFR 1115.27, Recall notice content requirements"
+    issuer: US Consumer Product Safety Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-16/chapter-II/subchapter-B/part-1115/subpart-C/section-1115.27
+    version_or_date: "current as of 11 September 2026"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding for mandatory recall notices. Voluntary recalls follow separate CPSC guidelines, which were not read. Cited by incident.risk-stated-plainly, incident.remedy and incident.what-happened-and-when."
+  - id: eu-nis2-2022-2555
+    title: "Directive (EU) 2022/2555 (NIS2), Article 23"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://www.springlex.eu/en/packages/nis2/nis2-directive/article-23/
+    version_or_date: "14 December 2022"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding through national transposition, and only on essential and important entities. Read from a secondary host because EUR-Lex returned 404; verify against the Official Journal. Cited by incident.service-status."

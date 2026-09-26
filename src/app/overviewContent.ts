@@ -45,7 +45,7 @@ export const VALUE_POINTS: [string, string][] = [
 export const REVIEW_STEPS: [string, string][] = [
   ["Answer the setup questions", "Including what happened, what you're writing and who it's for. Your answers decide which standards apply."],
   ["Paste your draft", "Add as much context as you can: the facts, supporting documents, earlier communications and coverage."],
-  ["Read your review", "In about a minute. Download the PDF to share with your team."],
+  ["Read your review", "In a minute or two. Download the PDF to share with your team."],
 ];
 
 export const EVIDENCE_RULE: [string, string] = [

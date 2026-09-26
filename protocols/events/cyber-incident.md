@@ -3,11 +3,12 @@ id: cyber-incident
 name: Cyber incident and data breach
 layer: event
 family: incident
-version: 1.1.1
+version: 1.1.2
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.2 — replaces the Incident family's equivalent element"
   - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -23,6 +24,7 @@ elements:
     basis: judgement
     sources: [nist-sp-800-61r3, sec-cyber-small-entity-guide, hhs-breach-notification-rule, ftc-data-breach-response]
     basis_note: "Informed by US regulator guidance; none of it measures which notices work better."
+    replaces: [incident.what-happened-and-when]
 
   - id: cyber-incident.nature-of-exposure
     name: Nature of exposure

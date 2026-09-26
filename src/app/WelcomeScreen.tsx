@@ -64,7 +64,7 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
               Start a review
               <ArrowRight />
             </button>
-            <span className="cta-meta">About a minute · No account · Nothing saved</span>
+            <span className="cta-meta">A minute or two · No account · Nothing saved</span>
           </div>
           <p className="callout-warning" role="note">
             <WarningTriangle />

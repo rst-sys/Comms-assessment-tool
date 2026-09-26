@@ -273,11 +273,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Cyber incident and data breach",
       "layer": "event",
       "family": "incident",
-      "version": "1.1.1",
+      "version": "1.1.2",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.1.2 — replaces the Incident family's equivalent element",
         "1.1.1 — Evidence labels added; no check changed.",
         "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -297,7 +298,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "hhs-breach-notification-rule",
             "ftc-data-breach-response"
           ],
-          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better."
+          "basis_note": "Informed by US regulator guidance; none of it measures which notices work better.",
+          "replaces": [
+            "incident.what-happened-and-when"
+          ]
         },
         {
           "id": "cyber-incident.nature-of-exposure",
@@ -791,18 +795,105 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "incident",
       "name": "Incident and disruption",
       "layer": "family",
-      "version": "0.1.0",
-      "status": "draft",
-      "last_reviewed": null,
-      "review_by": null,
+      "version": "0.2.0",
+      "status": "active",
+      "last_reviewed": "2026-09-25",
+      "review_by": "2027-03-25",
+      "rests_on": "EU and US product-recall rules and EU rules on service incidents, which are specific but narrow; applied to other incidents as professional judgement.",
       "changelog": [
-        "0.1.0 — stub. Structure only; no checks written."
+        "0.2.0 (2026-09-25): after a dry run on two recall notices, the risk-lessening trigger was split. Shrinking words (precautionary, abundance of caution, discretionary, rare situations) fire when a hazard is known; \"voluntary\" fires only where EU law applies or a regulator ordered the recall, since in the US it is a legal status.",
+        "0.1.0 (2026-09-25): first draft from the Incident family source review."
       ],
-      "rests_on": "Nothing yet. This is a stub and applies to no review until it has content and a status of active.",
-      "elements": [],
-      "triggers": [],
-      "questions": [],
-      "prose": "# Incident and disruption\n\nApplies to every event whose family is `incident` in `protocols/events.yaml`.\nHolds what those events share; an event protocol holds only what differs\nfrom this.\n\n## Source\n\nNot yet written. This file exists so the layer is in place and the resolver\nskips it; it carries no checks and reaches no review while its status is\ndraft.\n\n## Basis\n\nNot yet written."
+      "elements": [
+        {
+          "id": "incident.what-happened-and-when",
+          "name": "What happened, and when",
+          "means": "The draft says what happened, when it started, when the organization found out, and whether it is still happening.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline",
+          "basis": "judgement",
+          "sources": [
+            "eu-gpsr-2023-988",
+            "cpsc-16-cfr-1115-27",
+            "cdc-cerc-intro-2018"
+          ],
+          "basis_note": "Recall-notice rules (US, EU) require the hazard and relevant dates; extending this to every incident, including when the organization found out, is professional judgement."
+        },
+        {
+          "id": "incident.risk-stated-plainly",
+          "name": "The risk stated plainly",
+          "means": "The draft describes the risk or hazard plainly, without wording that makes it sound smaller than the supplied context shows.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline",
+          "basis": "law",
+          "sources": [
+            "eu-gpsr-2023-988",
+            "cpsc-16-cfr-1115-27"
+          ],
+          "basis_note": "EU law bans risk-lessening terms such as \"precautionary\" and \"voluntary\" in recall notices; applying the rule to other incidents is professional judgement."
+        },
+        {
+          "id": "incident.service-status",
+          "name": "What still works, and when service returns",
+          "means": "Where a service, product or supply is disrupted, the draft says what still works, what doesn't, and when normal service is expected, or that this isn't known yet.",
+          "weight": "core",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "law",
+          "sources": [
+            "eu-nis2-2022-2555"
+          ],
+          "basis_note": "Binding for essential and important entities in the EU, which must tell service users about significant incidents; applied by analogy elsewhere."
+        },
+        {
+          "id": "incident.remedy",
+          "name": "What people are owed, and how to claim it",
+          "means": "Where people are owed a remedy (repair, replacement, refund, credit or compensation), the draft says what it is, whether they can choose, and how to claim it, or when that will be decided.",
+          "weight": "supporting",
+          "dimension": "corrective_action_proof",
+          "basis": "law",
+          "sources": [
+            "eu-gpsr-2023-988",
+            "cpsc-16-cfr-1115-27"
+          ],
+          "basis_note": "Required for product recalls (EU: a choice of at least two of repair, replacement or refund); applied to other incidents as professional judgement."
+        }
+      ],
+      "triggers": [
+        {
+          "check": "The draft calls a recall or corrective action \"precautionary\", \"out of an abundance of caution\", \"discretionary\" or relevant only \"in rare situations\" while the draft itself or the supplied context reports a known hazard, failures or injuries.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal"
+          ]
+        },
+        {
+          "check": "The draft calls a recall \"voluntary\" where the product is sold in the EU, or where the supplied context shows a regulator ordered the recall. (In the US, a voluntary recall is a legal status, not spin, and is not a finding on its own.)",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "Local market"
+          ]
+        },
+        {
+          "check": "People are told to \"contact customer support\" or \"reach out\" about a remedy, and the draft never says what the remedy is.",
+          "dimension": "corrective_action_proof"
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Which regulators or authorities must be notified, and does the timing of this message fit those notifications? Counsel must confirm which duties apply.",
+          "review": [
+            "Legal"
+          ]
+        },
+        {
+          "ask": "Who is investigating the cause, is any part of the investigation independent, and will the findings be published?",
+          "review": [
+            "Executive"
+          ]
+        }
+      ],
+      "prose": "## What this protocol is\n\nThe shared checks for every event in the Incident family: cyber incidents, system outages, product recalls, environmental incidents, workplace accidents and supply-chain disruptions. It matters most for the five events without their own protocol.\n\nThe cyber protocol's *What and when* replaces this family's *What happened, and when* on cyber drafts. Where people are harmed, the People harmed overlay adds harm, danger and support checks.\n\n## Source\n\n**Binding law, read in the parts cited:**\n\n- Regulation (EU) 2023/988 on general product safety, Articles 36 and 37(1). https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32023R0988\n- 16 CFR 1115.27, recall notice content requirements (US CPSC). https://www.ecfr.gov/current/title-16/chapter-II/subchapter-B/part-1115/subpart-C/section-1115.27\n- Directive (EU) 2022/2555 (NIS2), Article 23, read from a secondary host. https://www.springlex.eu/en/packages/nis2/nis2-directive/article-23/\n\n**Guidance:** CDC CERC, \"Be Right\" (reviewed for the core protocol).\n\n**Declared professional judgement:** extending recall and service-incident rules to environmental incidents, workplace accidents and supply-chain disruption; the wording of all three triggers; the investigation question.\n\nFull source review: `sources/reviews/incident-family-source-review.md`.\n\n## What this protocol does not cover\n\n- Sector recall regimes (food, drugs, vehicles, medical devices).\n- Environmental and workplace-safety reporting duties to authorities.\n- Whether any notification duty applies or was met. Counsel decides.\n- Whether the facts are true. The tool checks the draft against the supplied context."
     },
     {
       "id": "leadership",
