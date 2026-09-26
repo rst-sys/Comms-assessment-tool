@@ -96,11 +96,19 @@ export const ELEMENT_CAPS: Record<ProtocolLayer, number> = {
 export const TRIGGER_CAPS: Record<ProtocolLayer, number> = {
   core: PROTOCOL_CAPS.triggers,
   family: PROTOCOL_CAPS.triggers,
-  // Seven, for ceo-departure, which was written before the families existed
-  // and carries checks a family would hold today. Raised rather than dropping
-  // one of its triggers, which would have been a silent change to how a
-  // departure is reviewed; the right fix is to move what the Leadership
-  // family should own up a layer, and that is a change of its own.
+  // TODO(ceo-departure): put this back to PROTOCOL_CAPS.triggers.
+  //
+  // Seven only because ceo-departure needs a seventh. It was written before
+  // the families existed and still carries general checks the Leadership
+  // family would own today — two of its triggers overlap with the family's,
+  // and one is already marked as narrowing one of them. Raised rather than
+  // dropping a trigger, which would have silently changed how every departure
+  // is reviewed.
+  //
+  // The fix is a ceo-departure refresh that moves those checks up a layer and
+  // brings it back under six; agreed with the owner as its own change. The
+  // build warns while any event protocol is still over PROTOCOL_CAPS.triggers,
+  // so the reminder disappears by itself when that lands.
   event: 7,
   overlay: 8,
 };

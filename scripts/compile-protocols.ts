@@ -13,6 +13,7 @@ import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { parse as parseYaml } from "yaml";
 import {
+  PROTOCOL_CAPS,
   checkLibrary,
   checkProtocol,
   protocolWordBudget,
@@ -274,6 +275,19 @@ function main(): void {
           "The protocols are no longer the smaller voice. Under the hard token limit, so the build passes.",
       );
     }
+  }
+  // Self-clearing reminder: the event trigger cap was raised from
+  // PROTOCOL_CAPS.triggers to fit ceo-departure's seventh trigger, pending a
+  // refresh that moves its general checks up to the Leadership family. This
+  // prints while any event protocol is still over the old cap and stops on
+  // its own once none is, rather than becoming a line nobody reads.
+  const overOldCap = protocols.filter((p) => p.layer === "event" && p.triggers.length > PROTOCOL_CAPS.triggers);
+  for (const p of overOldCap) {
+    console.warn(
+      `\n  warning: ${p.id} has ${p.triggers.length} triggers, over the ${PROTOCOL_CAPS.triggers} every other layer keeps to.\n` +
+        "    The event cap was raised to fit it. Move its general checks up to its family and lower\n" +
+        "    TRIGGER_CAPS.event back to PROTOCOL_CAPS.triggers; this warning goes away on its own.",
+    );
   }
   for (const s of staleSources()) console.warn(`  warning: source ${s}`);
 }
