@@ -176,7 +176,7 @@ export interface ProtocolElement {
   /** Ids from sources/registry.yaml. */
   sources: string[];
   /** Conditions under which the element applies at all; absent means always. */
-  applies_if?: { org_type?: string[]; jurisdiction?: string[]; format?: string[] };
+  applies_if?: { org_type?: string[]; jurisdiction?: string[]; format?: string[]; event?: string[] };
   /**
    * Overlay element ids this element supersedes.
    *
@@ -374,8 +374,8 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
         if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
         else {
           for (const key of Object.keys(e.applies_if)) {
-            if (key !== "org_type" && key !== "jurisdiction" && key !== "format") {
-              err(`${at} applies_if does not understand "${key}"; it takes org_type, jurisdiction and format`);
+            if (key !== "org_type" && key !== "jurisdiction" && key !== "format" && key !== "event") {
+              err(`${at} applies_if does not understand "${key}"; it takes org_type, jurisdiction, format and event`);
             }
           }
         }
@@ -552,6 +552,21 @@ export function checkLibrary(
         });
       }
     });
+  }
+
+  // An applies_if event must be a real event id. A typo here would switch the
+  // element off everywhere and look exactly like an element that never fires.
+  if (events.length > 0) {
+    const eventIds = new Set(events.map((e) => e.id));
+    for (const { file, data } of files) {
+      for (const e of data.elements) {
+        for (const id of e.applies_if?.event ?? []) {
+          if (!eventIds.has(id)) {
+            errors.push({ file, message: `element ${e.id} applies_if names event "${id}", which is not in protocols/events.yaml` });
+          }
+        }
+      }
+    }
   }
 
   // The taxonomy and the folder have to agree in both directions.

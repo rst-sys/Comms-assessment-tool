@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { parse as parseYaml } from "yaml";
 import { activeTriggers, elementApplies, elementById, MOVED_ELEMENT_IDS, PROTOCOLS, protocolsFor, resolveProtocols } from "../protocols.js";
-import { ELEMENT_CAPS } from "../protocolFormat.js";
+import { checkLibrary, ELEMENT_CAPS } from "../protocolFormat.js";
 import { DEMOS } from "../fixtures.js";
 import { COMMUNICATION_EVENTS, DIMENSION_IDS, EVENT_BY_LABEL, EVENT_TAXONOMY, type EvaluationRequest } from "../types.js";
 
@@ -221,6 +221,47 @@ describe("phase 2: the core, the three overlays and how they combine", () => {
     expect(eu("Investor or market disclosure", "United States")).toBe(false);
     // The rest of the overlay is unaffected either way.
     expect(elementIds(req({ organization: { ...listed, headquarters: "United States" } }))).toContain("listed-company.no_half_truth");
+  });
+
+  it("holds an element back on the events of its family it was not written for", () => {
+    const has = (event: string, audiences: string[]) =>
+      elementIds(req({ communication_event: event as never, audiences: audiences as never }))
+        .includes("commercial.employees-in-a-deal");
+
+    // Written for deals, and the family covers five events.
+    expect(has("Merger, acquisition or sale", ["Customers"])).toBe(true);
+    for (const event of [
+      "Price increase or change to terms",
+      "Disappointing results or profit warning",
+      "Financial difficulty or cost-cutting",
+      "Change of strategy or exit from a market",
+    ]) {
+      expect(has(event, ["Customers"]), event).toBe(false);
+    }
+    // On a deal addressed to employees the overlay replaces it, so the one
+    // event it applies to is also the one where something sharper can win.
+    expect(has("Merger, acquisition or sale", ["All employees"])).toBe(false);
+    // The rest of the family is unaffected by the condition.
+    expect(elementIds(req({ communication_event: "Price increase or change to terms" })))
+      .toContain("commercial.forecasts-with-assumptions");
+  });
+
+  it("matches applies_if events by id, and rejects one that does not exist", () => {
+    // By id as events.yaml names them, not by the label the menu shows: the
+    // two differ, and a rule written against the label would never fire.
+    const element = { applies_if: { event: ["merger-acquisition"] } } as never;
+    expect(elementApplies(element, req({ communication_event: "Merger, acquisition or sale" }))).toBe(true);
+    expect(elementApplies(element, req({ communication_event: "Price increase or change to terms" }))).toBe(false);
+    // A typo switches an element off everywhere and looks just like one that
+    // never fires, so the build rejects it rather than shipping it silent.
+    const events = EVENT_TAXONOMY.map((e) => ({ id: e.id, label: e.label, family: e.family, ui_groups: [...e.ui_groups] }));
+    const bad = checkLibrary(
+      [{ file: "x.md", data: { id: "x", name: "X", layer: "family", version: "1.0.0", status: "active", changelog: ["1.0.0 — x"], rests_on: "x",
+        elements: [{ id: "x.e", name: "E", means: "m", weight: "core", dimension: "accountability_agency", basis: "judgement", sources: [],
+          applies_if: { event: ["merger-acquisiton"] } }], triggers: [], questions: [], prose: "" } as never }],
+      events,
+    );
+    expect(bad.map((e) => e.message).join(" ")).toContain('applies_if names event "merger-acquisiton"');
   });
 
   it("still finds an element whose id moved to the overlay, so old saved reviews display", () => {

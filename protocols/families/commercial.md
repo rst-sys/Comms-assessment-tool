@@ -2,13 +2,14 @@
 id: commercial
 name: Commercial and financial decisions
 layer: family
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   US rules on forecasts by listed companies, EU telecoms rules on contract changes and EU takeover rules on informing employees; each narrow, applied more widely as professional judgement.
 changelog:
+  - "0.2.1 (2026-09-26): What a deal means for employees applies to mergers, acquisitions and sales only; it was being sent on price, profit-warning and other drafts where it has nothing to check."
   - "0.2.0 (2026-09-26): after a dry run on two merger memos, the business-as-usual trigger no longer fires on statements limited to the period before closing (which are accurate), only when unlimited or used in place of saying what isn't known about jobs or service afterwards."
   - "0.1.0 (2026-09-26): first draft from the Commercial family source review."
 
@@ -40,6 +41,7 @@ elements:
     basis: law
     sources: [eu-takeover-directive-2004-25]
     basis_note: "Binding for EU takeover bids, where boards must inform employees and give a view on employment; applied to other deals as professional judgement."
+    applies_if: { event: [merger-acquisition] }
 
 triggers:
   - check: The draft cites cost savings or synergies but doesn't say whether they involve job losses, where the supplied context shows they do.

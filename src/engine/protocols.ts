@@ -160,6 +160,13 @@ export function elementApplies(element: ProtocolFile["elements"][number], reques
   if (cond.format && cond.format.length > 0) {
     if (!cond.format.includes(request.communication_format)) return false;
   }
+  // By event id, as events.yaml and event_protocol name them, not by the
+  // label the menu shows. A family covers several events, and an element
+  // written for one of them has nothing to check on the others.
+  if (cond.event && cond.event.length > 0) {
+    const id = EVENT_BY_LABEL.get(request.communication_event)?.id;
+    if (!id || !cond.event.includes(id)) return false;
+  }
   return true;
 }
 
