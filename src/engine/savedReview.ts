@@ -1,0 +1,276 @@
+/**
+ * A saved review (revision 12): everything the tool said, plus the settings
+ * that produced it. The draft itself is never written to the file, and
+ * neither are the contents of uploaded documents; their titles and
+ * descriptions are kept so the user knows what to re-attach.
+ *
+ * One honest limit: the review's own prose quotes the draft (a rationale may
+ * read `The only agentive clause is "we are eliminating roles"`), so a saved
+ * review always carries short fragments of the draft, whatever the excerpt
+ * setting. `includeExcerpts: false` blanks the verbatim excerpt and scan
+ * phrase fields, which is a reduction, not a guarantee. The UI says so.
+ */
+import { Ajv } from "ajv";
+import type {
+  AudienceDocument,
+  EvaluationRequest,
+  Severity,
+} from "./types.js";
+import type { EvaluationResult } from "./evaluate.js";
+import { checklistForBundle, checklistForHash, type ChecklistGroup } from "./checklist.js";
+
+export const SAVED_REVIEW_FORMAT = "trust-assessment-review";
+export const SAVED_REVIEW_VERSION = 1;
+
+/** The intake settings that must match for two reviews to be comparable. */
+export interface SavedSettings {
+  organization_type: string;
+  listed_where: string;
+  headquarters: string;
+  communication_event: string;
+  event_description: string;
+  communication_format: string;
+  format_description: string;
+  audiences: string;
+  situation: string;
+  people_at_risk: boolean;
+  locations: string;
+  purpose: string;
+  already_published: boolean;
+}
+
+/** The settings, flattened to the strings a saved review stores and compares. */
+function currentSettings(request: EvaluationRequest): SavedSettings {
+  return {
+    organization_type: request.organization.type,
+    listed_where: request.organization.listed_where?.trim() ?? "",
+    headquarters: request.organization.headquarters.trim(),
+    communication_event: request.communication_event,
+    event_description: request.event_description?.trim() ?? "",
+    communication_format: request.communication_format,
+    format_description: request.format_description?.trim() ?? "",
+    audiences: [...request.audiences].join(", "),
+    situation: request.situation,
+    people_at_risk: request.people_at_risk,
+    locations: [...request.locations].join(", "),
+    purpose: request.purpose,
+    already_published: request.already_published,
+  };
+}
+
+export interface SavedFinding {
+  id: string;
+  dimension: string;
+  severity: Severity;
+  /** A quoted fragment of the earlier draft, or null when omitted or not kept. */
+  excerpt: string | null;
+  omission: string | null;
+  finding: string;
+  recommended_action: string;
+  specialist_review_needed: boolean;
+  specialist_review_type: string | null;
+}
+
+export interface SavedReview {
+  format: typeof SAVED_REVIEW_FORMAT;
+  format_version: number;
+  saved_at: string;
+  /** True when the verbatim excerpt and scan-phrase fields were kept. */
+  excerpts_included: boolean;
+  provider: { provider: string; model: string };
+  /** The protocol versions this review was run against. */
+  bundle_hash?: string;
+  score: number;
+  band: string;
+  confidence_label: string;
+  settings: SavedSettings;
+  context: string;
+  /** Titles and descriptions only; document contents are never saved. */
+  documents: Omit<AudienceDocument, "text">[];
+  summary: {
+    headline: string;
+    risk_level: string;
+    strongest_elements: string[];
+    priority_improvements: string[];
+  };
+  dimensions: { id: string; score: number; rationale: string; would_raise: string }[];
+  findings: SavedFinding[];
+  specialist_review_summary: string[];
+  /** The protocols that applied, as `id@version`, in the order they were sent. */
+  bundle?: string[];
+  /**
+   * The reviewer checklist this review showed, written out in full.
+   *
+   * Recovered from the bundle rather than rebuilt from the intake, so the file
+   * records the questions that actually applied. Stored as text rather than
+   * recomputed on open, because a protocol revised afterwards would otherwise
+   * put today's wording under yesterday's review.
+   */
+  reviewer_checklist?: { name: string; questions: { ask: string; also: string[] }[] }[];
+}
+
+/** The checklist that applied, in the saved file's shape. */
+function checklistOf(result: EvaluationResult): Pick<SavedReview, "reviewer_checklist"> {
+  const groups = checklistForBundle(result.bundle)?.groups ?? checklistForHash(result.bundle_hash);
+  if (!groups) return {};
+  return {
+    reviewer_checklist: groups.map((g) => ({
+      name: g.name,
+      questions: g.questions.map((q) => ({ ask: q.ask, also: [...q.also] })),
+    })),
+  };
+}
+
+export function buildSavedReview(
+  result: EvaluationResult,
+  request: EvaluationRequest,
+  options: { includeExcerpts?: boolean; now?: Date } = {},
+): SavedReview {
+  const includeExcerpts = options.includeExcerpts ?? true;
+  const now = options.now ?? new Date();
+  const a = result.analysis;
+  return {
+    format: SAVED_REVIEW_FORMAT,
+    format_version: SAVED_REVIEW_VERSION,
+    saved_at: now.toISOString(),
+    excerpts_included: includeExcerpts,
+    provider: result.provider,
+    bundle_hash: result.bundle_hash,
+    score: result.score,
+    band: result.band,
+    confidence_label: result.confidence_label,
+    settings: currentSettings(request),
+    context: request.context,
+    documents: (request.audience_documents ?? []).map(({ text: _text, ...rest }) => rest),
+    summary: {
+      headline: a.executive_summary.headline,
+      risk_level: a.executive_summary.risk_level,
+      strongest_elements: [...a.executive_summary.strongest_elements],
+      priority_improvements: [...a.executive_summary.priority_improvements],
+    },
+    dimensions: a.dimensions.map((d) => ({ id: d.id, score: d.score, rationale: d.rationale, would_raise: d.would_raise })),
+    findings: a.findings.map((f) => ({
+      id: f.id,
+      dimension: f.dimension,
+      severity: f.severity,
+      excerpt: includeExcerpts ? f.excerpt : null,
+      omission: f.omission,
+      finding: f.finding,
+      recommended_action: f.recommended_action,
+      specialist_review_needed: f.specialist_review_needed,
+      specialist_review_type: f.specialist_review_type,
+    })),
+    specialist_review_summary: [...a.specialist_review_summary],
+    ...(result.bundle ? { bundle: [...result.bundle] } : {}),
+    ...checklistOf(result),
+  };
+}
+
+/** The settings a later review must match for the comparison to be like-for-like. */
+export const COMPARABLE_SETTINGS: (keyof SavedSettings)[] = [
+  "organization_type",
+  "communication_event",
+  "communication_format",
+  "audiences",
+  "situation",
+  "people_at_risk",
+  "locations",
+  "purpose",
+];
+
+export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
+  organization_type: "Type of organization",
+  listed_where: "Where it is listed",
+  headquarters: "Headquarters",
+  communication_event: "What's happening",
+  event_description: "What's happening, described",
+  communication_format: "What they were drafting",
+  format_description: "What they were drafting, described",
+  audiences: "Who will receive it",
+  situation: "Where things stand",
+  people_at_risk: "People harmed or put at risk",
+  locations: "Where this is happening",
+  purpose: "What the draft is mainly trying to do",
+  already_published: "Already published",
+};
+
+/** Settings that differ between the saved review and the current request. */
+export function settingsDrift(saved: SavedSettings, request: EvaluationRequest): string[] {
+  const current = currentSettings(request);
+  return COMPARABLE_SETTINGS.filter((k) => saved[k] !== current[k]).map((k) => SETTING_LABELS[k]);
+}
+
+/**
+ * The checklist to show for a saved review.
+ *
+ * What the file recorded, first: it is the only account of the wording that
+ * applied. Failing that — a review saved before the checklist existed — the
+ * stored bundle names the protocols, and the hash is the last resort. Null
+ * when none of the three can answer.
+ */
+export function savedChecklist(saved: SavedReview): ChecklistGroup[] | null {
+  if (saved.reviewer_checklist && saved.reviewer_checklist.length > 0) {
+    return saved.reviewer_checklist.map((g) => ({
+      name: g.name,
+      questions: g.questions.map((q) => ({ ask: q.ask, also: q.also as never, protocol: "", layer: "core" as const })),
+    }));
+  }
+  return checklistForBundle(saved.bundle)?.groups ?? checklistForHash(saved.bundle_hash);
+}
+
+const str = { type: "string" } as const;
+const SAVED_REVIEW_SCHEMA = {
+  type: "object",
+  properties: {
+    format: { const: SAVED_REVIEW_FORMAT },
+    format_version: { type: "number" },
+    saved_at: str,
+    excerpts_included: { type: "boolean" },
+    provider: { type: "object", properties: { provider: str, model: str }, required: ["provider", "model"] },
+    score: { type: "number" },
+    band: str,
+    confidence_label: str,
+    settings: { type: "object" },
+    context: str,
+    documents: { type: "array" },
+    summary: { type: "object" },
+    dimensions: { type: "array" },
+    findings: { type: "array" },
+    specialist_review_summary: { type: "array" },
+    // Optional: absent on reviews saved before the checklist existed, and on
+    // any whose bundle hash the current library cannot resolve.
+    bundle: { type: "array" },
+    reviewer_checklist: { type: "array" },
+  },
+  required: ["format", "format_version", "score", "settings", "summary", "dimensions", "findings"],
+} as const;
+
+const ajv = new Ajv({ allErrors: false, strict: false });
+const validate = ajv.compile(SAVED_REVIEW_SCHEMA);
+
+export class SavedReviewError extends Error {
+  readonly name = "SavedReviewError";
+}
+
+/** Reads a saved-review file. Throws a plain-language error the UI can show. */
+export function parseSavedReview(text: string): SavedReview {
+  let raw: unknown;
+  try {
+    raw = JSON.parse(text);
+  } catch {
+    throw new SavedReviewError("That file is not a saved review. Choose the file this tool gave you when you saved a review.");
+  }
+  if (!validate(raw)) {
+    throw new SavedReviewError("That file is not a saved review, or it is from a newer version of the tool.");
+  }
+  const saved = raw as SavedReview;
+  if (saved.format_version > SAVED_REVIEW_VERSION) {
+    throw new SavedReviewError("That saved review comes from a newer version of the tool. Run a fresh review instead.");
+  }
+  return saved;
+}
+
+export function savedReviewFilename(saved: SavedReview): string {
+  const type = saved.settings.communication_event.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `trust-review-${type}-${saved.saved_at.slice(0, 10)}.json`;
+}

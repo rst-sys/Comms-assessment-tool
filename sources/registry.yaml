@@ -1,0 +1,874 @@
+# The sources the protocols cite.
+#
+# Seeded from the Source section of each protocol as it stood when the layered
+# framework was built. Nothing here was added, and nothing was upgraded: the
+# tier, the binding flag and the read status are what the protocol's own author
+# wrote, including the admissions that something was paywalled or unopened.
+#
+# Fields
+#   tier            1 binding law · 2 regulator guidance · 3 standards body
+#                   4 professional code · 5 peer-reviewed research
+#                   6 practitioner or post-incident account
+#   binding         whether it has force of law where it applies
+#   read_status     read | partly_read | not_opened, as the protocol states
+#   last_checked    only where the protocol gives a date; otherwise null
+#   review_by       null until the owner sets a cadence; the build warns once set
+#
+# Element-level `sources:` lists point at these ids. No element carries one yet:
+# the existing protocols were written before this registry and their bases are
+# marked unclassified until the owner assigns them.
+
+sources:
+  # ---------------------------------------------------------------- ceo-departure
+  - id: sec-form-8k
+    title: "Form 8-K, Item 5.02 and General Instruction B.1"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.sec.gov/files/form8-k.pdf
+    version_or_date: "form revision SEC 873, February 2025"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Cited by ceo-departure as binding law for listed companies."
+  - id: sec-release-33-8400
+    title: "Release 33-8400 / 34-49424, Additional Form 8-K Disclosure Requirements and Acceleration of Filing Date"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.sec.gov/rules/2004/03/additional-form-8-k-disclosure-requirements-and-acceleration-filing-date
+    version_or_date: "2004"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "The Commission's reasons for not requiring officers' reasons, and for requiring a description of a director's disagreement."
+  - id: sec-cdi-form-8k
+    title: "Compliance & Disclosure Interpretations, Exchange Act Form 8-K, Q117.01"
+    issuer: US SEC, Division of Corporation Finance
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/rules-regulations/staff-guidance/compliance-disclosure-interpretations/exchange-act-form-8-k
+    version_or_date: "last updated 24 June 2024"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Staff guidance, not a Commission rule. The four-business-day clock runs from notice of the decision, not the effective date."
+  - id: sec-regulation-fd
+    title: "Regulation FD, 17 CFR Part 243"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-243
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: ""
+  - id: sec-rule-10b5
+    title: "Rule 10b-5(b), 17 CFR 240.10b-5"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR7dcc9448077bb0f/section-240.10b-5
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "No material omission that makes what is said misleading."
+  - id: sec-reg-sk-402j
+    title: "Regulation S-K Item 402(j), 17 CFR 229.402(j)"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-229/subject-group-ECFR6a1ef9c5c8e3e8a/section-229.402
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Severance and its conditions, including non-disparagement, disclosed in the proxy."
+  - id: eu-delegated-reg-2026-789
+    title: "Commission Delegated Regulation (EU) 2026/789, Annex I row 13"
+    issuer: European Commission
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: null
+    version_or_date: "8 April 2026"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "The governing body's decision on appointment or removal is the final event. Cited by ceo-departure; see that file for the full citation."
+
+  # ---------------------------------------------------------------- cyber-incident
+  - id: nist-sp-800-61r3
+    title: "Incident Response Recommendations and Considerations for Cybersecurity Risk Management: A CSF 2.0 Community Profile (NIST SP 800-61r3)"
+    issuer: "NIST — Nelson, A., Rekhi, S., Souppaya, M., Scarfone, K."
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://nvlpubs.nist.gov/nistpubs/specialpublications/nist.sp.800-61r3.pdf
+    version_or_date: "April 2025"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read as a fetched summary, not full text."
+  - id: sec-cyber-small-entity-guide
+    title: "Cybersecurity Risk Management, Strategy, Governance, and Incident Disclosure: Small Entity Compliance Guide (Form 8-K Item 1.05)"
+    issuer: US Securities and Exchange Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/resources-small-businesses/small-business-compliance-guides/cybersecurity-risk-management-strategy-governance-incident-disclosure
+    version_or_date: "August 2023"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read as a fetched summary, not full text."
+  - id: hhs-breach-notification-rule
+    title: "Breach Notification Rule, 45 CFR §§ 164.400–414"
+    issuer: US Department of Health and Human Services
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.hhs.gov/hipaa/for-professionals/breach-notification/index.html
+    version_or_date: null
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read as a fetched summary, not full text."
+  - id: ftc-data-breach-response
+    title: "Data Breach Response: A Guide for Business"
+    issuer: US Federal Trade Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.ftc.gov/business-guidance/resources/data-breach-response-guide-business
+    version_or_date: "August 2023, updated June 2025"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read as a fetched summary, not full text."
+
+  # ---------------------------------------------------------------- geopolitical
+  - id: eu-directive-89-391
+    title: "Council Directive 89/391/EEC on safety and health of workers at work, Articles 8, 10 and 11"
+    issuer: Council of the European Union
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A31989L0391
+    version_or_date: null
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read in the parts cited. Anchor for the danger-and-protective-steps element."
+  - id: eu-directive-98-59
+    title: "Council Directive 98/59/EC on collective redundancies, Article 2"
+    issuer: Council of the European Union
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://www.legislation.gov.uk/eudr/1998/59/article/2
+    version_or_date: null
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read from the UK retained copy because EUR-Lex repeatedly served a different document. Articles 3 and 4 were not read."
+  - id: eu-directive-2002-14
+    title: "Directive 2002/14/EC establishing a general framework for informing and consulting employees, Articles 4 and 6"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32002L0014
+    version_or_date: null
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: ""
+  - id: eu-directive-2025-2450
+    title: "Directive (EU) 2025/2450 amending the European Works Councils Directive"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: false
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ:L_202502450
+    version_or_date: "2025"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Does not apply until 2029. Article numbering returned by extraction was not independently confirmed. Cited as evidence, not as a current obligation."
+  - id: us-warn-20-cfr-639
+    title: "20 CFR 639.7 and 639.9 (WARN)"
+    issuer: US Department of Labor
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-20/chapter-V/part-639/section-639.7
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "A literal content specification for a notice, including a named company official with a telephone number."
+  - id: ca-labor-code-1137
+    title: "California Labor Code § 1137"
+    issuer: State of California
+    tier: 1
+    jurisdiction: [US-CA]
+    binding: true
+    url: https://codes.findlaw.com/ca/labor-code/lab-sect-1137/
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Read via FindLaw because the official bill page disallows automated fetching. Current enforceability unknown — reported preliminarily enjoined in late 2025 by secondary sources only, which were not relied on."
+  - id: sec-ukraine-sample-letter
+    title: "Sample letter on disclosures pertaining to Russia's invasion of Ukraine"
+    issuer: US SEC, Division of Corporation Finance
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/corpfin/sample-letter-companies-pertaining-to-ukraine
+    version_or_date: "3 May 2022"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Carries an emphatic staff disclaimer — it has no legal force or effect."
+  - id: cisa-shields-up
+    title: "Shields Up guidance for corporate leaders and CEOs"
+    issuer: US Cybersecurity and Infrastructure Security Agency
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.cisa.gov/shields-guidance-corporate-leaders-and-ceos
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Advisory; the page carried no visible date. Establishes facts that should exist, not message content."
+  - id: bamiatzi-2024-partisan-csr
+    title: "The rise of partisan CSR — corporate responses to the Russia–Ukraine war"
+    issuer: "Bamiatzi, Brieger, Karakulak, Kinderman and Manning — Journal of Business Ethics 198, 263–291"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://link.springer.com/article/10.1007/s10551-024-05795-9
+    version_or_date: "2024"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Read in abstract, method and findings."
+  - id: braga-2026-sociopolitical-activism
+    title: "Corporate sociopolitical activism as a signal — a meta-analysis"
+    issuer: "Braga, Tardin, Grinstein and Perin — Journal of Business Research 210, 116147"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://www.sciencedirect.com/science/article/pii/S0148296326001815
+    version_or_date: "2026"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Employees respond least favorably of all stakeholder groups. Treated as a caution, not a specification."
+  - id: hamelberg-2024-right-voice
+    title: "Finding the right voice"
+    issuer: "Hamelberg, de Ruyter, van Dolen and Konuş — Journal of Public Policy and Marketing 44(1)"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://journals.sagepub.com/doi/10.1177/07439156241230910
+    version_or_date: "2024"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Measures Twitter engagement, not credibility. Nothing in the geopolitical protocol rests on it."
+  - id: shrm-international-crisis
+    title: "Navigating International Crises"
+    issuer: SHRM
+    tier: 6
+    jurisdiction: []
+    binding: false
+    url: https://www.shrm.org/topics-tools/topics/international-crisis
+    version_or_date: null
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "All five of its recommendations concern support and none asks the employer to state a decision."
+
+  # ---------------------------------------------------------------- workforce-reduction
+  - id: eeoc-severance-waivers
+    title: "Q&A: Understanding Waivers of Discrimination Claims in Employee Severance Agreements (OLC Control Number EEOC-NVTA2009-2)"
+    issuer: US Equal Employment Opportunity Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: null
+    version_or_date: "issued 15 July 2009"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "A technical assistance document; its own header says it does not have the force of law. Whether it has been revised or superseded since 2009 is not confirmed."
+  - id: eeoc-avoiding-discrimination-rif
+    title: "Avoiding Discrimination in Layoffs or Reductions in Force (RIF)"
+    issuer: US Equal Employment Opportunity Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.eeoc.gov/employers/small-business/avoiding-discrimination-layoffs-or-reductions-force-rif
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: "2026-09-21"
+    review_by: null
+    notes: ""
+  - id: dol-plant-closings-warn
+    title: "Plant Closings and Layoffs (WARN Act)"
+    issuer: US Department of Labor, Employment and Training Administration
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.dol.gov/general/topic/termination/plantclosings
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: "2026-09-21"
+    review_by: null
+    notes: ""
+  - id: fair-work-redundancy
+    title: "Redundancy"
+    issuer: Fair Work Ombudsman (Australia)
+    tier: 2
+    jurisdiction: [AU]
+    binding: false
+    url: https://www.fairwork.gov.au/ending-employment/redundancy
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: "2026-09-21"
+    review_by: null
+    notes: ""
+  - id: cipd-redundancy-factsheet
+    title: "Redundancy factsheet"
+    issuer: Chartered Institute of Personnel and Development
+    tier: 4
+    jurisdiction: [UK]
+    binding: false
+    url: https://www.cipd.org/uk/knowledge/factsheets/redundancy-factsheet/
+    version_or_date: "page metadata shows both 6 April 2026 and 24 January 2023"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Only the public part was read. The members' guide is behind a paywall."
+  - id: page-principles
+    title: The Page Principles
+    issuer: Arthur W. Page Society
+    tier: 4
+    jurisdiction: []
+    binding: false
+    url: https://page.org/who-we-are/page-principles/
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: "2026-09-21"
+    review_by: null
+    notes: "Cited by workforce-reduction, and by geopolitical as background on character rather than content."
+  - id: lee-2023-layoff-survivors
+    title: "The Experiences of Layoff Survivors: Navigating Organizational Justice in Times of Crisis"
+    issuer: "Lee, S., Hong, S., Shin, W.-Y., & Lee, B. G. — Sustainability 15(24), 16717"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://doi.org/10.3390/su152416717
+    version_or_date: "2023"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: ""
+  - id: topa-2022-psychological-contract
+    title: "Psychological Contract Breach and Outcomes: A Systematic Review of Reviews"
+    issuer: "Topa, G., Aranda-Carmena, M., & De-Maria, B. — International Journal of Environmental Research and Public Health 19(23), 15527"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://www.mdpi.com/1660-4601/19/23/15527
+    version_or_date: "2022"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: ""
+  - id: khaw-2022-reactions-to-change
+    title: "Reactions towards organizational change: a systematic literature review"
+    issuer: "Khaw, K. W., Alnoor, A., AL-Abrrow, H., Tiberius, V., Ganesan, Y., & Atshan, N. A. — Current Psychology"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://doi.org/10.1007/s12144-022-03070-6
+    version_or_date: "published online 13 April 2022"
+    read_status: partly_read
+    last_checked: null
+    review_by: null
+    notes: "Pages 1–6 of 24 were read, so only what appears there is cited. Not confirmed to be the same paper as PMC9006211, which could not be opened."
+
+  # ---------------------------------------------------------------- apology
+  - id: lewicki-2016-effective-apologies
+    title: "An Exploration of the Structure of Effective Apologies"
+    issuer: "Lewicki, R. J., Polin, B., & Lount, R. B. — Negotiation and Conflict Management Research 9(2), 177–196"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073
+    version_or_date: "2016, doi:10.1111/ncmr.12073"
+    read_status: not_opened
+    last_checked: null
+    review_by: null
+    notes: "Paywalled. Study details in the apology protocol come from the press account below, which quotes the lead author."
+  - id: sciencedaily-2016-six-elements
+    title: "Six elements of an effective apology, according to science"
+    issuer: "Ohio State University, written by Jeff Grabmeier — ScienceDaily"
+    tier: 6
+    jurisdiction: []
+    binding: false
+    url: https://www.sciencedaily.com/releases/2016/04/160412091111.htm
+    version_or_date: "12 April 2016"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Secondary account, read in full."
+
+  # ---------------------------------------------------------------- cited by more than one
+  - id: prsa-code-of-ethics
+    title: PRSA Code of Ethics
+    issuer: Public Relations Society of America
+    tier: 4
+    jurisdiction: []
+    binding: false
+    url: https://www.prsa.org/docs/default-source/about/ethics/prsa_code_of_ethics.pdf?sfvrsn=c9b66a6b_2
+    version_or_date: "undated in its own PDF"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Used by geopolitical as background on character rather than content."
+  - id: iabc-code-of-ethics
+    title: IABC Code of Ethics
+    issuer: International Association of Business Communicators
+    tier: 4
+    jurisdiction: []
+    binding: false
+    url: https://www.iabc.com/about/what-we-do/standards/code-of-ethics
+    version_or_date: "undated"
+    read_status: read
+    last_checked: null
+    review_by: null
+    notes: "Used by geopolitical as background on character rather than content."
+
+  # ---------------------------------------------------------------- core protocol and the new overlays
+  - id: who-erc-2017
+    title: "Communicating risk in public health emergencies: a WHO guideline for emergency risk communication (ERC) policy and practice"
+    issuer: World Health Organization
+    tier: 2
+    jurisdiction: [international]
+    binding: false
+    url: https://www.who.int/publications/i/item/9789241550208
+    version_or_date: "2017 (catalogue 10 Jan 2018)"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Read: recommendations and method. Written for health emergencies; applied to organizational communication by analogy. Cited by core.central_fact_first and core.estimates_as_estimates."
+  - id: cdc-cerc-intro-2018
+    title: "Crisis and Emergency Risk Communication (CERC) Manual, Introduction"
+    issuer: US Centers for Disease Control and Prevention
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.cdc.gov/cerc/media/pdfs/CERC_Introduction.pdf
+    version_or_date: "2018 update (index page dated Nov 2024)"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Read: principles section. Written for emergencies; applied by analogy; conflicting dates between the PDF and the index page. Cited by core.estimates_as_estimates and people-harmed.harm_acknowledged."
+  - id: iso-24495-1-2023
+    title: "ISO 24495-1:2023 Plain language — Part 1: Governing principles and guidelines"
+    issuer: ISO
+    tier: 3
+    jurisdiction: [international]
+    binding: false
+    url: https://www.iso.org/standard/78907.html
+    version_or_date: "June 2023"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Catalogue page and abstract only; full text paywalled. Cited by core.central_fact_first."
+  - id: seeger-2006
+    title: "Best practices in crisis communication: An expert panel process. Journal of Applied Communication Research 34(3), 232–244"
+    issuer: "Seeger, M. W."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://www.tandfonline.com/doi/abs/10.1080/00909880600769944
+    version_or_date: "2006"
+    read_status: not_opened
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Practices quoted from Veil et al. (2020), Handbook of Applied Communication Research. Cited by core.estimates_as_estimates."
+  - id: coombs-2007
+    title: "Protecting organization reputations during a crisis: The development and application of Situational Crisis Communication Theory. Corporate Reputation Review 10(3), 163–176"
+    issuer: "Coombs, W. T."
+    tier: 5
+    jurisdiction: [international]
+    binding: false
+    url: https://link.springer.com/article/10.1057/palgrave.crr.1550049
+    version_or_date: "2007"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Read: relevant sections, via a full-text copy. Theory and ethical argument, not measured effect. Cited by people-harmed.harm_acknowledged and people-harmed.support, and by the core protocol's reputation-first trigger."
+  - id: li-2008
+    title: "Annual report readability, current earnings, and earnings persistence. Journal of Accounting and Economics 45(2–3), 221–247"
+    issuer: "Li, F."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sciencedirect.com/science/article/abs/pii/S0165410108000141
+    version_or_date: "2008"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Abstract only. Annual reports, not crisis messages; correlational. Cited by core.central_fact_first."
+  - id: fausey-boroditsky-2010
+    title: "Subtle linguistic cues influence perceived blame and financial liability. Psychonomic Bulletin & Review 17(5), 644–650"
+    issuer: "Fausey, C. M., & Boroditsky, L."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://link.springer.com/article/10.3758/PBR.17.5.644
+    version_or_date: "2010"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Abstract only. Replication (Tonković et al. 2022) reported by a secondary source, not read. Grounds the framework's \"who had authority over it\" element; cited by no protocol element."
+
+  # ------------------------------------------------- ceo-departure: missed by the phase 1 seed
+  - id: eu-impl-reg-2016-1055
+    title: "Commission Implementing Regulation (EU) 2016/1055, Articles 2 and 3"
+    issuer: European Commission
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R1055
+    version_or_date: "2016"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Amendment after the Listing Act not verified. Cited by ceo-departure and by listed-company.same_to_all and listed-company.eu_notice_form."
+  - id: eu-directive-2007-36-art-9b
+    title: "Directive 2007/36/EC as amended by Directive (EU) 2017/828, Article 9b"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02007L0036-20170609
+    version_or_date: "consolidated 9 June 2017"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding through national transposition. Remuneration reporting covering former directors and termination payments. Cited by ceo-departure."
+  - id: nyse-2026-guidance-letter
+    title: "2026 Annual Listed Company Compliance Guidance Letter"
+    issuer: NYSE Regulation
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.nyse.com/publicdocs/nyse/markets/nyse/NYSE_2026_Annual_Guidance_Letter.pdf
+    version_or_date: "27 January 2026"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "The letter was read, not the Listed Company Manual. The Manual binds NYSE-listed companies; the letter itself is guidance. Cited by ceo-departure."
+  - id: graffin-2011-strategic-noise
+    title: "What's all that (strategic) noise? Anticipatory impression management in CEO succession. Strategic Management Journal 32(7), 748–770"
+    issuer: "Graffin, S. D., Carpenter, M. A., & Boivie, S."
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://terry.uga.edu/sites/default/files/inline-files/Graffin_Carpenter__Boivie_2011.pdf
+    version_or_date: "2011"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Basis for ceo-departure's clean-channel element and its second trigger. Documented behavior, not a standard."
+  - id: tayan-2017-retired-or-fired
+    title: "Retired or Fired: How Can Investors Tell If the CEO Left Voluntarily? Harvard Law School Forum on Corporate Governance"
+    issuer: "Tayan, B., with Gow, I. D., & Larcker, D. F."
+    tier: 6
+    jurisdiction: [US]
+    binding: false
+    url: https://corpgov.law.harvard.edu/2017/06/08/retired-or-fired-how-can-investors-tell-if-the-ceo-left-voluntarily
+    version_or_date: "8 June 2017"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "A summary of Stanford GSB Working Paper No. 3547, which was not read. Basis for ceo-departure's stock phrases and its first trigger."
+  - id: wells-fargo-2017-investigation
+    title: "Sales Practices Investigation Report"
+    issuer: Independent Directors of the Board of Wells Fargo & Company
+    tier: 6
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/Archives/edgar/data/72971/000119312517118654/d375947ddefa14a.htm
+    version_or_date: "10 April 2017"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "A documented gap between a board's own finding and its public statement. Basis for ceo-departure's last question."
+
+  # ---------------------------------------------------------------- workforce family
+  - id: eu-directive-2019-1152
+    title: "Directive (EU) 2019/1152 on transparent and predictable working conditions, Articles 4(2) and 6"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32019L1152
+    version_or_date: "20 June 2019"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding through national transposition, which was not reviewed. Cited by workforce.what-changes-and-when."
+  - id: nlra-29-usc-158
+    title: "National Labor Relations Act, 29 U.S.C. § 158(c) and (d)"
+    issuer: US Congress
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/uscode/text/29/158
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Subsections (c) and (d) read. The bargaining duty applies where a union represents employees. Cited by workforce.bargaining-and-consultation."
+  - id: nlrb-bargaining-good-faith
+    title: "Bargaining in good faith with employees' union representative (Section 8(d) & 8(a)(5))"
+    issuer: National Labor Relations Board
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/bargaining-in-good-faith-with-employees-union-representative
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Explains binding law rather than being it. NLRB standards on unilateral changes are revised by successive Boards. Cited by workforce.bargaining-and-consultation."
+  - id: nlrb-interference-8a1
+    title: "Interfering with employee rights (Section 7 & 8(a)(1))"
+    issuer: National Labor Relations Board
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/interfering-with-employee-rights-section-7-8a1
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Explains binding law rather than being it. Behind the workforce family's trigger on linking a consequence to union support; named in that protocol's Source section rather than on an element."
+  - id: eeoc-reasonable-accommodation-2002
+    title: "Enforcement Guidance on Reasonable Accommodation and Undue Hardship under the ADA"
+    issuer: US Equal Employment Opportunity Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.eeoc.gov/laws/guidance/enforcement-guidance-reasonable-accommodation-and-undue-hardship-under-ada
+    version_or_date: "17 October 2002"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "States it has no force of law; explains the ADA. Whether it has been revised since 2002 was not checked. Cited by workforce.route-for-individual-circumstances."
+
+  # ---------------------------------------------------------------- incident family
+  - id: eu-gpsr-2023-988
+    title: "Regulation (EU) 2023/988 on general product safety, Articles 36 and 37(1)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:32023R0988
+    version_or_date: "10 May 2023; applies from 13 December 2024"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Implementing regulation 2024/1435, the recall-notice template, was not read. Cited by incident.risk-stated-plainly, incident.remedy and incident.what-happened-and-when."
+  - id: cpsc-16-cfr-1115-27
+    title: "16 CFR 1115.27, Recall notice content requirements"
+    issuer: US Consumer Product Safety Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-16/chapter-II/subchapter-B/part-1115/subpart-C/section-1115.27
+    version_or_date: "current as of 11 September 2026"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding for mandatory recall notices. Voluntary recalls follow separate CPSC guidelines, which were not read. Cited by incident.risk-stated-plainly, incident.remedy and incident.what-happened-and-when."
+  - id: eu-nis2-2022-2555
+    title: "Directive (EU) 2022/2555 (NIS2), Article 23"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://www.springlex.eu/en/packages/nis2/nis2-directive/article-23/
+    version_or_date: "14 December 2022"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding through national transposition, and only on essential and important entities. Read from a secondary host because EUR-Lex returned 404; verify against the Official Journal. Cited by incident.service-status."
+
+  # ---------------------------------------------------------------- leadership family
+  - id: sec-reg-sk-401
+    title: "Regulation S-K Item 401(b), (d) and (e), 17 CFR 229.401"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-229/subpart-229.400/section-229.401
+    version_or_date: "current as of 24 September 2026"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding on SEC registrants. Named in the Leadership family's Source section."
+  - id: sec-slb-14e
+    title: "Staff Legal Bulletin No. 14E (CEO succession planning)"
+    issuer: US SEC Division of Corporation Finance
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/interps/legal/cfslb14e.htm
+    version_or_date: "27 October 2009 (page dated 9 July 2021)"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Staff guidance, not a Commission rule. Read for the CEO departure source review. Cited by leadership.how-decided."
+  - id: gdpr-recital-27
+    title: "Regulation (EU) 2016/679 (GDPR), Recital 27"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://gdpr-info.eu/recitals/no-27/
+    version_or_date: "2016"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding regulation; recitals explain its scope. GDPR does not apply to deceased persons' data, and member states may set their own rules. Named in the Leadership family's Source section."
+
+  # ---------------------------------------------------------------- commercial family
+  - id: us-pslra-15-usc-78u-5
+    title: "Private Securities Litigation Reform Act safe harbor, 15 U.S.C. § 78u-5"
+    issuer: US Congress
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/uscode/text/15/78u-5
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "A condition of protection for SEC reporting issuers, not a duty to disclose. Excludes tender offers and going-private transactions. Cited by commercial.forecasts-with-assumptions."
+  - id: eu-eecc-2018-1972
+    title: "Directive (EU) 2018/1972 (European Electronic Communications Code), Article 105(4)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://www.legislation.gov.uk/eudr/2018/1972/article/105
+    version_or_date: "11 December 2018"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding through national transposition, and on electronic communications providers only. Read from the UK retained copy. Cited by commercial.what-changes-for-customers."
+  - id: eu-takeover-directive-2004-25
+    title: "Directive 2004/25/EC on takeover bids, Articles 6 and 9(5)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:32004L0025:EN:HTML
+    version_or_date: "21 April 2004"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding through national transposition, for takeover bids for EU-listed companies. Quotes abbreviated by the retrieval tool. Cited by commercial.employees-in-a-deal."
+
+  # ---------------------------------------------------------------- allegations family
+  - id: eu-directive-2019-1937
+    title: "Directive (EU) 2019/1937 on the protection of persons who report breaches of Union law (Whistleblower Directive), Articles 16, 19 and 22"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019L1937
+    version_or_date: "23 October 2019"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding through national transposition, for reports of breaches of EU law in the listed areas. Quotes abbreviated by the retrieval tool. Cited by allegations.protection-for-those-who-report."
+  - id: sox-18-usc-1514a
+    title: "Sarbanes-Oxley Act § 806, 18 U.S.C. § 1514A(a)"
+    issuer: US Congress
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/uscode/text/18/1514A
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binds SEC-registered companies, their subsidiaries, officers, contractors and agents. Cited by allegations.protection-for-those-who-report."
+  - id: sec-rule-21f-17
+    title: "SEC Rule 21F-17(a), 17 CFR 240.21F-17"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR3bd6e6ae1e9d09d/section-240.21F-17
+    version_or_date: "current"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "No action to impede someone reporting to the SEC. Cited by allegations.protection-for-those-who-report."
+  - id: eu-directive-2016-343
+    title: "Directive (EU) 2016/343 on the presumption of innocence, Articles 2 and 4(1)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016L0343
+    version_or_date: "9 March 2016"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding on public authorities in criminal proceedings only; the protocol uses it by analogy for organizations. Cited by allegations.alleged-vs-established."
+  - id: doj-eccp-2024
+    title: "Evaluation of Corporate Compliance Programs (updated September 2024)"
+    issuer: US Department of Justice, Criminal Division
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.justice.gov/criminal/criminal-fraud/page/file/937501/dl
+    version_or_date: "September 2024"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Prosecutors' evaluation criteria, not binding law. Cited by allegations.who-investigates."
+  - id: kim-2004
+    title: "Removing the shadow of suspicion: The effects of apology versus denial for repairing competence- versus integrity-based trust violations. Journal of Applied Psychology 89(1), 104–118"
+    issuer: "Kim, P. H., Ferrin, D. L., Cooper, C. D., & Dirks, K. T."
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=398221
+    version_or_date: "2004"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Abstract only; APA PsycNet blocked the full text by robots.txt. Read for the core protocol source review (§5.4), which found it small and lab-based. Cited by allegations.alleged-vs-established."

@@ -1,0 +1,989 @@
+/* Design system, PROMPT.md Section 11 and the owner's desktop artboards.
+
+   Calm, editorial, executive-grade: a display serif for headings, a humanist
+   sans for everything else, ink on warm paper, cards with a hairline border
+   and no heavy shadow, severity by square and label, no gradients, no
+   imagery, no animation beyond 150 ms.
+
+   The two faces are served from this app, not from a font CDN. The screen
+   they sit on promises the draft is "sent once, only to Anthropic" and that
+   nothing tracks the reader; a stylesheet that reaches a third party on every
+   page load would make that promise smaller in a way nobody asked for. Both
+   are variable fonts, latin subset, 69 KB together, and the fallback stacks
+   below still render the page if they fail. */
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("./fonts/newsreader-latin.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("./fonts/ibm-plex-sans-latin.woff2") format("woff2");
+  font-weight: 100 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* Ink and paper */
+  --ink: #1b1e22;
+  --ink-2: #3a3f45;
+  --neutral: #545a61;
+  --paper: #f6f4ef;
+  --header-bg: #fbfaf7;
+  --surface: #ffffff;
+  --border: #e2ded5;
+  --divider: #eeebe4;
+
+  /* The one accent: buttons, links, list numbers. */
+  --accent: #1f5a56;
+  --accent-hover: #143c39;
+
+  /* The amber callout */
+  --warn-bg: #fbf1df;
+  --warn-border: #e8cf9e;
+  --warn-text: #5c3d00;
+  --warn-icon: #8a5a00;
+
+  /* Severity and status. The accent is for things you can press; these say
+     how a draft scored, and must not be confused with it — "sound" stayed
+     blue when the accent turned green, or a 3.5 would have been drawn in a
+     deeper colour than a 4.5. */
+  --strong: #6b8f71;
+  --sound: #4a6fa5;
+  --caution: #b8860b;
+  --material: #7a1f2b;
+  /* Text-safe variants: the spec colors pass AA on paper only for large or non-text use. */
+  --strong-text: #46654c;
+  --sound-text: #3f608f;
+  --caution-text: #7d5c07;
+  --material-text: #7a1f2b;
+  --tint-weather: #e6edf5;
+  --tint-institution: #efe4e6;
+  --tint-audience: #f3ead9;
+  --tint-passive: #e9e4f2;
+  --tint-values: #e4efe6;
+  --tint-vague: #f0ecdf;
+
+  --serif: Newsreader, "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --sans: "IBM Plex Sans", Inter, "Segoe UI", "Helvetica Neue", Helvetica, Arial, system-ui, sans-serif;
+  --space: 8px;
+  --measure: 68ch;
+  /* One readable column is the measure plus a card's own padding. Written
+     out rather than multiplied from a nested calc, which Chromium collapses
+     to a single column without complaining. */
+  --col: calc(var(--measure) + var(--space) * 5);
+  --col-gap: calc(var(--space) * 3);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 1px 2px rgba(27, 30, 34, 0.05);
+  --fast: 150ms;
+}
+
+* { box-sizing: border-box; }
+/* A class that sets display beats the browser's rule for [hidden], which is
+   how the "keep quoted passages" tick-box stayed on screen while saving was
+   switched off. Nothing marked hidden should ever render. */
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+h1, h2 { font-family: var(--serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; }
+h1 { font-size: 32px; margin: 0 0 var(--space); }
+h2 { font-size: 24px; margin: 0 0 calc(var(--space) * 2); }
+h3 { font-size: 18px; font-weight: 600; margin: calc(var(--space) * 3) 0 var(--space); }
+p { margin: 0 0 calc(var(--space) * 1.5); text-wrap: pretty; }
+p:last-child { margin-bottom: 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:hover { color: var(--accent-hover); }
+button, select, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; transition: background-color var(--fast), border-color var(--fast), color var(--fast); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 13px; background: var(--paper); padding: 1px 4px; border-radius: 3px; }
+ul.tight, ol.tight { margin: 0; padding-left: 20px; }
+ul.tight li, ol.tight li { margin-bottom: calc(var(--space) / 2); text-wrap: pretty; }
+q { quotes: "“" "”"; }
+
+.page { max-width: calc(var(--measure) * 2 + var(--space) * 17); margin: 0 auto; padding: calc(var(--space) * 3) calc(var(--space) * 2) calc(var(--space) * 6); }
+.page > section, .page > .panel, .page > aside, .page > .results-grid { margin-top: calc(var(--space) * 6); }
+.page > :first-child { margin-top: 0; }
+.prose { max-width: var(--measure); }
+.muted { color: var(--neutral); }
+/* Named for a screen reader, drawn for nobody. The results page carries its
+   heading this way: it needs a first-level heading for the outline, and the
+   design has no room for a title above the score. */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+.small { font-size: 13px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: calc(var(--space) * 2.5); box-shadow: var(--shadow); }
+.label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--neutral); margin: calc(var(--space) * 2) 0 calc(var(--space) / 2); }
+.label:first-child { margin-top: 0; }
+
+/* Buttons */
+.primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); border-radius: var(--radius-sm); padding: 10px 18px; font-weight: 600; }
+.primary:hover:not(:disabled) { background: var(--accent-hover); border-color: var(--accent-hover); }
+.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link):not(.score-number) {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 8px 14px;
+}
+button:not(.primary):not(.linklike):not(.hl):not(.chip):not(.tab):not(.nav-link):not(.score-number):hover { border-color: var(--neutral); }
+.linklike { background: none; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+.linklike:hover { color: var(--accent-hover); }
+
+/* Site header and nav */
+/* One 72px bar on every page: the mark on the left, the areas on the right.
+   The app's name used to be an <h1> here, which gave every page two first-level
+   headings and pushed the page's own title down the outline. */
+.site-header { border-bottom: 1px solid var(--border); background: var(--header-bg); }
+.site-header .page { display: flex; flex-wrap: wrap; gap: var(--space) calc(var(--space) * 4);
+  align-items: center; justify-content: space-between; min-height: 72px; padding-top: 0; padding-bottom: 0; }
+.wordmark { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 600; color: var(--ink); }
+.wordmark svg { color: var(--accent); flex: none; }
+.nav { list-style: none; display: flex; flex-wrap: wrap; gap: 0 calc(var(--space) * 2.5); padding: 0; margin: 0; }
+.nav-link { background: none; border: 0; padding: 24px 0 22px; color: var(--neutral); border-bottom: 2px solid transparent; font-size: 14px; }
+.nav-link:hover { color: var(--ink); }
+.nav-active { color: var(--ink); border-bottom-color: var(--accent); font-weight: 600; }
+.nav-toggle { display: none; }
+@media (max-width: 640px) {
+  .site-header .page { padding-top: var(--space); padding-bottom: var(--space); min-height: 0; flex-wrap: wrap; }
+  .nav-toggle { display: block; min-height: 44px; }
+  .site-header nav { flex-basis: 100%; display: none; }
+  .site-header nav.nav-open { display: block; }
+  .nav { flex-direction: column; gap: 0; }
+  .nav-link { display: block; width: 100%; text-align: left; padding: 11px 0; border-bottom: 1px solid var(--divider); }
+  .nav-active { border-bottom-color: var(--accent); }
+}
+
+/* Collapsed panels are native disclosure elements. */
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.panel > summary { padding: calc(var(--space) * 2) calc(var(--space) * 2.5); cursor: pointer; list-style: none; display: flex; align-items: baseline; gap: var(--space); }
+.panel > summary::-webkit-details-marker { display: none; }
+.panel > summary::before { content: "▸"; color: var(--neutral); font-size: 14px; transition: transform var(--fast); display: inline-block; }
+.panel[open] > summary::before { transform: rotate(90deg); }
+.panel > summary h2 { display: inline; margin: 0; }
+.panel > summary:hover { background: var(--paper); }
+.panel > .panel-body { padding: 0 calc(var(--space) * 2.5) calc(var(--space) * 2.5); }
+.panel-note { color: var(--neutral); font-size: 14px; }
+
+/* Executive summary */
+.summary-headline { font-family: var(--serif); font-size: 22px; line-height: 1.3; margin: 0 0 calc(var(--space) * 2); max-width: var(--measure); text-wrap: balance; }
+.summary-head { display: flex; flex-wrap: wrap; gap: calc(var(--space) * 3); align-items: flex-start; margin-bottom: calc(var(--space) * 2); }
+.summary-head .score-block { flex: 0 0 auto; }
+.summary-facts { display: flex; flex-wrap: wrap; gap: calc(var(--space) * 3); align-items: flex-start; }
+.score-number { font-family: var(--serif); font-size: 56px; line-height: 1; font-weight: 600; background: none; border: 0; padding: 0; color: var(--ink); text-decoration: underline dotted; text-decoration-color: var(--neutral); text-underline-offset: 6px; }
+.score-number:hover { text-decoration-color: var(--ink); }
+.score-band { display: block; margin-top: calc(var(--space) * 1.5); font-weight: 600; max-width: 34ch; text-wrap: balance; }
+.readiness-row { display: flex; flex-wrap: wrap; gap: var(--space); align-items: center; }
+.readiness-row strong { font-size: 17px; }
+.chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-block; border: 1px solid var(--border); border-radius: 999px; padding: 1px 10px; font-size: 13px; background: var(--paper); color: var(--ink); line-height: 1.5; }
+.chip-button { cursor: pointer; }
+.chip-button:hover { border-color: var(--neutral); }
+.chip-active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.two-col { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
+@media (min-width: 760px) { .two-col { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); } }
+
+/* Severity: a small filled square plus a text label, never by color alone. */
+.sev { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; }
+.sev-square { width: 10px; height: 10px; display: inline-block; border: 1px solid var(--ink); flex: none; }
+.sev-high .sev-square { background: var(--material); border-color: var(--material); }
+.sev-moderate .sev-square { background: var(--caution); border-color: var(--caution); }
+.sev-low .sev-square { background: var(--sound); border-color: var(--sound); }
+
+/* Findings */
+.finding-list { display: grid; gap: calc(var(--space) * 2); }
+.finding-head { display: flex; flex-wrap: wrap; gap: 6px calc(var(--space) * 1.5); align-items: center; font-size: 14px; }
+.finding-card blockquote { margin: calc(var(--space) * 1.5) 0; padding: var(--space) calc(var(--space) * 1.5); border-left: 3px solid var(--border); background: var(--paper); font-family: var(--serif); font-size: 16px; }
+.finding-card .omission { font-style: italic; color: var(--neutral); margin: calc(var(--space) * 1.5) 0; }
+.finding-card h3 { margin: var(--space) 0 4px; max-width: var(--measure); }
+.finding-card p { max-width: var(--measure); }
+.flags { display: flex; flex-wrap: wrap; gap: var(--space); margin-top: calc(var(--space) * 1.5); font-size: 13px; }
+.flag { border: 1px solid var(--border); border-radius: 4px; padding: 1px 8px; color: var(--neutral); }
+.flag-on { border-color: var(--caution); color: var(--ink); }
+
+.register-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table.register { width: 100%; min-width: 900px; border-collapse: collapse; font-size: 14px; }
+table.register th, table.register td { text-align: left; vertical-align: top; padding: var(--space) 10px; border-bottom: 1px solid var(--border); }
+table.register th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--neutral); }
+table.register th button { background: none; border: 0; padding: 0; color: var(--neutral); text-decoration: underline dotted; text-underline-offset: 3px; font: inherit; }
+table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin: calc(var(--space) * 1.5) 0; }
+
+/* Scorecard */
+.score-row { border-bottom: 1px solid var(--border); padding: var(--space) 0; }
+.score-row:last-of-type { border-bottom: 0; }
+.score-row summary { display: grid; grid-template-columns: 1fr 44px; grid-template-areas: "name score" "weight bar"; gap: 4px calc(var(--space) * 1.5); align-items: center; cursor: pointer; list-style: none; }
+.score-row summary::-webkit-details-marker { display: none; }
+.score-row summary > :nth-child(1) { grid-area: name; }
+.score-row summary > :nth-child(2) { grid-area: weight; font-size: 13px; }
+.score-row summary > :nth-child(3) { grid-area: bar; }
+.score-row summary > :nth-child(4) { grid-area: score; text-align: right; font-variant-numeric: tabular-nums; }
+@media (min-width: 700px) {
+  .score-row summary { grid-template-columns: minmax(240px, 1.4fr) 44px minmax(120px, 1fr) 44px; grid-template-areas: "name weight bar score"; }
+}
+.score-row summary:hover > :first-child { text-decoration: underline dotted; text-underline-offset: 3px; }
+.bar { height: 10px; background: var(--paper); border: 1px solid var(--border); border-radius: 5px; overflow: hidden; display: block; }
+.bar > span { display: block; height: 100%; transition: width var(--fast); }
+.tone-strong > span { background: var(--strong); } .tone-sound > span { background: var(--sound); }
+.tone-caution > span { background: var(--caution); } .tone-material > span { background: var(--material); }
+.tone-text-strong { color: var(--strong-text); } .tone-text-sound { color: var(--sound-text); }
+.tone-text-caution { color: var(--caution-text); } .tone-text-material { color: var(--material-text); }
+.score-detail { padding: var(--space) 0 var(--space) calc(var(--space) * 1.5); max-width: var(--measure); border-left: 2px solid var(--border); margin: var(--space) 0 var(--space) 2px; }
+
+/* Agency scan */
+.draft-view { white-space: pre-wrap; background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius); padding: calc(var(--space) * 2); max-width: var(--measure); font-family: var(--serif); font-size: 16px; line-height: 1.7; }
+.hl { border: 0; padding: 0 2px; border-radius: 3px; font: inherit; color: inherit; cursor: pointer; border-bottom: 2px solid var(--neutral); text-align: left; }
+.hl:hover { border-bottom-color: var(--ink); }
+.hl-selected { outline: 2px solid var(--ink); outline-offset: 1px; }
+.cat-weather { background: var(--tint-weather); } .cat-institution { background: var(--tint-institution); }
+.cat-audience { background: var(--tint-audience); } .cat-passive { background: var(--tint-passive); }
+.cat-values { background: var(--tint-values); } .cat-vague { background: var(--tint-vague); }
+.legend { display: flex; flex-wrap: wrap; gap: var(--space) calc(var(--space) * 2); margin: calc(var(--space) * 1.5) 0; font-size: 14px; }
+.legend label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.swatch { width: 14px; height: 14px; border: 1px solid var(--border); display: inline-block; border-radius: 3px; }
+.scan-card { max-width: var(--measure); }
+.scan-card dl { display: grid; grid-template-columns: max-content 1fr; gap: 6px calc(var(--space) * 2); margin: 0; }
+@media (max-width: 500px) { .scan-card dl { grid-template-columns: 1fr; } }
+.scan-card dt { color: var(--neutral); font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 2px; }
+.scan-card dd { margin: 0; }
+
+/* Devil's advocate */
+.persona-grid { display: grid; gap: calc(var(--space) * 1.5); grid-template-columns: 1fr; }
+@media (min-width: 900px) { .persona-grid { grid-template-columns: 1fr 1fr; } }
+.persona-grid h3 { margin-top: 0; }
+.callout-material { border: 2px solid var(--material); border-radius: var(--radius); padding: calc(var(--space) * 1.5) calc(var(--space) * 2); margin-top: calc(var(--space) * 2); max-width: var(--measure); }
+
+/* Intake */
+.tabs { display: flex; gap: var(--space); margin-bottom: calc(var(--space) * 1.5); }
+.tab { background: var(--paper); border: 1px solid var(--border); border-radius: 4px; padding: 6px 14px; color: var(--neutral); }
+.tab:hover { color: var(--ink); }
+.tab-active { background: var(--ink); color: #fff; border-color: var(--ink); }
+.url-row { margin-bottom: calc(var(--space) * 1.5); }
+.url-input { display: flex; gap: var(--space); }
+.url-input input { flex: 1; }
+textarea, input[type="url"], input[type="text"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
+textarea:focus, input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(31, 90, 86, 0.2); }
+textarea { resize: vertical; }
+#draft-text { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
+.field { display: block; margin-bottom: calc(var(--space) * 1.5); }
+.field .label { margin-top: 0; }
+/* The Review screen: one centered column of three steps. */
+.page.intake { max-width: 960px; }
+.intake .page-head { display: block; margin-bottom: calc(var(--space) * 2); }
+.intake .page-head .prose { max-width: var(--measure); }
+.step { padding: calc(var(--space) * 3.5); }
+.step-head { display: grid; grid-template-columns: 28px 1fr; gap: calc(var(--space) * 1.5);
+  align-items: start; margin-bottom: calc(var(--space) * 3); }
+.step-number { width: 26px; height: 26px; border-radius: 999px; background: var(--accent); color: #fff;
+  font-size: 13px; font-weight: 600; display: grid; place-items: center; margin-top: 2px; }
+.step-head h2 { font-size: 21px; margin: 0 0 2px; }
+.step-hint { margin: 0; }
+
+/* Step 2: six dropdowns, two to a row. */
+.menu-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
+@media (min-width: 720px) { .menu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+
+.menu-field { position: static; }
+.menu-anchor { position: relative; }
+.menu-control { width: 100%; display: flex; align-items: center; gap: var(--space); justify-content: space-between;
+  min-height: 42px; padding: 7px 12px; text-align: left; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--ink); font: inherit; }
+.menu-control:hover { border-color: var(--neutral); }
+.menu-control-open { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(31, 90, 86, 0.2); }
+.menu-value { flex: 1; min-width: 0; }
+.menu-placeholder { color: var(--neutral); }
+.menu-caret { flex: none; width: 9px; height: 9px; border-right: 1.5px solid var(--neutral);
+  border-bottom: 1.5px solid var(--neutral); transform: rotate(45deg) translate(-3px, -3px); }
+.menu-control-open .menu-caret { transform: rotate(225deg) translate(-2px, -2px); }
+.menu-hint { margin: 6px 0 0; }
+
+/* Chosen items live in the closed control, each removable without opening it. */
+.chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip-choice { display: inline-flex; align-items: center; gap: 6px; background: var(--paper); border: 1px solid var(--border);
+  border-radius: 999px; padding: 1px 4px 1px 10px; font-size: 13px; }
+.chip-choice [role="button"] { cursor: pointer; padding: 0 5px; border-radius: 999px; color: var(--neutral); }
+.chip-choice [role="button"]:hover { color: var(--material-text); background: var(--surface); }
+
+.menu-panel { position: absolute; z-index: 20; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: 0 10px 30px rgba(27, 30, 34, 0.14); padding: var(--space); }
+.menu-search { margin-bottom: var(--space); }
+.menu-options { max-height: 320px; overflow-y: auto; }
+.menu-group + .menu-group { margin-top: var(--space); }
+.menu-group .group-label { margin: 0 0 4px; padding: 0 8px; }
+.menu-option { display: grid; grid-template-columns: 18px 1fr; gap: 6px; align-items: start;
+  padding: 6px 8px; border-radius: 3px; cursor: pointer; }
+.menu-option:hover, .menu-option:focus-visible { background: var(--paper); outline: none; }
+.menu-option-on { background: var(--paper); }
+.menu-tick { color: var(--accent); font-weight: 700; }
+.menu-option-label { display: block; }
+.menu-option-note { display: block; font-size: 13px; color: var(--neutral); line-height: 1.45; }
+.menu-empty, .menu-foot { margin: 6px 8px; }
+
+/* Group headings. Stored in ordinary case so a screen reader says the words;
+   shown in capitals because that is what separates a heading from an option. */
+.group-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--neutral); margin: calc(var(--space) * 2) 0 var(--space); }
+
+.choice-list { display: grid; gap: 6px; }
+.choice { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; cursor: pointer; }
+.choice input { margin: 4px 0 0; flex: none; }
+/* Step 1's radios: boxed, so the four read as one control rather than as prose. */
+.choice-box { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--border);
+  border-radius: 4px; background: var(--surface); cursor: pointer; }
+.choice-box:hover { border-color: var(--neutral); }
+.choice-box:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+
+.listed-field { margin-top: calc(var(--space) * 2.5); }
+.split-two { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
+@media (min-width: 720px) { .split-two { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; } }
+
+.draft-head { display: flex; flex-wrap: wrap; gap: var(--space) calc(var(--space) * 2); align-items: center;
+  justify-content: space-between; margin-bottom: calc(var(--space) * 1.5); }
+.draft-head .tabs, .draft-head .demo-link { margin: 0; }
+.word-count { text-align: right; margin-top: 4px; }
+.context-field { margin-top: calc(var(--space) * 3); }
+.label-optional { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.context-field .muted { display: block; margin-bottom: 6px; max-width: var(--measure); }
+
+.evaluate-row { display: grid; justify-items: center; gap: var(--space); margin-top: calc(var(--space) * 4); text-align: center; }
+.evaluate-row .primary { padding: 11px 26px; }
+.button-arrow { margin-left: 8px; }
+
+/* Quieter than a warning: something to know, not something to fix. */
+.notice { border-left: 3px solid var(--border); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper);
+  max-width: var(--measure); font-size: 14px; color: var(--neutral); margin-top: calc(var(--space) * 1.5); }
+
+.checkbox { display: flex; gap: 10px; align-items: flex-start; margin: calc(var(--space) * 1.5) 0; max-width: var(--measure); }
+.checkbox input { margin-top: 5px; flex: none; }
+.warning { border-left: 3px solid var(--caution); padding: var(--space) calc(var(--space) * 1.5); background: var(--warn-bg); color: var(--warn-text); max-width: var(--measure); border-radius: var(--radius-sm); }
+.error { border-left: 3px solid var(--material); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); color: var(--material-text); max-width: var(--measure); }
+.import-info { border: 1px solid var(--border); border-radius: 4px; padding: var(--space) calc(var(--space) * 1.5); margin: var(--space) 0 calc(var(--space) * 1.5); background: var(--paper); word-break: break-word; }
+.demo-link { font-size: 14px; }
+
+/* Privacy panel */
+.privacy-heading { display: flex; align-items: center; gap: 7px; margin-top: 0; }
+.privacy-panel dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: calc(var(--space) * 2) calc(var(--space) * 3); margin: 0 0 calc(var(--space) * 2);
+  padding-bottom: calc(var(--space) * 2); border-bottom: 1px solid var(--border); }
+.privacy-row { font-size: 14px; }
+.privacy-row dt { color: var(--neutral); font-size: 12px; }
+.privacy-row dd { margin: 2px 0 0; }
+
+/* Results layout with the privacy panel in the right margin */
+.results-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
+@media (min-width: 1180px) { .results-grid { grid-template-columns: minmax(0, 1fr) 280px; align-items: start; } }
+.results-actions { margin: 0 0 calc(var(--space) * 2); display: flex; flex-wrap: wrap; gap: var(--space); align-items: center; }
+.results-actions .status { color: var(--neutral); font-size: 14px; }
+
+/* Personas */
+.persona-headline { margin: 4px 0 8px; font-family: var(--serif); font-size: 20px; line-height: 1.3; text-wrap: balance; }
+
+/* Welcome screen: one 12-column hero, then a two-column strip.
+
+   It has to fit a 940px-tall desktop window without scrolling, which is why
+   the long explanations moved to the Tool Overview. Nothing here is decoration
+   the reader has to scroll past to reach the button. */
+.page.welcome { max-width: 1440px; padding: 72px 80px 64px; }
+.hero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 32px; align-items: start; }
+.hero-main { grid-column: span 7; display: grid; gap: 28px; }
+.hero-card { grid-column: span 5; padding: 32px; }
+
+.eyebrow { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--accent); margin: 0; }
+.hero-title { font-size: 60px; line-height: 1.06; letter-spacing: -0.02em; max-width: 720px; margin: 0; }
+.hero-lede { font-size: 19px; line-height: 1.6; color: var(--ink-2); max-width: 620px; margin: 0; }
+
+.cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
+.cta { display: inline-flex; align-items: center; gap: 10px; min-height: 56px; padding: 0 28px; font-size: 17px; }
+.cta-meta { font-size: 15px; color: var(--neutral); }
+
+.callout-warning { display: flex; gap: 10px; align-items: flex-start; max-width: 620px; margin: 0;
+  background: var(--warn-bg); border: 1px solid var(--warn-border); border-radius: var(--radius-sm);
+  padding: 14px 16px; color: var(--warn-text); font-size: 15px; line-height: 1.5; }
+.callout-warning svg { color: var(--warn-icon); flex: none; margin-top: 2px; }
+
+.hero-card h2 { font-size: 26px; margin: 0 0 calc(var(--space) * 1.5); }
+.numbered { list-style: none; margin: 0; padding: 0; }
+.numbered li { display: grid; grid-template-columns: 34px 1fr; gap: 8px; align-items: baseline;
+  font-size: 16px; line-height: 1.5; padding: 12px 0; border-top: 1px solid var(--divider); }
+.numbered li:first-child { border-top: 0; padding-top: 0; }
+.numbered-index { color: var(--accent); font-weight: 600; font-variant-numeric: tabular-nums; }
+.hero-foot { margin: calc(var(--space) * 2) 0 0; padding-top: calc(var(--space) * 2);
+  border-top: 1px solid var(--divider); font-size: 14px; line-height: 1.55; }
+
+.welcome-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;
+  margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); }
+.strip-heading { display: flex; align-items: center; gap: 9px; font-family: var(--sans); font-size: 17px;
+  font-weight: 600; letter-spacing: 0; margin: 0 0 calc(var(--space) * 1.5); }
+.strip-heading svg { color: var(--accent); flex: none; }
+.strip-list { font-size: 15px; line-height: 1.7; color: var(--ink-2); }
+.strip-list li { margin-bottom: 0; }
+.strip-close { font-size: 15px; margin: calc(var(--space) * 1.5) 0 0; }
+
+/* The artboard's spacing is written for a tall window. On a laptop the whole
+   screen still has to fit without scrolling, which is the point of it, so the
+   vertical rhythm tightens rather than the content changing. */
+@media (min-width: 1024px) and (max-height: 1020px) {
+  .page.welcome { padding-top: 44px; padding-bottom: 36px; }
+  .hero-main { gap: 22px; }
+  .hero-title { font-size: 54px; }
+  .welcome-strip { margin-top: 40px; padding-top: 24px; }
+}
+
+@media (max-width: 1023px) {
+  .page.welcome { padding: 40px; }
+  .hero { grid-template-columns: minmax(0, 1fr); }
+  .hero-main, .hero-card { grid-column: auto; }
+  .hero-title { font-size: 48px; }
+  .welcome-strip { grid-template-columns: minmax(0, 1fr); margin-top: 40px; }
+}
+@media (max-width: 640px) {
+  .page.welcome { padding: 32px 16px 48px; }
+  .hero-title { font-size: 40px; }
+  .cta-row { gap: 12px; }
+  .cta { width: 100%; justify-content: center; }
+  .cta-meta { flex-basis: 100%; }
+  .hero-card { padding: 20px; }
+}
+
+/* Tool Overview: a contents list beside one long read.
+
+   Not six cards of equal weight. This is the page somebody opens with a
+   question, so it is built to be skimmed to the answer: the sidebar sticks,
+   tracks where the reader is, and every section is linkable. */
+.page.overview { max-width: 1440px; padding: 56px 80px 72px; display: grid; grid-template-columns: 1fr; gap: 40px; }
+@media (min-width: 1100px) {
+  .page.overview { grid-template-columns: 220px minmax(0, 1fr); gap: 64px; }
+  .toc { position: sticky; top: 32px; align-self: start; }
+}
+.overview-main { max-width: 960px; }
+
+.toc-label { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--neutral); margin: 0 0 var(--space); }
+.toc ul { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--border); }
+.toc-link { display: block; padding: 7px 0 7px 14px; margin-left: -1px; border-left: 2px solid transparent;
+  font-size: 14px; color: var(--neutral); text-decoration: none; }
+.toc-link:hover { color: var(--ink); }
+.toc-current { color: var(--ink); font-weight: 600; border-left-color: var(--accent); }
+
+.overview-title { font-size: 52px; line-height: 1.08; letter-spacing: -0.02em; margin: 8px 0 20px; max-width: 760px; }
+.overview-lede { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 640px; margin: 0; }
+.overview-lede em { font-family: var(--serif); font-size: 19px; }
+.overview-section { margin-top: 64px; scroll-margin-top: 90px; }
+.overview-section > h2 { font-size: 30px; margin-bottom: calc(var(--space) * 2); }
+.overview-section > .prose { color: var(--ink-2); max-width: 640px; margin-bottom: calc(var(--space) * 3); }
+.overview-section h3 { font-family: var(--sans); font-size: 15px; font-weight: 600; margin: 0 0 6px; letter-spacing: 0; }
+.overview-section p { font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+
+/* Two or three equal cards of the same short shape. */
+.tile-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 2); }
+@media (min-width: 700px) { .tile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .tile-grid-three { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.tile { padding: calc(var(--space) * 2.5); align-content: start; }
+.tile p:last-child { margin-bottom: 0; }
+
+/* The three steps, ruled at the top rather than boxed. */
+.steps { list-style: none; display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3);
+  margin: 0 0 calc(var(--space) * 3); padding: 0; }
+@media (min-width: 760px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(var(--space) * 4); } }
+.steps li { border-top: 1px solid var(--ink); padding-top: calc(var(--space) * 1.5); }
+.step-label { display: block; font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.steps p { margin-bottom: 0; }
+
+.evidence-rule { background: #eef2f1; border-radius: var(--radius-sm); padding: calc(var(--space) * 2.5); }
+.evidence-rule p { margin-bottom: 0; }
+
+/* The numbered list, one column on the welcome card and two here. */
+@media (min-width: 760px) {
+  .numbered-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--space) * 4); }
+  .numbered-two li:nth-child(2) { border-top: 0; padding-top: 0; }
+}
+
+.panel-card { padding: calc(var(--space) * 3); margin-bottom: calc(var(--space) * 3); }
+.panel-card h3 { font-size: 16px; }
+.panel-card > .muted { margin-bottom: calc(var(--space) * 2); max-width: 62ch; }
+
+.account-grid { display: grid; grid-template-columns: 1fr; gap: 0 calc(var(--space) * 4); margin: 0; }
+@media (min-width: 720px) { .account-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.account-row { display: grid; grid-template-columns: 96px 1fr; gap: calc(var(--space) * 1.5);
+  padding: 10px 0; border-top: 1px solid var(--divider); font-size: 14px; }
+.account-row dt { font-weight: 600; }
+.account-row dd { margin: 0; color: var(--ink-2); }
+
+.weight-bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.weight-bars li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(90px, 2fr) 28px; gap: calc(var(--space) * 2);
+  align-items: center; font-size: 14px; }
+.weight-lead .weight-name, .weight-lead .weight-value { font-weight: 600; }
+.weight-track { height: 7px; border-radius: 999px; background: var(--divider); overflow: hidden; }
+.weight-fill { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+.weight-value { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.weights-total { margin: calc(var(--space) * 2) 0 0; }
+@media (max-width: 600px) { .weight-bars li { grid-template-columns: minmax(0, 1fr) 28px; } .weight-track { display: none; } }
+
+/* "What it won't do": four definitions, ruled, no cards. */
+.def-grid { display: grid; grid-template-columns: 1fr; gap: calc(var(--space) * 3) calc(var(--space) * 4); }
+@media (min-width: 700px) { .def-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.def-grid > div { border-top: 1px solid var(--border); padding-top: calc(var(--space) * 1.5); }
+.def-grid p { margin-bottom: 0; }
+.closing-line { font-family: var(--serif); font-size: 18px; color: var(--ink);
+  margin: calc(var(--space) * 3) 0 0; max-width: var(--measure); }
+
+.overview .callout-warning { margin-top: calc(var(--space) * 2); max-width: none; }
+
+/* The footer lines up with the reading column, not with the page edge, or it
+   reads as belonging to the contents list. */
+.overview-foot { max-width: 1440px; padding-left: 80px; padding-right: 80px; }
+@media (min-width: 1100px) { .overview-foot { padding-left: 364px; } }
+
+@media (max-width: 1099px) {
+  .page.overview { padding: 40px; }
+  .overview-foot { padding-left: 40px; padding-right: 40px; }
+  .toc { display: none; }
+}
+@media (max-width: 640px) {
+  .page.overview { padding: 32px 16px 48px; }
+  .overview-foot { padding-left: 16px; padding-right: 16px; }
+  .overview-title { font-size: 32px; }
+  .overview-section { margin-top: 48px; }
+  .overview-section > h2 { font-size: 24px; }
+}
+
+/* Standards Library. Shares the Tool Overview's column, contents list and
+   section rhythm; what is its own is the three claim tags, the dimension
+   table and the protocol accordions. */
+.section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--space) * 1.5);
+  margin-bottom: calc(var(--space) * 2); }
+.section-head h2 { margin: 0; }
+
+/* One tag component, three colors: what the engine runs, what the framework
+   was built from, and what is nobody's published code but ours. Keeping those
+   apart is the distinction the tool marks other people down for missing. */
+.tag { display: inline-block; border-radius: 999px; padding: 4px 10px; font-size: 13px; font-weight: 600;
+  line-height: 1.3; white-space: nowrap; }
+.tag-applied { background: #e7efee; color: #143c39; }
+.tag-grounded { background: var(--divider); color: var(--ink-2); }
+.tag-judgement { background: transparent; border: 1px solid #b7a98e; color: #5c4a2a; padding: 3px 9px; }
+.tile .tag { margin-bottom: calc(var(--space) * 1.5); }
+
+.dimension-table { width: 100%; border-collapse: collapse; }
+.dimension-table th, .dimension-table td { text-align: left; vertical-align: top; }
+.dimension-table thead th { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--neutral); padding-bottom: var(--space); }
+.dimension-table tbody th, .dimension-table tbody td { border-top: 1px solid var(--divider); padding: 20px 0; }
+.dimension-table tbody th { width: 300px; padding-right: calc(var(--space) * 3); font-weight: 400; }
+.dimension-name { display: block; font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.dimension-weight { display: flex; align-items: center; gap: var(--space); }
+.dimension-weight .weight-track { width: 160px; flex: none; }
+.dimension-weight .weight-value { font-size: 15px; font-weight: 600; color: var(--accent); }
+.principle-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.principle-list li { font-size: 15px; line-height: 1.5; color: var(--ink-2); }
+
+.layer-group { margin-top: calc(var(--space) * 3); }
+.layer-heading { font-family: var(--sans); font-size: 13px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--neutral); margin: 0 0 var(--space); }
+
+/* One protocol per card, closed until asked for. */
+.protocol-card { padding: 0; margin-bottom: calc(var(--space) * 2); overflow: hidden; }
+.protocol-head { display: flex; gap: calc(var(--space) * 2); align-items: flex-start; justify-content: space-between;
+  width: 100%; text-align: left; background: none; border: 0; padding: calc(var(--space) * 3); }
+.protocol-head:hover { background: var(--header-bg); }
+.protocol-title { display: block; font-family: var(--serif); font-size: 24px; font-weight: 500; line-height: 1.25;
+  letter-spacing: -0.01em; margin-bottom: 6px; }
+.protocol-meta { display: block; font-size: 15px; color: var(--neutral); margin-bottom: 8px; }
+.protocol-rests { display: block; font-size: 15px; color: var(--ink-2); max-width: 70ch; }
+.chevron { flex: none; width: 10px; height: 10px; margin-top: 10px; border-right: 2px solid var(--neutral);
+  border-bottom: 2px solid var(--neutral); transform: rotate(45deg) translate(-3px, -3px); }
+.chevron-open { transform: rotate(225deg) translate(-2px, -2px); }
+.chevron-small { width: 8px; height: 8px; margin: 0 4px 2px 0; border-width: 1.5px; }
+
+.protocol-body { padding: 0 calc(var(--space) * 3) calc(var(--space) * 3); }
+.check-table { width: 100%; border-collapse: collapse; }
+.check-table th, .check-table td { text-align: left; vertical-align: top; }
+.check-table thead th { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--neutral); padding-bottom: var(--space); border-bottom: 1px solid var(--divider); }
+.check-table tbody th, .check-table tbody td { border-top: 1px solid var(--divider); padding: 14px 0;
+  font-size: 15px; line-height: 1.55; }
+.check-table tbody th { width: 200px; padding-right: calc(var(--space) * 3); font-weight: 600; }
+.check-table tbody td { color: var(--ink-2); padding-right: calc(var(--space) * 3); }
+.check-table tbody td:last-child { width: 220px; padding-right: 0; }
+.chip-dimension { display: inline-block; background: #f2efe8; border-radius: 6px; padding: 3px 8px; font-size: 13px; color: var(--ink); }
+/* What kind of authority a check rests on, beside the dimension it scores
+   under. Outlined rather than filled so it reads as a qualifier of the chip
+   above it, not a second category of the same weight. */
+.chip-basis { display: inline-block; margin-top: 4px; border: 1px solid var(--rule); border-radius: 6px; padding: 2px 7px; font-size: 12px; color: var(--ink-soft); white-space: nowrap; }
+/* The protocol's own caveat on a check: applied by analogy, or an extension
+   that is the author's judgement. Set apart from the check it qualifies. */
+.basis-note { display: block; margin-top: 6px; font-size: 13px; color: var(--ink-soft); font-style: italic; }
+/* The reviewer checklist: one collapsed group per review function. Indented
+   under the panel so the groups read as a list inside it rather than as more
+   panels, and the counts sit right where a reader looks for the weight. */
+.checklist-group { border-top: 1px solid var(--rule); padding: 2px 0; }
+.checklist-group > summary { display: flex; align-items: baseline; gap: 10px; cursor: pointer; padding: 10px 2px; list-style: none; }
+.checklist-group > summary::-webkit-details-marker { display: none; }
+.checklist-group > summary::before { content: "\25B8"; color: var(--ink-soft); font-size: 12px; transition: transform 120ms ease; }
+.checklist-group[open] > summary::before { transform: rotate(90deg); }
+.checklist-group-name { font-weight: 600; }
+.checklist-group ul { margin: 0 0 12px 24px; }
+@media print { .checklist-group > summary::before { content: ""; } }
+
+.rests-row { margin-top: calc(var(--space) * 3); }
+.rests-row p { margin: 0; font-size: 15px; color: var(--ink-2); max-width: var(--measure); }
+.sources { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 2); border-top: 1px solid var(--divider); }
+.sources-toggle { background: none; border: 0; padding: 0; font-size: 15px; color: var(--accent); text-align: left; }
+.sources-toggle:hover { color: var(--accent-hover); }
+.sources-body { margin-top: calc(var(--space) * 2); }
+.sources-body .label:first-child { margin-top: 0; }
+
+.planned-note { display: flex; gap: 10px; align-items: flex-start; border: 1px dashed #c9c2b3;
+  border-radius: var(--radius-sm); padding: 14px 16px; font-size: 15px; color: var(--ink-2);
+  margin: calc(var(--space) * 3) 0 0; }
+.planned-note svg { color: var(--neutral); flex: none; margin-top: 2px; }
+
+.code-body { margin: -2px 0 var(--space); }
+
+.judgement-list { margin: 0; }
+.judgement-list > div { display: grid; grid-template-columns: 300px 1fr; gap: calc(var(--space) * 3);
+  border-top: 1px solid var(--border); padding: 20px 0; }
+.judgement-list dt { font-size: 16px; font-weight: 600; }
+.judgement-list dd { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-2); }
+
+@media (max-width: 767px) {
+  .dimension-table, .dimension-table thead, .dimension-table tbody, .dimension-table tr,
+  .dimension-table th, .dimension-table td { display: block; width: auto; }
+  .dimension-table thead { display: none; }
+  .dimension-table tbody th { border-top: 1px solid var(--divider); padding: 16px 0 8px; }
+  .dimension-table tbody td { border-top: 0; padding: 0 0 16px; }
+  .check-table, .check-table tbody, .check-table tr, .check-table th, .check-table td { display: block; width: auto; }
+  .check-table thead { display: none; }
+  .check-table tbody tr { border-top: 1px solid var(--divider); padding: 14px 0; }
+  .check-table tbody th, .check-table tbody td { border-top: 0; padding: 0 0 6px; }
+  .judgement-list > div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (max-width: 640px) {
+  .protocol-head, .protocol-body { padding-left: calc(var(--space) * 2); padding-right: calc(var(--space) * 2); }
+  .protocol-title { font-size: 20px; }
+}
+
+/* Shared by the explanatory pages: Tool Overview, Standards Library, sign-in.
+   The welcome screen used to be one of them; it has its own layout now, and
+   these classes stayed because those three still use them. */
+.welcome-intro { font-family: var(--serif); font-size: 19px; line-height: 1.5; max-width: var(--measure); margin-bottom: calc(var(--space) * 4); }
+/* Cards on the explanatory pages are sized to their text, not to the page.
+   Capping the prose inside a full-width card leaves a band of empty card to
+   the right of every line — the same fault as revision 22, which was fixed on
+   the results page and missed here. The card is the measure plus its own
+   left and right padding, so the text fills it. */
+.welcome-card, .callout-privacy { max-width: calc(var(--measure) + var(--space) * 5); }
+.welcome-card { margin-top: calc(var(--space) * 3); }
+.welcome-card h2 { margin-bottom: calc(var(--space) * 1.5); }
+.welcome-card h3 { font-size: 16px; margin-top: calc(var(--space) * 3); }
+.account-list { display: grid; gap: calc(var(--space) * 1.25); margin: 0 0 var(--space); max-width: var(--measure); }
+.account-item { display: grid; grid-template-columns: 116px 1fr; gap: calc(var(--space) * 1.5); }
+.account-item dt { font-weight: 600; }
+.not-list .account-item { grid-template-columns: 210px 1fr; }
+@media (max-width: 640px) { .not-list .account-item { grid-template-columns: 1fr; gap: 2px; } }
+.account-item dd { margin: 0; color: var(--neutral); }
+@media (max-width: 560px) { .account-item { grid-template-columns: 1fr; gap: 2px; } }
+.weights { list-style: none; padding: 0; margin: 0 0 var(--space); max-width: 420px; display: grid; gap: 2px; }
+.weights li { display: flex; justify-content: space-between; gap: var(--space); padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+.weights li:last-child { border-bottom: 0; }
+.weights .weight { font-variant-numeric: tabular-nums; color: var(--neutral); }
+.callout-privacy { margin-top: calc(var(--space) * 3); border-left: 4px solid var(--accent); background: var(--header-bg); }
+.callout-privacy h2 { margin-bottom: calc(var(--space) * 1.5); }
+.callout-privacy .notice-text { margin-top: calc(var(--space) * 2); padding-top: calc(var(--space) * 1.5); border-top: 1px solid var(--border); font-size: 14px; color: var(--neutral); }
+.welcome-more { margin-top: calc(var(--space) * 3); }
+.welcome-runtime { margin-top: calc(var(--space) * 2); }
+
+@media screen and (min-width: 1240px) {
+  /* The results page was capped at a single measure at revision 22, which
+     left two thirds of a wide window empty. Two columns need two measures.
+     The welcome screen sets its own width; it is not a column of cards. */
+  .page.results { max-width: calc(var(--measure) * 2 + var(--space) * 17); }
+  /* Cards pack, they do not sit in rows.
+
+     A two-column grid gives every row the height of its tallest card, so a
+     short card leaves a hole beneath it — measured at 1,487px on the Standards
+     Library, nearly two empty screens. Stretching cards to match instead gives
+     half-empty boxes. Column flow is the third option and the right one: each
+     card is as tall as its contents and the next one starts immediately below.
+
+     Reading order becomes down the first column then down the second. For
+     independent sections that is a normal magazine reading order, and for
+     findings it is better than a grid's left-to-right pairing, because the
+     most serious stay together at the top of the first column. */
+  .card-columns { columns: 2; column-gap: var(--col-gap); }
+  .card-columns > * {
+    break-inside: avoid;
+    margin: 0 0 calc(var(--space) * 5);
+    max-width: none;
+    display: flow-root;
+  }
+
+  .results {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--space) * 5) var(--col-gap);
+    align-items: start;
+  }
+  .results > * { margin-top: 0; }
+
+  /* Findings pack the same way, for the same reason. */
+  .finding-list { columns: 2; column-gap: var(--col-gap); }
+  .finding-list > * { break-inside: avoid; margin: 0 0 var(--col-gap); display: flow-root; }
+
+  /* The page head is the one place a wide screen looked worst: a title and a
+     four-line paragraph both capped at the measure, with six hundred pixels of
+     nothing beside them. Same answer as everywhere else — the width holds a
+     second thing rather than a longer line. Masthead left, intro right. */
+  .page-head {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: calc(var(--space) * 2) calc(var(--space) * 4);
+    align-items: end;
+  }
+  .page-head > * { margin-top: 0; }
+
+  /* Full width: headings, running intros, and anything that is one wide thing. */
+  .results > .results-actions, .results > .save-note, .results > .error,
+  .results > #executive-summary, .results > #findings, .results > .comparison {
+    grid-column: 1 / -1;
+  }
+  /* Overrides the base .finding-list grid; column flow does the packing. */
+  .finding-list { display: block; }
+
+  /* The executive summary earns the full width by using it: the score beside
+     the note that explains it, and the ten dimensions two abreast. */
+  #executive-summary {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 calc(var(--space) * 4);
+    align-items: start;
+  }
+  #executive-summary > h2, #executive-summary > .summary-headline,
+  #executive-summary > .scorecard, #executive-summary > .two-col { grid-column: 1 / -1; }
+  #executive-summary > .summary-head { grid-column: 1; margin-bottom: 0; }
+  /* The strongest/priority pair used to follow the scorecard down the page and
+     inherited its spacing from the stack; in the grid it needs its own. */
+  #executive-summary > .two-col { margin-top: calc(var(--space) * 4); }
+  #executive-summary > .scoring-note { grid-column: 2; margin-top: 0; }
+
+  .scorecard { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: calc(var(--space) * 4); }
+  .scorecard > h3, .scorecard > p { grid-column: 1 / -1; }
+
+}
+
+@media print {
+  body { background: #fff; font-size: 12pt; }
+  .no-print { display: none !important; }
+  .page { max-width: none; padding: 0; }
+  .page > section, .page > .panel, .page > aside { break-before: page; margin-top: 0; }
+  .page > :first-child, .page > .results-grid { break-before: auto; }
+  .card, .panel { box-shadow: none; }
+  .panel > summary::before { content: none; }
+  .results-grid { grid-template-columns: 1fr; }
+  .register-wrap { overflow: visible; }
+  table.register { min-width: 0; font-size: 10pt; }
+  .hl { border-bottom: 2px solid #000; }
+  a { color: inherit; text-decoration: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* Supporting documents */
+.supporting { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 2); border-top: 1px solid var(--border); }
+.supporting h3 { margin-top: 0; }
+.doc-list { list-style: none; padding: 0; margin: 0 0 calc(var(--space) * 2); display: grid; gap: var(--space); }
+.doc-item { display: flex; justify-content: space-between; gap: var(--space); align-items: flex-start; border: 1px solid var(--border); border-radius: 4px; padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); }
+.doc-form input[type="text"] { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); }
+.doc-form input[type="file"] { font-size: 14px; }
+
+.public-context { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 2); border-top: 1px dashed var(--border); }
+.public-context h4 { margin: 0 0 var(--space); font-size: 16px; }
+.public-context input[type="text"] { flex: 1; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); }
+
+/* Saved reviews and comparison */
+.save-option { margin: 0; font-size: 13px; color: var(--neutral); }
+.save-note { margin: 0 0 calc(var(--space) * 2); }
+.baseline-banner, .baseline-card { border-left: 4px solid var(--sound); background: var(--tint-weather); }
+.baseline-card { border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space) calc(var(--space) * 1.5); margin: calc(var(--space) * 1.5) 0; }
+.baseline-banner { margin-bottom: calc(var(--space) * 2); }
+.settings-detail { margin: var(--space) 0; font-size: 14px; }
+.settings-detail summary { cursor: pointer; color: var(--neutral); }
+.comparison { margin-bottom: calc(var(--space) * 3); }
+.comparison-summary { font-family: var(--serif); font-size: 17px; }
+.verdict-counts { display: flex; flex-wrap: wrap; gap: 6px; margin: calc(var(--space) * 1.5) 0; }
+.verdict-list { list-style: none; padding: 0; margin: 0 0 calc(var(--space) * 2); display: grid; gap: var(--space); }
+.verdict-item { display: grid; grid-template-columns: 148px 1fr; gap: calc(var(--space) * 1.5); align-items: start; }
+@media (max-width: 620px) { .verdict-item { grid-template-columns: 1fr; gap: 4px; } }
+.verdict-resolved { border-color: var(--strong); background: #eaf2ec; }
+.verdict-partly { border-color: var(--caution); background: #f7f0dc; }
+.verdict-open { border-color: var(--material); background: #f6e7e9; }
+.verdict-moot { color: var(--neutral); }
+.verdict-new { border-color: var(--sound); background: var(--tint-weather); }
+.score-move { font-family: var(--serif); font-size: 22px; margin: 0 0 4px; }
+
+/* Features switched off for this round of testing (revision 16). Present but
+   plainly inert, so a tester sees the tool is meant to do it and does not
+   report it missing. */
+.disabled-feature {
+  opacity: 0.55;
+}
+.disabled-feature input {
+  cursor: not-allowed;
+}
+.coming-soon {
+  display: block;
+  font-size: 0.85em;
+  font-style: italic;
+  color: var(--muted, #6b6b66);
+}
+.nav-link.nav-soon {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Review progress (revision 17). A review takes a minute or more; a button
+   that only says "Evaluating…" for that long reads as a hung page. */
+.progress {
+  margin-top: 16px;
+}
+.progress-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+.progress-bar {
+  height: 100%;
+  background: var(--accent, #2f5d8a);
+  border-radius: 3px;
+  transition: width 1s linear;
+}
+.progress-stage {
+  margin: 10px 0 4px;
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress-bar { transition: none; }
+}
+
+/* Scorecard, now inline in the executive summary (revision 19). */
+.scorecard { margin-top: calc(var(--space) * 3); }
+.scorecard h3 { margin-bottom: 4px; }
+a.score-number { display: inline-block; text-decoration: underline dotted; text-decoration-color: var(--neutral); }
+a.score-number:hover { text-decoration-color: var(--ink); }
+
+/* Flagged phrases nested under the finding they evidence (revision 19). */
+.finding-phrases { margin-top: calc(var(--space) * 2); }
+.finding-phrases ul { margin-top: 4px; }
+.finding-phrases li + li { margin-top: 8px; }
+.finding-status { display: flex; align-items: center; gap: var(--space); margin: 6px 0 0 calc(var(--space) * 2); }
+.finding-status .label { margin: 0; }
+
+/* Devil's Advocate: interpretations displayed plainly, not tiled (revision 19). */
+.interpretations { margin-top: calc(var(--space) * 2); }
+.interpretation + .interpretation { margin-top: calc(var(--space) * 3); padding-top: calc(var(--space) * 3); border-top: 1px solid var(--border); }
+.interpretation p { margin-bottom: var(--space); }
+
+/* A readable measure for body copy in the results sections (revision 19).
+   Sections that span the full page were letting intro paragraphs and list
+   items run to ~1050px — roughly 170 characters a line. Cards, score rows and
+   the flagged-phrase chips keep their own widths; only running text is capped. */
+.results section > p,
+.results ul.tight li,
+.results ol.tight li {
+  max-width: var(--measure);
+}
+
+/* Standards library: what a protocol rests on, and its sources behind a click.
+   The five protocols' sources ran to three thousand words — 42% of the page —
+   which made the provenance that justifies the tool the reason nobody read
+   about it. The one-line summary is what a reader sees; nothing was cut. */
+.sources-body .label { margin-top: calc(var(--space) * 2); }
+.sources-body > div:first-child .label { margin-top: 0; }
+
+/* Standards library: codes and the dimension grounding (revision 20). */
+.code-entry + .code-entry, .grounding-entry + .grounding-entry {
+  margin-top: calc(var(--space) * 3);
+  padding-top: calc(var(--space) * 3);
+  border-top: 1px solid var(--border);
+}
+.code-entry h3, .grounding-entry h3 { margin-top: 0; }
+.welcome-card a { word-break: break-word; }
+
+/* Devil's Advocate: one line per audience, and the closing self-check (revision 21). */
+.might-say { list-style: none; padding: 0; margin: calc(var(--space) * 2) 0 0; }
+.might-say li { padding: calc(var(--space) * 1.5) 0; border-bottom: 1px solid var(--border); max-width: var(--measure); }
+.might-say li:last-child { border-bottom: 0; }
+.callout-reflect {
+  margin-top: calc(var(--space) * 3);
+  padding: calc(var(--space) * 2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--sound);
+  border-radius: var(--radius);
+  background: var(--paper);
+  max-width: var(--measure);
+}
+
+/* Review-function tags on merged questions (revision 21). */
+.question-tag { margin-left: 6px; font-size: 12px; vertical-align: 1px; }
+
+/* Results: containers sized to the text, not the window (revision 21).
+
+   The previous round capped running text at the measure but left it inside
+   cards spanning the full 1100px page, so every section had a wide empty
+   right-hand side and the page ran longer than its content needed. The fix is
+   to bring the containers in to meet the text rather than let the text stretch
+   back out: 68 characters is a readable line, 170 is not.
+
+   The privacy panel moves below the summary instead of sitting in a sidebar,
+   which is what forced the page that wide in the first place. */
+/* One measure wide below the two-column breakpoint; above it the grid takes
+   over and the page is two measures. Scoped rather than overridden, because
+   this rule sits after the breakpoint block and would otherwise win. */
+@media (max-width: 1239px) { .page.results { max-width: calc(var(--measure) + var(--space) * 10); } }
+.results .results-grid { grid-template-columns: 1fr; }
+@media (min-width: 1180px) {
+  .results .results-grid { grid-template-columns: 1fr; }
+}
+
+/* Merged scoring note and the footer copyright (revision 23). */
+.heightened-notice { margin: calc(var(--space) * 2) 0 0; }
+.scoring-note { margin-top: calc(var(--space) * 2); }
+.scoring-note h3 { margin: 0 0 4px; }
+.copyright { margin-top: calc(var(--space) * 1.5); }
+
+/* The stakeholder voices sit behind an expander; the damning interpretation
+   above them is always visible (revision 24). */
+.stakeholders { margin-top: calc(var(--space) * 3); }
+.stakeholders > summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space);
+  font-weight: 600;
+  padding: var(--space) 0;
+}
+.stakeholders > summary::-webkit-details-marker { display: none; }
+.stakeholders > summary::before {
+  content: "▸";
+  color: var(--neutral);
+  font-size: 14px;
+  transition: transform var(--fast);
+  display: inline-block;
+}
+.stakeholders[open] > summary::before { transform: rotate(90deg); }
+.stakeholders > summary:hover { color: var(--accent); }

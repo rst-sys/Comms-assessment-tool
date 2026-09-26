@@ -1,0 +1,63 @@
+# Deployment for a small group of testers (revision 15).
+#
+# Render reads this file when you connect the repository. Every value marked
+# `sync: false` is a secret you type into Render's dashboard yourself; none of
+# them is ever committed here.
+#
+# The free plan works, but it puts the service to sleep after a quiet spell and
+# the next visitor waits about a minute for it to wake. An evaluation takes
+# around two minutes on its own, so `starter` is the safer choice while people
+# are testing.
+services:
+  - type: web
+    name: trust-assessment-assistant
+    runtime: node
+    plan: starter
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/config
+    envVars:
+      # Your Anthropic key. Set it in the Render dashboard, never here.
+      - key: ACR_API_KEY
+        sync: false
+      # The one password you give your testers. Without it the app is open to
+      # anyone with the address, spending your credit.
+      - key: ACR_ACCESS_PASSWORD
+        sync: false
+      # Serve the built app from the same service.
+      - key: ACR_SERVE_STATIC
+        value: "1"
+      - key: NODE_VERSION
+        value: "22"
+      # Spending brakes. These reset if the service restarts, so they are a
+      # brake and not a guarantee; the hard stop is the spending limit you set
+      # in your Anthropic account.
+      # Raised from 10 and 60 for the owner's own testing: a failed review now
+      # gives its slot back, but a session spent diagnosing one still runs
+      # through the old ten quickly. At roughly $0.15 a review the total is
+      # about $18 a day at full tilt; the Anthropic spending limit is the real
+      # stop. Put them back to 10 and 60 before sharing the link widely.
+      - key: ACR_DAILY_LIMIT_PER_VISITOR
+        value: "25"
+      - key: ACR_DAILY_LIMIT_TOTAL
+        value: "120"
+      # Speed levers. Change either in the Environment tab; the service
+      # restarts and picks it up, with no rebuild.
+      #
+      # ACR_EFFORT is how deeply the engine thinks before answering:
+      # low | medium | high | xhigh | max. Most of a review's elapsed time is
+      # thinking rather than writing, so this is the largest lever. Set to
+      # "medium" after the owner found "high" too slow in use; put it back to
+      # "high" if the reviews lose depth, and reach for ACR_SPEED instead.
+      - key: ACR_EFFORT
+        value: medium
+      # ACR_SPEED: "fast" runs the same model at a higher output rate for
+      # roughly double the per-token price. It buys speed without reducing the
+      # depth of the review. "standard" is the normal rate.
+      - key: ACR_SPEED
+        value: standard
+      # Shown in the privacy panel. Set these to the provider's actual terms.
+      - key: ACR_PROCESSING_MODE
+        value: Zero-retention API
+      - key: ACR_TRAINING_TERM
+        value: Not used to train models

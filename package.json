@@ -1,0 +1,49 @@
+{
+  "name": "accountable-communications-review",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Trust Assessment Assistant \u2014 does this message give an account?",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "vite",
+    "server": "tsx watch src/server/server.ts",
+    "start": "ACR_SERVE_STATIC=1 tsx src/server/server.ts",
+    "build": "npm run protocols && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "fixtures": "tsx scripts/run-fixtures.ts",
+    "build:artifact": "vite build --config vite.artifact.config.ts && node scripts/prepare-artifact.mjs",
+    "preview:results": "vite build --config vite.preview.config.ts",
+    "protocols": "tsx scripts/compile-protocols.ts",
+    "protocols:baseline": "tsx scripts/capture-protocol-baseline.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.127.0",
+    "@mozilla/readability": "^0.6.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "jsdom": "^30.1.0",
+    "jspdf": "^4.2.1",
+    "mammoth": "^1.12.3",
+    "pdfjs-dist": "^6.3.289",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tsx": "^4.23.13"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^16.3.3",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1",
+    "yaml": "^2.9.1"
+  }
+}

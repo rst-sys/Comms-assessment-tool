@@ -1,0 +1,53 @@
+import { DEVILS_ADVOCATE_DISCLAIMER, DIMENSION_IDS, type Analysis, type Finding } from "../types.js";
+
+export const SAMPLE_DRAFT =
+  "Rapid growth brought complexity. Based on feedback from employees, we are eliminating roles to become leaner and more agile. These changes will help us focus on what matters most.";
+
+export function sampleFinding(overrides: Partial<Finding> = {}): Finding {
+  return {
+    id: "F-001",
+    dimension: "accountability_agency",
+    severity: "High",
+    excerpt: "Rapid growth brought complexity.",
+    omission: null,
+    claim_status: "Asserted",
+    finding: "Growth is named as the cause; no decision-maker is identified.",
+    recommended_action: "The deciding body or role, and the reasons it owned the decision.",
+    fact_validation_needed: false,
+    specialist_review_needed: true,
+    specialist_review_type: "HR",
+    ...overrides,
+  };
+}
+
+export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
+  const persona = {
+    persona: "An affected employee",
+    might_say: "Why my role, and what exactly will I get?",
+  };
+  return {
+    schema_version: "1.0",
+    executive_summary: {
+      headline: "Job cuts announced with no owner, criteria, or support",
+      risk_level: "Critical",
+      context_supplied: false,
+      strongest_elements: ["Short", "Direct", "Names a change"],
+      priority_improvements: ["Name the decision owner", "State selection criteria", "Add verification"],
+    },
+    dimensions: DIMENSION_IDS.map((id) => ({
+      id,
+      score: 1.5,
+      rationale: "Rationale sentence one. Rationale sentence two.",
+      would_raise: "Name a specific actor.",
+    })),
+    findings: [sampleFinding()],
+    devils_advocate: {
+      disclaimer: DEVILS_ADVOCATE_DISCLAIMER,
+      personas: [persona, { ...persona, persona: "Remaining employee" }, { ...persona, persona: "Manager" }, { ...persona, persona: "Journalist" }, { ...persona, persona: "Labor representative" }],
+      most_damaging_interpretation: "Leadership is blaming employees for its own decision.",
+    },
+    questions_before_publication: ["Q1?", "Q2?", "Q3?", "Q4?", "Q5?"],
+    specialist_review_summary: ["HR"],
+    ...overrides,
+  };
+}
