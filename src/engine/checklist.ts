@@ -1,4 +1,3 @@
-import { createHash } from "node:crypto";
 /**
  * The reviewer checklist: the protocols' own questions, shown rather than sent.
  *
@@ -17,7 +16,7 @@ import { createHash } from "node:crypto";
  */
 import { PROTOCOL_LAYERS, type ProtocolFile, type ProtocolLayer } from "./protocolFormat.js";
 import { PROTOCOL_LIBRARY } from "./protocolLibrary.js";
-import { resolveProtocols } from "./protocols.js";
+import { hashBundle, resolvedProtocols } from "./protocols.js";
 import { SPECIALIST_REVIEW_TYPES, type EvaluationRequest, type SpecialistReviewType } from "./types.js";
 
 /** Where a question with no named reviewer goes. */
@@ -83,9 +82,15 @@ export function buildChecklist(protocols: readonly ProtocolFile[]): ChecklistGro
   });
 }
 
-/** The checklist for a live review, from the intake answers. */
+/**
+ * The checklist for a live review, from the intake answers.
+ *
+ * Deliberately not resolveProtocols: this runs in the browser on every render
+ * of the results page, and the hash that function also computes needs
+ * node:crypto, which the browser does not have.
+ */
 export function checklistFor(request: EvaluationRequest): ChecklistGroup[] {
-  return buildChecklist(resolveProtocols(request).protocols);
+  return buildChecklist(resolvedProtocols(request));
 }
 
 /**
@@ -125,29 +130,36 @@ function everyBundle(library: readonly ProtocolFile[]): ProtocolFile[][] {
 
 let index: Map<string, ProtocolFile[]> | null = null;
 
-/** Built once, on first use, so a page that never opens a saved review pays nothing. */
+/**
+ * Built once, on first use, so a page that never opens a saved review pays
+ * nothing — and empty where hashing is unavailable.
+ *
+ * Only the oldest saved reviews reach this: one saved before `bundle` existed,
+ * with nothing but a hash to go on. Every review saved since names its
+ * protocols outright, so an empty index in the browser costs those nothing.
+ */
 export function bundlesByHash(library: readonly ProtocolFile[] = PROTOCOL_LIBRARY): Map<string, ProtocolFile[]> {
   if (library === PROTOCOL_LIBRARY && index) return index;
   const map = new Map<string, ProtocolFile[]>();
-  for (const bundle of everyBundle(library)) map.set(bundleHash(bundle), bundle);
+  try {
+    for (const bundle of everyBundle(library)) map.set(bundleHash(bundle), bundle);
+  } catch {
+    // node:crypto is externalized in the browser build and throws when called.
+    // An empty index means one of those old reviews shows no checklist, which
+    // is what it would have shown anyway before this existed.
+  }
   if (library === PROTOCOL_LIBRARY) index = map;
   return map;
 }
 
 /**
- * The same hash resolveProtocols computes, from a list of protocols.
+ * The same hash resolveProtocols computes, from a list of protocols. Node only.
  *
- * Kept identical to the one in protocols.ts by the test that hashes every
- * reachable bundle both ways: if the two ever disagree, saved reviews silently
- * lose their checklists, which is the kind of failure nobody notices.
+ * One implementation now, not two: it was a second copy of the same three
+ * lines, which is exactly how two hashes come to disagree and saved reviews
+ * quietly lose their checklists.
  */
-export function bundleHash(protocols: readonly ProtocolFile[]): string {
-  return hashOf(protocols.map((p) => `${p.id}@${p.version}`).join(" "));
-}
-
-function hashOf(stamp: string): string {
-  return createHash("sha256").update(stamp).digest("hex").slice(0, 12);
-}
+export const bundleHash = hashBundle;
 
 /**
  * The checklist a saved review showed, recovered from its stored bundle hash.

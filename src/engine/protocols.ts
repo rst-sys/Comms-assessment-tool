@@ -189,16 +189,53 @@ export interface ResolvedBundle {
   hash: string;
 }
 
-/** Everything the engine needs to know about which standards this review applied. */
-export function resolveProtocols(request: EvaluationRequest, library?: readonly ProtocolFile[]): ResolvedBundle {
+/**
+ * The protocols that apply, with the elements this request does not qualify
+ * for already removed. No hash.
+ *
+ * Separate from resolveProtocols because hashing needs node:crypto, which the
+ * browser does not have — it is externalized in the bundle and throws if
+ * called. The results page builds its reviewer checklist from this, in the
+ * browser, on every render; only the server needs the hash that identifies
+ * the bundle afterwards.
+ */
+export function resolvedProtocols(request: EvaluationRequest, library?: readonly ProtocolFile[]): ProtocolFile[] {
   // Two passes. The first drops what the intake does not qualify for; the
   // second drops the overlay elements that what survived has replaced.
   const applicable = protocolsFor(request, library).map((p) => filtered(p, request));
   const superseded = supersededBy(applicable);
-  const protocols = applicable.map((p) => filtered(p, request, superseded));
+  return applicable.map((p) => filtered(p, request, superseded));
+}
+
+/** The protocols that applied, as `id@version`, in the order they are sent. */
+export function bundleOf(protocols: readonly ProtocolFile[]): string[] {
+  return protocols.map((p) => `${p.id}@${p.version}`);
+}
+
+/** Everything the engine needs to know about which standards this review applied. */
+export function resolveProtocols(request: EvaluationRequest, library?: readonly ProtocolFile[]): ResolvedBundle {
+  const protocols = resolvedProtocols(request, library);
   const narrows = [...new Set(protocols.flatMap((p) => p.narrows ?? []))].sort();
-  const stamp = protocols.map((p) => `${p.id}@${p.version}`).join(" ");
-  return { protocols, narrows, hash: createHash("sha256").update(stamp).digest("hex").slice(0, 12) };
+  return { protocols, narrows, hash: hashBundle(protocols) };
+}
+
+/**
+ * The bundle's short identifier, or "" where it cannot be computed.
+ *
+ * node:crypto is externalized in the browser build and throws when called, and
+ * finishEvaluation runs there on the claude.ai page. An empty string costs
+ * that review its short id; throwing costs it the whole review, which is the
+ * failure this already caused once on the hosted results page.
+ *
+ * Nothing is lost that matters: the result carries `bundle`, the id and
+ * version of every protocol that applied, which says more than the hash does.
+ */
+export function hashBundle(protocols: readonly ProtocolFile[]): string {
+  try {
+    return createHash("sha256").update(bundleOf(protocols).join(" ")).digest("hex").slice(0, 12);
+  } catch {
+    return "";
+  }
 }
 
 /** The prompt blocks for a request: one per protocol, then the shared rules once. */
