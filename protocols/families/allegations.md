@@ -2,13 +2,14 @@
 id: allegations
 name: Allegations and misconduct
 layer: family
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   EU and US law protecting whistleblowers, the EU presumption of innocence (binding on authorities, applied by analogy), US prosecutors' criteria for internal investigations, and research on denial after trust violations.
 changelog:
+  - "0.2.1 (2026-09-26): Steps taken while the matter is open now checks only that interim steps aren't presented as a finding; asking for specific, owned, timed action is already in the framework prompt. rests_on and one basis note trimmed to the word caps."
   - "0.2.0 (2026-09-26): after a dry run on two memos, the 'baseless' trigger also covers vouching for the accused while the matter is open; the 'take very seriously' trigger also fires beside a dismissal of the allegations; 'Who is finding out' names the court or regulator as the reviewer for lawsuits and regulatory action."
   - "0.1.0 (2026-09-26): first draft from the Allegations family source review."
 
@@ -42,7 +43,7 @@ elements:
     basis_note: "Binding under EU whistleblower law (reporters' identity kept confidential; harm to their reputation counts as retaliation) and, for US listed companies, US law (no retaliation; no impeding reports to the SEC). Applied to organizations and public statements as professional judgement."
   - id: allegations.steps-while-open
     name: Steps taken while the matter is open
-    means: The draft says what has been done while the matter is open (for example, a person on leave or stepping back from duties, or safeguards for the people affected), and makes clear that such steps are not a finding.
+    means: Where the draft describes steps taken while the matter is open (for example, a person on leave or stepping back from duties, or safeguards for the people affected), it makes clear that they are not a finding.
     weight: supporting
     dimension: corrective_action_proof
     basis: judgement
