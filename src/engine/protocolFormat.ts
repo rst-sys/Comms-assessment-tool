@@ -213,6 +213,30 @@ export interface ProtocolTrigger {
    * to look in.
    */
   narrows?: string;
+  /**
+   * A protocol id, in a layer BELOW this one, whose own check is the sharper
+   * form of this trigger. Where that protocol also applies, this trigger is
+   * not sent at all.
+   *
+   * The mirror image of `narrows`, and needed because the two relationships
+   * are not the same. `narrows` folds two checks into one finding, worded from
+   * the sharper of them, and both are still sent so the model knows they are
+   * the same gap. This drops one outright, for the case where the sharper
+   * check is not a variant but a replacement: the scrutiny family asks whether
+   * regret is conditional, and where the author's purpose is to apologize the
+   * Apology overlay asks the same thing in more detail, on the dimension it
+   * belongs to. Sending both would be one gap described twice.
+   *
+   * It names a protocol, not a trigger, because triggers have no ids. The
+   * loser names the winner, the opposite of an element's `replaces`, for the
+   * same reason: there is nothing on the winning side to hang the pointer on.
+   *
+   * Which protocols are switched on is the resolver's business, so the
+   * condition is "that protocol applied", never a copy of the intake rule that
+   * switches it on. A file that could restate that rule could quietly widen
+   * it.
+   */
+  superseded_by?: string;
 }
 
 export interface ProtocolQuestion {
@@ -398,6 +422,9 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       if (t.narrows !== undefined && !(isStr(t.narrows) && /^[a-z0-9-]+\.[\w-]+$/.test(t.narrows))) {
         err(`${at} narrows ${JSON.stringify(t.narrows)}. Name the element it sharpens by its id, such as core.central_fact_first or leadership.disagreement-described.`);
       }
+      if (t.superseded_by !== undefined && !(isStr(t.superseded_by) && /^[a-z0-9-]+$/.test(t.superseded_by))) {
+        err(`${at} superseded_by ${JSON.stringify(t.superseded_by)}. Name the protocol whose sharper check replaces this trigger by its id, such as apology.`);
+      }
       reviewList(t.review, at, err);
     });
   }
@@ -549,6 +576,25 @@ export function checkLibrary(
           message:
             `trigger ${i + 1} narrows "${t.narrows}", which is in the ${target.layer} layer. ` +
             `A ${data.layer} protocol may only sharpen a check stated by a layer above it.`,
+        });
+      }
+    });
+    // superseded_by runs the other way: the protocol that wins is the more
+    // specific one, so it must sit BELOW the one giving way. A dangling or
+    // sideways pointer is silent — the trigger is simply never dropped.
+    data.triggers.forEach((t, i) => {
+      if (!t.superseded_by) return;
+      const target = files.find(({ data: d }) => d.id === t.superseded_by);
+      if (!target) {
+        errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is not a protocol in the library` });
+        return;
+      }
+      if (PROTOCOL_LAYERS.indexOf(target.data.layer) <= PROTOCOL_LAYERS.indexOf(data.layer)) {
+        errors.push({
+          file,
+          message:
+            `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is in the ${target.data.layer} layer. ` +
+            `A ${data.layer} protocol may only give way to a layer below it, which is the more specific one.`,
         });
       }
     });

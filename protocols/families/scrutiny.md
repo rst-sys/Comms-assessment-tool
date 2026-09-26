@@ -2,13 +2,14 @@
 id: scrutiny
 name: Public scrutiny and reputation
 layer: family
-version: 0.1.0
+version: 0.1.1
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   Research consensus on correcting false claims, EU and NYSE rules on rumours about listed companies, the SEC rule on shareholder campaigns, and a large study of online backlash.
 changelog:
+  - "0.1.1 (2026-09-26): after the duplicate check, the trigger on opening with the false claim narrows the core check on the central fact; the conditional-regret trigger gives way to the Apology overlay's sharper check when that overlay applies."
   - "0.1.0 (2026-09-26): first draft from the Public scrutiny family source review."
 
 narrows:
@@ -53,8 +54,10 @@ triggers:
     review: [Legal, Investor relations]
   - check: The draft offers conditional or deflecting regret ("we regret if anyone was offended", "we're sorry you feel that way", "any offense caused") in place of addressing what was said or done.
     dimension: accountability_agency
+    superseded_by: apology
   - check: The draft opens with the false claim (in the headline or first sentence) or repeats it more than once, rather than leading with the accurate fact.
     dimension: truthfulness_factual_discipline
+    narrows: core.central_fact_first
   - check: The draft calls a claim "false", "misleading" or "misinformation" without saying what is true or pointing to evidence.
     dimension: truthfulness_factual_discipline
   - check: The draft says the organization has "listened" or "heard the feedback" without saying what, if anything, will change.

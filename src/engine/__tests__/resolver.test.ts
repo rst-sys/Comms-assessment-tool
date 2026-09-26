@@ -70,6 +70,27 @@ describe("the resolved bundle", () => {
     expect(ceo.narrows).toEqual(["plain-naming"]);
     expect(resolveProtocols({ ...base, communication_event: "Cyber incident or data breach" }).narrows).toEqual([]);
   });
+
+  it("drops a trigger only when the protocol that supersedes it is in the same bundle", () => {
+    // The scrutiny family asks whether regret is conditional; where the author
+    // is apologizing, the Apology overlay asks the same thing in more detail.
+    const backlash = { ...base, communication_event: "Backlash to something the organization said or did" as const };
+    const regret = (r: EvaluationRequest) =>
+      resolveProtocols(r)
+        .protocols.find((p) => p.id === "scrutiny")!
+        .triggers.some((t) => t.superseded_by === "apology");
+
+    expect(regret({ ...backlash, purpose: "Announce a decision or change" })).toBe(true);
+    expect(regret({ ...backlash, purpose: "Apologize and take responsibility" })).toBe(false);
+  });
+
+  it("leaves the protocol object in the library untouched when it drops a trigger", () => {
+    const backlash = { ...base, communication_event: "Backlash to something the organization said or did" as const };
+    resolveProtocols({ ...backlash, purpose: "Apologize and take responsibility" });
+    // The filter copies; a mutation here would silently disarm the trigger for
+    // every later review in the same process.
+    expect(PROTOCOLS.find((p) => p.id === "scrutiny")!.triggers).toHaveLength(5);
+  });
 });
 
 describe("applies_if, which is a filter and not an overlay", () => {

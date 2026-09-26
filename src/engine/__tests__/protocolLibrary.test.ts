@@ -174,6 +174,31 @@ describe("the checker", () => {
     expect(message).toContain("The framework allows: plain-naming");
   });
 
+  it("refuses a trigger that gives way to a protocol that is missing, or is not below it", () => {
+    // superseded_by runs the opposite way to narrows: the protocol that wins
+    // is the more specific one, so it has to sit in a lower layer. A pointer
+    // that is dangling or sideways fails silently at review time — the
+    // trigger is simply never dropped — so it has to fail loudly here.
+    const family = { ...good, id: "fam", layer: "family", family: undefined, prose,
+      triggers: [{ check: "Something.", dimension: "accountability_agency", superseded_by: "ovl" }] };
+    const overlay = { ...good, id: "ovl", layer: "overlay", trigger: "apology", family: undefined, prose, triggers: [] };
+
+    expect(checkLibrary([{ file: "f.md", data: family as never }, { file: "o.md", data: overlay as never }])).toEqual([]);
+
+    // Nothing of that id in the library.
+    expect(checkLibrary([{ file: "f.md", data: family as never }]).map((e) => e.message).join(" | ")).toContain(
+      'is superseded_by "ovl", which is not a protocol in the library',
+    );
+
+    // A peer cannot supersede a peer: both would be deferring to the other.
+    const peer = { ...overlay, layer: "family", trigger: undefined };
+    expect(
+      checkLibrary([{ file: "f.md", data: family as never }, { file: "o.md", data: peer as never }])
+        .map((e) => e.message)
+        .join(" | "),
+    ).toContain("may only give way to a layer below it");
+  });
+
   it("refuses two protocols with the same id, or two overlays on one rule", () => {
     const a = { file: "a.md", data: { ...good, prose } as never };
     expect(checkLibrary([a, { ...a, file: "c.md" }]).map((e) => e.message).join(" | ")).toContain('id "example" is already used');

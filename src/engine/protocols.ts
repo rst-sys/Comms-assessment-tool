@@ -177,6 +177,19 @@ function filtered(protocol: ProtocolFile, request: EvaluationRequest, superseded
 }
 
 /**
+ * A protocol with the triggers a more specific protocol in this bundle has
+ * superseded removed.
+ *
+ * Only against protocols that actually applied. A trigger that gave way to an
+ * overlay the intake never switched on would leave the check missing from
+ * both layers, which is the opposite of what the pointer is for.
+ */
+function withoutSupersededTriggers(protocol: ProtocolFile, applied: ReadonlySet<string>): ProtocolFile {
+  const triggers = protocol.triggers.filter((t) => !(t.superseded_by && applied.has(t.superseded_by)));
+  return triggers.length === protocol.triggers.length ? protocol : { ...protocol, triggers };
+}
+
+/**
  * Overlay elements an event protocol's own element supersedes.
  *
  * Only elements that survived the applies_if filter get to supersede anything.
@@ -208,10 +221,12 @@ export interface ResolvedBundle {
  */
 export function resolvedProtocols(request: EvaluationRequest, library?: readonly ProtocolFile[]): ProtocolFile[] {
   // Two passes. The first drops what the intake does not qualify for; the
-  // second drops the overlay elements that what survived has replaced.
+  // second drops the overlay elements that what survived has replaced, and
+  // the triggers a more specific protocol in the same bundle has superseded.
   const applicable = protocolsFor(request, library).map((p) => filtered(p, request));
   const superseded = supersededBy(applicable);
-  return applicable.map((p) => filtered(p, request, superseded));
+  const applied = new Set(applicable.map((p) => p.id));
+  return applicable.map((p) => withoutSupersededTriggers(filtered(p, request, superseded), applied));
 }
 
 /** The protocols that applied, as `id@version`, in the order they are sent. */
