@@ -798,3 +798,77 @@ sources:
     last_checked: 2026-09-26
     review_by: 2027-03-26
     notes: "Binding through national transposition, for takeover bids for EU-listed companies. Quotes abbreviated by the retrieval tool. Cited by commercial.employees-in-a-deal."
+
+  # ---------------------------------------------------------------- allegations family
+  - id: eu-directive-2019-1937
+    title: "Directive (EU) 2019/1937 on the protection of persons who report breaches of Union law (Whistleblower Directive), Articles 16, 19 and 22"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32019L1937
+    version_or_date: "23 October 2019"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding through national transposition, for reports of breaches of EU law in the listed areas. Quotes abbreviated by the retrieval tool. Cited by allegations.protection-for-those-who-report."
+  - id: sox-18-usc-1514a
+    title: "Sarbanes-Oxley Act § 806, 18 U.S.C. § 1514A(a)"
+    issuer: US Congress
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/uscode/text/18/1514A
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binds SEC-registered companies, their subsidiaries, officers, contractors and agents. Cited by allegations.protection-for-those-who-report."
+  - id: sec-rule-21f-17
+    title: "SEC Rule 21F-17(a), 17 CFR 240.21F-17"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR3bd6e6ae1e9d09d/section-240.21F-17
+    version_or_date: "current"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "No action to impede someone reporting to the SEC. Cited by allegations.protection-for-those-who-report."
+  - id: eu-directive-2016-343
+    title: "Directive (EU) 2016/343 on the presumption of innocence, Articles 2 and 4(1)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016L0343
+    version_or_date: "9 March 2016"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding on public authorities in criminal proceedings only; the protocol uses it by analogy for organizations. Cited by allegations.alleged-vs-established."
+  - id: doj-eccp-2024
+    title: "Evaluation of Corporate Compliance Programs (updated September 2024)"
+    issuer: US Department of Justice, Criminal Division
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.justice.gov/criminal/criminal-fraud/page/file/937501/dl
+    version_or_date: "September 2024"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Prosecutors' evaluation criteria, not binding law. Cited by allegations.who-investigates."
+  - id: kim-2004
+    title: "Removing the shadow of suspicion: The effects of apology versus denial for repairing competence- versus integrity-based trust violations. Journal of Applied Psychology 89(1), 104–118"
+    issuer: "Kim, P. H., Ferrin, D. L., Cooper, C. D., & Dirks, K. T."
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=398221
+    version_or_date: "2004"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Abstract only; APA PsycNet blocked the full text by robots.txt. Read for the core protocol source review (§5.4), which found it small and lab-based. Cited by allegations.alleged-vs-established."
