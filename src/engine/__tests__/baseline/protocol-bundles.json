@@ -14,6 +14,8 @@
     "ab7a89702f5950b8": "WORKFORCE AND ORGANIZATION CHANGE (family protocol)\n\nELEMENTS\n- What changes, and from when (stakeholder_respect_impact). The draft says what exactly changes in employees' terms or working conditions, compared with today, and the date it takes effect.\n- Who it applies to, and who is exempt (fairness_independence_conflicts). The draft says which employees the change applies to, names any group that is exempt, and says why.\n- A route for individual circumstances (listening_employee_voice, supporting). The draft says how an employee whose circumstances the change affects differently (for example health, disability or caregiving) can raise them, and who decides.\n- Bargaining and consultation status (listening_employee_voice). Where employees have a union or other representatives, the draft says whether the change has been or will be bargained over or consulted on, and what can still change.\n\nHIGH-SEVERITY TRIGGERS\n- The draft links a consequence (closing a site, losing benefits, harsher conditions) or a benefit to employees' support for a union, a strike or a bargaining position. (fairness_independence_conflicts; review Labor or Legal)\n- The draft announces a change to where or when people work, or to their pay or benefits, with no effective date, or as already in effect. (stakeholder_respect_impact; review HR or Labor)\n- The only route the draft offers for individual circumstances is a general \"talk to your manager or HR\", with nothing on what can be adjusted or who decides. (listening_employee_voice; review HR)",
     "5585ae6532dc9916": "INCIDENT AND DISRUPTION (family protocol)\n\nELEMENTS\n- The risk stated plainly (truthfulness_factual_discipline). The draft describes the risk or hazard plainly, without wording that makes it sound smaller than the supplied context shows.\n- What still works, and when service returns (stakeholder_respect_impact). Where a service, product or supply is disrupted, the draft says what still works, what doesn't, and when normal service is expected, or that this isn't known yet.\n- What people are owed, and how to claim it (corrective_action_proof, supporting). Where people are owed a remedy (repair, replacement, refund, credit or compensation), the draft says what it is, whether they can choose, and how to claim it, or when that will be decided.\n\nHIGH-SEVERITY TRIGGERS\n- The draft calls a recall or corrective action \"precautionary\", \"out of an abundance of caution\", \"discretionary\" or relevant only \"in rare situations\" while the draft itself or the supplied context reports a known hazard, failures or injuries. (truthfulness_factual_discipline; review Legal)\n- The draft calls a recall \"voluntary\" where the product is sold in the EU, or where the supplied context shows a regulator ordered the recall. (In the US, a voluntary recall is a legal status, not spin, and is not a finding on its own.) (truthfulness_factual_discipline; review Legal or Local market)\n- People are told to \"contact customer support\" or \"reach out\" about a remedy, and the draft never says what the remedy is. (corrective_action_proof)",
     "4c0db0922237f757": "CYBER INCIDENT AND DATA BREACH (event protocol)\n\nELEMENTS\n- What and when (truthfulness_factual_discipline). The draft gives the discovery date, the incident period if known, and time zones.\n- Nature of exposure (truthfulness_factual_discipline). The draft says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined, and names the data categories involved.\n- Present response (corrective_action_proof). The draft describes what is being done now, specific enough to check, including containment and who is investigating.\n- Support matched to harm (stakeholder_respect_impact, supporting). Any support offered fits the data involved, with its terms, its duration and how to claim it.\n- Authenticity (verification_follow_through, supporting). The draft tells recipients how to confirm the notice is genuine, and how the organization will and will not contact them.\n- Attribution discipline (fairness_independence_conflicts). Any claim about who was responsible, or that a vendor was at fault, carries a stated basis and does not displace the organization's own role.\n\nHIGH-SEVERITY TRIGGERS\n- The draft states a categorical outcome — no data was compromised, the incident is contained, systems are secure — while also saying the investigation is ongoing, or with no basis given. (truthfulness_factual_discipline; sharper form of the core check \"Estimates marked as estimates\" — one finding, not two; review Information security or Legal)\n- The draft says data was involved but does not name the categories, and does not say the categories are not yet known. (truthfulness_factual_discipline; review Privacy or Legal)\n- The draft attributes the incident to a named attacker, a nation-state, a sophisticated actor, or a vendor, with no stated basis; or attributes it to a vendor without stating the organization's own selection, oversight or data-sharing role. (fairness_independence_conflicts; review Information security)\n- The draft states that notification is or is not legally required, or that the organization is compliant with applicable laws. (truthfulness_factual_discipline; review Legal or Privacy)\n- The draft gives affected people no way to confirm the notice is genuine, in a message that asks them to act, click or call. (verification_follow_through)\n- An investor communication states that the incident is or is not material, or gives an impact figure, without saying who determined it and when. (truthfulness_factual_discipline; review Investor relations or Legal)",
+    "9eb94b4a981ff969": "COMMERCIAL AND FINANCIAL DECISIONS (family protocol)\n\nELEMENTS\n- What changes for customers and suppliers (stakeholder_respect_impact). Where customers or suppliers are affected, the draft says what changes for them (price, terms, service, availability or contracts), from when, and what they can do, including cancelling or switching where they have that right.\n- Forecasts with their assumptions (truthfulness_factual_discipline). Statements about future results, savings or synergies are presented as expectations and name the main assumptions or risks behind them.\n\nHIGH-SEVERITY TRIGGERS\n- The draft cites cost savings or synergies but doesn't say whether they involve job losses, where the supplied context shows they do. (truthfulness_factual_discipline; review HR or Investor relations)\n- The draft says \"business as usual\" or \"nothing changes\" for employees, customers or partners without limiting it to the period before the deal closes, or uses it in place of saying what isn't yet known about jobs or service after that. (truthfulness_factual_discipline; review Legal)\n\nNARROWS THIS CORE CHECK\n- sharper form of the core check \"Estimates marked as estimates\" — one finding, not two",
+    "2aa66d452e7db346": "COMMERCIAL AND FINANCIAL DECISIONS (family protocol)\n\nELEMENTS\n- What changes for customers and suppliers (stakeholder_respect_impact). Where customers or suppliers are affected, the draft says what changes for them (price, terms, service, availability or contracts), from when, and what they can do, including cancelling or switching where they have that right.\n- Forecasts with their assumptions (truthfulness_factual_discipline). Statements about future results, savings or synergies are presented as expectations and name the main assumptions or risks behind them.\n- What a deal means for employees (stakeholder_respect_impact, supporting). For a merger, acquisition or sale, the draft says what the deal means for employees now, and what hasn't been decided.\n\nHIGH-SEVERITY TRIGGERS\n- The draft cites cost savings or synergies but doesn't say whether they involve job losses, where the supplied context shows they do. (truthfulness_factual_discipline; review HR or Investor relations)\n- The draft says \"business as usual\" or \"nothing changes\" for employees, customers or partners without limiting it to the period before the deal closes, or uses it in place of saying what isn't yet known about jobs or service after that. (truthfulness_factual_discipline; review Legal)\n\nNARROWS THIS CORE CHECK\n- sharper form of the core check \"Estimates marked as estimates\" — one finding, not two",
     "72b3df18a15c5c62": "GEOPOLITICAL EVENT AFFECTING OPERATIONS OR EMPLOYEE WELFARE (event protocol)\n\nELEMENTS\n- Basis for speaking (fairness_independence_conflicts). The draft says what connects this organization to this event — its people, its sites, its supply, its obligations — rather than speaking because others are speaking.\n- Discretion inside compliance (accountability_agency). Where the organization was compelled by law, sanctions or government direction, and where it chose — whether to exit, when, on what terms, and what happens to local staff.\n- Exposure separated from event (causation_explanation). What follows from the event itself and what follows from the organization's own prior positioning — where it sited operations, how concentrated its suppliers or staff are.\n- Danger and protective steps (corrective_action_proof). For people in or near the affected area, the risk as currently assessed, the protective steps taken or planned, and who is responsible for them.\n- Status of open decisions (truthfulness_factual_discipline). What has been decided, what is under consideration, and what would cause the next decision to be made.\n- Divided workforce (stakeholder_respect_impact, supporting). The draft is written for a workforce holding different relationships to the conflict, and is clear about what applies to everyone regardless of where they sit.\n- Route for personal circumstances (listening_employee_voice, supporting). A way for affected staff to tell the organization facts about their own situation — location, family, travel, immigration status — that would change its response, and what happens to what they report.\n- Conditions for revisiting (verification_follow_through, supporting). What would cause this position or operational decision to change, and when it will next be reviewed.\n\nHIGH-SEVERITY TRIGGERS\n- An operational change is attributed to the event itself — the conflict, the sanctions, the border closure — with no decision by the organization named alongside it. (causation_explanation)\n- The draft states that the organization is complying with sanctions, export controls or government direction and offers that as the whole account, naming no discretionary choice made around it. (accountability_agency; review Legal)\n- The decision is placed with a parent, headquarters or another jurisdiction and no accountable person or entity is named on the reader's side of the organization. (accountability_agency; review Legal or Labor)\n- The draft withholds information on grounds of confidentiality, legal advice or security without saying why it is withheld or for how long. (truthfulness_factual_discipline; review Legal)\n- The draft requires employees to attend a session, acknowledge receipt, or affirm the organization's position on the political matter. (fairness_independence_conflicts; review Legal or HR)\n- People are in or near a danger zone and the draft offers support resources — counselling, assistance lines, flexibility — but names no protective step, no owner for it, and nothing for those people to do. (corrective_action_proof; review HR or Legal)\n\nNARROWS THIS CORE CHECK\n- sharper form of the core check \"The central fact first, in ordinary words\" — one finding, not two",
     "295ff6b89163c461": "PUBLIC APOLOGY (overlay protocol)\n\nELEMENTS\n- Acknowledged responsibility (accountability_agency). The organization or a named leader says it is responsible for the conduct, decision or failure — not merely that the outcome is regrettable.\n- Repair offered (corrective_action_proof). A remedy for the people affected — restitution, correction, recall, support or access — proportionate to the harm.\n- Direct regret (stakeholder_respect_impact). An unconditional apology for the organization's own conduct, not conditional on how anyone reacted.\n- Conduct rejected (accountability_agency, supporting). The draft says the conduct was wrong, not only that the reaction was unfortunate.\n- Restraint in the ask (fairness_independence_conflicts, supporting). The draft does not demand forgiveness, understanding or moving on, and does not ask before repair is stated.\n\nHIGH-SEVERITY TRIGGERS\n- No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern. (accountability_agency; review Legal)\n- The only apology sentence is conditional on the audience's reaction — \"if\", \"to anyone who felt\", \"that concerns were raised\". (stakeholder_respect_impact; review Legal)\n- The cause is placed on an individual employee, a vendor, a miscommunication or the audience's reaction, and the draft does not state the organization's own supervisory or control role. (fairness_independence_conflicts; review Legal or HR)\n- The draft describes harm to identifiable people and offers neither a repair nor any corrective action. (corrective_action_proof; review Executive)\n- The draft, or the context supplied with it, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication. (truthfulness_factual_discipline; review Legal)",
     "94144033e1965369": "LISTED COMPANY DISCLOSURE (overlay protocol)\n\nELEMENTS\n- Nothing left out that makes the rest misleading (truthfulness_factual_discipline). Where the draft describes the financial effect, cause or outlook of the event, it doesn't leave out a fact the supplied context shows would change how a reader understands what it does say.\n- The same material facts for every audience (fairness_independence_conflicts). The material facts in the draft match what the organization is telling investors and the market, and the draft doesn't give one audience (employees, analysts, partners) material information that the others don't get at the same time.\n\nHIGH-SEVERITY TRIGGERS\n- The draft describes the event as having little or no financial effect, or gives a positive outlook, while the supplied context shows costs, losses, liabilities or uncertainty the draft doesn't mention. (truthfulness_factual_discipline; review Legal or Investor relations)\n- The draft is addressed to employees, customers or partners and contains figures, dates or decisions that the supplied context doesn't show being released to the market at the same time. (fairness_independence_conflicts; review Legal or Investor relations)"
@@ -255,11 +257,13 @@
     "event:Merger, acquisition or sale": {
       "ids": [
         "core",
+        "commercial",
         "workforce-impact"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "9eb94b4a981ff969",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"
@@ -267,22 +271,26 @@
     },
     "event:Disappointing results or profit warning": {
       "ids": [
-        "core"
+        "core",
+        "commercial"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "2aa66d452e7db346",
         "b8311842d8150fe2",
         "aece05adab62c36d"
       ]
     },
     "event:Price increase or change to terms": {
       "ids": [
-        "core"
+        "core",
+        "commercial"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "2aa66d452e7db346",
         "b8311842d8150fe2",
         "aece05adab62c36d"
       ]
@@ -290,11 +298,13 @@
     "event:Financial difficulty or cost-cutting": {
       "ids": [
         "core",
+        "commercial",
         "workforce-impact"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "9eb94b4a981ff969",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"
@@ -303,11 +313,13 @@
     "event:Change of strategy or exit from a market": {
       "ids": [
         "core",
+        "commercial",
         "workforce-impact"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "9eb94b4a981ff969",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"
@@ -526,11 +538,13 @@
     "fixture:demo3": {
       "ids": [
         "core",
+        "commercial",
         "listed-company"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "2aa66d452e7db346",
         "94144033e1965369",
         "b8311842d8150fe2",
         "aece05adab62c36d"

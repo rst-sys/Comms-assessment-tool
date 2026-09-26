@@ -760,3 +760,41 @@ sources:
     last_checked: 2026-09-26
     review_by: 2027-03-26
     notes: "Binding regulation; recitals explain its scope. GDPR does not apply to deceased persons' data, and member states may set their own rules. Named in the Leadership family's Source section."
+
+  # ---------------------------------------------------------------- commercial family
+  - id: us-pslra-15-usc-78u-5
+    title: "Private Securities Litigation Reform Act safe harbor, 15 U.S.C. § 78u-5"
+    issuer: US Congress
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/uscode/text/15/78u-5
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "A condition of protection for SEC reporting issuers, not a duty to disclose. Excludes tender offers and going-private transactions. Cited by commercial.forecasts-with-assumptions."
+  - id: eu-eecc-2018-1972
+    title: "Directive (EU) 2018/1972 (European Electronic Communications Code), Article 105(4)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://www.legislation.gov.uk/eudr/2018/1972/article/105
+    version_or_date: "11 December 2018"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding through national transposition, and on electronic communications providers only. Read from the UK retained copy. Cited by commercial.what-changes-for-customers."
+  - id: eu-takeover-directive-2004-25
+    title: "Directive 2004/25/EC on takeover bids, Articles 6 and 9(5)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/LexUriServ/LexUriServ.do?uri=CELEX:32004L0025:EN:HTML
+    version_or_date: "21 April 2004"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding through national transposition, for takeover bids for EU-listed companies. Quotes abbreviated by the retrieval tool. Cited by commercial.employees-in-a-deal."

@@ -4,13 +4,14 @@ name: Workforce impact
 layer: overlay
 # rule: event in [layoffs, restructuring, site-closure] OR (event in [financial-difficulty, strategy-market-exit, merger-acquisition] AND audiences include an Employees option)
 trigger: workforce-impact
-version: 0.3.2
+version: 0.3.3
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.
 changelog:
+  - "0.3.3 — also replaces the Commercial family's employee check"
   - "0.3.2 — replaces the Workforce family's equivalent elements"
   - "0.3.1 — basis notes moved into the file"
   - "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed."
@@ -35,7 +36,7 @@ elements:
     basis: law
     sources: [eu-directive-98-59, us-warn-20-cfr-639]
     basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
-    replaces: [workforce.who-it-applies-to]
+    replaces: [workforce.who-it-applies-to, commercial.employees-in-a-deal]
 
   - id: workforce-impact.selection-basis-and-alternatives
     name: Selection basis and alternatives
