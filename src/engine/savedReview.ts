@@ -17,7 +17,7 @@ import type {
   Severity,
 } from "./types.js";
 import type { EvaluationResult } from "./evaluate.js";
-import { checklistForHash } from "./checklist.js";
+import { checklistForBundle, checklistForHash, type ChecklistGroup } from "./checklist.js";
 
 export const SAVED_REVIEW_FORMAT = "trust-assessment-review";
 export const SAVED_REVIEW_VERSION = 1;
@@ -96,20 +96,22 @@ export interface SavedReview {
   dimensions: { id: string; score: number; rationale: string; would_raise: string }[];
   findings: SavedFinding[];
   specialist_review_summary: string[];
+  /** The protocols that applied, as `id@version`, in the order they were sent. */
+  bundle?: string[];
   /**
-   * The reviewer checklist this review showed.
+   * The reviewer checklist this review showed, written out in full.
    *
-   * Recovered from bundle_hash rather than rebuilt from the intake, so the
-   * file records the questions that actually applied when it was run. Absent
-   * when the hash names protocol versions the library no longer has: showing
-   * today's checklist in its place would misdescribe what was checked.
+   * Recovered from the bundle rather than rebuilt from the intake, so the file
+   * records the questions that actually applied. Stored as text rather than
+   * recomputed on open, because a protocol revised afterwards would otherwise
+   * put today's wording under yesterday's review.
    */
   reviewer_checklist?: { name: string; questions: { ask: string; also: string[] }[] }[];
 }
 
-/** The checklist for a stored bundle hash, in the saved file's shape. */
-function checklistOf(hash: string | undefined): Pick<SavedReview, "reviewer_checklist"> {
-  const groups = checklistForHash(hash);
+/** The checklist that applied, in the saved file's shape. */
+function checklistOf(result: EvaluationResult): Pick<SavedReview, "reviewer_checklist"> {
+  const groups = checklistForBundle(result.bundle)?.groups ?? checklistForHash(result.bundle_hash);
   if (!groups) return {};
   return {
     reviewer_checklist: groups.map((g) => ({
@@ -159,7 +161,8 @@ export function buildSavedReview(
       specialist_review_type: f.specialist_review_type,
     })),
     specialist_review_summary: [...a.specialist_review_summary],
-    ...checklistOf(result.bundle_hash),
+    ...(result.bundle ? { bundle: [...result.bundle] } : {}),
+    ...checklistOf(result),
   };
 }
 
@@ -197,6 +200,24 @@ export function settingsDrift(saved: SavedSettings, request: EvaluationRequest):
   return COMPARABLE_SETTINGS.filter((k) => saved[k] !== current[k]).map((k) => SETTING_LABELS[k]);
 }
 
+/**
+ * The checklist to show for a saved review.
+ *
+ * What the file recorded, first: it is the only account of the wording that
+ * applied. Failing that — a review saved before the checklist existed — the
+ * stored bundle names the protocols, and the hash is the last resort. Null
+ * when none of the three can answer.
+ */
+export function savedChecklist(saved: SavedReview): ChecklistGroup[] | null {
+  if (saved.reviewer_checklist && saved.reviewer_checklist.length > 0) {
+    return saved.reviewer_checklist.map((g) => ({
+      name: g.name,
+      questions: g.questions.map((q) => ({ ask: q.ask, also: q.also as never, protocol: "", layer: "core" as const })),
+    }));
+  }
+  return checklistForBundle(saved.bundle)?.groups ?? checklistForHash(saved.bundle_hash);
+}
+
 const str = { type: "string" } as const;
 const SAVED_REVIEW_SCHEMA = {
   type: "object",
@@ -218,6 +239,7 @@ const SAVED_REVIEW_SCHEMA = {
     specialist_review_summary: { type: "array" },
     // Optional: absent on reviews saved before the checklist existed, and on
     // any whose bundle hash the current library cannot resolve.
+    bundle: { type: "array" },
     reviewer_checklist: { type: "array" },
   },
   required: ["format", "format_version", "score", "settings", "summary", "dimensions", "findings"],

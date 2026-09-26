@@ -154,12 +154,45 @@ function hashOf(stamp: string): string {
  *
  * Null when the hash names protocol versions this library no longer has: the
  * review was run against a library since revised, and showing today's
- * checklist in its place would be a quiet lie about what was checked.
+ * checklist in its place would be a quiet lie about what was checked. Prefer
+ * checklistForBundle, which survives that.
  */
 export function checklistForHash(hash: string | undefined): ChecklistGroup[] | null {
   if (!hash) return null;
   const bundle = bundlesByHash().get(hash);
   return bundle ? buildChecklist(bundle) : null;
+}
+
+/**
+ * The checklist for a stored `id@version` list.
+ *
+ * Exact when every version is still in the library. When one is not — the
+ * review predates a revision — the protocols are still found by id, so the
+ * reader gets the right checklist for the right protocols rather than nothing,
+ * and `exact` says the wording may have moved on since. A protocol deleted
+ * outright is simply absent, which the count makes visible.
+ */
+export function checklistForBundle(
+  bundle: readonly string[] | undefined,
+  library: readonly ProtocolFile[] = PROTOCOL_LIBRARY,
+): { groups: ChecklistGroup[]; exact: boolean } | null {
+  if (!bundle || bundle.length === 0) return null;
+  const found: ProtocolFile[] = [];
+  let exact = true;
+  for (const entry of bundle) {
+    const at = entry.lastIndexOf("@");
+    const id = at === -1 ? entry : entry.slice(0, at);
+    const version = at === -1 ? "" : entry.slice(at + 1);
+    const sameVersion = library.find((p) => p.id === id && p.version === version);
+    if (sameVersion) {
+      found.push(sameVersion);
+      continue;
+    }
+    exact = false;
+    const byId = library.find((p) => p.id === id);
+    if (byId) found.push(byId);
+  }
+  return found.length === 0 ? null : { groups: buildChecklist(found), exact };
 }
 
 /** How many questions a checklist holds, for the section's count. */

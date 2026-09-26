@@ -24,6 +24,15 @@ export interface EvaluationResult {
    * or was judged by a different standard.
    */
   bundle_hash: string;
+  /**
+   * The protocols that applied, as `id@version`, in the order they were sent.
+   *
+   * The hash identifies a bundle; this one names it. A hash cannot be
+   * un-hashed, so a review run against a protocol version since revised could
+   * not have its reviewer checklist rebuilt from the hash alone. With the list
+   * the ids survive whatever happens to the library afterwards.
+   */
+  bundle: string[];
   analysis: Analysis;
   /** Accountable Communication Score, 0-100. */
   score: number;
@@ -93,9 +102,11 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   }
 
   const score = computeScore(analysis.dimensions);
+  const bundle = resolveProtocols(request);
   return {
     request_id: requestId,
-    bundle_hash: resolveProtocols(request).hash,
+    bundle_hash: bundle.hash,
+    bundle: bundle.protocols.map((p) => `${p.id}@${p.version}`),
     analysis,
     score,
     band: scoreBand(score),

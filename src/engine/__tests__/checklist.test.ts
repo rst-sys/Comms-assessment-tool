@@ -4,6 +4,7 @@ import {
   bundleHash,
   bundlesByHash,
   checklistFor,
+  checklistForBundle,
   checklistForHash,
   checklistSize,
   GENERAL_GROUP,
@@ -12,7 +13,7 @@ import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
 import { protocolsFor, resolveProtocols } from "../protocols.js";
 import { buildProtocolBlock } from "../protocolPrompt.js";
 import { buildSystemBlocks } from "../prompt.js";
-import { buildSavedReview } from "../savedReview.js";
+import { buildSavedReview, savedChecklist } from "../savedReview.js";
 import { DEMOS } from "../fixtures.js";
 import { sampleAnalysis } from "./helpers.js";
 import {
@@ -193,4 +194,79 @@ describe("the largest checklist a reader can meet", () => {
     expect(top).toBeGreaterThan(8);
     expect(protocolsFor(req({ communication_event: "Layoffs or job cuts" })).length).toBeGreaterThan(0);
   }, 60_000);
+});
+
+describe("a review saved against a protocol version since revised", () => {
+  const request = req({ communication_event: "Layoffs or job cuts", people_at_risk: true });
+
+  const resultFor = (over: Partial<{ bundle: string[]; bundle_hash: string }>) =>
+    ({
+      analysis: sampleAnalysis(), request_id: "r", provider: { provider: "p", model: "m" },
+      score: 60, band: "b", confidence_label: "c",
+      adjustments: { dropped_findings: 0, context_flag_corrected: false, trimmed_findings: 0, thin_questions: 0 },
+      bundle_hash: resolveProtocols(request).hash,
+      bundle: resolveProtocols(request).protocols.map((p) => `${p.id}@${p.version}`),
+      ...over,
+    }) as never;
+
+  it("records the id@version of every protocol that applied", () => {
+    const saved = buildSavedReview(resultFor({}), request);
+    const live = resolveProtocols(request).protocols.map((p) => `${p.id}@${p.version}`);
+    expect(saved.bundle).toEqual(live);
+    expect(saved.bundle!.length).toBeGreaterThan(3);
+    expect(saved.bundle!.every((b) => /@\d+\.\d+\.\d+$/.test(b))).toBe(true);
+    // The hash is kept too: it still identifies the bundle in one short string.
+    expect(saved.bundle_hash).toBe(resolveProtocols(request).hash);
+  });
+
+  it("still shows the checklist it was run with after every protocol is revised", () => {
+    // Save it, then age it: bump every version and reword a question, as a
+    // later phase would. Neither the hash nor an id@version match can find
+    // those versions any more.
+    const saved = buildSavedReview(resultFor({}), request);
+    const original = JSON.stringify(saved.reviewer_checklist);
+    expect(saved.reviewer_checklist!.length).toBeGreaterThan(0);
+
+    const aged: typeof saved = JSON.parse(JSON.stringify(saved));
+    aged.bundle = aged.bundle!.map((b) => b.replace(/@.*$/, "@99.0.0"));
+    aged.bundle_hash = "999999999999";
+
+    const shown = savedChecklist(aged);
+    expect(shown).not.toBeNull();
+    expect(JSON.stringify(shown!.map((g) => ({ name: g.name, questions: g.questions.map((q) => ({ ask: q.ask, also: q.also })) }))))
+      .toBe(original);
+  });
+
+  it("falls back to the bundle list when the file predates the stored checklist", () => {
+    // A review saved by an older build: no reviewer_checklist, but it has the
+    // list. The ids still resolve, so the reader gets the right protocols.
+    const saved = buildSavedReview(resultFor({}), request);
+    const older: typeof saved = JSON.parse(JSON.stringify(saved));
+    delete older.reviewer_checklist;
+    older.bundle_hash = "999999999999";
+
+    const shown = savedChecklist(older);
+    expect(shown).not.toBeNull();
+    expect(checklistSize(shown!)).toBe(checklistSize(checklistFor(request)));
+
+    // And with a version no longer in the library, it resolves by id and says
+    // the wording may have moved on.
+    const revised = { ...older, bundle: older.bundle!.map((b) => b.replace(/@.*$/, "@99.0.0")) };
+    const byId = checklistForBundle(revised.bundle);
+    expect(byId).not.toBeNull();
+    expect(byId!.exact).toBe(false);
+    expect(checklistSize(byId!.groups)).toBe(checklistSize(checklistFor(request)));
+    expect(checklistForBundle(saved.bundle)!.exact).toBe(true);
+  });
+
+  it("gives up rather than guessing when nothing identifies the bundle", () => {
+    const saved = buildSavedReview(resultFor({}), request);
+    const blank: typeof saved = JSON.parse(JSON.stringify(saved));
+    delete blank.reviewer_checklist;
+    delete blank.bundle;
+    blank.bundle_hash = "999999999999";
+    expect(savedChecklist(blank)).toBeNull();
+    expect(checklistForBundle([])).toBeNull();
+    expect(checklistForBundle(["not-a-protocol@1.0.0"])).toBeNull();
+  });
 });
