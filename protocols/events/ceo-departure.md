@@ -3,11 +3,12 @@ id: ceo-departure
 name: CEO or senior-leader departure
 layer: event
 family: leadership
-version: 1.1.1
+version: 1.2.0
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.2.0 (2026-09-26): new trigger for thanking or praising a leader who left after a misconduct investigation without acknowledging the finding (basis: the Wells Fargo report's documented gap between a board's finding and its public statement)."
   - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — two listed-company disclosure questions removed; the listed-company overlay now asks them."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -49,6 +50,7 @@ elements:
     dimension: accountability_agency
     basis: judgement
     sources: []
+    replaces: [leadership.who-holds-the-role]
 
   - id: ceo-departure.the-organizations-own-voice
     name: The organization's own voice
@@ -101,7 +103,12 @@ triggers:
     review: [Legal, Investor relations]
   - check: A departing board member is said to be leaving over differences, a disagreement or a divergence of views on direction, and the draft does not say what the disagreement was about.
     dimension: truthfulness_factual_discipline
+    narrows: leadership.disagreement-described
     review: [Legal]
+
+  - check: The draft thanks or praises a leader whose departure followed an investigation or finding of misconduct, without acknowledging the finding.
+    dimension: truthfulness_factual_discipline
+    review: [Legal, HR]
 
 questions:
   - ask: Was this departure the leader's decision, the board's, or negotiated between them — and would the draft's description still stand if the separation terms were published?
@@ -193,7 +200,8 @@ blend them, and each is labelled here.
   Investigation Report* (10 April 2017).
   https://www.sec.gov/Archives/edgar/data/72971/000119312517118654/d375947ddefa14a.htm
   — a documented gap between a board's own finding and its public statement;
-  basis for the last question.
+  basis for the last question; also the basis for the trigger on praising a
+  leader who left after a misconduct finding.
 
 **3. Declared professional judgment — no published source.**
 

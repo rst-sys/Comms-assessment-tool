@@ -93,11 +93,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "CEO or senior-leader departure",
       "layer": "event",
       "family": "leadership",
-      "version": "1.1.1",
+      "version": "1.2.0",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.2.0 (2026-09-26): new trigger for thanking or praising a leader who left after a misconduct investigation without acknowledging the finding (basis: the Wells Fargo report's documented gap between a board's finding and its public statement).",
         "1.1.1 — Evidence labels added; no check changed.",
         "1.1.0 — two listed-company disclosure questions removed; the listed-company overlay now asks them.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -145,7 +146,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "weight": "core",
           "dimension": "accountability_agency",
           "basis": "judgement",
-          "sources": []
+          "sources": [],
+          "replaces": [
+            "leadership.who-holds-the-role"
+          ]
         },
         {
           "id": "ceo-departure.the-organizations-own-voice",
@@ -229,8 +233,17 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
         {
           "check": "A departing board member is said to be leaving over differences, a disagreement or a divergence of views on direction, and the draft does not say what the disagreement was about.",
           "dimension": "truthfulness_factual_discipline",
+          "narrows": "leadership.disagreement-described",
           "review": [
             "Legal"
+          ]
+        },
+        {
+          "check": "The draft thanks or praises a leader whose departure followed an investigation or finding of misconduct, without acknowledging the finding.",
+          "dimension": "truthfulness_factual_discipline",
+          "review": [
+            "Legal",
+            "HR"
           ]
         }
       ],
@@ -266,7 +279,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "narrows": [
         "plain-naming"
       ],
-      "prose": "## What this protocol narrows\n\nThe core asks for the central fact in ordinary words rather than euphemism. For a\ndeparture, the central fact is *that* the leader is leaving and *how* — not\nnecessarily *why*. There are legitimate reasons not to give a reason: the\nleader's health or family circumstances, an agreement both sides signed, legal\nexposure, or an investigation still running. In US securities law, the regulator\nconsidered requiring reasons for officer departures in 2004 and decided against\nit, partly to spare departing officers embarrassment and partly because of the\nrisk of defamation claims.\n\nSo this protocol treats **saying plainly that the reason is not being given** as\nan acceptable account. What it still flags is a stock phrase — \"to spend more\ntime with family\", \"to pursue other opportunities\", \"has decided to retire\" —\nused where other facts in the draft suggest it is not the whole story. Silence\nthat is declared is honest. A reassuring phrase standing in for the reason is\nthe thing to catch.\n\n## Source\n\nThis protocol rests on three different kinds of basis. The tool should not\nblend them, and each is labelled here.\n\n**1. Binding law — applies only to listed companies in the US and EU.**\n\n- US Securities and Exchange Commission, *Form 8-K*, Item 5.02 and General\n  Instruction B.1 (form revision SEC 873, February 2025).\n  https://www.sec.gov/files/form8-k.pdf\n- US SEC, Release 33-8400 / 34-49424, *Additional Form 8-K Disclosure\n  Requirements and Acceleration of Filing Date* (2004).\n  https://www.sec.gov/rules/2004/03/additional-form-8-k-disclosure-requirements-and-acceleration-filing-date\n  — the Commission's reasons for not requiring officers' reasons, and for\n  requiring a description of a director's disagreement.\n- US SEC, Division of Corporation Finance, *Compliance & Disclosure\n  Interpretations, Exchange Act Form 8-K*, Q117.01 (last updated 24 June 2024)\n  — the four-business-day clock runs from notice of the decision, not the\n  effective date. Staff guidance, not a Commission rule.\n  https://www.sec.gov/rules-regulations/staff-guidance/compliance-disclosure-interpretations/exchange-act-form-8-k\n- US SEC, Regulation FD, 17 CFR Part 243.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-243\n- US SEC, Rule 10b-5(b), 17 CFR 240.10b-5 — no material omission that makes\n  what is said misleading.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR7dcc9448077bb0f/section-240.10b-5\n- US SEC, Regulation S-K Item 402(j), 17 CFR 229.402(j) — severance and its\n  conditions, including non-disparagement, disclosed in the proxy.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-229/subject-group-ECFR6a1ef9c5c8e3e8a/section-229.402\n- Commission Delegated Regulation (EU) 2026/789 of 8 April 2026, Annex I row 13\n  — the governing body's decision on appointment or removal is the final event\n  that triggers disclosure. https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AL_202600789\n- Commission Implementing Regulation (EU) 2016/1055, Articles 2 and 3 — named\n  sender, date and time, permanent chronological web record.\n  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R1055\n- Directive 2007/36/EC as amended by Directive (EU) 2017/828, Article 9b —\n  remuneration reporting covering former directors and termination payments.\n  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02007L0036-20170609\n- NYSE Regulation, *2026 Annual Listed Company Compliance Guidance Letter*\n  (27 January 2026). https://www.nyse.com/publicdocs/nyse/markets/nyse/NYSE_2026_Annual_Guidance_Letter.pdf\n\n**2. Documented behavior — justifies suspicion, not a standard.**\n\n- Graffin, S. D., Carpenter, M. A., & Boivie, S. (2011). \"What's all that\n  (strategic) noise? Anticipatory impression management in CEO succession.\"\n  *Strategic Management Journal*, 32(7), 748–770.\n  https://terry.uga.edu/sites/default/files/inline-files/Graffin_Carpenter__Boivie_2011.pdf\n  — basis for the clean-channel element and the second trigger.\n- Tayan, B., with Gow, I. D., & Larcker, D. F. (2017). \"Retired or Fired: How\n  Can Investors Tell If the CEO Left Voluntarily?\" Harvard Law School Forum on\n  Corporate Governance, 8 June 2017.\n  https://corpgov.law.harvard.edu/2017/06/08/retired-or-fired-how-can-investors-tell-if-the-ceo-left-voluntarily\n  — a summary of Stanford GSB Working Paper No. 3547; basis for the stock\n  phrases and the first trigger.\n- Independent Directors of the Board of Wells Fargo & Company, *Sales Practices\n  Investigation Report* (10 April 2017).\n  https://www.sec.gov/Archives/edgar/data/72971/000119312517118654/d375947ddefa14a.htm\n  — a documented gap between a board's own finding and its public statement;\n  basis for the last question.\n\n**3. Declared professional judgment — no published source.**\n\nThe elements *character of the departure*, *reason or declared withholding*,\n*who holds the authority now*, *the organization's own voice* and *continuity of\nthe leader's commitments* are the protocol author's position. No law, standard\nor professional code requires them. The PRSA Code of Ethics (which names \"lying\nby omission\" as improper) and the IABC Code of Ethics are consistent with them\nbut do not address departures and should not be cited as their authority.\n\n## Basis\n\n**The law** is binding and unambiguous, but narrow. It governs the fact, timing,\nmoney and channel of a departure for listed companies. It does not require a\nreason for an officer's departure, does not require naming who decided, and\ncreates no duty to tell employees anything. It was written to protect\nsecurities markets, not to secure an account for the people affected. Several\npoints were read only in part or through secondary instruments — in particular,\nthe operative text of Article 17 of the EU Market Abuse Regulation was not\nopened, and the Nasdaq listing rules and the full Form 8-K Item 5.02 text were\nnot verified.\n\n**The research** is thin. Graffin et al. is the strongest source: 601 Fortune\n1000 CEO successions from 1999 to 2004, finding unrelated self-controlled news\nannounced within a day of 20% of successions against an 11.4% baseline. The\nauthors say they infer intent from that gap rather than observe it. The\nvoluntary-versus-forced finding — published estimates of forced departures\nranging from 3% to 40% — comes from a summary of a working paper that has not\nbeen peer-reviewed, and the paper itself was not read. The Wells Fargo report\nwas read in part.\n\n**What no one has measured** is whether a more candid departure announcement\nproduces more trust, less rumor, better retention or any other outcome. This\nprotocol's central position — that an account should give a reason or say it is\nwithholding one — is judgment, not evidence.\n\n## What this protocol does not cover\n\n- **It cannot tell from the draft whether a departure was forced.** It flags\n  contradictions inside the draft, not suspicions about the facts behind it.\n- **It cannot check against documents it has not seen** — the separation\n  agreement, the board minutes, the regulatory filing, or the next proxy. The\n  questions ask the author to make those checks.\n- **It does not judge legal compliance.** Where it mentions disclosure\n  clocks or selective disclosure, an obligation *may* apply; counsel must\n  confirm.\n- **Its legal grounding covers only listed companies in the US and EU**, and in\n  the EU only the instruments named above; national codes and regulator\n  practice in most member states were not reviewed. For private companies,\n  nonprofits, arts organizations, public bodies, and US-listed foreign\n  issuers, the protocol applies reasoning borrowed from securities law by\n  analogy, with no authority behind the transfer. The UK is not covered.\n- **Sector rules are not covered** — banking, insurance, broker-dealer and\n  similar regimes may impose different requirements, including on reasons.\n- **It does not decide what should be said when an agreement limits what can be\n  said.** It asks whether the draft is consistent with that agreement; it does\n  not resolve the tension between confidentiality and candour. A human must.\n- **A departure caused by death** is not what this protocol was written for and\n  should be reviewed with care."
+      "prose": "## What this protocol narrows\n\nThe core asks for the central fact in ordinary words rather than euphemism. For a\ndeparture, the central fact is *that* the leader is leaving and *how* — not\nnecessarily *why*. There are legitimate reasons not to give a reason: the\nleader's health or family circumstances, an agreement both sides signed, legal\nexposure, or an investigation still running. In US securities law, the regulator\nconsidered requiring reasons for officer departures in 2004 and decided against\nit, partly to spare departing officers embarrassment and partly because of the\nrisk of defamation claims.\n\nSo this protocol treats **saying plainly that the reason is not being given** as\nan acceptable account. What it still flags is a stock phrase — \"to spend more\ntime with family\", \"to pursue other opportunities\", \"has decided to retire\" —\nused where other facts in the draft suggest it is not the whole story. Silence\nthat is declared is honest. A reassuring phrase standing in for the reason is\nthe thing to catch.\n\n## Source\n\nThis protocol rests on three different kinds of basis. The tool should not\nblend them, and each is labelled here.\n\n**1. Binding law — applies only to listed companies in the US and EU.**\n\n- US Securities and Exchange Commission, *Form 8-K*, Item 5.02 and General\n  Instruction B.1 (form revision SEC 873, February 2025).\n  https://www.sec.gov/files/form8-k.pdf\n- US SEC, Release 33-8400 / 34-49424, *Additional Form 8-K Disclosure\n  Requirements and Acceleration of Filing Date* (2004).\n  https://www.sec.gov/rules/2004/03/additional-form-8-k-disclosure-requirements-and-acceleration-filing-date\n  — the Commission's reasons for not requiring officers' reasons, and for\n  requiring a description of a director's disagreement.\n- US SEC, Division of Corporation Finance, *Compliance & Disclosure\n  Interpretations, Exchange Act Form 8-K*, Q117.01 (last updated 24 June 2024)\n  — the four-business-day clock runs from notice of the decision, not the\n  effective date. Staff guidance, not a Commission rule.\n  https://www.sec.gov/rules-regulations/staff-guidance/compliance-disclosure-interpretations/exchange-act-form-8-k\n- US SEC, Regulation FD, 17 CFR Part 243.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-243\n- US SEC, Rule 10b-5(b), 17 CFR 240.10b-5 — no material omission that makes\n  what is said misleading.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-240/subject-group-ECFR7dcc9448077bb0f/section-240.10b-5\n- US SEC, Regulation S-K Item 402(j), 17 CFR 229.402(j) — severance and its\n  conditions, including non-disparagement, disclosed in the proxy.\n  https://www.ecfr.gov/current/title-17/chapter-II/part-229/subject-group-ECFR6a1ef9c5c8e3e8a/section-229.402\n- Commission Delegated Regulation (EU) 2026/789 of 8 April 2026, Annex I row 13\n  — the governing body's decision on appointment or removal is the final event\n  that triggers disclosure. https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=OJ%3AL_202600789\n- Commission Implementing Regulation (EU) 2016/1055, Articles 2 and 3 — named\n  sender, date and time, permanent chronological web record.\n  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32016R1055\n- Directive 2007/36/EC as amended by Directive (EU) 2017/828, Article 9b —\n  remuneration reporting covering former directors and termination payments.\n  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:02007L0036-20170609\n- NYSE Regulation, *2026 Annual Listed Company Compliance Guidance Letter*\n  (27 January 2026). https://www.nyse.com/publicdocs/nyse/markets/nyse/NYSE_2026_Annual_Guidance_Letter.pdf\n\n**2. Documented behavior — justifies suspicion, not a standard.**\n\n- Graffin, S. D., Carpenter, M. A., & Boivie, S. (2011). \"What's all that\n  (strategic) noise? Anticipatory impression management in CEO succession.\"\n  *Strategic Management Journal*, 32(7), 748–770.\n  https://terry.uga.edu/sites/default/files/inline-files/Graffin_Carpenter__Boivie_2011.pdf\n  — basis for the clean-channel element and the second trigger.\n- Tayan, B., with Gow, I. D., & Larcker, D. F. (2017). \"Retired or Fired: How\n  Can Investors Tell If the CEO Left Voluntarily?\" Harvard Law School Forum on\n  Corporate Governance, 8 June 2017.\n  https://corpgov.law.harvard.edu/2017/06/08/retired-or-fired-how-can-investors-tell-if-the-ceo-left-voluntarily\n  — a summary of Stanford GSB Working Paper No. 3547; basis for the stock\n  phrases and the first trigger.\n- Independent Directors of the Board of Wells Fargo & Company, *Sales Practices\n  Investigation Report* (10 April 2017).\n  https://www.sec.gov/Archives/edgar/data/72971/000119312517118654/d375947ddefa14a.htm\n  — a documented gap between a board's own finding and its public statement;\n  basis for the last question; also the basis for the trigger on praising a\n  leader who left after a misconduct finding.\n\n**3. Declared professional judgment — no published source.**\n\nThe elements *character of the departure*, *reason or declared withholding*,\n*who holds the authority now*, *the organization's own voice* and *continuity of\nthe leader's commitments* are the protocol author's position. No law, standard\nor professional code requires them. The PRSA Code of Ethics (which names \"lying\nby omission\" as improper) and the IABC Code of Ethics are consistent with them\nbut do not address departures and should not be cited as their authority.\n\n## Basis\n\n**The law** is binding and unambiguous, but narrow. It governs the fact, timing,\nmoney and channel of a departure for listed companies. It does not require a\nreason for an officer's departure, does not require naming who decided, and\ncreates no duty to tell employees anything. It was written to protect\nsecurities markets, not to secure an account for the people affected. Several\npoints were read only in part or through secondary instruments — in particular,\nthe operative text of Article 17 of the EU Market Abuse Regulation was not\nopened, and the Nasdaq listing rules and the full Form 8-K Item 5.02 text were\nnot verified.\n\n**The research** is thin. Graffin et al. is the strongest source: 601 Fortune\n1000 CEO successions from 1999 to 2004, finding unrelated self-controlled news\nannounced within a day of 20% of successions against an 11.4% baseline. The\nauthors say they infer intent from that gap rather than observe it. The\nvoluntary-versus-forced finding — published estimates of forced departures\nranging from 3% to 40% — comes from a summary of a working paper that has not\nbeen peer-reviewed, and the paper itself was not read. The Wells Fargo report\nwas read in part.\n\n**What no one has measured** is whether a more candid departure announcement\nproduces more trust, less rumor, better retention or any other outcome. This\nprotocol's central position — that an account should give a reason or say it is\nwithholding one — is judgment, not evidence.\n\n## What this protocol does not cover\n\n- **It cannot tell from the draft whether a departure was forced.** It flags\n  contradictions inside the draft, not suspicions about the facts behind it.\n- **It cannot check against documents it has not seen** — the separation\n  agreement, the board minutes, the regulatory filing, or the next proxy. The\n  questions ask the author to make those checks.\n- **It does not judge legal compliance.** Where it mentions disclosure\n  clocks or selective disclosure, an obligation *may* apply; counsel must\n  confirm.\n- **Its legal grounding covers only listed companies in the US and EU**, and in\n  the EU only the instruments named above; national codes and regulator\n  practice in most member states were not reviewed. For private companies,\n  nonprofits, arts organizations, public bodies, and US-listed foreign\n  issuers, the protocol applies reasoning borrowed from securities law by\n  analogy, with no authority behind the transfer. The UK is not covered.\n- **Sector rules are not covered** — banking, insurance, broker-dealer and\n  similar regimes may impose different requirements, including on reasons.\n- **It does not decide what should be said when an agreement limits what can be\n  said.** It asks whether the draft is consistent with that agreement; it does\n  not resolve the tension between confidentiality and candour. A human must.\n- **A departure caused by death** is not what this protocol was written for and\n  should be reviewed with care."
     },
     {
       "id": "cyber-incident",
@@ -899,18 +912,121 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "leadership",
       "name": "Leadership change",
       "layer": "family",
-      "version": "0.1.0",
-      "status": "draft",
-      "last_reviewed": null,
-      "review_by": null,
+      "version": "0.3.0",
+      "status": "active",
+      "last_reviewed": "2026-09-26",
+      "review_by": "2027-03-26",
+      "rests_on": "US securities disclosure rules for appointments and board disputes, applied to announcements and to all organizations as professional judgement; no rule governs death announcements.",
       "changelog": [
-        "0.1.0 — stub. Structure only; no checks written."
+        "0.3.0 (2026-09-26): after a dry run on two messages about three employees killed in an air crash, the death check asks who holds responsibilities only for the death of a leader; new trigger for those who died left nameless with no reason given.",
+        "0.2.0 (2026-09-26): after a dry run on two CEO appointment releases, the check on ties behind an appointment became a trigger (fires only when a tie is shown and not mentioned) and a question, since announcements rarely state ties and filings carry them; the CEO departure protocol's question on the character of a departure added word for word, so succession announcements get it and the checklist removes it as a duplicate on departure drafts.",
+        "0.1.0 (2026-09-26): first draft from the Leadership family source review."
       ],
-      "rests_on": "Nothing yet. This is a stub and applies to no review until it has content and a status of active.",
-      "elements": [],
-      "triggers": [],
-      "questions": [],
-      "prose": "# Leadership change\n\nApplies to every event whose family is `leadership` in `protocols/events.yaml`.\nHolds what those events share; an event protocol holds only what differs\nfrom this.\n\n## Source\n\nNot yet written. This file exists so the layer is in place and the resolver\nskips it; it carries no checks and reaches no review while its status is\ndraft.\n\n## Basis\n\nNot yet written."
+      "elements": [
+        {
+          "id": "leadership.who-holds-the-role",
+          "name": "Who holds the role, and from when",
+          "means": "The draft says who holds the role and its authority, from what date, and whether the arrangement is interim; if interim, how and roughly when a permanent choice will be made.",
+          "weight": "core",
+          "dimension": "accountability_agency",
+          "basis": "law",
+          "sources": [
+            "sec-form-8k"
+          ],
+          "basis_note": "US listed companies must file the name, position and date of a new officer; applying this to all announcements and organizations is professional judgement."
+        },
+        {
+          "id": "leadership.how-decided",
+          "name": "How the decision was made",
+          "means": "The draft says which body made the decision (board, trustees, members) and, for an appointment, how the person was chosen (succession plan, search, internal process).",
+          "weight": "supporting",
+          "dimension": "accountability_agency",
+          "basis": "judgement",
+          "sources": [
+            "sec-slb-14e"
+          ],
+          "basis_note": "SEC staff treat succession planning as a governance matter; no rule requires an announcement to describe the process."
+        },
+        {
+          "id": "leadership.disagreement-described",
+          "name": "A disagreement described, or openly withheld",
+          "means": "Where a leader or director leaves, or the board is divided, over a disagreement, the draft says what the disagreement concerned, or says plainly that it won't.",
+          "weight": "core",
+          "dimension": "truthfulness_factual_discipline",
+          "basis": "law",
+          "sources": [
+            "sec-form-8k"
+          ],
+          "basis_note": "US listed companies must briefly describe a departing director's disagreement; applying this to leaders and other organizations is professional judgement."
+        },
+        {
+          "id": "leadership.death-with-care",
+          "name": "A death announced with care",
+          "means": "Where the event is a death, the draft shares only facts the family has agreed to, does not speculate about the cause, and tells colleagues what support is available. For the death of a leader, it also says who holds their responsibilities for now.",
+          "weight": "supporting",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "judgement",
+          "sources": []
+        }
+      ],
+      "triggers": [
+        {
+          "check": "An appointment is announced as a biography or tribute, with no word on who made the decision or how the person was chosen.",
+          "dimension": "accountability_agency"
+        },
+        {
+          "check": "A death announcement gives or hints at a cause of death, or private details, not attributed to the family's wishes.",
+          "dimension": "stakeholder_respect_impact",
+          "review": [
+            "HR",
+            "Legal"
+          ]
+        },
+        {
+          "check": "The draft refers to those who died only as \"employees\", \"members of the [company] family\" or \"those involved\", with no names and no explanation that names are being withheld (for example, at the families' request).",
+          "dimension": "stakeholder_respect_impact",
+          "review": [
+            "HR"
+          ]
+        },
+        {
+          "check": "The draft or the supplied context shows a tie behind an appointment (a family relationship, an investor's nominee, a board member stepping into the role, prior business dealings) and the draft doesn't mention it.",
+          "dimension": "fairness_independence_conflicts",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Was this departure the leader's decision, the board's, or negotiated between them — and would the draft's description still stand if the separation terms were published?",
+          "review": [
+            "Legal",
+            "Executive"
+          ]
+        },
+        {
+          "ask": "Is there any arrangement, family relationship or financial tie behind this appointment that a filing will show, and is the announcement consistent with it?",
+          "review": [
+            "Legal",
+            "Investor relations"
+          ]
+        },
+        {
+          "ask": "Has the family agreed to what is said, and have close colleagues been told before the wider announcement?",
+          "review": [
+            "HR"
+          ]
+        },
+        {
+          "ask": "Is there a succession plan, and can the draft say so without committing to names or dates it can't keep?",
+          "review": [
+            "Executive"
+          ]
+        }
+      ],
+      "prose": "## What this protocol is\n\nThe shared checks for every event in the Leadership family: CEO or senior-leader departures, new appointments, board changes or disputes, and the death of a leader or employee. It matters most for the three events without their own protocol.\n\nOn CEO departure drafts, that protocol's *Who holds the authority now* replaces this family's *Who holds the role, and from when*, and its trigger on a departing board member's unexplained \"differences\" is a sharper form of *A disagreement described, or openly withheld*.\n\n## Source\n\n**Binding law (US listed companies), read in the parts cited:**\n\n- SEC Form 8-K, Item 5.02(a), (c) and (d). https://www.sec.gov/files/form8-k.pdf\n- Regulation S-K Item 401(b), (d) and (e), 17 CFR 229.401. https://www.ecfr.gov/current/title-17/chapter-II/part-229/subpart-229.400/section-229.401\n\n**Other law:** GDPR Recital 27 (does not apply to deceased persons' data). https://gdpr-info.eu/recitals/no-27/\n\n**Regulator guidance, read for the CEO departure review:** SEC Staff Legal Bulletin 14E (succession planning); SEC C&DI 217.04 (a death is not a Form 8-K departure).\n\n**Declared professional judgement:** *How the decision was made*; *A death announced with care*; the wording of all four triggers; applying filing rules to announcements and to organizations that aren't US-listed.\n\nFull source review: `sources/reviews/leadership-family-source-review.md`.\n\n## What this protocol does not cover\n\n- Whether a filing is required, or its timing. The Listed company overlay asks; counsel decides.\n- Nonprofit, public-body and private-company governance rules.\n- A death caused by an incident at work: enter it as \"Workplace accident or serious injury\", which brings the Incident family and the People harmed overlay."
     },
     {
       "id": "scrutiny",

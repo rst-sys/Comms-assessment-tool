@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { compile, readSourceIds, render, splitFrontMatter } from "../../../scripts/compile-protocols.js";
-import { checkLibrary, checkProtocol, PROTOCOL_CAPS, protocolWordBudget } from "../protocolFormat.js";
+import { checkLibrary, checkProtocol, PROTOCOL_CAPS, protocolWordBudget, TRIGGER_CAPS } from "../protocolFormat.js";
 import { buildProtocolBlock, protocolWordCount } from "../protocolPrompt.js";
 import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
 import { worstCase } from "../bundleWorstCase.js";
@@ -137,9 +137,14 @@ describe("the checker", () => {
     expect(messages({ ...good, last_reviewed: "yesterday" })).toContain("must be a date");
   });
 
-  it("holds the caps", () => {
+  it("holds the caps, per layer", () => {
     const many = (n: number) => Array.from({ length: n }, (_, i) => ({ check: `C${i}.`, dimension: "accountability_agency" }));
-    expect(messages({ ...good, triggers: many(PROTOCOL_CAPS.triggers + 1) })).toContain("If everything is serious, nothing is.");
+    // `good` is an event protocol, and the layers no longer share one ceiling.
+    const cap = TRIGGER_CAPS.event;
+    expect(messages({ ...good, triggers: many(cap + 1) })).toContain("If everything is serious, nothing is.");
+    expect(messages({ ...good, triggers: many(cap) })).not.toContain("If everything is serious, nothing is.");
+    // A family gets fewer: it states what its events share, not what each adds.
+    expect(messages({ ...good, layer: "family", triggers: many(TRIGGER_CAPS.family + 1) })).toContain("a family protocol may carry is");
   });
 
   it("refuses a protocol that cannot say what it rests on", () => {

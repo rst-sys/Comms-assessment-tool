@@ -96,7 +96,12 @@ export const ELEMENT_CAPS: Record<ProtocolLayer, number> = {
 export const TRIGGER_CAPS: Record<ProtocolLayer, number> = {
   core: PROTOCOL_CAPS.triggers,
   family: PROTOCOL_CAPS.triggers,
-  event: PROTOCOL_CAPS.triggers,
+  // Seven, for ceo-departure, which was written before the families existed
+  // and carries checks a family would hold today. Raised rather than dropping
+  // one of its triggers, which would have been a silent change to how a
+  // departure is reviewed; the right fix is to move what the Leadership
+  // family should own up a layer, and that is a change of its own.
+  event: 7,
   overlay: 8,
 };
 
@@ -187,11 +192,17 @@ export interface ProtocolTrigger {
   dimension: DimensionId;
   review?: SpecialistReviewType[];
   /**
-   * A core protocol element id this trigger is the event-specific form of.
+   * An element id, in a layer above, that this trigger is the sharper form of.
    *
    * The core says the central fact must not hide behind euphemism;
-   * workforce-reduction lists the euphemisms. One gap in the draft, two ways
-   * of describing it, and without this the model is invited to raise it twice.
+   * workforce-reduction lists the euphemisms. The leadership family asks for a
+   * disagreement to be described or openly withheld; ceo-departure names the
+   * "differences" formula that evades it. One gap in the draft, two ways of
+   * describing it, and without this the model is invited to raise it twice.
+   *
+   * Any element above this protocol's layer, not only a core one: the layer
+   * the target sits in is checked by checkLibrary, which has the whole library
+   * to look in.
    */
   narrows?: string;
 }
@@ -376,8 +387,8 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       const at = `trigger ${i + 1}`;
       if (!isStr(t.check)) err(`${at} needs "check": what to look for, checkable by reading the draft`);
       if (!one(t.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(t.dimension)} is not one of the ten scored dimensions`);
-      if (t.narrows !== undefined && !(typeof t.narrows === "string" && t.narrows.startsWith("core."))) {
-        err(`${at} narrows ${JSON.stringify(t.narrows)}. A trigger may only sharpen a core protocol element, named by its id, such as core.central_fact_first.`);
+      if (t.narrows !== undefined && !(isStr(t.narrows) && /^[a-z0-9-]+\.[\w-]+$/.test(t.narrows))) {
+        err(`${at} narrows ${JSON.stringify(t.narrows)}. Name the element it sharpens by its id, such as core.central_fact_first or leadership.disagreement-described.`);
       }
       reviewList(t.review, at, err);
     });
@@ -502,6 +513,7 @@ export function checkLibrary(
   // dropped, or the model is told to fold a finding into a check that is not
   // there, and the only sign is two findings for one gap.
   const elementIds = new Set(files.flatMap(({ data }) => data.elements.map((e) => e.id)));
+  const elementsById = new Map(files.flatMap(({ data }) => data.elements.map((e) => [e.id, { layer: data.layer }] as const)));
   for (const { file, data } of files) {
     for (const e of data.elements) {
       for (const target of e.replaces ?? []) {
@@ -509,13 +521,27 @@ export function checkLibrary(
       }
     }
     for (const n of data.narrows ?? []) {
-      if (n.startsWith("core.") && !elementIds.has(n)) {
-        errors.push({ file, message: `narrows "${n}", which the core protocol does not define` });
+      if (n.includes(".") && !elementIds.has(n)) {
+        errors.push({ file, message: `narrows "${n}", which no protocol defines` });
       }
     }
     data.triggers.forEach((t, i) => {
-      if (t.narrows && !elementIds.has(t.narrows)) {
-        errors.push({ file, message: `trigger ${i + 1} narrows "${t.narrows}", which the core protocol does not define` });
+      if (!t.narrows) return;
+      const target = elementsById.get(t.narrows);
+      if (!target) {
+        errors.push({ file, message: `trigger ${i + 1} narrows "${t.narrows}", which no protocol defines` });
+        return;
+      }
+      // Sharper, not sideways: a trigger folds a check stated generally by a
+      // layer ABOVE it into its own wording. Narrowing a peer or a layer below
+      // would be two protocols each deferring to the other.
+      if (PROTOCOL_LAYERS.indexOf(target.layer) >= PROTOCOL_LAYERS.indexOf(data.layer)) {
+        errors.push({
+          file,
+          message:
+            `trigger ${i + 1} narrows "${t.narrows}", which is in the ${target.layer} layer. ` +
+            `A ${data.layer} protocol may only sharpen a check stated by a layer above it.`,
+        });
       }
     });
   }

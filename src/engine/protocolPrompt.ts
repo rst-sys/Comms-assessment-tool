@@ -14,15 +14,23 @@
 import { FRAMEWORK_NARROWABLE, type ProtocolFile } from "./protocolFormat.js";
 import { PROTOCOL_LIBRARY } from "./protocolLibrary.js";
 
-/** Core element ids to their names, so a narrowing line can name the check. */
-const CORE_ELEMENT_NAMES: Record<string, string> = Object.fromEntries(
-  PROTOCOL_LIBRARY.filter((p) => p.layer === "core").flatMap((p) => p.elements.map((e) => [e.id, e.name] as const)),
+/**
+ * Element ids to their name and layer, so a narrowing line can say which
+ * check it folds into and where that check comes from.
+ *
+ * Every layer, not just the core: a family states a check generally and an
+ * event protocol sharpens it, the same relationship the core has with the
+ * layers below it.
+ */
+const ELEMENTS_BY_ID: Record<string, { name: string; layer: string }> = Object.fromEntries(
+  PROTOCOL_LIBRARY.flatMap((p) => p.elements.map((e) => [e.id, { name: e.name, layer: p.layer }] as const)),
 );
 
-/** What a protocol says when it carries the sharper form of a core check. */
+/** What a protocol says when it carries the sharper form of a check above it. */
 function narrowsNote(target: string): string {
-  const name = CORE_ELEMENT_NAMES[target] ?? target;
-  return `sharper form of the core check "${name}" — one finding, not two`;
+  const found = ELEMENTS_BY_ID[target];
+  const where = found ? `${found.layer} check` : "check";
+  return `sharper form of the ${where} "${found?.name ?? target}" — one finding, not two`;
 }
 
 function reviewNote(review: string[] | undefined): string {
@@ -89,7 +97,7 @@ A protocol applies to this draft because of the event or the goal the author sel
 ELEMENTS are what a credible communication of that kind contains. The dimension in brackets is the one each bears on.
 HIGH-SEVERITY TRIGGERS are gaps to raise as High-severity findings when the draft meets them, on the dimension named. Where a review type is named, set specialist_review_needed true with that type.
 NARROWS THIS FRAMEWORK CHECK means the event makes the named requirement unsafe to assert; raise it as a question rather than a finding.
-NARROWS THIS CORE CHECK, and the same note on a single trigger, means this protocol carries the sharper, event-specific reading of a check the core protocol above states generally. Apply this protocol's reading. Where the same gap in the draft would satisfy both, raise ONE finding, worded from this protocol, not one for each.
+NARROWS THIS CORE CHECK, and the same note on a single trigger, means this protocol carries the sharper, event-specific reading of a check a layer above it states generally. Apply this protocol's reading. Where the same gap in the draft would satisfy both, raise ONE finding, worded from this protocol, not one for each.
 
 The protocols are a lens on the ten dimensions you already score, never an eleventh score and never a section of their own: raise what you find through the ordinary findings. Name the kind of information missing — a date, a named owner, the selection criteria — and never supply wording. Where a legal, consultation or disclosure obligation may apply, say that it may and that counsel must confirm; never state that a draft is compliant or non-compliant. A protocol tells you what to look for. It does not raise the finding or question caps.`;
 

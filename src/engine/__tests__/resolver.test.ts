@@ -141,9 +141,9 @@ describe("a death is not a departure", () => {
     // the separation terms were. Neither question survives contact with a death.
     const applied = resolveProtocols({ ...base, communication_event: "Death of a leader or employee" }).protocols;
     expect(applied.map((p) => p.id)).not.toContain("ceo-departure");
-    // The core applies because the event is named and has a family; nothing
-    // else does. The leadership family is still a stub.
-    expect(applied.map((p) => p.id)).toEqual(["core"]);
+    // The core applies because the event is named, and the leadership family
+    // because that is where a death sits. Neither asks why the leader left.
+    expect(applied.map((p) => p.id)).toEqual(["core", "leadership"]);
   });
 });
 

@@ -87,13 +87,15 @@ describe("the protocol library", () => {
     expect(protocolsFor({ ...DEMO_1.request, communication_event: "Something else" }).map((p) => p.id)).toEqual(["core"]);
   });
 
-  it("sends the core and nothing more for an event that has no file yet", () => {
+  it("sends the core and its family for an event with no protocol of its own", () => {
     const request = { ...DEMO_1.request, communication_event: "Board change or governance dispute" as const };
-    // Its family, leadership, is still a stub, and no overlay rule holds.
-    expect(protocolsFor(request).map((p) => p.id)).toEqual(["core"]);
+    // No event protocol and no overlay rule holds, so the family is what the
+    // event gets beyond the core — which is the point of having families.
+    expect(protocolsFor(request).map((p) => p.id)).toEqual(["core", "leadership"]);
     const blocks = buildSystemBlocks(request).map((b) => b.text);
     expect(blocks[0]).toBe(SYSTEM_PROMPT);
     expect(blocks[1]!.startsWith("CORE PROTOCOL")).toBe(true);
+    expect(blocks[2]!.startsWith("LEADERSHIP CHANGE")).toBe(true);
     expect(blocks[blocks.length - 1]).toBe(OUTPUT_NOTES);
   });
 

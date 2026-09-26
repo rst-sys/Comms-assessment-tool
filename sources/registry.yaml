@@ -722,3 +722,41 @@ sources:
     last_checked: 2026-09-25
     review_by: 2027-03-25
     notes: "Binding through national transposition, and only on essential and important entities. Read from a secondary host because EUR-Lex returned 404; verify against the Official Journal. Cited by incident.service-status."
+
+  # ---------------------------------------------------------------- leadership family
+  - id: sec-reg-sk-401
+    title: "Regulation S-K Item 401(b), (d) and (e), 17 CFR 229.401"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ecfr.gov/current/title-17/chapter-II/part-229/subpart-229.400/section-229.401
+    version_or_date: "current as of 24 September 2026"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding on SEC registrants. Named in the Leadership family's Source section."
+  - id: sec-slb-14e
+    title: "Staff Legal Bulletin No. 14E (CEO succession planning)"
+    issuer: US SEC Division of Corporation Finance
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.sec.gov/interps/legal/cfslb14e.htm
+    version_or_date: "27 October 2009 (page dated 9 July 2021)"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Staff guidance, not a Commission rule. Read for the CEO departure source review. Cited by leadership.how-decided."
+  - id: gdpr-recital-27
+    title: "Regulation (EU) 2016/679 (GDPR), Recital 27"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://gdpr-info.eu/recitals/no-27/
+    version_or_date: "2016"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding regulation; recitals explain its scope. GDPR does not apply to deceased persons' data, and member states may set their own rules. Named in the Leadership family's Source section."
