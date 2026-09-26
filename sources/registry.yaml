@@ -872,3 +872,65 @@ sources:
     last_checked: 2026-09-26
     review_by: 2027-03-26
     notes: "Abstract only; APA PsycNet blocked the full text by robots.txt. Read for the core protocol source review (§5.4), which found it small and lab-based. Cited by allegations.alleged-vs-established."
+
+  # ---------------------------------------------------------------- public scrutiny family
+  - id: eu-mar-2014-596
+    title: "Regulation (EU) No 596/2014 (Market Abuse Regulation), Article 17(7)"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://www.legislation.gov.uk/eur/2014/596/article/17
+    version_or_date: "16 April 2014"
+    read_status: read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding on issuers with securities on EU markets. Read from the UK retained copy. Closes a gap the listed-company overlay records in its Limits, where MAR Article 17 is noted as known only second-hand. Cited by scrutiny.no-denial-of-what-is-true."
+  - id: nyse-lcm-202-03
+    title: "NYSE Listed Company Manual, Section 202.03, Dealing with Rumors or Unusual Market Activity"
+    issuer: New York Stock Exchange
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.sec.gov/files/rules/sro/nyse/2015/34-75809-ex5.pdf
+    version_or_date: "as filed 2015"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "A binding listing standard for NYSE-listed companies. Read from the 2015 rule-filing exhibit, not the current Manual. Cited by scrutiny.no-denial-of-what-is-true."
+  - id: lewandowsky-2020-debunking
+    title: "The Debunking Handbook 2020, doi:10.17910/b7.1182"
+    issuer: "Lewandowsky, Cook, Ecker et al. — 22 misinformation researchers"
+    tier: 2
+    jurisdiction: []
+    binding: false
+    url: https://skepticalscience.com/docs/DebunkingHandbook2020.pdf
+    version_or_date: "2020"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Expert consensus, not binding. Pages 9 and 12 read. Cited by scrutiny.correction-fact-first."
+  - id: herhausen-2019-firestorms
+    title: "Detecting, Preventing, and Mitigating Online Firestorms in Brand Communities. Journal of Marketing 83(3), doi:10.1177/0022242918822300"
+    issuer: "Herhausen, Ludwig, Grewal, Wulf & Schoegel"
+    tier: 3
+    jurisdiction: [US]
+    binding: false
+    url: https://research.vu.nl/ws/files/159387363/Detecting_preventing_and_mitigating_online_firestorms_in_brand_communities.pdf
+    version_or_date: "2019"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Peer-reviewed research, not binding. Author-accepted version. Cited by scrutiny.position-and-reasons."
+  - id: sec-rule-14a-9
+    title: "SEC Rule 14a-9 and Note, 17 CFR 240.14a-9"
+    issuer: US Securities and Exchange Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/cfr/text/17/240.14a-9
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-26
+    review_by: 2027-03-26
+    notes: "Binding for proxy solicitations. Cited by no element: it underpins the scrutiny family's trigger on attacking critics' character and its proxy question, and is named in that protocol's Source section."
