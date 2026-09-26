@@ -622,3 +622,65 @@ sources:
     last_checked: 2026-09-25
     review_by: 2027-03-25
     notes: "A documented gap between a board's own finding and its public statement. Basis for ceo-departure's last question."
+
+  # ---------------------------------------------------------------- workforce family
+  - id: eu-directive-2019-1152
+    title: "Directive (EU) 2019/1152 on transparent and predictable working conditions, Articles 4(2) and 6"
+    issuer: European Parliament and Council
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32019L1152
+    version_or_date: "20 June 2019"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Binding through national transposition, which was not reviewed. Cited by workforce.what-changes-and-when."
+  - id: nlra-29-usc-158
+    title: "National Labor Relations Act, 29 U.S.C. § 158(c) and (d)"
+    issuer: US Congress
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/uscode/text/29/158
+    version_or_date: "current"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Subsections (c) and (d) read. The bargaining duty applies where a union represents employees. Cited by workforce.bargaining-and-consultation."
+  - id: nlrb-bargaining-good-faith
+    title: "Bargaining in good faith with employees' union representative (Section 8(d) & 8(a)(5))"
+    issuer: National Labor Relations Board
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/bargaining-in-good-faith-with-employees-union-representative
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Explains binding law rather than being it. NLRB standards on unilateral changes are revised by successive Boards. Cited by workforce.bargaining-and-consultation."
+  - id: nlrb-interference-8a1
+    title: "Interfering with employee rights (Section 7 & 8(a)(1))"
+    issuer: National Labor Relations Board
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/interfering-with-employee-rights-section-7-8a1
+    version_or_date: "undated page"
+    read_status: read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "Explains binding law rather than being it. Behind the workforce family's trigger on linking a consequence to union support; named in that protocol's Source section rather than on an element."
+  - id: eeoc-reasonable-accommodation-2002
+    title: "Enforcement Guidance on Reasonable Accommodation and Undue Hardship under the ADA"
+    issuer: US Equal Employment Opportunity Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.eeoc.gov/laws/guidance/enforcement-guidance-reasonable-accommodation-and-undue-hardship-under-ada
+    version_or_date: "17 October 2002"
+    read_status: partly_read
+    last_checked: 2026-09-25
+    review_by: 2027-03-25
+    notes: "States it has no force of law; explains the ADA. Whether it has been revised since 2002 was not checked. Cited by workforce.route-for-individual-circumstances."

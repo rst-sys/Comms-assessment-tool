@@ -23,6 +23,7 @@ describe("buildSystemBlocks", () => {
     expect(blocks[0]).toBe(SYSTEM_PROMPT);
     expect(blocks.slice(1, -2).map((t) => t.split("\n")[0])).toEqual([
       "CORE PROTOCOL (core protocol)",
+      "WORKFORCE AND ORGANIZATION CHANGE (family protocol)",
       "WORKFORCE REDUCTION AND RESTRUCTURING (event protocol)",
       "WORKFORCE IMPACT (overlay protocol)",
     ]);
@@ -68,9 +69,9 @@ describe("buildSystemBlocks", () => {
 
   it("sends the shared rules once however many protocols apply", () => {
     const blocks = buildSystemBlocks({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((b) => b.text);
-    // Core, the event protocol, and two overlays: the apology the purpose
-    // switched on and the workforce overlay the event did.
-    expect(protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" })).toHaveLength(4);
+    // Core, the family, the event protocol, and two overlays: the apology the
+    // purpose switched on and the workforce overlay the event did.
+    expect(protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" })).toHaveLength(5);
     expect(blocks.filter((t) => t === PROTOCOL_RULES)).toHaveLength(1);
   });
 });
@@ -79,7 +80,7 @@ describe("the protocol library", () => {
   it("selects one event and one posture from the intake, never by reading the draft", () => {
     const applied = protocolsFor({ ...DEMO_1.request, purpose: "Apologize and take responsibility" }).map((p) => p.id);
     // Core first, then the event, then the overlays sorted by id.
-    expect(applied).toEqual(["core", "workforce-reduction", "apology", "workforce-impact"]);
+    expect(applied).toEqual(["core", "workforce", "workforce-reduction", "apology", "workforce-impact"]);
 
     // "Something else" has no family, so no family protocol and no event
     // protocol; the core still applies, and this request switches on no overlay.

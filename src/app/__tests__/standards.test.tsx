@@ -107,7 +107,10 @@ describe("the page, and the line it must not cross", () => {
     // standards the tool does not run.
     for (const protocol of ACTIVE) {
       expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
-      expect(screen.getAllByText(new RegExp(`Applied when.*Version ${protocol.version}`)).length, protocol.id).toBeGreaterThan(0);
+      // Not anchored on "Applied when": each layer says when it applies in its
+      // own words — "Applied whenever an event is named" for the core,
+      // "Applied to every workforce event" for a family.
+      expect(screen.getAllByText(new RegExp(`Applied .*Version ${protocol.version}`)).length, protocol.id).toBeGreaterThan(0);
     }
     for (const protocol of PROTOCOLS.filter((p) => p.status !== "active")) {
       expect(screen.queryByRole("heading", { name: protocol.name }), protocol.id).toBeNull();

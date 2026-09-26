@@ -13,12 +13,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "core",
       "name": "Core protocol",
       "layer": "core",
-      "version": "0.5.1",
+      "version": "0.6.0",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
       "rests_on": "Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.",
       "changelog": [
+        "0.6.0 (2026-09-25): central-fact threshold tightened from \"the first two or three sentences\" to \"first, or second after a one-sentence signpost\", after a return-to-office test memo put the fact in sentence three behind a values sentence and a euphemism.",
         "0.5.1 — basis notes moved into the file",
         "0.5.0 (2026-09-25): made to pass the build checker. Added rests_on; removed the frontmatter narrows (the core sits directly under the framework and can't narrow it; the relationship is described in the body); added a Source section. No element, trigger or question changed.",
         "0.4.0 (2026-09-25): cleared to activate without Seeger (2006) and Ma & Zhan (2016) in the original; limitation recorded.",
@@ -30,7 +31,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
         {
           "id": "core.central_fact_first",
           "name": "The central fact first, in ordinary words",
-          "means": "The draft states the central fact, what happened or what was decided, in its first two or three sentences and in ordinary words (for example, that jobs are ending, not that a workforce is \"impacted\"), before background, values, achievements or context. A one-line signpost before it is fine.",
+          "means": "The draft states the central fact, what happened or what was decided, in its first sentence, or in its second after a one-sentence signpost, and in ordinary words (for example, that jobs are ending, not that a workforce is \"impacted\"), before background, values, achievements or context.",
           "weight": "core",
           "dimension": "clarity_plain_language",
           "basis": "standard",
@@ -39,7 +40,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "who-erc-2017",
             "li-2008"
           ],
-          "basis_note": "A plain-language standard and WHO guidance applied to organizations by analogy, supported by one large study showing bad news is written less plainly. The “first two or three sentences” threshold is the tool's own."
+          "basis_note": "A plain-language standard and WHO guidance applied to organizations by analogy, supported by one large study showing bad news is written less plainly. The one-sentence threshold is the tool's own."
         },
         {
           "id": "core.estimates_as_estimates",
@@ -58,7 +59,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       ],
       "triggers": [
         {
-          "check": "The central fact first appears after the first two or three sentences, following background, values, achievements or context; or it is stated only in euphemism (\"transformation\", \"impacted\", \"realignment\") so that a reader skimming the opening would not know what happened.",
+          "check": "More than one sentence (background, values, achievements, context or euphemism) comes before the central fact; or it is stated only in euphemism (\"transformation\", \"impacted\", \"realignment\") so that a reader skimming the opening would not know what happened.",
           "dimension": "clarity_plain_language"
         },
         {
@@ -85,7 +86,7 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "ask": "If a reader read only the first two sentences, would they know what happened or what was decided?"
         }
       ],
-      "prose": "## What this protocol is\n\nThe framework prompt already asks every draft to make the account visible: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol does not repeat any of that. It **narrows** two framework elements for every named event:\n\n- **The decision** must come in the first two or three sentences and in ordinary words, not after context or behind euphemism.\n- **What is known and not yet known.** The framework applies this only when the situation is still unfolding. The core applies it at every stage, because planned announcements also contain forecasts and estimates.\n\nIt adds one trigger with its own basis: leading with the organization's strategy, ambitions, record or values before the people affected (Coombs 2007).\n\n## Source\n\n**Regulator and agency guidance (official, not binding), read:**\n\n- World Health Organization, *Communicating risk in public health emergencies: a WHO guideline for emergency risk communication (ERC) policy and practice* (2017). https://www.who.int/publications/i/item/9789241550208 — recommendations A.1, A.2, C4.1 and C4.3.\n- US Centers for Disease Control and Prevention, *Crisis and Emergency Risk Communication (CERC) Manual: Introduction* (2018 update). https://www.cdc.gov/cerc/media/pdfs/CERC_Introduction.pdf — the six CERC principles.\n\n**Standards body, read in part:**\n\n- ISO 24495-1:2023, *Plain language — Part 1: Governing principles and guidelines*. https://www.iso.org/standard/78907.html — catalogue page and abstract only.\n\n**Research:**\n\n- Coombs, W. T. (2007). \"Protecting organization reputations during a crisis.\" *Corporate Reputation Review*, 10(3), 163–176. https://link.springer.com/article/10.1057/palgrave.crr.1550049 — read in the relevant sections.\n- Li, F. (2008). \"Annual report readability, current earnings, and earnings persistence.\" *Journal of Accounting and Economics*, 45(2–3), 221–247. https://www.sciencedirect.com/science/article/abs/pii/S0165410108000141 — abstract read.\n- Seeger, M. W. (2006). \"Best practices in crisis communication: An expert panel process.\" *Journal of Applied Communication Research*, 34(3), 232–244. https://www.tandfonline.com/doi/abs/10.1080/00909880600769944 — **not opened**; quoted from Veil et al. (2020).\n\n**Declared professional judgement:** the wording of each trigger, the \"first two or three sentences\" threshold, and the choice of these two checks from the wider guidance.\n\nFull source review, including what could not be read: `sources/reviews/core-protocol-source-review.md`.\n\n## Basis\n\n*The central fact first* rests on a plain-language standard (ISO 24495-1), WHO's recommendation against technical explanation, and research showing organizations write less plainly when the news is bad (Li 2008).\n\n*Estimates marked as estimates* rests on WHO's strong recommendation to \"indicate what is known and not known at a given time\", CDC CERC's \"Be Right\" and Seeger's (2006) \"Accept uncertainty and ambiguity\". This guidance was written for public authorities in health emergencies; **the tool applies it to organizational communication by analogy.**\n\nThe reputation-first trigger rests on Coombs (2007): \"The first priority in any crisis is to protect stakeholders from harm, not to protect the reputation.\"\n\n\n## What this protocol does not cover\n\n- Everything the framework prompt already checks (see the source review's addendum, which maps its sources onto those framework elements).\n- **Timing** (whether the organization spoke first): Stage overlay.\n- **Acknowledging harm in words:** People harmed overlay.\n- **Apology:** apology overlay and the Allegations family.\n- **Legal obligations:** overlays.\n\n## How other protocols relate to these checks\n\n- The geopolitical protocol narrows *The central fact first*: general wording about locations or people in a danger zone may be a security decision, not euphemism.\n- The workforce-reduction protocol's list of euphemisms (rightsizing, realignment, impacted…) is a sharper, event-specific form of *The central fact first*.\n- The cyber-incident protocol's check on categorical claims (\"no data was compromised\", \"contained\") during an investigation is a sharper, event-specific form of *Estimates marked as estimates*.\n\nWhere both fire, the tool raises one finding, not two.\n\n## Sources not read in the original\n\n- **Seeger (2006)** was not available. Its best practices are cited as quoted in a peer-reviewed secondary source, Veil et al. (2020). Only `core.estimates_as_estimates` relies on it, alongside WHO (2017) and CDC CERC, which were read.\n- **Ma & Zhan (2016)**, the main meta-analysis of crisis-response research, could not be opened. No element relies on it. It would have tested whether the crisis-response literature supports or contradicts these checks; that remains unchecked.\n\nDecision (25 September 2026): activate without them, with this note. Revisit if either becomes available."
+      "prose": "## What this protocol is\n\nThe framework prompt already asks every draft to make the account visible: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol does not repeat any of that. It **narrows** two framework elements for every named event:\n\n- **The decision** must come in the first sentence, or the second after a one-sentence signpost, and in ordinary words, not after context or behind euphemism.\n- **What is known and not yet known.** The framework applies this only when the situation is still unfolding. The core applies it at every stage, because planned announcements also contain forecasts and estimates.\n\nIt adds one trigger with its own basis: leading with the organization's strategy, ambitions, record or values before the people affected (Coombs 2007).\n\n## Source\n\n**Regulator and agency guidance (official, not binding), read:**\n\n- World Health Organization, *Communicating risk in public health emergencies: a WHO guideline for emergency risk communication (ERC) policy and practice* (2017). https://www.who.int/publications/i/item/9789241550208 — recommendations A.1, A.2, C4.1 and C4.3.\n- US Centers for Disease Control and Prevention, *Crisis and Emergency Risk Communication (CERC) Manual: Introduction* (2018 update). https://www.cdc.gov/cerc/media/pdfs/CERC_Introduction.pdf — the six CERC principles.\n\n**Standards body, read in part:**\n\n- ISO 24495-1:2023, *Plain language — Part 1: Governing principles and guidelines*. https://www.iso.org/standard/78907.html — catalogue page and abstract only.\n\n**Research:**\n\n- Coombs, W. T. (2007). \"Protecting organization reputations during a crisis.\" *Corporate Reputation Review*, 10(3), 163–176. https://link.springer.com/article/10.1057/palgrave.crr.1550049 — read in the relevant sections.\n- Li, F. (2008). \"Annual report readability, current earnings, and earnings persistence.\" *Journal of Accounting and Economics*, 45(2–3), 221–247. https://www.sciencedirect.com/science/article/abs/pii/S0165410108000141 — abstract read.\n- Seeger, M. W. (2006). \"Best practices in crisis communication: An expert panel process.\" *Journal of Applied Communication Research*, 34(3), 232–244. https://www.tandfonline.com/doi/abs/10.1080/00909880600769944 — **not opened**; quoted from Veil et al. (2020).\n\n**Declared professional judgement:** the wording of each trigger, the one-sentence threshold, and the choice of these two checks from the wider guidance.\n\nFull source review, including what could not be read: `sources/reviews/core-protocol-source-review.md`.\n\n## Basis\n\n*The central fact first* rests on a plain-language standard (ISO 24495-1), WHO's recommendation against technical explanation, and research showing organizations write less plainly when the news is bad (Li 2008).\n\n*Estimates marked as estimates* rests on WHO's strong recommendation to \"indicate what is known and not known at a given time\", CDC CERC's \"Be Right\" and Seeger's (2006) \"Accept uncertainty and ambiguity\". This guidance was written for public authorities in health emergencies; **the tool applies it to organizational communication by analogy.**\n\nThe reputation-first trigger rests on Coombs (2007): \"The first priority in any crisis is to protect stakeholders from harm, not to protect the reputation.\"\n\n\n## What this protocol does not cover\n\n- Everything the framework prompt already checks (see the source review's addendum, which maps its sources onto those framework elements).\n- **Timing** (whether the organization spoke first): Stage overlay.\n- **Acknowledging harm in words:** People harmed overlay.\n- **Apology:** apology overlay and the Allegations family.\n- **Legal obligations:** overlays.\n\n## How other protocols relate to these checks\n\n- The geopolitical protocol narrows *The central fact first*: general wording about locations or people in a danger zone may be a security decision, not euphemism.\n- The workforce-reduction protocol's list of euphemisms (rightsizing, realignment, impacted…) is a sharper, event-specific form of *The central fact first*.\n- The cyber-incident protocol's check on categorical claims (\"no data was compromised\", \"contained\") during an investigation is a sharper, event-specific form of *Estimates marked as estimates*.\n\nWhere both fire, the tool raises one finding, not two.\n\n## Sources not read in the original\n\n- **Seeger (2006)** was not available. Its best practices are cited as quoted in a peer-reviewed secondary source, Veil et al. (2020). Only `core.estimates_as_estimates` relies on it, alongside WHO (2017) and CDC CERC, which were read.\n- **Ma & Zhan (2016)**, the main meta-analysis of crisis-response research, could not be opened. No element relies on it. It would have tested whether the crisis-response literature supports or contradicts these checks; that remains unchecked.\n\nDecision (25 September 2026): activate without them, with this note. Revisit if either becomes available."
     },
     {
       "id": "ceo-departure",
@@ -841,18 +842,113 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "workforce",
       "name": "Workforce and organization change",
       "layer": "family",
-      "version": "0.1.0",
-      "status": "draft",
-      "last_reviewed": null,
-      "review_by": null,
+      "version": "0.2.0",
+      "status": "active",
+      "last_reviewed": "2026-09-25",
+      "review_by": "2027-03-25",
+      "rests_on": "EU working-conditions and consultation directives, the US National Labor Relations Act and EEOC disability guidance, applied to workforce messages; where they don't reach, professional judgement.",
       "changelog": [
-        "0.1.0 — stub. Structure only; no checks written."
+        "0.2.0 (2026-09-25): refined after a dry run on two return-to-office memos. Exempt-groups check no longer penalizes silence about leadership (moved to a question); new trigger for a generic talk-to-your-manager route.",
+        "0.1.0 (2026-09-25): first draft from the Workforce family source review."
       ],
-      "rests_on": "Nothing yet. This is a stub and applies to no review until it has content and a status of active.",
-      "elements": [],
-      "triggers": [],
-      "questions": [],
-      "prose": "# Workforce and organization change\n\nApplies to every event whose family is `workforce` in `protocols/events.yaml`.\nHolds what those events share; an event protocol holds only what differs\nfrom this.\n\n## Source\n\nNot yet written. This file exists so the layer is in place and the resolver\nskips it; it carries no checks and reaches no review while its status is\ndraft.\n\n## Basis\n\nNot yet written."
+      "elements": [
+        {
+          "id": "workforce.what-changes-and-when",
+          "name": "What changes, and from when",
+          "means": "The draft says what exactly changes in employees' terms or working conditions, compared with today, and the date it takes effect.",
+          "weight": "core",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "law",
+          "sources": [
+            "eu-directive-2019-1152"
+          ],
+          "basis_note": "EU law requires each worker to be told in writing of such a change by the day it takes effect; applying that to a group message, and outside the EU, is professional judgement."
+        },
+        {
+          "id": "workforce.who-it-applies-to",
+          "name": "Who it applies to, and who is exempt",
+          "means": "The draft says which employees the change applies to, names any group that is exempt, and says why.",
+          "weight": "core",
+          "dimension": "fairness_independence_conflicts",
+          "basis": "judgement",
+          "sources": []
+        },
+        {
+          "id": "workforce.route-for-individual-circumstances",
+          "name": "A route for individual circumstances",
+          "means": "The draft says how an employee whose circumstances the change affects differently (for example health, disability or caregiving) can raise them, and who decides.",
+          "weight": "supporting",
+          "dimension": "listening_employee_voice",
+          "basis": "guidance",
+          "sources": [
+            "eeoc-reasonable-accommodation-2002"
+          ],
+          "basis_note": "US disability guidance treats changing a workplace policy as a possible accommodation, requested in plain words; extending it to other circumstances is professional judgement."
+        },
+        {
+          "id": "workforce.bargaining-and-consultation",
+          "name": "Bargaining and consultation status",
+          "means": "Where employees have a union or other representatives, the draft says whether the change has been or will be bargained over or consulted on, and what can still change.",
+          "weight": "core",
+          "dimension": "listening_employee_voice",
+          "basis": "law",
+          "sources": [
+            "nlra-29-usc-158",
+            "nlrb-bargaining-good-faith",
+            "eu-directive-2002-14"
+          ],
+          "basis_note": "Binding where a union represents employees (US) or where EU consultation duties apply; the tool checks what the draft says, not whether the duty was met."
+        }
+      ],
+      "triggers": [
+        {
+          "check": "The draft links a consequence (closing a site, losing benefits, harsher conditions) or a benefit to employees' support for a union, a strike or a bargaining position.",
+          "dimension": "fairness_independence_conflicts",
+          "review": [
+            "Labor",
+            "Legal"
+          ]
+        },
+        {
+          "check": "The draft announces a change to where or when people work, or to their pay or benefits, with no effective date, or as already in effect.",
+          "dimension": "stakeholder_respect_impact",
+          "review": [
+            "HR",
+            "Labor"
+          ]
+        },
+        {
+          "check": "The only route the draft offers for individual circumstances is a general \"talk to your manager or HR\", with nothing on what can be adjusted or who decides.",
+          "dimension": "listening_employee_voice",
+          "review": [
+            "HR"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Does this change apply to leadership too? If not, does the draft say so?",
+          "review": [
+            "Executive",
+            "HR"
+          ]
+        },
+        {
+          "ask": "Does this change reverse or alter anything employees were told before, and does the draft say so?",
+          "review": [
+            "HR",
+            "Executive"
+          ]
+        },
+        {
+          "ask": "If employees are represented by a union or works council, has the change been bargained or consulted on as required, and can the draft be read as announcing a done deal? Counsel must confirm which duties apply.",
+          "review": [
+            "Labor",
+            "Legal"
+          ]
+        }
+      ],
+      "prose": "## What this protocol is\n\nThe shared checks for every event in the Workforce family: layoffs, restructuring, site closures, major policy changes (such as return to office or benefits) and strikes or labor disputes. It matters most for policy changes and labor disputes, which have no event protocol.\n\nWhere the Workforce impact overlay also applies (layoffs, restructuring, site closures), its more specific elements replace this family's equivalents, so the same gap isn't checked twice:\n\n- Workforce impact's *Individual notice, timing and terms* replaces *What changes, and from when*.\n- Workforce impact's *Scope of impact* replaces *Who it applies to, and who is exempt*.\n- Workforce impact's *Voice and what can still change* replaces *Bargaining and consultation status*.\n\n*A route for individual circumstances* applies to every event in the family.\n\n## Source\n\n**Binding law, read in the parts cited:**\n\n- Directive (EU) 2019/1152 on transparent and predictable working conditions, Articles 4(2) and 6. https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX%3A32019L1152\n- National Labor Relations Act, 29 U.S.C. § 158(c) and (d). https://www.law.cornell.edu/uscode/text/29/158\n- Directive 2002/14/EC, Article 4(2)(c) (reviewed in the geopolitical source review).\n\n**Regulator guidance, read:**\n\n- NLRB, \"Bargaining in good faith with employees' union representative (Section 8(d) & 8(a)(5)).\" https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/bargaining-in-good-faith-with-employees-union-representative\n- NLRB, \"Interfering with employee rights (Section 7 & 8(a)(1)).\" https://www.nlrb.gov/about-nlrb/rights-we-protect/the-law/interfering-with-employee-rights-section-7-8a1\n- US EEOC, *Enforcement Guidance on Reasonable Accommodation and Undue Hardship under the ADA* (2002). https://www.eeoc.gov/laws/guidance/enforcement-guidance-reasonable-accommodation-and-undue-hardship-under-ada\n\n**Research:** Topa et al. (2022) on psychological-contract breach, behind the question on earlier commitments.\n\n**Declared professional judgement:** *Who it applies to, and who is exempt*; the wording of all three triggers; applying individual-notice and accommodation rules to group messages.\n\nFull source review: `sources/reviews/workforce-family-source-review.md`.\n\n## What this protocol does not cover\n\n- Whether a duty to bargain or consult applies, or was met. Counsel decides.\n- US state law and EU national rules, including works-council co-determination.\n- The rules on strikers and replacements. A Strike or labor dispute event protocol would need its own review.\n- Whether the policy itself is wise. The tool checks the message, not the decision."
     },
     {
       "id": "apology",
@@ -1240,12 +1336,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Workforce impact",
       "layer": "overlay",
       "trigger": "workforce-impact",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": "2027-03-25",
       "rests_on": "EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.",
       "changelog": [
+        "0.3.2 — replaces the Workforce family's equivalent elements",
         "0.3.1 — basis notes moved into the file",
         "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed.",
         "0.2.0 (2026-09-25): reconciled with workforce-reduction 1.0.0. Takes over its five law-related elements word for word (adding only \"where roles end\" / \"no roles are affected\" so they fit events where job loss isn't certain), four of its triggers and three of its questions. Adds EU and US law as sources, and four new triggers. Trigger narrowed: policy-change and labor-dispute no longer fire it.",
@@ -1276,7 +1373,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "eu-directive-98-59",
             "us-warn-20-cfr-639"
           ],
-          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement.",
+          "replaces": [
+            "workforce.who-it-applies-to"
+          ]
         },
         {
           "id": "workforce-impact.selection-basis-and-alternatives",
@@ -1301,7 +1401,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "us-warn-20-cfr-639",
             "eu-directive-98-59"
           ],
-          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement.",
+          "replaces": [
+            "workforce.what-changes-and-when"
+          ]
         },
         {
           "id": "workforce-impact.voice-and-what-can-still-change",
@@ -1314,7 +1417,10 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
             "eu-directive-2002-14",
             "eu-directive-98-59"
           ],
-          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+          "basis_note": "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement.",
+          "replaces": [
+            "workforce.bargaining-and-consultation"
+          ]
         }
       ],
       "triggers": [

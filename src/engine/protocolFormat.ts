@@ -167,11 +167,17 @@ export interface ProtocolElement {
   /**
    * Overlay element ids this element supersedes.
    *
-   * An overlay carries the general form of a check and an event protocol the
-   * sharper one — support that fits the data exposed, rather than support in
-   * general. Where both apply, sending both asks the model to find the same
-   * gap twice and invites two findings for one hole in the draft. The event's
-   * element wins and the overlay's is dropped, because the event knows more.
+   * One layer carries the general form of a check and another the sharper one:
+   * support that fits the data exposed rather than support in general; notice
+   * dates and pay terms rather than what changes and when. Where both apply,
+   * sending both asks the model to find the same gap twice and invites two
+   * findings for one hole in the draft.
+   *
+   * It runs in both directions the layers allow. An event protocol replaces an
+   * overlay's element, because the event knows more than the intake answer;
+   * an overlay replaces a family's, because the answer that switched it on is
+   * more specific than the family the event belongs to. Whichever names
+   * `replaces` is the one that wins.
    */
   replaces?: string[];
 }
@@ -339,7 +345,9 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       if (e.replaces !== undefined) {
         if (!isArr(e.replaces)) err(`${at} replaces must be a list of overlay element ids this one supersedes`);
         else {
-          if (layer !== "event") err(`${at} names replaces, which only an event protocol's element may do: it is the sharper reading that wins`);
+          if (layer !== "event" && layer !== "overlay") {
+            err(`${at} names replaces, which only an event or overlay protocol's element may do: it is the sharper reading that wins`);
+          }
           for (const r of e.replaces) if (typeof r !== "string") err(`${at} replaces an entry that is not an element id`);
         }
       }

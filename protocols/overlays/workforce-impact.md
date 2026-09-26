@@ -4,13 +4,14 @@ name: Workforce impact
 layer: overlay
 # rule: event in [layoffs, restructuring, site-closure] OR (event in [financial-difficulty, strategy-market-exit, merger-acquisition] AND audiences include an Employees option)
 trigger: workforce-impact
-version: 0.3.1
+version: 0.3.2
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.
 changelog:
+  - "0.3.2 — replaces the Workforce family's equivalent elements"
   - "0.3.1 — basis notes moved into the file"
   - "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed."
   - "0.2.0 (2026-09-25): reconciled with workforce-reduction 1.0.0. Takes over its five law-related elements word for word (adding only \"where roles end\" / \"no roles are affected\" so they fit events where job loss isn't certain), four of its triggers and three of its questions. Adds EU and US law as sources, and four new triggers. Trigger narrowed: policy-change and labor-dispute no longer fire it."
@@ -34,6 +35,7 @@ elements:
     basis: law
     sources: [eu-directive-98-59, us-warn-20-cfr-639]
     basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+    replaces: [workforce.who-it-applies-to]
 
   - id: workforce-impact.selection-basis-and-alternatives
     name: Selection basis and alternatives
@@ -52,6 +54,7 @@ elements:
     basis: law
     sources: [us-warn-20-cfr-639, eu-directive-98-59]
     basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+    replaces: [workforce.what-changes-and-when]
 
   - id: workforce-impact.voice-and-what-can-still-change
     name: Voice and what can still change
@@ -61,6 +64,7 @@ elements:
     basis: law
     sources: [eu-directive-2002-14, eu-directive-98-59]
     basis_note: "EU and US law governing formal notices to representatives and authorities; applying it to employee messages is professional judgement."
+    replaces: [workforce.bargaining-and-consultation]
 
 triggers:
   # Moved unchanged from workforce-reduction 1.0.0

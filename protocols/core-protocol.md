@@ -2,13 +2,14 @@
 id: core
 name: Core protocol
 layer: core
-version: 0.5.1
+version: 0.6.0
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.
 changelog:
+  - "0.6.0 (2026-09-25): central-fact threshold tightened from \"the first two or three sentences\" to \"first, or second after a one-sentence signpost\", after a return-to-office test memo put the fact in sentence three behind a values sentence and a euphemism."
   - "0.5.1 — basis notes moved into the file"
   - "0.5.0 (2026-09-25): made to pass the build checker. Added rests_on; removed the frontmatter narrows (the core sits directly under the framework and can't narrow it; the relationship is described in the body); added a Source section. No element, trigger or question changed."
   - "0.4.0 (2026-09-25): cleared to activate without Seeger (2006) and Ma & Zhan (2016) in the original; limitation recorded."
@@ -19,12 +20,12 @@ changelog:
 elements:
   - id: core.central_fact_first
     name: The central fact first, in ordinary words
-    means: The draft states the central fact, what happened or what was decided, in its first two or three sentences and in ordinary words (for example, that jobs are ending, not that a workforce is "impacted"), before background, values, achievements or context. A one-line signpost before it is fine.
+    means: The draft states the central fact, what happened or what was decided, in its first sentence, or in its second after a one-sentence signpost, and in ordinary words (for example, that jobs are ending, not that a workforce is "impacted"), before background, values, achievements or context.
     weight: core
     dimension: clarity_plain_language
     basis: standard
     sources: [iso-24495-1-2023, who-erc-2017, li-2008]
-    basis_note: "A plain-language standard and WHO guidance applied to organizations by analogy, supported by one large study showing bad news is written less plainly. The \u201cfirst two or three sentences\u201d threshold is the tool's own."
+    basis_note: "A plain-language standard and WHO guidance applied to organizations by analogy, supported by one large study showing bad news is written less plainly. The one-sentence threshold is the tool's own."
 
   - id: core.estimates_as_estimates
     name: Estimates marked as estimates
@@ -36,7 +37,7 @@ elements:
     basis_note: "Emergency risk-communication guidance (WHO, CDC) written for public authorities, applied to organizations by analogy; Seeger (2006) read only through a secondary source."
 
 triggers:
-  - check: The central fact first appears after the first two or three sentences, following background, values, achievements or context; or it is stated only in euphemism ("transformation", "impacted", "realignment") so that a reader skimming the opening would not know what happened.
+  - check: More than one sentence (background, values, achievements, context or euphemism) comes before the central fact; or it is stated only in euphemism ("transformation", "impacted", "realignment") so that a reader skimming the opening would not know what happened.
     dimension: clarity_plain_language
   - check: The draft states certainty ("fully contained", "no impact", "all affected have been contacted", "no further changes are planned") that the supplied context shows is not yet established.
     dimension: truthfulness_factual_discipline
@@ -55,7 +56,7 @@ questions:
 
 The framework prompt already asks every draft to make the account visible: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol does not repeat any of that. It **narrows** two framework elements for every named event:
 
-- **The decision** must come in the first two or three sentences and in ordinary words, not after context or behind euphemism.
+- **The decision** must come in the first sentence, or the second after a one-sentence signpost, and in ordinary words, not after context or behind euphemism.
 - **What is known and not yet known.** The framework applies this only when the situation is still unfolding. The core applies it at every stage, because planned announcements also contain forecasts and estimates.
 
 It adds one trigger with its own basis: leading with the organization's strategy, ambitions, record or values before the people affected (Coombs 2007).
@@ -77,7 +78,7 @@ It adds one trigger with its own basis: leading with the organization's strategy
 - Li, F. (2008). "Annual report readability, current earnings, and earnings persistence." *Journal of Accounting and Economics*, 45(2–3), 221–247. https://www.sciencedirect.com/science/article/abs/pii/S0165410108000141 — abstract read.
 - Seeger, M. W. (2006). "Best practices in crisis communication: An expert panel process." *Journal of Applied Communication Research*, 34(3), 232–244. https://www.tandfonline.com/doi/abs/10.1080/00909880600769944 — **not opened**; quoted from Veil et al. (2020).
 
-**Declared professional judgement:** the wording of each trigger, the "first two or three sentences" threshold, and the choice of these two checks from the wider guidance.
+**Declared professional judgement:** the wording of each trigger, the one-sentence threshold, and the choice of these two checks from the wider guidance.
 
 Full source review, including what could not be read: `sources/reviews/core-protocol-source-review.md`.
 

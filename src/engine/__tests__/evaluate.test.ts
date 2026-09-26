@@ -74,6 +74,7 @@ describe("evaluateDraft", () => {
     expect(system.map((b) => b.text.split("\n")[0])).toEqual([
       expect.stringContaining("You are the evaluation engine"),
       "CORE PROTOCOL (core protocol)",
+      "WORKFORCE AND ORGANIZATION CHANGE (family protocol)",
       "WORKFORCE REDUCTION AND RESTRUCTURING (event protocol)",
       "WORKFORCE IMPACT (overlay protocol)",
       "HOW TO APPLY THE PROTOCOLS ABOVE",
