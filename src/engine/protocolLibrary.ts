@@ -989,12 +989,13 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "id": "leadership",
       "name": "Leadership change",
       "layer": "family",
-      "version": "0.3.0",
+      "version": "0.4.0",
       "status": "active",
       "last_reviewed": "2026-09-26",
       "review_by": "2027-03-26",
       "rests_on": "US securities disclosure rules for appointments and board disputes, applied to announcements and to all organizations as professional judgement; no rule governs death announcements.",
       "changelog": [
+        "0.4.0 (2026-09-26): event conditions added. Who holds the role and How the decision was made apply to departures, appointments and board changes only; A death announced with care applies to deaths only. Before this, the first two reached death announcements, where there is no role change or decision to describe.",
         "0.3.0 (2026-09-26): after a dry run on two messages about three employees killed in an air crash, the death check asks who holds responsibilities only for the death of a leader; new trigger for those who died left nameless with no reason given.",
         "0.2.0 (2026-09-26): after a dry run on two CEO appointment releases, the check on ties behind an appointment became a trigger (fires only when a tie is shown and not mentioned) and a question, since announcements rarely state ties and filings carry them; the CEO departure protocol's question on the character of a departure added word for word, so succession announcements get it and the checklist removes it as a duplicate on departure drafts.",
         "0.1.0 (2026-09-26): first draft from the Leadership family source review."
@@ -1010,7 +1011,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "sec-form-8k"
           ],
-          "basis_note": "US listed companies must file the name, position and date of a new officer; applying this to all announcements and organizations is professional judgement."
+          "basis_note": "US listed companies must file the name, position and date of a new officer; applying this to all announcements and organizations is professional judgement.",
+          "applies_if": {
+            "event": [
+              "ceo-departure",
+              "leadership-appointment",
+              "board-governance-dispute"
+            ]
+          }
         },
         {
           "id": "leadership.how-decided",
@@ -1022,7 +1030,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "sources": [
             "sec-slb-14e"
           ],
-          "basis_note": "SEC staff treat succession planning as a governance matter; no rule requires an announcement to describe the process."
+          "basis_note": "SEC staff treat succession planning as a governance matter; no rule requires an announcement to describe the process.",
+          "applies_if": {
+            "event": [
+              "ceo-departure",
+              "leadership-appointment",
+              "board-governance-dispute"
+            ]
+          }
         },
         {
           "id": "leadership.disagreement-described",
@@ -1043,7 +1058,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "weight": "supporting",
           "dimension": "stakeholder_respect_impact",
           "basis": "judgement",
-          "sources": []
+          "sources": [],
+          "applies_if": {
+            "event": [
+              "death-leader-employee"
+            ]
+          }
         }
       ],
       "triggers": [
