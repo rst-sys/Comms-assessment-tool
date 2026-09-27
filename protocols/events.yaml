@@ -79,7 +79,7 @@ events:
   - { id: profit-warning,                 label: "Disappointing results or profit warning",               family: commercial,  ui_groups: [business-finance] }
   - { id: price-terms-change,             label: "Price increase or change to terms",                     family: commercial,  ui_groups: [business-finance] }
   - { id: financial-difficulty,           label: "Financial difficulty or cost-cutting",                  family: commercial,  ui_groups: [business-finance] }
-  - { id: strategy-market-exit,           label: "Change of strategy or exit from a market",              family: commercial,  ui_groups: [business-finance] }
+  - { id: strategy-market-exit,           label: "New or updated strategy, or exit from a market",        family: commercial,  ui_groups: [most-common, business-finance] }
   - { id: investigation-litigation,       label: "Investigation, lawsuit or regulatory action",           family: allegations, ui_groups: [legal-reputation] }
   - { id: fraud-misconduct,               label: "Fraud or financial misconduct",                         family: allegations, ui_groups: [legal-reputation] }
   - { id: backlash,                       label: "Backlash to something the organization said or did",    family: scrutiny,    ui_groups: [legal-reputation] }

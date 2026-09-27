@@ -320,7 +320,7 @@
         "aece05adab62c36d"
       ]
     },
-    "event:Change of strategy or exit from a market": {
+    "event:New or updated strategy, or exit from a market": {
       "ids": [
         "core",
         "commercial",

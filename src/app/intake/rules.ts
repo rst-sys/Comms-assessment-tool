@@ -176,7 +176,7 @@ const HIGH_RISK_EVENTS: readonly CommunicationEvent[] = [
   "Merger, acquisition or sale",
   "Disappointing results or profit warning",
   "Financial difficulty or cost-cutting",
-  "Change of strategy or exit from a market",
+  "New or updated strategy, or exit from a market",
   "Investigation, lawsuit or regulatory action",
   "Fraud or financial misconduct",
 ];

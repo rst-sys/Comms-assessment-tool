@@ -24,7 +24,7 @@ describe("which overlays the intake answers switch on", () => {
     // Layoffs are a workforce event, so it applies however the draft is sent.
     expect(activeTriggers({ ...base, communication_event: "Layoffs or job cuts", audiences: ["Media"] })).toContain("workforce-impact");
     // A market exit is commercial: it applies only when employees are an audience.
-    const exit = { ...base, communication_event: "Change of strategy or exit from a market" as const };
+    const exit = { ...base, communication_event: "New or updated strategy, or exit from a market" as const };
     expect(activeTriggers({ ...exit, audiences: ["Investors and analysts"] })).not.toContain("workforce-impact");
     expect(activeTriggers({ ...exit, audiences: ["All employees"] })).toContain("workforce-impact");
     expect(activeTriggers({ ...exit, audiences: ["Managers and leaders"] })).toContain("workforce-impact");
@@ -194,7 +194,7 @@ describe("phase 2: the core, the three overlays and how they combine", () => {
       expect(fires(event, ["Customers"]), event).toBe(true);
     }
     // The commercial three need employees in the room.
-    for (const event of ["Financial difficulty or cost-cutting", "Change of strategy or exit from a market", "Merger, acquisition or sale"] as const) {
+    for (const event of ["Financial difficulty or cost-cutting", "New or updated strategy, or exit from a market", "Merger, acquisition or sale"] as const) {
       expect(fires(event, ["All employees"]), event).toBe(true);
       expect(fires(event, ["Customers"]), event).toBe(false);
     }
@@ -255,7 +255,7 @@ describe("phase 2: the core, the three overlays and how they combine", () => {
       "Price increase or change to terms",
       "Disappointing results or profit warning",
       "Financial difficulty or cost-cutting",
-      "Change of strategy or exit from a market",
+      "New or updated strategy, or exit from a market",
     ]) {
       expect(has(event, ["Customers"]), event).toBe(false);
     }

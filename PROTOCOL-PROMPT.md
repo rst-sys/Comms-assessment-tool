@@ -106,7 +106,7 @@ refuse the file and name the other one.
 
 **Operations and safety** — Cyber incident or data breach · System outage or service disruption · Product recall or safety issue · Environmental incident · Supply chain disruption
 
-**Business and finance** — Merger, acquisition or sale · Disappointing results or profit warning · Price increase or change to terms · Financial difficulty or cost-cutting · Change of strategy or exit from a market
+**Business and finance** — Merger, acquisition or sale · Disappointing results or profit warning · Price increase or change to terms · Financial difficulty or cost-cutting · New or updated strategy, or exit from a market
 
 **Legal and reputation** — Investigation, lawsuit or regulatory action · Fraud or financial misconduct · Backlash to something the organization said or did · Rumor or misinformation about the organization · Pressure from activists, campaigners or investors
 

@@ -95,7 +95,7 @@ export const AFFECTED_EMPLOYEE_LABELS: Partial<Record<CommunicationEvent, string
   "Harassment, discrimination or culture allegations": "Employees directly affected",
   "Environmental incident": "Employees directly affected",
   "Financial difficulty or cost-cutting": "Employees directly affected",
-  "Change of strategy or exit from a market": "Employees directly affected",
+  "New or updated strategy, or exit from a market": "Employees directly affected",
   "Merger, acquisition or sale": "Employees directly affected",
   "Public health emergency": "Employees directly affected",
   "Geopolitical event (war, sanctions, unrest)": "Employees directly affected",
@@ -124,7 +124,7 @@ export const HEIGHTENED_EVENTS: ReadonlySet<CommunicationEvent> = new Set<Commun
   "Merger, acquisition or sale",
   "Disappointing results or profit warning",
   "Financial difficulty or cost-cutting",
-  "Change of strategy or exit from a market",
+  "New or updated strategy, or exit from a market",
   "Investigation, lawsuit or regulatory action",
   "Fraud or financial misconduct",
   "Geopolitical event (war, sanctions, unrest)",
@@ -185,7 +185,7 @@ export const DISCLOSURE_FORMAT: CommunicationFormat = "Investor or market disclo
 export const AUDIENCE_GROUPS = [
   ["Employees", ["All employees", "Employees directly affected", "Managers and leaders"]],
   ["Markets", ["Investors and analysts"]],
-  ["Customers and partners", ["Customers", "Partners and suppliers"]],
+  ["Customers and partners", ["Customers", "Partners and suppliers", "Franchisees or dealers"]],
   ["Public", ["Media", "General public and communities"]],
   ["Authorities", ["Regulators and government"]],
 ] as const;
@@ -198,6 +198,7 @@ export type Audience = (typeof AUDIENCES)[number];
 
 export const AUDIENCE_DESCRIPTIONS: Partial<Record<Audience, string>> = {
   "Managers and leaders": "People who will pass the message on and answer questions",
+  "Franchisees or dealers": "Independent businesses that carry the brand, not staff",
 };
 
 /** The audience shown only when the event has directly affected people. */
