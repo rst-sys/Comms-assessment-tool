@@ -3,11 +3,12 @@ id: ceo-departure
 name: CEO or senior-leader departure
 layer: event
 family: leadership
-version: 1.2.0
+version: 1.3.0
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.3.0 (2026-09-27): refresh after the Leadership family went live. Removed the trigger on no one holding authority (the element covers it). Back to six triggers."
   - "1.2.0 (2026-09-26): new trigger for thanking or praising a leader who left after a misconduct investigation without acknowledging the finding (basis: the Wells Fargo report's documented gap between a board's finding and its public statement)."
   - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — two listed-company disclosure questions removed; the listed-company overlay now asks them."
@@ -93,9 +94,6 @@ triggers:
   - check: The departure shares the draft with unrelated significant news — results, an acquisition, a restructuring, a major product launch — and the draft does not explain any connection between them.
     dimension: fairness_independence_conflicts
     review: [Investor relations]
-  - check: No one is named as holding the departing leader's authority from the departure date, or an interim leader is named with no indication of how or when a permanent appointment will be made.
-    dimension: accountability_agency
-    review: [Executive]
   - check: The only explanation of why the leader is leaving appears in a quotation attributed to the departing leader, and the organization says nothing in its own voice about the decision.
     dimension: accountability_agency
   - check: The draft gives an effective date on or before the publication date but no date for when the decision was taken or notice given.
@@ -259,5 +257,5 @@ withholding one — is judgment, not evidence.
 - **It does not decide what should be said when an agreement limits what can be
   said.** It asks whether the draft is consistent with that agreement; it does
   not resolve the tension between confidentiality and candour. A human must.
-- **A departure caused by death** is not what this protocol was written for and
-  should be reviewed with care.
+- **A death.** Use the event "Death of a leader or employee", which the
+  Leadership family covers.
