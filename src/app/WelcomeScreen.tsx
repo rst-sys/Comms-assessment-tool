@@ -65,9 +65,8 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
           </h1>
           <p className="hero-lede">
             Most messages that lose trust aren’t badly written. They sound reassuring without explaining the decision.
-            Designed by a communications expert for the people who write these messages, the Assistant reads your draft
-            the way a thoughtful, skeptical reader will and shows you where it builds trust and where it spends it. You
-            decide what to change.
+            Designed by a communications expert, the Assistant reads your draft the way a skeptical reader will and
+            shows where it builds trust and where it spends it. You decide what to change.
           </p>
           <div className="cta-row">
             <button type="button" className="primary cta" onClick={onStart} autoFocus>
