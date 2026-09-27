@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { DEMO_1 } from "../../engine/fixtures.js";
 import { parseEvaluationRequest, RequestValidationError } from "../requestSchema.js";
+import { MIN_DRAFT_WORDS } from "../../engine/limits.js";
 import { server } from "../server.js";
 
 describe("parseEvaluationRequest", () => {
@@ -20,6 +21,20 @@ describe("parseEvaluationRequest", () => {
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, situation: "Casual" })).toThrow(/situation/);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, draft: "" })).toThrow(/draft/);
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, context: { unknown_key: "x" } as unknown as string })).toThrow(RequestValidationError);
+  });
+
+  it("refuses a draft under the word floor, whatever the browser allowed", () => {
+    // The schema counts characters, so this is the only thing standing
+    // between a hand-made request and a provider call on nine words.
+    const words = (n: number) => Array.from({ length: n }, (_, i) => `word${i}`).join(" ");
+    expect(MIN_DRAFT_WORDS).toBe(10);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, draft: words(1) })).toThrow(/draft/);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, draft: words(9) })).toThrow(RequestValidationError);
+    // Whitespace is not words: a padded short draft is still short.
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, draft: `   ${words(9)}  \n\n ` })).toThrow(/draft/);
+    // Ten is allowed, and so is the band the intake only warns about.
+    expect(parseEvaluationRequest({ ...DEMO_1.request, draft: words(10) }).draft).toBe(words(10));
+    expect(parseEvaluationRequest({ ...DEMO_1.request, draft: words(30) }).draft).toBe(words(30));
   });
 });
 

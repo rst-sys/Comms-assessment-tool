@@ -4,6 +4,7 @@
  * nothing unexpected is forwarded to the provider.
  */
 import { Ajv } from "ajv";
+import { countWords, MIN_DRAFT_WORDS } from "../engine/limits.js";
 import {
   AUDIENCES,
   COMMUNICATION_EVENTS,
@@ -95,5 +96,13 @@ export function parseEvaluationRequest(body: unknown): EvaluationRequest {
   if (!validate(body)) {
     throw new RequestValidationError(validate.errors?.[0]?.instancePath ?? "/");
   }
-  return body as EvaluationRequest;
+  const request = body as EvaluationRequest;
+  // The word floor, not just a non-empty string. JSON Schema counts
+  // characters, and the browser's check can be skipped, so a hand-made call
+  // would otherwise spend a provider credit on two words. Same number and the
+  // same count as the intake, from the engine, so the two cannot disagree.
+  if (countWords(request.draft) < MIN_DRAFT_WORDS) {
+    throw new RequestValidationError("/draft");
+  }
+  return request;
 }

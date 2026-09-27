@@ -7,6 +7,7 @@
  * to do. This file holds what each answer requires, what it turns on, and
  * when the Evaluate button is allowed to work.
  */
+import { countWords, MIN_DRAFT_WORDS } from "../../engine/limits.js";
 import {
   AFFECTED_AUDIENCE,
   AFFECTED_EMPLOYEE_LABELS,
@@ -43,9 +44,10 @@ export interface EvaluationFailure {
 
 /**
  * The hard floor. Below this there is not enough text to review at all, so
- * the button stays disabled.
+ * the button stays disabled. Defined in the engine because the server
+ * enforces the same number.
  */
-export const MIN_WORDS = 10;
+export const MIN_WORDS = MIN_DRAFT_WORDS;
 /**
  * Below this a review still runs, with a warning. A short post can be worth
  * checking for clarity, accuracy and tone; it just cannot carry the evidence,
@@ -55,10 +57,8 @@ export const MIN_WORDS = 10;
 export const FULL_STATEMENT_WORDS = 50;
 export const MAX_WORDS = 5000;
 
-export function wordCount(text: string): number {
-  const trimmed = text.trim();
-  return trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length;
-}
+/** The engine's count, re-exported under the name the screen uses. */
+export const wordCount = countWords;
 
 /** Every answer the screen collects before the draft. Empty strings mean unanswered. */
 export interface IntakeState {

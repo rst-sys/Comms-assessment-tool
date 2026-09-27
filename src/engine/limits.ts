@@ -34,3 +34,20 @@ export const MAX_QUESTIONS = 8;
 
 /** Below this, a review is suspiciously thin rather than clean. */
 export const MIN_QUESTIONS = 5;
+
+/**
+ * The fewest words a draft may carry and still be reviewed.
+ *
+ * Here rather than in the intake's rules because both ends enforce it: the
+ * browser disables the button, and the server refuses the request, so a
+ * hand-made call cannot spend a provider credit on two words. The intake's
+ * separate fifty-word threshold is a warning, not a floor, and stays with the
+ * screen that shows it.
+ */
+export const MIN_DRAFT_WORDS = 10;
+
+/** How both ends count a draft's words, so they cannot disagree about the floor. */
+export function countWords(text: string): number {
+  const trimmed = text.trim();
+  return trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length;
+}
