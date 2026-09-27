@@ -24,6 +24,10 @@ import {
   MAX_WORDS,
   MIN_WORDS,
   missingAnswers,
+  SHORT_DRAFT_WARNING,
+  showShortDraftWarning,
+  showTooShortWarning,
+  TOO_SHORT_WARNING,
   showHighRiskWarning,
   wordCount,
   type IntakeState,
@@ -174,6 +178,9 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
         <div className="muted small word-count" aria-live="polite">
           {words} {words === 1 ? "word" : "words"} · {MIN_WORDS}–{MAX_WORDS.toLocaleString()}
         </div>
+        {showShortDraftWarning(draft) ? (
+          <p className="warning short-draft" role="note">{SHORT_DRAFT_WARNING}</p>
+        ) : null}
 
         <label className="field context-field">
           <span className="label">
@@ -215,6 +222,9 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
           {busy ? "Evaluating…" : baseline ? "Evaluate and compare" : "Evaluate draft"}
           {busy || baseline ? null : <span aria-hidden="true" className="button-arrow">→</span>}
         </button>
+        {showTooShortWarning(draft) ? (
+          <p className="muted small" aria-live="polite">{TOO_SHORT_WARNING}</p>
+        ) : null}
         {missing.length > 0 ? (
           <p className="muted small" aria-live="polite">
             Still to answer: {missing.join(", ")}.{" "}

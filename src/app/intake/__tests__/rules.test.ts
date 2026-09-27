@@ -10,7 +10,11 @@ import {
   intakeFields,
   investorAudienceLabel,
   missingAnswers,
+  SHORT_DRAFT_WARNING,
   showHighRiskWarning,
+  showShortDraftWarning,
+  showTooShortWarning,
+  TOO_SHORT_WARNING,
   wordCount,
   type IntakeState,
 } from "../rules.js";
@@ -103,14 +107,44 @@ describe("the conditionals", () => {
 describe("canEvaluate", () => {
   it("requires every answer and a draft in range", () => {
     expect(canEvaluate(words(100), full)).toBe(true);
-    expect(canEvaluate(words(49), full)).toBe(false);
     expect(canEvaluate(words(5001), full)).toBe(false);
     expect(canEvaluate(words(100), { ...full, purpose: "" })).toBe(false);
     expect(canEvaluate(words(100), EMPTY_INTAKE)).toBe(false);
   });
-  it("has no exception for a short draft now the demos are gone", () => {
-    expect(canEvaluate(words(30), full)).toBe(false);
+
+  it("blocks below ten words and allows everything above, warning or not", () => {
     expect(canEvaluate("", full)).toBe(false);
+    expect(canEvaluate(words(5), full)).toBe(false);
+    expect(canEvaluate(words(9), full)).toBe(false);
+    // Ten is the floor, not fifty: a short post is reviewed, with a warning.
+    expect(canEvaluate(words(10), full)).toBe(true);
+    expect(canEvaluate(words(30), full)).toBe(true);
+    expect(canEvaluate(words(49), full)).toBe(true);
+  });
+});
+
+describe("the two draft-length warnings", () => {
+  it("blocks below ten, warns from ten to forty-nine, and stays quiet from fifty", () => {
+    expect(showTooShortWarning(words(5))).toBe(true);
+    expect(showShortDraftWarning(words(5))).toBe(false);
+
+    expect(showTooShortWarning(words(10))).toBe(false);
+    expect(showShortDraftWarning(words(10))).toBe(true);
+    expect(showShortDraftWarning(words(49))).toBe(true);
+
+    expect(showShortDraftWarning(words(50))).toBe(false);
+    expect(showTooShortWarning(words(50))).toBe(false);
+  });
+
+  it("says nothing at all on an empty box", () => {
+    expect(showTooShortWarning("")).toBe(false);
+    expect(showShortDraftWarning("")).toBe(false);
+  });
+
+  it("names the floor in the blocking message and the field in the warning", () => {
+    expect(TOO_SHORT_WARNING).toBe("Paste at least 10 words to run a review.");
+    expect(SHORT_DRAFT_WARNING).toContain("“Anything else we should know?”");
+    expect(SHORT_DRAFT_WARNING).toContain("can’t");
   });
 });
 

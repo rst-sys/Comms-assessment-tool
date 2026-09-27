@@ -366,7 +366,10 @@ textarea { resize: vertical; }
    of prose inside one, so it squares off with them: same left and right edge
    as the card above it, and no early break from the global pretty wrap. The
    comparison panel's warning sits inside a card and keeps the measure. */
-.intake > .warning { max-width: none; text-wrap: wrap; }
+.intake .warning { max-width: none; text-wrap: wrap; }
+/* The short-draft warning sits inside step 3, under the word count, so the
+   draft box above it does not move when it appears. */
+.short-draft { margin: var(--space) 0 0; }
 /* The evaluation error sits in the same column, directly under the warning,
    so it squares off with it. Only the top-level alert: the ones inside the
    document and public-context panels are prose in a card and keep the
