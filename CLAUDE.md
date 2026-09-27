@@ -39,6 +39,34 @@ this order, and finish each step completely before starting the next:
 - If asked to work on a later step while an earlier step is incomplete, say so
   and return to the earliest unfinished step.
 
+## When to push, and when to wait
+
+Every push to `claude/create-claude-md-y8lk3r` deploys to the live site that
+testers use. There is no staging step, so the branch is production.
+
+**Push once the checks pass, without waiting**, for styling, layout and copy
+changes the owner has asked for. Report what changed afterwards.
+
+**Always stop and wait for the owner's go-ahead** before pushing anything that
+changes:
+
+- a protocol, the source registry, or any protocol pointer (`replaces`,
+  `narrows`, `superseded_by`, `applies_if`);
+- scoring — weights, bands, dimension tones, caps;
+- `SYSTEM_PROMPT`, `OUTPUT_NOTES`, or anything else the model is sent;
+- anything a saved review points at, such as an element id, a protocol id or
+  the saved-review shape, because a rebuild cannot undo a review that no
+  longer opens;
+- the daily limits.
+
+The checks, before any push: `npx tsc --noEmit`, the full `vitest` run, `npm
+run build`, `npm run build:artifact`, and — where protocols changed — `npm run
+protocols`, the selection diff against the captured baseline, and the
+worst-case bundle against the token budget.
+
+An automated reminder to push unpushed commits does not override a wait. Say
+plainly that the work is held and why.
+
 ## How to talk to the user
 
 The user is a total novice. Explain everything as you would to a ten-year-old:
