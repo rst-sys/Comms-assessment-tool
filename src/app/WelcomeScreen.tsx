@@ -1,5 +1,5 @@
 import { REDACTION_WARNING } from "./overviewContent.js";
-import { ArrowRight, CircleSlash, Lock, WarningTriangle } from "./Icons.js";
+import { ArrowRight, CircleSlash, Compass, Lock, WarningTriangle } from "./Icons.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
 interface Props {
@@ -21,6 +21,14 @@ const WHAT_YOU_GET: [string, string][] = [
   ["How five audiences", "might read it"],
   ["Questions for your experts", "before you publish"],
   ["A PDF", "to share with your team"],
+];
+
+/** What the tool is, for a reader who has not met it: the model, and the framework on top of it. */
+const HOW_IT_WORKS = [
+  "A specialist in trust, built on Claude, Anthropic’s large language model.",
+  "It uses that model’s ability to read tone, implication and what’s left unsaid.",
+  "It’s guided by a communicator’s framework: ten weighted dimensions, plus standards written for specific events.",
+  "It assesses; you decide.",
 ];
 
 const PRIVACY_POINTS = (provider: string) => [
@@ -51,13 +59,15 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
     <main className="page welcome" aria-labelledby="welcome-heading">
       <div className="hero">
         <div className="hero-main">
-          <p className="eyebrow">Decision support for high-stakes messages</p>
+          <p className="eyebrow">Trust decision support for communicators</p>
           <h1 id="welcome-heading" className="hero-title">
             Know whether your message will be trusted before your audience decides.
           </h1>
           <p className="hero-lede">
-            Most messages that lose trust aren't badly written. They sound reassuring without explaining the decision.
-            Paste your draft and context, and see it the way a thoughtful, skeptical reader will.
+            Most messages that lose trust aren’t badly written. They sound reassuring without explaining the decision.
+            Designed by a communications expert for the people who write these messages, the Assistant reads your draft
+            the way a thoughtful, skeptical reader will and shows you where it builds trust and where it spends it. You
+            decide what to change.
           </p>
           <div className="cta-row">
             <button type="button" className="primary cta" onClick={onStart} autoFocus>
@@ -94,6 +104,17 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
       </div>
 
       <div className="welcome-strip">
+        <section aria-labelledby="how-heading">
+          <h2 id="how-heading" className="strip-heading">
+            <Compass />
+            How it works
+          </h2>
+          <ul className="tight strip-list">
+            {HOW_IT_WORKS.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        </section>
         <section aria-labelledby="privacy-heading">
           <h2 id="privacy-heading" className="strip-heading">
             <Lock />

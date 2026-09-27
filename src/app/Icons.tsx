@@ -62,6 +62,15 @@ export function CircleSlash({ size = 16 }: { size?: number }) {
   );
 }
 
+export function Compass({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" {...common}>
+      <circle cx="12" cy="12" r="8.4" />
+      <path d="m15.2 8.8-1.9 4.5-4.5 1.9 1.9-4.5Z" />
+    </svg>
+  );
+}
+
 export function Clock({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" {...common}>

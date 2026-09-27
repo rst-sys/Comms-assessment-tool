@@ -412,7 +412,7 @@ textarea { resize: vertical; }
 .hero-foot { margin: calc(var(--space) * 2) 0 0; padding-top: calc(var(--space) * 2);
   border-top: 1px solid var(--divider); font-size: 14px; line-height: 1.55; }
 
-.welcome-strip { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px;
+.welcome-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px;
   margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--border); }
 .strip-heading { display: flex; align-items: center; gap: 9px; font-family: var(--sans); font-size: 17px;
   font-weight: 600; letter-spacing: 0; margin: 0 0 calc(var(--space) * 1.5); }

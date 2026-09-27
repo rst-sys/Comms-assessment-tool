@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { ApiError, signIn } from "./api.js";
-import { APP_NAME, INTRO } from "./copy.js";
+import { APP_NAME, SIGNIN_INTRO } from "./copy.js";
 
 /**
  * The shared-password screen for a hosted deployment (revision 15). Not an
@@ -31,7 +31,7 @@ export function SignIn({ onDone }: { onDone: () => void }) {
   return (
     <main className="page signin" aria-labelledby="signin-heading">
       <h1 id="signin-heading">{APP_NAME}</h1>
-      <p className="welcome-intro">{INTRO}</p>
+      <p className="welcome-intro">{SIGNIN_INTRO}</p>
 
       <section className="card" aria-labelledby="password-heading">
         <h2 id="password-heading" style={{ marginTop: 0 }}>Enter the password</h2>
