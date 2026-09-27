@@ -74,7 +74,7 @@ This keeps the Geopolitical protocol unchanged for now. A later refresh can remo
 |---|---|---|
 | Why the organization is speaking | Braga 2026; Bamiatzi 2024 | research (a caution, not a standard) |
 | What it means here | No source found (the geopolitical review found none) | judgement |
-| Actions that match the words | Vredenburg 2020; Braga 2026 | research |
+| Practice that matches the words | Vredenburg 2020; Braga 2026 | research |
 | Consistent with the authorities | WHO 2017 C4.2 | guidance, applied by analogy |
 
 ---
@@ -127,7 +127,7 @@ Weak, and the labels must say so. The meta-analysis finds a small effect with ex
 
 ## Recommendation for the tool
 
-Adopt the four checks in section 4 as the External family protocol, with four triggers and four reviewer questions. On geopolitical drafts, the Geopolitical protocol's *Basis for speaking* and *Exposure separated from event* replace the family's two general versions, and the family's compliance trigger gives way to the protocol's *Discretion inside compliance*.
+Adopt the four checks in section 4 as the External family protocol, with two triggers and four reviewer questions (revised in 0.2.0 after a duplicate check). On geopolitical drafts, the Geopolitical protocol's *Basis for speaking* and *Exposure separated from event* replace the family's two general versions, and the family's compliance trigger gives way to the protocol's *Discretion inside compliance*.
 
 Draft protocol: `protocols/families/external.md`.
 

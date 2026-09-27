@@ -3,11 +3,12 @@ id: geopolitical
 name: Geopolitical event affecting operations or employee welfare
 layer: event
 family: external
-version: 1.1.1
+version: 1.1.2
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.2 — replaces the External family's two general checks with its own versions"
   - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — narrows core.central_fact_first, replacing the dead plain-naming pointer. Danger and protective steps now replaces the people-harmed overlay's general version. No check reworded."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -22,6 +23,7 @@ elements:
     dimension: fairness_independence_conflicts
     basis: research
     sources: [bamiatzi-2024-partisan-csr, braga-2026-sociopolitical-activism]
+    replaces: [external.why-speaking]
     basis_note: "Descriptive research (peer imitation; employees the least receptive audience); a caution, not a standard."
 
   - id: geopolitical.discretion-inside-compliance
@@ -40,6 +42,7 @@ elements:
     dimension: causation_explanation
     basis: judgement
     sources: []
+    replaces: [external.what-it-means-here]
 
   - id: geopolitical.danger-and-protective-steps
     name: Danger and protective steps
