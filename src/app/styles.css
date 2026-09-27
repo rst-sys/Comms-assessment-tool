@@ -346,7 +346,10 @@ textarea { resize: vertical; }
 .word-count { text-align: right; margin-top: 4px; }
 .context-field { margin-top: calc(var(--space) * 3); }
 .label-optional { text-transform: none; letter-spacing: 0; font-weight: 400; }
-.context-field .muted { display: block; margin-bottom: 6px; max-width: var(--measure); }
+/* No measure cap: this line labels the box below it and reads as one unit
+   with it, so it runs the box's full width rather than stopping two-thirds
+   of the way across. */
+.context-field .muted { display: block; margin-bottom: 6px; }
 
 .evaluate-row { display: grid; justify-items: center; gap: var(--space); margin-top: calc(var(--space) * 4); text-align: center; }
 .evaluate-row .primary { padding: 11px 26px; }
@@ -359,6 +362,16 @@ textarea { resize: vertical; }
 .checkbox { display: flex; gap: 10px; align-items: flex-start; margin: calc(var(--space) * 1.5) 0; max-width: var(--measure); }
 .checkbox input { margin-top: 5px; flex: none; }
 .warning { border-left: 3px solid var(--caution); padding: var(--space) calc(var(--space) * 1.5); background: var(--warn-bg); color: var(--warn-text); max-width: var(--measure); border-radius: var(--radius-sm); }
+/* The intake's high-risk warning is a sibling of the step cards, not a line
+   of prose inside one, so it squares off with them: same left and right edge
+   as the card above it, and no early break from the global pretty wrap. The
+   comparison panel's warning sits inside a card and keeps the measure. */
+.intake > .warning { max-width: none; text-wrap: wrap; }
+/* The evaluation error sits in the same column, directly under the warning,
+   so it squares off with it. Only the top-level alert: the ones inside the
+   document and public-context panels are prose in a card and keep the
+   measure. */
+.intake > [role="alert"] > .error { max-width: none; text-wrap: wrap; }
 .error { border-left: 3px solid var(--material); padding: var(--space) calc(var(--space) * 1.5); background: var(--paper); color: var(--material-text); max-width: var(--measure); }
 
 /* Privacy panel */
@@ -954,6 +967,14 @@ a.score-number:hover { text-decoration-color: var(--ink); }
 .heightened-notice { margin: calc(var(--space) * 2) 0 0; }
 .scoring-note { margin-top: calc(var(--space) * 2); }
 .scoring-note h3 { margin: 0 0 4px; }
+/* It already sits in its own column of the summary grid, which is narrower
+   than the measure; capping the paragraphs again inside it only wasted the
+   column. Plain wrap so lines break at the edge, not early.
+
+   Written as section.scoring-note because ".results section > p" above caps
+   every section's running text at the measure and outweighs a plain
+   ".scoring-note p". */
+.results section.scoring-note > p { max-width: none; text-wrap: wrap; }
 .copyright { margin-top: calc(var(--space) * 1.5); }
 
 /* The stakeholder voices sit behind an expander; the damning interpretation
