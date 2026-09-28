@@ -3,36 +3,38 @@ id: change-readiness
 name: Change readiness
 layer: overlay
 trigger: change-readiness
-version: 0.2.0
-status: draft
+version: 0.3.0
+status: active
 last_reviewed: 2026-09-27
 review_by: 2027-03-27
 rests_on: >-
   Research on the five beliefs that decide whether employees are ready for change (Armenakis and colleagues), with field and meta-analytic support for information, confidence and explanation.
 changelog:
+  - "0.3.0 (2026-09-28): after the duplicate check, each element cut to what the framework and other protocols don't already ask. Why this change: the choice over alternatives only, giving way to Workforce impact's Selection basis and alternatives when both apply. Leaders' commitment renamed What is different this time. Gains and losses: the honest balance only. Able to make the change and its trigger moved to stakeholder respect."
   - "0.2.0 (2026-09-28): wording tightened to save space in the prompt, before going live; no check added or removed."
   - "0.1.0 (2026-09-27): first draft from the Change readiness source review."
 
 elements:
   - id: change-readiness.why-this-change
     name: Why this change, rather than another
-    means: The draft names the problem the change solves and why this option was chosen over the alternatives the context shows were considered.
+    means: The draft says why this option was chosen over the alternatives the context shows were considered.
     weight: core
     dimension: causation_explanation
     basis: research
     sources: [armenakis-harris-2009, shaw-2003-explanations]
+    superseded_by: workforce-impact.selection-basis-and-alternatives
     basis_note: "One of five beliefs research links to readiness for change (appropriateness); a meta-analysis of 54 samples found explanations improve fairness judgements. Applied to a single message as professional judgement."
   - id: change-readiness.able-to-make-it
     name: Able to make the change
     means: The draft says what training, time, tools or support people will get, when, and who to go to when something doesn't work.
     weight: core
-    dimension: future_readiness_learning
+    dimension: stakeholder_respect_impact
     basis: research
     sources: [armenakis-harris-2009, wanberg-banas-2000]
     basis_note: "Efficacy is one of five beliefs linked to readiness for change; a longitudinal study found information and confidence in coping predicted openness. Applied to a single message as professional judgement."
   - id: change-readiness.leaders-committed
-    name: Leaders' commitment shown, not just stated
-    means: The draft names who owns the change and how progress will be reported, and, where earlier changes of this kind stalled, what is different this time.
+    name: What is different this time
+    means: Where earlier changes of this kind stalled or were reversed, the draft says what is different this time.
     weight: supporting
     dimension: accountability_agency
     basis: research
@@ -40,7 +42,7 @@ elements:
     basis_note: "Principal support, one of five beliefs linked to readiness for change: that leaders are committed and it is not another passing fad. Applied to a single message as professional judgement."
   - id: change-readiness.gains-and-losses
     name: What people gain and lose, honestly
-    means: The draft says what stays the same for the people receiving it, what they gain, and what gets harder, at least for a while.
+    means: The draft is honest about both what people gain and what gets harder, at least for a while.
     weight: supporting
     dimension: stakeholder_respect_impact
     basis: research
@@ -51,7 +53,7 @@ triggers:
   - check: The draft presents the change only as an opportunity ("exciting", "a journey") while the supplied context shows costs or disruption.
     dimension: truthfulness_factual_discipline
   - check: The draft promises training or support ("fully supported") without saying what, when or from whom.
-    dimension: future_readiness_learning
+    dimension: stakeholder_respect_impact
   - check: The draft tells readers how to feel ("embrace", "we're all excited") instead of giving reasons.
     dimension: stakeholder_respect_impact
 

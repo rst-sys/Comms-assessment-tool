@@ -1714,6 +1714,112 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "prose": "## 3. Source\n\n- **Published research (Acknowledged responsibility and Repair offered only):** Lewicki, R. J., Polin, B., & Lount, R. B. (2016). \"An Exploration of the Structure of Effective Apologies.\" *Negotiation and Conflict Management Research*, 9(2), 177–196. doi:10.1111/ncmr.12073. https://onlinelibrary.wiley.com/doi/abs/10.1111/ncmr.12073\n- **Secondary account, read in full:** Ohio State University (written by Jeff Grabmeier), \"Six elements of an effective apology, according to science,\" ScienceDaily, 12 April 2016. https://www.sciencedaily.com/releases/2016/04/160412091111.htm\n- **Not read:** the article itself, which is paywalled. Study details in this protocol come from the press account, which quotes the lead author.\n- **Professional judgment (everything else):** the 12-standard audit key supplied by the tool's author. It has no published source.\n\n## 4. Basis\n\nTwo experiments with 755 participants: 333 online adults and 422 undergraduates. Each read a scenario in which a job candidate apologizes for an incorrect tax return. They then rated the apology on effectiveness, credibility and adequacy, from 1 to 5. Apologies contained between one and six components. Study 1 told participants which components were present, and Study 2 showed them actual statements. The evidence covers written apologies by an individual to an individual, judged by hypothetical readers. It did not test organizations, public audiences or real trust outcomes.\n\n## Drafting notes: elements considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\nImportance labels: Core, Supporting, Minor. \"Research\" means Lewicki et al. supports the ranking. \"Judgment\" means it rests on the audit key.\n\n| Element | What it means | Importance | Dimensions |\n|---|---|---|---|\n| Acknowledged responsibility | The organization or a named leader says it is responsible for the conduct, decision or failure. | Core (research) | accountability_agency, fairness_independence_conflicts |\n| Repair offered | A remedy for the people affected, such as restitution, correction, recall, support or access. | Core (research) | corrective_action_proof, stakeholder_respect_impact |\n| Offense named | The conduct, decision, product or omission is identified in ordinary words a reader new to the story can follow. | Core (judgment) | accountability_agency, clarity_plain_language |\n| Organizational agency | The organization's own role in making, approving, enabling or failing to prevent the conduct is stated, not left in passive or abstract wording. | Core (judgment) | accountability_agency |\n| Impact recognized | The affected groups and the concrete harm to them are named before the organization's own discomfort. | Core (judgment) | stakeholder_respect_impact |\n| System change | Operational, policy, governance, staffing or oversight changes that address why the failure could happen. | Core (judgment) | future_readiness_learning, corrective_action_proof |\n| Owner and follow-up | A named role or body owns the work, with a date or an external standard by which progress can be checked. | Core (judgment) | verification_follow_through, accountability_agency |\n| Explanation | A brief, fact-grounded account of how the failure happened. It separates confirmed facts from what is still under investigation, and it explains rather than excuses. | Supporting (research: tied third) | causation_explanation, truthfulness_factual_discipline |\n| Direct regret | An unconditional statement of apology for the organization's own conduct. | Supporting (research: tied third) | stakeholder_respect_impact, clarity_plain_language |\n| Conduct rejected | The draft says the conduct was wrong, not only that the reaction was unfortunate. | Supporting (research: tied third) | accountability_agency, future_readiness_learning |\n| Timely care information | If people are still at risk, the draft tells them what to do and whom to contact, and says what is confirmed now. | Supporting (judgment) | stakeholder_respect_impact, clarity_plain_language |\n| Restraint in the ask | The draft does not demand forgiveness, understanding or moving on. | Minor (research: forgiveness ranked lowest) | fairness_independence_conflicts, stakeholder_respect_impact |\n\nThe rankings marked \"research\" rest on the Lewicki study, but the study did not test corporate apologies. Treat \"Core (research)\" as the best available evidence, not as proof for this setting. The tie between regret, explanation and repentance means the protocol should not raise a finding because one of the three is stronger than another.\n\n## Drafting notes: triggers considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\n**Watchlist.** Treat these as prompts in addition to the vague-action list: \"mistakes were made\", \"we regret that this happened\", \"sorry if\", \"any inconvenience\", \"the situation\", \"recent events\", \"the incident\", \"the content was posted\", \"not who we are\", \"never our intention\", \"we hear your concerns\", \"we are conducting a review\", \"we take this seriously\", \"we ask for your understanding\", \"committed to doing better\". A watchlist term alone is not a finding. Raise one only when the term stands in place of an element from Section 5.\n\nRaise a High-severity finding when any of these is true:\n\n- No sentence says the organization or a named leader is responsible for the conduct, decision or failure. The draft offers only regret, sympathy or concern. *(accountability_agency; Legal)*\n- The draft never says what the conduct or failure was. The only references are \"the situation\", \"the incident\", \"mistakes\" or similar. *(accountability_agency, clarity_plain_language)*\n- The cause is placed only on an individual employee, a vendor, a miscommunication, circumstances or the audience's reaction, and the draft does not state the organization's own supervisory or control role. *(accountability_agency, fairness_independence_conflicts; Legal, plus HR if an employee is named)*\n- The only apology sentence is conditional on the audience's reaction, for example \"if\", \"to anyone who felt\", or \"that concerns were raised\". *(stakeholder_respect_impact; Legal)*\n- The draft names no affected group and no concrete harm. Alternatively, it states that no one was harmed with no stated basis. *(stakeholder_respect_impact; add Privacy or Information security where data is involved, and HR or Labor where employees are affected)*\n- The draft describes harm to identifiable people and offers neither a repair nor any corrective action. *(corrective_action_proof; Executive)*\n- The only forward commitment is a review, an investigation, training or \"doing better\", and it has no named owner and no date. *(corrective_action_proof, verification_follow_through; Executive)*\n- The draft, or context the author supplied, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication. *(truthfulness_factual_discipline, accountability_agency; Legal.)* This trigger rests on professional judgment, not on the study. The study found the components worked the same for competence and integrity failures, so do not cite research for it.\n- The draft describes an ongoing risk to people (safety, money, data, access) and gives them no action to take or contact to use. *(stakeholder_respect_impact, clarity_plain_language; Privacy or Information security where data is involved)*\n\n**Raise Moderate when:**\n\n- Explanation comes before the first statement of responsibility.\n- The explanation names external context, third parties or audience misreading and names no internal decision or control.\n- The only apology is conditional but responsibility is stated elsewhere.\n- Values language stands in for a statement that the conduct was wrong.\n- The draft asks for understanding or patience before any repair is stated.\n- The impact passage leads with reputation, criticism or intent before the affected group.\n- An owner is named by department only, or a follow-up has no date.\n- Facts are still developing and the draft does not separate confirmed from unconfirmed or give an update date.\n\n**Raise Low when** the draft requests forgiveness after repair has been stated.\n\n## Drafting notes: questions considered (not applied)\n\nThe checks the tool applies are the ones listed on this card.\nAlways include these:\n\n- Who approved the decision or conduct being apologized for, and does the draft say so?\n- Who is affected, and have they been told directly before or at the same time as the public release?\n- Is the repair proportionate to the harm, and does the named owner have authority to commit to it? *(Executive)*\n- Which statements in the draft are confirmed today, and which are still under investigation? When is the next update?\n- Does the draft blame a person or vendor who has not been told or given a chance to respond? *(HR, Legal)*\n- Does any statement of responsibility carry legal consequences that counsel should review before publication? *(Legal)*\n- Do notification, disclosure or consultation obligations apply in the markets where people are affected? These may apply, and counsel must confirm. *(Legal, Privacy, Information security, Investor relations, Local market, or HR and Labor, depending on the case)*\n\n## 8. What this protocol does not cover\n\n- **It cannot judge sincerity or whether the apology will land.** It reads for the presence of information, not for feeling.\n- **It cannot verify facts.** It can see whether the draft separates confirmed from unconfirmed, not whether the confirmed statements are true.\n- **It cannot see timing.** Timeliness can only be checked against dates and care information the draft itself states.\n- **It makes no legal call.** It never says a draft is compliant or non-compliant. Whether an admission of responsibility creates liability is for counsel. The protocol never advises softening responsibility to manage that risk.\n- **Its evidence base is thin.** Only the responsibility, repair and forgiveness rankings rest on a published study, known here through a press account. It used written hypothetical scenarios, student and online participants, and perceived effectiveness as the outcome. Everything else is one author's professional standard.\n- **It does not adjust for the kind of failure.** The study found apologies were less accepted when the failure involved integrity, and component value did not change. The protocol applies the same checks either way. Whether a deliberate breach needs consequences or independent review is for a human to decide, because the draft cannot show it.\n- **Two dimensions get little coverage.** listening_employee_voice has no element here, because nothing in the supplied material supports one. fairness_independence_conflicts is checked only through blame-shifting and the ask."
     },
     {
+      "id": "change-readiness",
+      "name": "Change readiness",
+      "layer": "overlay",
+      "trigger": "change-readiness",
+      "version": "0.3.0",
+      "status": "active",
+      "last_reviewed": "2026-09-27",
+      "review_by": "2027-03-27",
+      "rests_on": "Research on the five beliefs that decide whether employees are ready for change (Armenakis and colleagues), with field and meta-analytic support for information, confidence and explanation.",
+      "changelog": [
+        "0.3.0 (2026-09-28): after the duplicate check, each element cut to what the framework and other protocols don't already ask. Why this change: the choice over alternatives only, giving way to Workforce impact's Selection basis and alternatives when both apply. Leaders' commitment renamed What is different this time. Gains and losses: the honest balance only. Able to make the change and its trigger moved to stakeholder respect.",
+        "0.2.0 (2026-09-28): wording tightened to save space in the prompt, before going live; no check added or removed.",
+        "0.1.0 (2026-09-27): first draft from the Change readiness source review."
+      ],
+      "elements": [
+        {
+          "id": "change-readiness.why-this-change",
+          "name": "Why this change, rather than another",
+          "means": "The draft says why this option was chosen over the alternatives the context shows were considered.",
+          "weight": "core",
+          "dimension": "causation_explanation",
+          "basis": "research",
+          "sources": [
+            "armenakis-harris-2009",
+            "shaw-2003-explanations"
+          ],
+          "superseded_by": "workforce-impact.selection-basis-and-alternatives",
+          "basis_note": "One of five beliefs research links to readiness for change (appropriateness); a meta-analysis of 54 samples found explanations improve fairness judgements. Applied to a single message as professional judgement."
+        },
+        {
+          "id": "change-readiness.able-to-make-it",
+          "name": "Able to make the change",
+          "means": "The draft says what training, time, tools or support people will get, when, and who to go to when something doesn't work.",
+          "weight": "core",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "research",
+          "sources": [
+            "armenakis-harris-2009",
+            "wanberg-banas-2000"
+          ],
+          "basis_note": "Efficacy is one of five beliefs linked to readiness for change; a longitudinal study found information and confidence in coping predicted openness. Applied to a single message as professional judgement."
+        },
+        {
+          "id": "change-readiness.leaders-committed",
+          "name": "What is different this time",
+          "means": "Where earlier changes of this kind stalled or were reversed, the draft says what is different this time.",
+          "weight": "supporting",
+          "dimension": "accountability_agency",
+          "basis": "research",
+          "sources": [
+            "armenakis-harris-2009"
+          ],
+          "basis_note": "Principal support, one of five beliefs linked to readiness for change: that leaders are committed and it is not another passing fad. Applied to a single message as professional judgement."
+        },
+        {
+          "id": "change-readiness.gains-and-losses",
+          "name": "What people gain and lose, honestly",
+          "means": "The draft is honest about both what people gain and what gets harder, at least for a while.",
+          "weight": "supporting",
+          "dimension": "stakeholder_respect_impact",
+          "basis": "research",
+          "sources": [
+            "armenakis-harris-2009",
+            "oreg-2011-reactions"
+          ],
+          "basis_note": "Valence, one of five beliefs linked to readiness for change; a review of 79 studies lists perceived benefit or harm among the causes of reactions. Applied to a single message as professional judgement."
+        }
+      ],
+      "triggers": [
+        {
+          "check": "The draft presents the change only as an opportunity (\"exciting\", \"a journey\") while the supplied context shows costs or disruption.",
+          "dimension": "truthfulness_factual_discipline"
+        },
+        {
+          "check": "The draft promises training or support (\"fully supported\") without saying what, when or from whom.",
+          "dimension": "stakeholder_respect_impact"
+        },
+        {
+          "check": "The draft tells readers how to feel (\"embrace\", \"we're all excited\") instead of giving reasons.",
+          "dimension": "stakeholder_respect_impact"
+        }
+      ],
+      "questions": [
+        {
+          "ask": "Have earlier changes of this kind stalled, been reversed or left people worse off, and does the draft need to say what is different this time?",
+          "review": [
+            "Executive",
+            "HR"
+          ]
+        },
+        {
+          "ask": "Is the training or support the draft promises funded, scheduled and confirmed by whoever will deliver it?",
+          "review": [
+            "HR"
+          ]
+        },
+        {
+          "ask": "Do managers have what they need to answer their teams' questions before this goes out?",
+          "review": [
+            "HR"
+          ]
+        }
+      ],
+      "prose": "## What this overlay is\n\nChecks for any message asking employees to make a change: a restructuring or reorganization, a major policy change, a new or updated strategy, or a merger or acquisition. It adds what the Workforce family, the Workforce impact overlay and the framework don't cover: why *this* change, whether people will be able to make it, whether leaders are visibly committed, and an honest account of what people gain and lose.\n\nIt doesn't repeat what the others check: what changes and when (Workforce family), whether the decision is final and what can still be influenced (Workforce impact overlay), consultation and bargaining (Workforce family), or why change is needed at all (the framework's causation dimension).\n\n## Source\n\n**Research:** Armenakis & Harris (2009), *Journal of Change Management* 9(2); Armenakis, Bernerth, Pitts & Walker (2007), *Journal of Applied Behavioral Science* 43(4); Wanberg & Banas (2000), *Journal of Applied Psychology* 85(1); Shaw, Wild & Colquitt (2003), *Journal of Applied Psychology* 88(3); Oreg, Vakola & Armenakis (2011), *Journal of Applied Behavioral Science* 47(4).\n\n**Declared professional judgement:** applying beliefs measured in people to the content of a single message; the wording of all three triggers.\n\nFull source review: `sources/reviews/change-readiness-source-review.md`.\n\n## What this overlay does not cover\n\n- A change campaign over time. The tool reviews one message.\n- How people feel. It checks what the message says.\n- Whether the change is the right one."
+    },
+    {
       "id": "crisis-in-progress",
       "name": "Crisis in progress",
       "layer": "overlay",

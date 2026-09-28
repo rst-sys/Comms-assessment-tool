@@ -12,8 +12,10 @@
     "8a3d97e641557c7a": "WORKFORCE AND ORGANIZATION CHANGE (family protocol)\n\nELEMENTS\n- A route for individual circumstances (listening_employee_voice, supporting). The draft says how an employee whose circumstances the change affects differently (for example health, disability or caregiving) can raise them, and who decides.\n\nHIGH-SEVERITY TRIGGERS\n- The draft links a consequence (closing a site, losing benefits, harsher conditions) or a benefit to employees' support for a union, a strike or a bargaining position. (fairness_independence_conflicts; review Labor or Legal)\n- The draft announces a change to where or when people work, or to their pay or benefits, with no effective date, or as already in effect. (stakeholder_respect_impact; review HR or Labor)\n- The only route the draft offers for individual circumstances is a general \"talk to your manager or HR\", with nothing on what can be adjusted or who decides. (listening_employee_voice; review HR)",
     "669ac7fdf26a093b": "WORKFORCE REDUCTION AND RESTRUCTURING (event protocol)\n\nELEMENTS\n- Support for those leaving (corrective_action_proof). Named support for people whose roles end, with a provider, owner and date.\n- The remaining workforce (corrective_action_proof, supporting). What work stops, moves or changes owner for the people who stay, and who decides.\n- Leadership exposure (fairness_independence_conflicts, supporting). Whether leadership roles, pay or incentives are affected by the same decision.\n\nHIGH-SEVERITY TRIGGERS\n- The draft never says in plain terms that roles or employment end, reaching instead for rightsizing, workforce optimization, simplification, efficiency, synergies, realignment, organizational health, agile or leaner organization, fewer layers, streamlining, cost discipline, transition, impacted or exit. (stakeholder_respect_impact; sharper form of the core check \"The central fact first, in ordinary words\" — one finding, not two)\n- Employee feedback, an engagement survey or consultation is cited as a reason for the reduction without an explicit statement that leadership, not employees, made the decision. (listening_employee_voice; review HR)",
     "0dbb5ad74f06ac7f": "WORKFORCE IMPACT (overlay protocol)\n\nELEMENTS\n- Decision status (accountability_agency). Whether the decision is final, proposed, or in consultation.\n- Scope of impact (stakeholder_respect_impact). How many are affected, in which functions, sites and countries, or that the group is still being set, or plainly that no roles are affected.\n- Selection basis and alternatives (fairness_independence_conflicts). Where roles end, how roles or people were chosen, the group chosen from, and what was tried first — voluntary exit, redeployment, a hiring freeze.\n- Individual notice, timing and terms (stakeholder_respect_impact). Where roles end, how and when each affected person is told, with notice dates, last day and pay terms, or where those will be found and by when.\n- Voice and what can still change (listening_employee_voice). What employees or their representatives can still influence, kept separate from what leadership has already decided.\n\nHIGH-SEVERITY TRIGGERS\n- The draft announces role eliminations or a headcount reduction and never says whether the decision is final, proposed, or subject to consultation. (accountability_agency; review HR or Labor)\n- The draft calls the decision final and also invites employee input, feedback or consultation, without saying what remains open to change. (listening_employee_voice; review HR or Labor)\n- The draft reaches a wider audience than the affected group without saying how or when affected people are told individually. (stakeholder_respect_impact; review HR)\n- The draft gives no notice date, last working day or date by which dates will come, no pay terms, and no place to find either. (clarity_plain_language; review HR or Labor)\n- The decision is attributed to a parent company, head office or group (\"the group has decided\", \"as directed by our parent\") and the draft doesn't say what the local organization decided or owns. (accountability_agency; review Legal or HR)\n- The draft gives less notice than planned or says the change takes effect immediately, and gives no reason for the shortened notice. (causation_explanation; review Legal or HR)\n- The draft withholds information on grounds of confidentiality without saying why or for how long. (truthfulness_factual_discipline; review Legal)\n- The draft says employees or representatives have been consulted, or that consultation is complete, while the supplied context shows it hasn't started or finished. (truthfulness_factual_discipline; review Legal or HR)",
+    "8cfa4c5a62bb6da9": "CHANGE READINESS (overlay protocol)\n\nELEMENTS\n- Able to make the change (stakeholder_respect_impact). The draft says what training, time, tools or support people will get, when, and who to go to when something doesn't work.\n- What is different this time (accountability_agency, supporting). Where earlier changes of this kind stalled or were reversed, the draft says what is different this time.\n- What people gain and lose, honestly (stakeholder_respect_impact, supporting). The draft is honest about both what people gain and what gets harder, at least for a while.\n\nHIGH-SEVERITY TRIGGERS\n- The draft presents the change only as an opportunity (\"exciting\", \"a journey\") while the supplied context shows costs or disruption. (truthfulness_factual_discipline)\n- The draft promises training or support (\"fully supported\") without saying what, when or from whom. (stakeholder_respect_impact)\n- The draft tells readers how to feel (\"embrace\", \"we're all excited\") instead of giving reasons. (stakeholder_respect_impact)",
     "f758a0cd9ede3c92": "INCIDENT AND DISRUPTION (family protocol)\n\nELEMENTS\n- What happened, and when (truthfulness_factual_discipline). The draft says what happened, when it started, when the organization found out, and whether it is still happening.\n- The risk stated plainly (truthfulness_factual_discipline). The draft describes the risk or hazard plainly, without wording that makes it sound smaller than the supplied context shows.\n- What still works, and when service returns (stakeholder_respect_impact). Where a service, product or supply is disrupted, the draft says what still works, what doesn't, and when normal service is expected, or that this isn't known yet.\n- What people are owed, and how to claim it (corrective_action_proof, supporting). Where people are owed a remedy (repair, replacement, refund, credit or compensation), the draft says what it is, whether they can choose, and how to claim it, or when that will be decided.\n\nHIGH-SEVERITY TRIGGERS\n- The draft calls a recall or corrective action \"precautionary\", \"out of an abundance of caution\", \"discretionary\" or relevant only \"in rare situations\" while the draft itself or the supplied context reports a known hazard, failures or injuries. (truthfulness_factual_discipline; review Legal)\n- The draft calls a recall \"voluntary\" where the product is sold in the EU, or where the supplied context shows a regulator ordered the recall. (In the US, a voluntary recall is a legal status, not spin, and is not a finding on its own.) (truthfulness_factual_discipline; review Legal or Local market)\n- People are told to \"contact customer support\" or \"reach out\" about a remedy, and the draft never says what the remedy is. (corrective_action_proof)",
     "ab7a89702f5950b8": "WORKFORCE AND ORGANIZATION CHANGE (family protocol)\n\nELEMENTS\n- What changes, and from when (stakeholder_respect_impact). The draft says what exactly changes in employees' terms or working conditions, compared with today, and the date it takes effect.\n- Who it applies to, and who is exempt (fairness_independence_conflicts). The draft says which employees the change applies to, names any group that is exempt, and says why.\n- A route for individual circumstances (listening_employee_voice, supporting). The draft says how an employee whose circumstances the change affects differently (for example health, disability or caregiving) can raise them, and who decides.\n- Bargaining and consultation status (listening_employee_voice). Where employees have a union or other representatives, the draft says whether the change has been or will be bargained over or consulted on, and what can still change.\n\nHIGH-SEVERITY TRIGGERS\n- The draft links a consequence (closing a site, losing benefits, harsher conditions) or a benefit to employees' support for a union, a strike or a bargaining position. (fairness_independence_conflicts; review Labor or Legal)\n- The draft announces a change to where or when people work, or to their pay or benefits, with no effective date, or as already in effect. (stakeholder_respect_impact; review HR or Labor)\n- The only route the draft offers for individual circumstances is a general \"talk to your manager or HR\", with nothing on what can be adjusted or who decides. (listening_employee_voice; review HR)",
+    "a05fafc9a063c8d5": "CHANGE READINESS (overlay protocol)\n\nELEMENTS\n- Why this change, rather than another (causation_explanation). The draft says why this option was chosen over the alternatives the context shows were considered.\n- Able to make the change (stakeholder_respect_impact). The draft says what training, time, tools or support people will get, when, and who to go to when something doesn't work.\n- What is different this time (accountability_agency, supporting). Where earlier changes of this kind stalled or were reversed, the draft says what is different this time.\n- What people gain and lose, honestly (stakeholder_respect_impact, supporting). The draft is honest about both what people gain and what gets harder, at least for a while.\n\nHIGH-SEVERITY TRIGGERS\n- The draft presents the change only as an opportunity (\"exciting\", \"a journey\") while the supplied context shows costs or disruption. (truthfulness_factual_discipline)\n- The draft promises training or support (\"fully supported\") without saying what, when or from whom. (stakeholder_respect_impact)\n- The draft tells readers how to feel (\"embrace\", \"we're all excited\") instead of giving reasons. (stakeholder_respect_impact)",
     "5585ae6532dc9916": "INCIDENT AND DISRUPTION (family protocol)\n\nELEMENTS\n- The risk stated plainly (truthfulness_factual_discipline). The draft describes the risk or hazard plainly, without wording that makes it sound smaller than the supplied context shows.\n- What still works, and when service returns (stakeholder_respect_impact). Where a service, product or supply is disrupted, the draft says what still works, what doesn't, and when normal service is expected, or that this isn't known yet.\n- What people are owed, and how to claim it (corrective_action_proof, supporting). Where people are owed a remedy (repair, replacement, refund, credit or compensation), the draft says what it is, whether they can choose, and how to claim it, or when that will be decided.\n\nHIGH-SEVERITY TRIGGERS\n- The draft calls a recall or corrective action \"precautionary\", \"out of an abundance of caution\", \"discretionary\" or relevant only \"in rare situations\" while the draft itself or the supplied context reports a known hazard, failures or injuries. (truthfulness_factual_discipline; review Legal)\n- The draft calls a recall \"voluntary\" where the product is sold in the EU, or where the supplied context shows a regulator ordered the recall. (In the US, a voluntary recall is a legal status, not spin, and is not a finding on its own.) (truthfulness_factual_discipline; review Legal or Local market)\n- People are told to \"contact customer support\" or \"reach out\" about a remedy, and the draft never says what the remedy is. (corrective_action_proof)",
     "4c0db0922237f757": "CYBER INCIDENT AND DATA BREACH (event protocol)\n\nELEMENTS\n- What and when (truthfulness_factual_discipline). The draft gives the discovery date, the incident period if known, and time zones.\n- Nature of exposure (truthfulness_factual_discipline). The draft says whether data was accessed, acquired, altered or made unavailable, or that this is undetermined, and names the data categories involved.\n- Present response (corrective_action_proof). The draft describes what is being done now, specific enough to check, including containment and who is investigating.\n- Support matched to harm (stakeholder_respect_impact, supporting). Any support offered fits the data involved, with its terms, its duration and how to claim it.\n- Authenticity (verification_follow_through, supporting). The draft tells recipients how to confirm the notice is genuine, and how the organization will and will not contact them.\n- Attribution discipline (fairness_independence_conflicts). Any claim about who was responsible, or that a vendor was at fault, carries a stated basis and does not displace the organization's own role.\n\nHIGH-SEVERITY TRIGGERS\n- The draft states a categorical outcome — no data was compromised, the incident is contained, systems are secure — while also saying the investigation is ongoing, or with no basis given. (truthfulness_factual_discipline; sharper form of the core check \"Estimates marked as estimates\" — one finding, not two; review Information security or Legal)\n- The draft says data was involved but does not name the categories, and does not say the categories are not yet known. (truthfulness_factual_discipline; review Privacy or Legal)\n- The draft attributes the incident to a named attacker, a nation-state, a sophisticated actor, or a vendor, with no stated basis; or attributes it to a vendor without stating the organization's own selection, oversight or data-sharing role. (fairness_independence_conflicts; review Information security)\n- The draft states that notification is or is not legally required, or that the organization is compliant with applicable laws. (truthfulness_factual_discipline; review Legal or Privacy)\n- The draft gives affected people no way to confirm the notice is genuine, in a message that asks them to act, click or call. (verification_follow_through)\n- An investor communication states that the incident is or is not material, or gives an impact figure, without saying who determined it and when. (truthfulness_factual_discipline; review Investor relations or Legal)",
     "9eb94b4a981ff969": "COMMERCIAL AND FINANCIAL DECISIONS (family protocol)\n\nELEMENTS\n- What changes for customers and suppliers (stakeholder_respect_impact). Where customers or suppliers are affected, the draft says what changes for them (price, terms, service, availability or contracts), from when, and what they can do, including cancelling or switching where they have that right.\n- Forecasts with their assumptions (truthfulness_factual_discipline). Statements about future results, savings or synergies are presented as expectations and name the main assumptions or risks behind them.\n\nHIGH-SEVERITY TRIGGERS\n- The draft cites cost savings or synergies but doesn't say whether they involve job losses, where the supplied context shows they do. (truthfulness_factual_discipline; review HR or Investor relations)\n- The draft says \"business as usual\" or \"nothing changes\" for employees, customers or partners without limiting it to the period before the deal closes, or uses it in place of saying what isn't yet known about jobs or service after that. (truthfulness_factual_discipline; review Legal)\n\nNARROWS THIS CORE CHECK\n- sharper form of the core check \"Estimates marked as estimates\" — one finding, not two",
@@ -117,6 +119,7 @@
         "core",
         "workforce",
         "workforce-reduction",
+        "change-readiness",
         "workforce-impact"
       ],
       "blocks": [
@@ -124,6 +127,7 @@
         "cde7ccd96d2c2c4d",
         "8a3d97e641557c7a",
         "669ac7fdf26a093b",
+        "8cfa4c5a62bb6da9",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"
@@ -188,12 +192,14 @@
     "event:Major policy change (e.g. return to office, benefits)": {
       "ids": [
         "core",
-        "workforce"
+        "workforce",
+        "change-readiness"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
         "ab7a89702f5950b8",
+        "a05fafc9a063c8d5",
         "b8311842d8150fe2",
         "aece05adab62c36d"
       ]
@@ -269,12 +275,14 @@
       "ids": [
         "core",
         "commercial",
+        "change-readiness",
         "workforce-impact"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
         "9eb94b4a981ff969",
+        "8cfa4c5a62bb6da9",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"
@@ -325,12 +333,14 @@
       "ids": [
         "core",
         "commercial",
+        "change-readiness",
         "workforce-impact"
       ],
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
         "9eb94b4a981ff969",
+        "8cfa4c5a62bb6da9",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"
@@ -640,6 +650,7 @@
         "core",
         "workforce",
         "workforce-reduction",
+        "change-readiness",
         "workforce-impact"
       ],
       "blocks": [
@@ -647,6 +658,7 @@
         "cde7ccd96d2c2c4d",
         "8a3d97e641557c7a",
         "669ac7fdf26a093b",
+        "8cfa4c5a62bb6da9",
         "0dbb5ad74f06ac7f",
         "b8311842d8150fe2",
         "aece05adab62c36d"

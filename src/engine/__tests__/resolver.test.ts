@@ -37,6 +37,37 @@ describe("which overlays the intake answers switch on", () => {
   });
 });
 
+describe("the change readiness rule", () => {
+  const ASKS = [
+    "Restructuring or reorganization",
+    "Major policy change (e.g. return to office, benefits)",
+    "New or updated strategy, or exit from a market",
+    "Merger, acquisition or sale",
+  ] as const;
+
+  it("switches on for the four change events when employees are an audience", () => {
+    for (const event of ASKS) {
+      for (const audience of ["All employees", "Managers and leaders"] as const) {
+        expect(activeTriggers({ ...base, communication_event: event, audiences: [audience] }), `${event} / ${audience}`).toContain("change-readiness");
+      }
+    }
+  });
+
+  it("stays off without an Employees audience, franchisees and dealers included", () => {
+    for (const event of ASKS) {
+      for (const audience of ["Customers", "Franchisees or dealers", "Media", "Investors and analysts"] as const) {
+        expect(activeTriggers({ ...base, communication_event: event, audiences: [audience] }), `${event} / ${audience}`).not.toContain("change-readiness");
+      }
+    }
+  });
+
+  it("stays off job-loss messages, even to employees", () => {
+    for (const event of ["Layoffs or job cuts", "Site, office or store closure"] as const) {
+      expect(activeTriggers({ ...base, communication_event: event, audiences: ["All employees"] })).not.toContain("change-readiness");
+    }
+  });
+});
+
 describe("the resolved bundle", () => {
   it("applies only active protocols, with every rule firing at once", () => {
     // Every rule at once. Only the protocols that are switched on apply.

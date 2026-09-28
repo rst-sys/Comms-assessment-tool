@@ -63,6 +63,7 @@ export const OVERLAY_TRIGGERS = [
   "people-harmed",
   "workforce-impact",
   "crisis-in-progress",
+  "change-readiness",
   "apology",
 ] as const;
 export type OverlayTrigger = (typeof OVERLAY_TRIGGERS)[number];

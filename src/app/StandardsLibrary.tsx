@@ -255,6 +255,7 @@ const OVERLAY_WHEN: Record<string, string> = {
   "people-harmed": "people have been harmed or put at risk",
   "workforce-impact": "the event is layoffs, restructuring or a site closure, or it is cost-cutting, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
   "crisis-in-progress": "the situation is still unfolding",
+  "change-readiness": "the event is a restructuring, a major policy change, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
   apology: "the draft is mainly trying to apologize and take responsibility",
 };
 

@@ -958,3 +958,51 @@ sources:
     last_checked: 2026-09-28
     review_by: 2027-03-28
     notes: "Peer-reviewed meta-analysis, not binding. Not opened: findings known through Chon, Kim and Tam (2022), International Journal of Communication 16, https://ijoc.org/index.php/ijoc/article/download/18185/3751. Cited by crisis-in-progress.response-fits-responsibility."
+  - id: armenakis-harris-2009
+    title: "Reflections — our journey in organizational change research and practice"
+    issuer: "Armenakis and Harris — Journal of Change Management 9(2), 127–142"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://www.academia.edu/24231547/Reflections_our_Journey_in_Organizational_Change_Research_and_Practice
+    version_or_date: "2009"
+    read_status: partly_read
+    last_checked: 2026-09-27
+    review_by: 2027-03-27
+    notes: "Peer-reviewed research, not binding. doi:10.1080/14697010902879079. Pages 129 and 135 read, from an author-posted copy (the publisher returned 403). Cited by four change-readiness elements."
+  - id: wanberg-banas-2000
+    title: "Predictors and outcomes of openness to changes in a reorganizing workplace"
+    issuer: "Wanberg and Banas — Journal of Applied Psychology 85(1), 132–142"
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://experts.umn.edu/en/publications/predictors-and-outcomes-of-openness-to-changes-in-a-reorganizing-/
+    version_or_date: "2000"
+    read_status: partly_read
+    last_checked: 2026-09-27
+    review_by: 2027-03-27
+    notes: "Peer-reviewed research, not binding. Abstract read via the university's record. Cited by change-readiness.able-to-make-it."
+  - id: shaw-2003-explanations
+    title: "To justify or excuse? — a meta-analytic review of the effects of explanations"
+    issuer: "Shaw, Wild and Colquitt — Journal of Applied Psychology 88(3), 444–458"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://pubmed.ncbi.nlm.nih.gov/12814294/
+    version_or_date: "2003"
+    read_status: partly_read
+    last_checked: 2026-09-27
+    review_by: 2027-03-27
+    notes: "Peer-reviewed meta-analysis, not binding. Abstract read; 54 samples. Cited by change-readiness.why-this-change."
+  - id: oreg-2011-reactions
+    title: "Change recipients' reactions to organizational change — a 60-year review of quantitative studies"
+    issuer: "Oreg, Vakola and Armenakis — Journal of Applied Behavioral Science 47(4), 461–524"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://journals.sagepub.com/doi/10.1177/0021886310396550
+    version_or_date: "2011"
+    read_status: partly_read
+    last_checked: 2026-09-27
+    review_by: 2027-03-27
+    notes: "Peer-reviewed review, not binding. Abstract read; 79 studies. Cited by change-readiness.gains-and-losses."

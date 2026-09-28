@@ -88,6 +88,13 @@ export function activeTriggers(request: EvaluationRequest): OverlayTrigger[] {
   const id = event?.id ?? "";
   if (JOB_AFFECTING.includes(id) || (COMMERCIAL.includes(id) && toEmployees)) on.push("workforce-impact");
 
+  // Messages asking employees to make a change. Not layoffs or a site
+  // closure: those are job-loss messages, and whether people are ready for a
+  // change they are leaving is not their main problem. Employees must be an
+  // audience, because readiness is about the people who have to change.
+  const ASKS_FOR_CHANGE = ["restructuring", "policy-change", "strategy-market-exit", "merger-acquisition"];
+  if (ASKS_FOR_CHANGE.includes(id) && toEmployees) on.push("change-readiness");
+
   // Still unfolding only. "Not yet public" means the organization is still
   // initiating: there is no earlier statement to correct and no crisis yet
   // under way, so the overlay's two checks would have nothing to hold to.
