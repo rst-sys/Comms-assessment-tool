@@ -267,8 +267,11 @@ table.register td select { width: auto; min-width: 130px; padding: 4px 6px; }
 /* Still used by the public-context search box, not by URL import, which is gone. */
 .url-input { display: flex; gap: var(--space); }
 .url-input input { flex: 1; }
-textarea, input[type="text"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
+textarea, input[type="text"], input[type="password"], input[type="search"], select { width: 100%; border: 1px solid var(--border); border-radius: 4px; padding: 8px 10px; background: var(--surface); line-height: 1.5; }
 textarea:focus, input:focus, select:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px rgba(31, 90, 86, 0.2); }
+/* A field in error keeps its red border while focused, so the cursor going
+   back into it doesn't hide what is wrong. The existing error red, no new colour. */
+input[aria-invalid="true"], input[aria-invalid="true"]:focus { border-color: var(--material); }
 textarea { resize: vertical; }
 #draft-text { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
 .field { display: block; margin-bottom: calc(var(--space) * 1.5); }
@@ -688,6 +691,17 @@ textarea { resize: vertical; }
    The welcome screen used to be one of them; it has its own layout now, and
    these classes stayed because those three still use them. */
 .welcome-intro { font-family: var(--serif); font-size: 19px; line-height: 1.5; max-width: var(--measure); margin-bottom: calc(var(--space) * 4); }
+
+/* Password screen: a narrow card built from the intake's pieces. */
+.signin-card { max-width: 520px; }
+.signin-card h2 { margin-top: 0; font-size: 21px; } /* the intake step cards' heading size */
+.signin-card .label { display: block; }
+.password-field { position: relative; }
+.password-field input { padding-right: 64px; }
+.password-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); }
+.signin-card .error { margin: var(--space) 0 0; }
+.signin-actions { margin-top: calc(var(--space) * 2.25); }
+.signin-note { margin: calc(var(--space) * 2.5) 0 0; padding-top: calc(var(--space) * 2); border-top: 1px solid var(--divider); }
 /* Cards on the explanatory pages are sized to their text, not to the page.
    Capping the prose inside a full-width card leaves a band of empty card to
    the right of every line — the same fault as revision 22, which was fixed on
