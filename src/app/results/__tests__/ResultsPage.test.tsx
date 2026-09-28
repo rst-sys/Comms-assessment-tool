@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it } from "vitest";
 import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { CONTROL, DEMO_1 } from "../../../engine/fixtures.js";
-import { HEIGHTENED_NOTICE, REPORTER_QUESTION } from "../../copy.js";
+import { AI_SUMMARY_DISCLAIMER, AI_SUMMARY_HEADING, HEIGHTENED_NOTICE, REPORTER_QUESTION } from "../../copy.js";
 import { ResultsPage } from "../ResultsPage.js";
 import { ceilingWithoutContext } from "../../../engine/scoring.js";
 
@@ -240,5 +240,57 @@ describe("the heightened-review notice", () => {
     // The harm tick-box alone is enough, with no qualifying event.
     render(<ResultsPage result={result} request={{ ...DEMO_1.request, communication_event: "New CEO or leadership appointment", people_at_risk: true }} />);
     expect(screen.getByText(HEIGHTENED_NOTICE)).toBeTruthy();
+  });
+});
+
+describe("How an AI assistant might summarize this", () => {
+  const summary = "The company says it is cutting jobs. It does not say who decided or why.";
+  const withSummary = (): EvaluationResult => {
+    const r = load("demo1");
+    r.analysis.ai_summary = summary;
+    return r;
+  };
+
+  it("shows the heading, then the disclaimer directly beneath it, then the summary", () => {
+    render(<ResultsPage result={withSummary()} request={DEMO_1.request} />);
+    const section = screen.getByRole("region", { name: AI_SUMMARY_HEADING });
+    const heading = within(section).getByRole("heading", { name: AI_SUMMARY_HEADING });
+    const disclaimer = within(section).getByText(AI_SUMMARY_DISCLAIMER);
+    expect(heading.nextElementSibling).toBe(disclaimer);
+    expect(disclaimer.nextElementSibling?.textContent).toBe(summary);
+  });
+
+  it("sits after the Devil's Advocate and before the questions", () => {
+    const { container } = render(<ResultsPage result={withSummary()} request={DEMO_1.request} />);
+    const ids = [...container.querySelectorAll("main > section[id]")].map((s) => s.id);
+    const at = ids.indexOf("ai-summary");
+    expect(at).toBeGreaterThan(-1);
+    expect(ids[at - 1]).toBe("devils-advocate");
+    expect(container.querySelector("#devils-advocate ~ #ai-summary")).toBeTruthy();
+    const questions = screen.getByRole("heading", { name: /^Questions worth asking/ });
+    expect(screen.getByText(AI_SUMMARY_DISCLAIMER).compareDocumentPosition(questions) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("shows neither heading nor disclaimer when there is no summary", () => {
+    for (const value of [undefined, "", "   "]) {
+      const r = load("demo1");
+      if (value === undefined) delete r.analysis.ai_summary;
+      else r.analysis.ai_summary = value;
+      render(<ResultsPage result={r} request={DEMO_1.request} />);
+      expect(screen.queryByText(AI_SUMMARY_HEADING)).toBeNull();
+      expect(screen.queryByText(AI_SUMMARY_DISCLAIMER)).toBeNull();
+      cleanup();
+    }
+  });
+
+  it("still opens every captured review from before the field existed", () => {
+    for (const prefix of ["control", "demo1", "demo1-context", "demo2", "demo3"]) {
+      const r = load(prefix);
+      expect(r.analysis.ai_summary, prefix).toBeUndefined();
+      render(<ResultsPage result={r} request={prefix === "control" ? CONTROL.request : DEMO_1.request} />);
+      expect(screen.getByRole("region", { name: /^Findings/ }), prefix).toBeTruthy();
+      expect(screen.queryByText(AI_SUMMARY_HEADING), prefix).toBeNull();
+      cleanup();
+    }
   });
 });

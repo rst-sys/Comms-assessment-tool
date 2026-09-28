@@ -9,6 +9,7 @@ import { buildReviewPdf, reviewPdfFilename } from "./pdf.js";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
+import { AiSummary } from "./AiSummary.js";
 import { DevilsAdvocate } from "./DevilsAdvocate.js";
 import { ExecutiveSummary } from "./ExecutiveSummary.js";
 import { Questions } from "./Questions.js";
@@ -128,6 +129,10 @@ export function ResultsPage({ result, request, config = null, onDiscard, onRevie
       <ExecutiveSummary result={result} request={request} />
       <Findings findings={a.findings} />
       <DevilsAdvocate data={a.devils_advocate} />
+      {/* After the Devil's Advocate: the same kind of section, how outsiders
+          may read the draft. Kept away from the executive summary so an
+          imitation of an outside assistant never sits beside the verdict. */}
+      <AiSummary summary={a.ai_summary} />
       <Questions questions={a.questions_before_publication} />
       {/* Built here from the intake, not by the model: same answers, same
           checklist, every time. Directly after the draft-specific questions,

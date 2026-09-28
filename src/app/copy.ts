@@ -16,6 +16,15 @@ export const REPORTER_QUESTION =
   "What phrase or sentence would a reporter or critic be most likely to pull out?";
 
 /**
+ * The summary section's heading and the disclaimer that always sits directly
+ * beneath it, on the page and in the PDF. The disclaimer never appears
+ * without the summary, and the summary never appears without it.
+ */
+export const AI_SUMMARY_HEADING = "How an AI assistant might summarize this";
+export const AI_SUMMARY_DISCLAIMER =
+  "An illustration only, not a prediction or a guarantee. Real AI assistants draw on many sources, change often and may describe this very differently. This example is based on the draft alone.";
+
+/**
  * Every screen's footer, the Welcome screen's one-line footer, and the PDF
  * read this one line, so they cannot disagree. The year is the build's, so it
  * does not go stale.

@@ -222,3 +222,24 @@ describe("the language rule (revision 21)", () => {
     }
   });
 });
+
+describe("the ai_summary rules", () => {
+  const rule = OUTPUT_NOTES.split("\n").find((l) => l.startsWith("- ai_summary"))!;
+
+  it("live in OUTPUT_NOTES, not the system prompt", () => {
+    expect(rule).toBeTruthy();
+    expect(SYSTEM_PROMPT).not.toContain("ai_summary");
+  });
+
+  it("say draft only, third person, about 60 words, no added facts and not scored", () => {
+    for (const phrase of ["DRAFT block alone", "CONTEXT", "AUDIENCE CONTEXT DOCUMENTS", "third person", "about 60 words", "add no fact", "not scored"]) {
+      expect(rule, phrase).toContain(phrase);
+    }
+  });
+
+  it("exempt the summary from the ban on replacement wording, so the two lines do not clash", () => {
+    expect(OUTPUT_NOTES).toContain(
+      "Never write rewritten sentences or replacement wording anywhere in the output except ai_summary, which describes the draft from outside and is never wording for the author to use.",
+    );
+  });
+});

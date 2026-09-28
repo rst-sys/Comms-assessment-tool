@@ -48,6 +48,7 @@ export function sampleAnalysis(overrides: Partial<Analysis> = {}): Analysis {
     },
     questions_before_publication: ["Q1?", "Q2?", "Q3?", "Q4?", "Q5?"],
     specialist_review_summary: ["HR"],
+    ai_summary: "The company says it is cutting jobs. It does not say who decided, how people were chosen or what support they will get.",
     ...overrides,
   };
 }

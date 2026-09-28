@@ -510,4 +510,15 @@ export interface Analysis {
   devils_advocate: DevilsAdvocate;
   questions_before_publication: string[];
   specialist_review_summary: SpecialistReviewType[];
+  /**
+   * How an outside AI assistant might sum the draft up, in one or two plain
+   * third-person sentences drawn from the draft alone. An illustration, not a
+   * finding: it is never scored and never saved.
+   *
+   * Optional because code drops it rather than fail a review over it: a
+   * missing, empty, over-long or malformed summary goes, and so does one that
+   * repeats a figure or phrase found only in the context (aiSummary.ts).
+   * Reviews from before the field existed have none and show no section.
+   */
+  ai_summary?: string;
 }

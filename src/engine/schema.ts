@@ -84,9 +84,9 @@ const VALUE_CONSTRAINTS = new Set([
 
 /**
  * A copy with every value constraint removed, at any depth. Structure —
- * types, properties, required, additionalProperties, items, anyOf — is kept
- * exactly. Deriving it rather than maintaining a second schema by hand means
- * the two cannot drift apart.
+ * types, properties, additionalProperties, items, anyOf — is kept exactly,
+ * and every property is required. Deriving it rather than maintaining a
+ * second schema by hand means the two cannot drift apart.
  */
 export function relaxForProvider(schema: unknown): unknown {
   if (Array.isArray(schema)) return schema.map(relaxForProvider);
@@ -96,13 +96,33 @@ export function relaxForProvider(schema: unknown): unknown {
     if (VALUE_CONSTRAINTS.has(key)) continue;
     out[key] = relaxForProvider(value);
   }
+  // The provider is asked for every field, including the ones the strict
+  // schema lets code drop (ai_summary): a field the grammar makes optional is
+  // one the model can skip, and the page would lose the section for nothing.
+  const properties = out.properties;
+  if (properties && typeof properties === "object" && !Array.isArray(properties)) {
+    out.required = Object.keys(properties);
+  }
   return out;
 }
 
 /** The value constraints, exported so a test can assert none of them survive. */
 export const PROVIDER_UNSUPPORTED_KEYWORDS: readonly string[] = [...VALUE_CONSTRAINTS];
 
-export const ANALYSIS_SCHEMA: JsonSchema = obj({
+/**
+ * Fields the strict schema lets be absent. Only ai_summary: it is an
+ * illustration, not part of the review, so code drops a bad one (normalize.ts,
+ * aiSummary.ts) and the review stands without it. The provider is still asked
+ * for it every time; see relaxForProvider.
+ */
+const OPTIONAL_FIELDS = new Set(["ai_summary"]);
+
+const withOptional = (schema: JsonSchema): JsonSchema => ({
+  ...schema,
+  required: (schema.required as string[]).filter((key) => !OPTIONAL_FIELDS.has(key)),
+});
+
+export const ANALYSIS_SCHEMA: JsonSchema = withOptional(obj({
   schema_version: enumOf([SCHEMA_VERSION]),
   executive_summary: obj({
     headline: str,
@@ -148,4 +168,5 @@ export const ANALYSIS_SCHEMA: JsonSchema = obj({
   // would cut good findings before the unverifiable ones had been dropped.
   questions_before_publication: { type: "array", items: str, maxItems: MAX_QUESTIONS },
   specialist_review_summary: arr(enumOf(SPECIALIST_REVIEW_TYPES)),
-});
+  ai_summary: str,
+}));

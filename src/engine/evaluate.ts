@@ -4,6 +4,7 @@
  * cannot use costs one more call, not the whole review.
  */
 import type Anthropic from "@anthropic-ai/sdk";
+import { aiSummaryLeak } from "./aiSummary.js";
 import { normalizeAnalysis } from "./normalize.js";
 import { callModel, EngineError, newRequestId, type EngineErrorKind, type ModelUsage } from "./client.js";
 import { getEngineConfig, type EngineConfig } from "./config.js";
@@ -90,7 +91,19 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
     throw error;
   }
 
-  const { analysis, adjustments } = validated;
+  const { adjustments } = validated;
+  let { analysis } = validated;
+  // Checked here rather than in normalize.ts because it needs the request: a
+  // summary that repeats a figure or phrase only the context carries could not
+  // have come from the draft alone, so it goes (aiSummary.ts has the limits).
+  if (analysis.ai_summary !== undefined) {
+    const leak = aiSummaryLeak(analysis.ai_summary, request);
+    if (leak) {
+      const { ai_summary: _dropped, ...rest } = analysis;
+      analysis = rest;
+      log(`[${requestId}] repaired: ai_summary_${leak}`);
+    }
+  }
   if (adjustments.dropped_findings > 0) {
     log(`[${requestId}] dropped ${adjustments.dropped_findings} finding(s) with non-verbatim excerpts`);
   }

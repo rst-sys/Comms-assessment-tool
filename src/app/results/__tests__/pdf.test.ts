@@ -4,6 +4,7 @@ import type { EvaluationResult } from "../../../engine/evaluate.js";
 import { DEMO_1 } from "../../../engine/fixtures.js";
 import { buildReviewPdf, reviewPdfFilename } from "../pdf.js";
 import { CHECKLIST_TITLE, checklistFor, checklistSize } from "../../../engine/checklist.js";
+import { AI_SUMMARY_DISCLAIMER, AI_SUMMARY_HEADING, REPORTER_QUESTION } from "../../copy.js";
 
 function load(prefix: string): EvaluationResult {
   const dir = "fixture-reports";
@@ -48,6 +49,29 @@ describe("the reviewer checklist in the export", () => {
         expect(printed, probe).toContain(probe);
       }
     }
+  });
+});
+
+describe("the AI summary in the export", () => {
+  const summary = "The company says it is cutting jobs. It does not say who decided or why.";
+
+  it("prints the heading, the disclaimer straight after it, then the summary, after the Devil's Advocate", () => {
+    const result = load("demo1");
+    result.analysis.ai_summary = summary;
+    const printed = pdfText(buildReviewPdf(result, DEMO_1.request, new Date("2026-09-19T12:00:00Z")));
+    const heading = printed.indexOf(AI_SUMMARY_HEADING);
+    expect(heading).toBeGreaterThan(printed.indexOf(REPORTER_QUESTION.slice(0, 30)));
+    // Wrapping splits lines with a space, so compare with spacing collapsed.
+    const tidy = (t: string) => t.replace(/\s+/g, " ");
+    const after = tidy(printed.slice(heading + AI_SUMMARY_HEADING.length)).trim();
+    expect(after.startsWith(tidy(AI_SUMMARY_DISCLAIMER))).toBe(true);
+    expect(after.slice(AI_SUMMARY_DISCLAIMER.length).trim().startsWith(summary)).toBe(true);
+  });
+
+  it("prints neither heading nor disclaimer when there is no summary", () => {
+    const printed = pdfText(buildReviewPdf(load("demo1"), DEMO_1.request, new Date("2026-09-19T12:00:00Z")));
+    expect(printed).not.toContain(AI_SUMMARY_HEADING);
+    expect(printed).not.toContain("An illustration only");
   });
 });
 

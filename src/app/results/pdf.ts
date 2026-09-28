@@ -8,7 +8,7 @@ import { jsPDF } from "jspdf";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import { DIMENSION_IDS, type EvaluationRequest } from "../../engine/types.js";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS, rankFindings } from "../../engine/scoring.js";
-import { APP_NAME, COPYRIGHT, CORE_PRINCIPLE, REPORTER_QUESTION } from "../copy.js";
+import { AI_SUMMARY_DISCLAIMER, AI_SUMMARY_HEADING, APP_NAME, COPYRIGHT, CORE_PRINCIPLE, REPORTER_QUESTION } from "../copy.js";
 import { KIND_LABEL, REACH_LABEL } from "../intake/AudienceDocuments.js";
 import { warrantsHeightenedReview } from "../../engine/types.js";
 import { reviewTagsFor } from "./model.js";
@@ -192,6 +192,13 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
   }
   w.label("Ask yourself");
   w.paragraph(REPORTER_QUESTION, 10.5, 0, "italic");
+
+  // Same place as on the page, and the disclaimer goes with it every time.
+  if (a.ai_summary) {
+    w.heading(AI_SUMMARY_HEADING, 15);
+    w.paragraph(AI_SUMMARY_DISCLAIMER, 9.5, 0, "italic");
+    w.paragraph(a.ai_summary, 10.5);
+  }
 
   w.pageBreak();
   w.heading("Questions worth asking", 15);

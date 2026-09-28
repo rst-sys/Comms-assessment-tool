@@ -7,6 +7,7 @@
  * missing finding ids. It never invents content, and the strict validator
  * still runs afterwards.
  */
+import { normalizeAiSummary } from "./aiSummary.js";
 import { MAX_QUESTIONS } from "./limits.js";
 import {
   CLAIM_STATUSES,
@@ -212,7 +213,11 @@ export function normalizeAnalysis(raw: unknown, repairs: string[] = []): unknown
           .filter((t): t is SpecialistReviewType => t !== null),
       ),
     ],
+    // Dropped rather than repaired: a summary is either usable as written or
+    // left out, and the review never fails over it.
+    ai_summary: normalizeAiSummary(raw.ai_summary, repairs),
   } satisfies Record<keyof Analysis, unknown>;
+  if (normalized.ai_summary === undefined) delete (normalized as Obj).ai_summary;
 
   // A finding whose excerpt and omission are both missing: keep whichever text exists as the omission.
   for (const f of normalized.findings) {
