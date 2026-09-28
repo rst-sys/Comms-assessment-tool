@@ -11,6 +11,7 @@
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { spawnSync } from "node:child_process";
 import { parse as parseYaml } from "yaml";
 import {
   PROTOCOL_CAPS,
@@ -230,8 +231,43 @@ export const NAMED_EVENT_COUNT = ${named.length};
 `;
 }
 
+/**
+ * The resolver reads the event taxonomy from src/engine/eventTaxonomy.ts,
+ * which this script writes from events.yaml — but the file is loaded when the
+ * script starts, before it is rewritten. After an edit to events.yaml, the
+ * worst-case enumeration would therefore run on the old events: a new
+ * event_protocol link, event or applies_if event would be missed, and the
+ * budget reported (and enforced) too low. It did exactly that when the merger
+ * protocol was linked, reporting a restructuring bundle as the largest.
+ *
+ * So when the file on disk is behind events.yaml, write it and run once more
+ * in a fresh process, which loads the new taxonomy. If that run fails, put the
+ * old file back, so a failed build still leaves the tree as it found it.
+ * Returns true when it handled the run itself.
+ */
+function rerunOnFreshTaxonomy(check: boolean): boolean {
+  if (check || process.env.ACR_COMPILE_RERUN === "1") return false;
+  const { events, families, uiGroups } = readEvents();
+  const fresh = renderEvents(events, families, uiGroups);
+  const onDisk = readFileSync(EVENTS_OUT, "utf8");
+  if (onDisk === fresh) return false;
+
+  console.log(`${EVENTS_OUT} is behind ${EVENTS_IN}; rewriting it and building again so the budget is measured on the new events.`);
+  writeFileSync(EVENTS_OUT, fresh);
+  const child = spawnSync(process.execPath, process.execArgv.concat(process.argv.slice(1)), {
+    stdio: "inherit",
+    env: { ...process.env, ACR_COMPILE_RERUN: "1" },
+  });
+  if (child.status !== 0) {
+    writeFileSync(EVENTS_OUT, onDisk);
+    process.exit(child.status ?? 1);
+  }
+  return true;
+}
+
 function main(): void {
   const check = process.argv.includes("--check");
+  if (rerunOnFreshTaxonomy(check)) return;
   const { protocols, errors, worst } = compile();
 
   if (errors.length > 0) {
