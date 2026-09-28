@@ -1,10 +1,10 @@
 import react from "@vitejs/plugin-react";
-import { buildId } from "./buildId.mjs";
+import { buildId, buildInfo } from "./buildId.mjs";
 import { defineConfig } from "vite";
 
 /** Build of the claude.ai page: relative asset paths, its own entry, its own output folder. */
 export default defineConfig({
-  define: { __BUILD_ID__: JSON.stringify(buildId()) },
+  define: { __BUILD_ID__: JSON.stringify(buildId()), __BUILD_INFO__: JSON.stringify(buildInfo()) },
   plugins: [react()],
   root: "src/artifact",
   base: "./",

@@ -18,3 +18,23 @@ export function buildId() {
 function stamp() {
   return new Date().toISOString().slice(0, 16).replace("T", " ") + "Z";
 }
+
+/**
+ * The same facts, kept apart, for the Welcome screen's one-line footer: the
+ * short commit (null when neither Render nor git can say), when this build
+ * was made, and that moment's year for the copyright line.
+ */
+export function buildInfo() {
+  const now = new Date();
+  return { commit: commitSha(), builtAt: now.toISOString(), year: now.getUTCFullYear() };
+}
+
+function commitSha() {
+  const fromHost = process.env.RENDER_GIT_COMMIT;
+  if (fromHost) return fromHost.slice(0, 7);
+  try {
+    return execSync("git rev-parse --short HEAD", { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] }).trim() || null;
+  } catch {
+    return null;
+  }
+}

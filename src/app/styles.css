@@ -436,6 +436,9 @@ textarea { resize: vertical; }
 .strip-list { font-size: 15px; line-height: 1.7; color: var(--ink-2); }
 .strip-list li { margin-bottom: 0; }
 .strip-close { font-size: 15px; margin: calc(var(--space) * 1.5) 0 0; }
+/* Below everything, left-aligned with the page, in the muted helper style. */
+.welcome-footer { margin-top: 48px; padding-top: calc(var(--space) * 2); border-top: 1px solid var(--divider); }
+.welcome-footer p { margin: 0; }
 
 /* The artboard's spacing is written for a tall window. On a laptop the whole
    screen still has to fit without scrolling, which is the point of it, so the

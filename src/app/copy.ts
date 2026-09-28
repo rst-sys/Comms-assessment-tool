@@ -1,3 +1,5 @@
+import { BUILD_COMMIT, BUILD_DATE_LABEL, BUILD_YEAR } from "./build.js";
+
 /** Fixed copy from PROMPT.md Section 2. */
 export const CORE_PRINCIPLE =
   "Trust does not require institutional infallibility. It requires institutions to make their decisions, assumptions, impacts, corrections, and commitments visible enough to be understood and judged.";
@@ -13,8 +15,23 @@ export const DECISION_SUPPORT_DISCLAIMER =
 export const REPORTER_QUESTION =
   "What phrase or sentence would a reporter or critic be most likely to pull out?";
 
-/** Shown in the footer of the results page and the PDF. */
-export const COPYRIGHT = "\u00a9 2026 Richard Thompson";
+/**
+ * Every screen's footer, the Welcome screen's one-line footer, and the PDF
+ * read this one line, so they cannot disagree. The year is the build's, so it
+ * does not go stale.
+ */
+export const COPYRIGHT_HOLDER = "Richard Thompson";
+export const COPYRIGHT = `\u00a9 ${BUILD_YEAR} ${COPYRIGHT_HOLDER}`;
+
+/**
+ * The Welcome screen's footer: the copyright, then whichever build facts this
+ * build actually has. A part it lacks is left out rather than shown blank, so
+ * a build with no commit (the claude.ai page can be built from a folder that
+ * is not a git checkout) reads "© 2026 Richard Thompson · 28 Sep 2026".
+ */
+export function buildFooterLine(commit: string | null = BUILD_COMMIT, date: string | null = BUILD_DATE_LABEL): string {
+  return [COPYRIGHT, commit ? `Build ${commit}` : null, date].filter((part): part is string => Boolean(part)).join(" \u00b7 ");
+}
 
 export const APP_NAME = "Trust Assessment Assistant";
 

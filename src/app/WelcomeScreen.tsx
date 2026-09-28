@@ -1,4 +1,5 @@
 import { REDACTION_WARNING } from "./overviewContent.js";
+import { buildFooterLine } from "./copy.js";
 import { ArrowRight, CircleSlash, Compass, Lock, WarningTriangle } from "./Icons.js";
 import type { PrivacyConfig } from "./PrivacyPanel.js";
 
@@ -141,6 +142,10 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
           </p>
         </section>
       </div>
+
+      <footer className="welcome-footer">
+        <p className="muted small">{buildFooterLine()}</p>
+      </footer>
     </main>
   );
 }

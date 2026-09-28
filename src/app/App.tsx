@@ -156,8 +156,8 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
     return (
       <>
         <SiteHeader view="review" onGo={go} />
-        {/* No footer here: the welcome screen has to fit one desktop window,
-            and everything the footer carries is on the next screen. */}
+        {/* Not the site footer: the welcome screen carries its own one-line
+            footer, with the copyright and build, inside the page. */}
         <WelcomeScreen
           config={config}
           onStart={() => setWelcomeDone(true)}
