@@ -40,7 +40,13 @@ const REGISTRY = "sources/registry.yaml";
  * actually produce, enumerated through the resolver in bundleWorstCase.ts, not
  * a sum of protocols no single request can select together.
  */
-const TOKEN_BUDGET = Number.parseInt(process.env.ACR_PROTOCOL_TOKEN_BUDGET ?? "4000", 10);
+/*
+ * Raised from 4,000 to 4,500 by the owner on 28 September 2026: run time is
+ * driven by output length, not instruction length, and the heaviest
+ * combinations need five or more intake answers to line up, so they are rare.
+ * How the bundle is measured did not change.
+ */
+const TOKEN_BUDGET = Number.parseInt(process.env.ACR_PROTOCOL_TOKEN_BUDGET ?? "4500", 10);
 
 /** Splits `---\n<yaml>\n---\n<prose>`. Returns null when there is no front matter. */
 export function splitFrontMatter(text: string): { yaml: string; prose: string } | null {

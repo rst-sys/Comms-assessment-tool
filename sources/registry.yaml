@@ -1006,3 +1006,39 @@ sources:
     last_checked: 2026-09-27
     review_by: 2027-03-27
     notes: "Peer-reviewed review, not binding. Abstract read; 79 studies. Cited by change-readiness.gains-and-losses."
+  - id: ftc-hsr-waiting-period
+    title: "Hart-Scott-Rodino Act waiting period (15 U.S.C. § 18a), as described in FTC, Premerger Notification and the Merger Review Process"
+    issuer: US Federal Trade Commission
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.ftc.gov/advice-guidance/competition-guidance/guide-antitrust-laws/mergers/premerger-notification-merger-review-process
+    version_or_date: "current"
+    read_status: read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Binding for deals above the HSR thresholds. The FTC page was read; the statute itself was not opened. Cited by merger-acquisition.still-separate."
+  - id: ftc-2025-gun-jumping
+    title: "Oil Companies to Pay Record FTC Gun-Jumping Fine for Antitrust Law Violation (press release)"
+    issuer: US Federal Trade Commission
+    tier: 2
+    jurisdiction: [US]
+    binding: false
+    url: https://www.ftc.gov/news-events/news/press-releases/2025/01/oil-companies-pay-record-ftc-gun-jumping-fine-antitrust-law-violation
+    version_or_date: "January 2025"
+    read_status: read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "An enforcement announcement, not binding. Cited by merger-acquisition.still-separate."
+  - id: eu-merger-reg-139-2004-art7
+    title: "Council Regulation (EC) No 139/2004 (EU Merger Regulation), Article 7(1), as stated in European Commission, Merger procedures"
+    issuer: European Commission
+    tier: 1
+    jurisdiction: [EU]
+    binding: true
+    url: https://competition-policy.ec.europa.eu/mergers/procedures_en
+    version_or_date: "2004"
+    read_status: read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Binding for deals with an EU dimension. The Commission page was read; the EUR-Lex text was not reached. Cited by merger-acquisition.still-separate."

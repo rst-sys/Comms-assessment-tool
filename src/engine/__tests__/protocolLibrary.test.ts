@@ -33,7 +33,8 @@ describe("the protocol library", () => {
   // passing for the wrong reason.
   it("keeps the largest bundle the intake can produce under the hard token limit", () => {
     const worst = worstCase();
-    expect(worst.tokens).toBeLessThanOrEqual(4000);
+    // The owner raised the hard limit from 4,000 to 4,500 on 28 September 2026.
+    expect(worst.tokens).toBeLessThanOrEqual(4500);
     // The enumeration has to be finding real bundles, not an empty search.
     expect(worst.bundles).toBeGreaterThan(20);
     expect(worst.requests).toBeGreaterThan(100_000);

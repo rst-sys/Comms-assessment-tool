@@ -3,13 +3,14 @@ id: merger-acquisition
 name: Merger or acquisition
 layer: event
 family: commercial
-version: 0.1.0
-status: draft
+version: 0.2.0
+status: active
 last_reviewed: 2026-09-28
 review_by: 2027-03-28
 rests_on: >-
   US and EU merger law requiring the companies to stay separate until a deal is cleared and closed, recent record enforcement, and SEC filing rules for deal communications.
 changelog:
+  - "0.2.0 (2026-09-28): after the duplicate check, Where the deal stands replaces the Workforce impact overlay's Decision status on merger drafts; the combined-company trigger narrows the core's Estimates marked as estimates; the coordination trigger moves to accountability and agency."
   - "0.1.0 (2026-09-28): first draft from the Merger or acquisition source review (gun jumping)."
 
 elements:
@@ -28,13 +29,15 @@ elements:
     dimension: truthfulness_factual_discipline
     basis: judgement
     sources: []
+    replaces: [workforce-impact.decision-status]
 
 triggers:
   - check: Before closing, the draft describes the companies as already one ("our combined company is", "we are now one team", "as a single company") or presents post-closing leaders, prices or product decisions as already in effect.
     dimension: truthfulness_factual_discipline
+    narrows: core.estimates_as_estimates
     review: [Legal]
   - check: Before closing, the draft tells employees, customers or suppliers of either company to take instructions from, report to, or coordinate prices, customers or plans with the other.
-    dimension: truthfulness_factual_discipline
+    dimension: accountability_agency
     review: [Legal]
 
 questions:
@@ -48,7 +51,7 @@ questions:
 
 ## What this protocol is
 
-Checks for announcements and memos about a merger, acquisition or sale, between signing and closing. It adds one thing the Commercial family doesn't cover: **gun jumping**, acting or communicating as if a deal has closed before the law allows. It adds to the Commercial family's checks (customers and suppliers, forecasts, employees in a deal) and doesn't replace any of them.
+Checks for announcements and memos about a merger, acquisition or sale, between signing and closing. It adds one thing the Commercial family doesn't cover: **gun jumping**, acting or communicating as if a deal has closed before the law allows. It adds to the Commercial family's checks (customers and suppliers, forecasts, employees in a deal) and doesn't replace any of them. On merger drafts to employees, *Where the deal stands* replaces the Workforce impact overlay's *Decision status*: for a deal, the decision's status is the deal's status.
 
 ## Source
 
@@ -61,6 +64,10 @@ Checks for announcements and memos about a merger, acquisition or sale, between 
 **Declared professional judgement:** applying the law to message wording; *Where the deal stands*; the wording of both triggers.
 
 Full source review: `sources/reviews/merger-acquisition-source-review.md`.
+
+## Basis
+
+The law is clear, binding and recently enforced at record levels on both sides of the Atlantic. What the law governs is *conduct*: implementing a deal early. Messages are relevant as evidence of that conduct and as instructions that are themselves conduct. No source sets rules for what a deal announcement must say; applying the law to message content is professional judgement, informed by a practitioner analysis and the facts of enforced cases.
 
 ## What this protocol does not cover
 

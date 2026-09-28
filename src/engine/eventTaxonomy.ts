@@ -57,7 +57,7 @@ export const EVENT_TAXONOMY: readonly EventEntry[] = [
   { id: "product-recall", label: "Product recall or safety issue", family: "incident", ui_groups: ["most-common", "operations-safety"] },
   { id: "environmental-incident", label: "Environmental incident", family: "incident", ui_groups: ["operations-safety"] },
   { id: "supply-chain-disruption", label: "Supply chain disruption", family: "incident", ui_groups: ["operations-safety"] },
-  { id: "merger-acquisition", label: "Merger, acquisition or sale", family: "commercial", ui_groups: ["most-common", "business-finance"] },
+  { id: "merger-acquisition", label: "Merger, acquisition or sale", family: "commercial", event_protocol: "merger-acquisition", ui_groups: ["most-common", "business-finance"] },
   { id: "profit-warning", label: "Disappointing results or profit warning", family: "commercial", ui_groups: ["business-finance"] },
   { id: "price-terms-change", label: "Price increase or change to terms", family: "commercial", ui_groups: ["business-finance"] },
   { id: "financial-difficulty", label: "Financial difficulty or cost-cutting", family: "commercial", ui_groups: ["business-finance"] },
