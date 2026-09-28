@@ -88,7 +88,6 @@ export function activeTriggers(request: EvaluationRequest): OverlayTrigger[] {
   const id = event?.id ?? "";
   if (JOB_AFFECTING.includes(id) || (COMMERCIAL.includes(id) && toEmployees)) on.push("workforce-impact");
 
-  if (event?.id === "cyber-incident") on.push("personal-data");
   // Still unfolding only. "Not yet public" means the organization is still
   // initiating: there is no earlier statement to correct and no crisis yet
   // under way, so the overlay's two checks would have nothing to hold to.

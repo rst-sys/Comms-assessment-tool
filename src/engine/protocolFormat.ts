@@ -62,7 +62,6 @@ export const OVERLAY_TRIGGERS = [
   "listed-company",
   "people-harmed",
   "workforce-impact",
-  "personal-data",
   "crisis-in-progress",
   "apology",
 ] as const;

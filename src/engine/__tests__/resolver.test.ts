@@ -13,7 +13,10 @@ describe("which overlays the intake answers switch on", () => {
   it("reads each rule off the answer that owns it", () => {
     expect(activeTriggers({ ...base, organization: listed })).toContain("listed-company");
     expect(activeTriggers({ ...base, people_at_risk: true })).toContain("people-harmed");
-    expect(activeTriggers({ ...base, communication_event: "Cyber incident or data breach" })).toContain("personal-data");
+    // A cyber incident switches on no overlay of its own: personal data in a
+    // breach is the Cyber incident protocol's, and the Personal data overlay
+    // was never built.
+    expect(activeTriggers({ ...base, communication_event: "Cyber incident or data breach" })).toEqual([]);
     // Still unfolding only: "Not yet public" is an organization initiating,
     // with no earlier statement to correct and no crisis yet under way.
     expect(activeTriggers({ ...base, situation: "Still unfolding" })).toContain("crisis-in-progress");
@@ -35,7 +38,7 @@ describe("which overlays the intake answers switch on", () => {
 });
 
 describe("the resolved bundle", () => {
-  it("skips drafts, so a stub in the folder reaches no review", () => {
+  it("applies only active protocols, with every rule firing at once", () => {
     // Every rule at once. Only the protocols that are switched on apply.
     const everything: EvaluationRequest = {
       ...base,
@@ -45,9 +48,9 @@ describe("the resolved bundle", () => {
       situation: "Still unfolding",
       purpose: "Apologize and take responsibility",
     };
-    expect(activeTriggers(everything)).toHaveLength(5);
-    // personal-data is among the five rules that fired and is still a stub,
-    // so it does not reach the bundle; crisis-in-progress is active and does.
+    expect(activeTriggers(everything)).toHaveLength(4);
+    // No stubs are left in the folder, so every rule that fires reaches the
+    // bundle; the status check below still guards against one coming back.
     expect(resolveProtocols(everything).protocols.map((p) => p.id)).toEqual([
       "core",
       "incident",

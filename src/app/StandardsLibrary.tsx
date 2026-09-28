@@ -254,7 +254,6 @@ const OVERLAY_WHEN: Record<string, string> = {
   "listed-company": "the organization is a publicly listed company",
   "people-harmed": "people have been harmed or put at risk",
   "workforce-impact": "the event is layoffs, restructuring or a site closure, or it is cost-cutting, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
-  "personal-data": "the event is a cyber incident or data breach",
   "crisis-in-progress": "the situation is still unfolding",
   apology: "the draft is mainly trying to apologize and take responsibility",
 };
