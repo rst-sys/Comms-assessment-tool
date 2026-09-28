@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import { buildSystemBlocks } from "../prompt.js";
 import { protocolsFor } from "../protocols.js";
 import { CONTROL, DEMOS } from "../fixtures.js";
-import { COMMUNICATION_EVENTS, PURPOSES, type EvaluationRequest } from "../types.js";
+import { COMMUNICATION_EVENTS, PURPOSES, SITUATION_STATUSES, type EvaluationRequest } from "../types.js";
 
 /**
  * No review changes unless a change to the protocols was intended.
@@ -56,6 +56,14 @@ const cases: [string, EvaluationRequest][] = [
   ),
   ...PURPOSES.map(
     (purpose) => [`purpose:${purpose}`, { ...base, communication_event: "Something else", purpose }] as [string, EvaluationRequest],
+  ),
+  // One per answer to "Where do things stand?"; see the capture script.
+  ...SITUATION_STATUSES.map(
+    (situation) =>
+      [`situation:${situation}`, { ...base, communication_event: "Product recall or safety issue", purpose: "Announce a decision or change", situation }] as [
+        string,
+        EvaluationRequest,
+      ],
   ),
   ...[...DEMOS, CONTROL].map((f) => [`fixture:${f.key}`, f.request] as [string, EvaluationRequest]),
 ];

@@ -14,9 +14,12 @@ describe("which overlays the intake answers switch on", () => {
     expect(activeTriggers({ ...base, organization: listed })).toContain("listed-company");
     expect(activeTriggers({ ...base, people_at_risk: true })).toContain("people-harmed");
     expect(activeTriggers({ ...base, communication_event: "Cyber incident or data breach" })).toContain("personal-data");
-    expect(activeTriggers({ ...base, situation: "Still unfolding" })).toContain("stage-unfolding");
-    expect(activeTriggers({ ...base, situation: "Not yet public" })).toContain("stage-unfolding");
-    expect(activeTriggers({ ...base, situation: "Already public" })).not.toContain("stage-unfolding");
+    // Still unfolding only: "Not yet public" is an organization initiating,
+    // with no earlier statement to correct and no crisis yet under way.
+    expect(activeTriggers({ ...base, situation: "Still unfolding" })).toContain("crisis-in-progress");
+    expect(activeTriggers({ ...base, situation: "Not yet public" })).not.toContain("crisis-in-progress");
+    expect(activeTriggers({ ...base, situation: "Already public" })).not.toContain("crisis-in-progress");
+    expect(activeTriggers({ ...base, situation: "Planned" })).not.toContain("crisis-in-progress");
     expect(activeTriggers({ ...base, purpose: "Apologize and take responsibility" })).toContain("apology");
   });
 
@@ -43,17 +46,46 @@ describe("the resolved bundle", () => {
       purpose: "Apologize and take responsibility",
     };
     expect(activeTriggers(everything)).toHaveLength(5);
-    // personal-data and stage-unfolding are among the five rules that fired,
-    // and are still stubs, so neither reaches the bundle.
+    // personal-data is among the five rules that fired and is still a stub,
+    // so it does not reach the bundle; crisis-in-progress is active and does.
     expect(resolveProtocols(everything).protocols.map((p) => p.id)).toEqual([
       "core",
       "incident",
       "cyber-incident",
       "apology",
+      "crisis-in-progress",
       "listed-company",
       "people-harmed",
     ]);
     for (const p of resolveProtocols(everything).protocols) expect(p.status).toBe("active");
+  });
+
+  it("drops the crisis responsibility check where Apology's is in the same bundle, and only there", () => {
+    const unfolding = { ...base, communication_event: "Product recall or safety issue" as const, situation: "Still unfolding" as const };
+    const elements = (r: EvaluationRequest) =>
+      resolveProtocols(r).protocols.flatMap((p) => p.elements.map((e) => e.id));
+
+    const informing = elements({ ...unfolding, purpose: "Announce a decision or change" });
+    expect(informing).toContain("crisis-in-progress.response-fits-responsibility");
+    expect(informing).not.toContain("apology.acknowledged-responsibility");
+
+    const apologizing = elements({ ...unfolding, purpose: "Apologize and take responsibility" });
+    expect(apologizing).not.toContain("crisis-in-progress.response-fits-responsibility");
+    expect(apologizing).toContain("apology.acknowledged-responsibility");
+    // The overlay's other check stays either way.
+    expect(apologizing).toContain("crisis-in-progress.what-has-changed");
+    // And the library itself is untouched by the filter.
+    expect(PROTOCOLS.find((p) => p.id === "crisis-in-progress")!.elements).toHaveLength(2);
+  });
+
+  it("puts the crisis overlay on every event when the situation is still unfolding, whatever the audience", () => {
+    for (const event of COMMUNICATION_EVENTS) {
+      for (const audiences of [["All employees"], ["Customers"], ["Franchisees or dealers"], ["Media"]] as const) {
+        const ids = resolveProtocols({ ...base, communication_event: event, situation: "Still unfolding", audiences: [...audiences] as never })
+          .protocols.map((p) => p.id);
+        expect(ids, `${event} / ${audiences[0]}`).toContain("crisis-in-progress");
+      }
+    }
   });
 
   it("orders overlays by id, so the same answers always hash the same", () => {

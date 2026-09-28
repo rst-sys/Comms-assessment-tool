@@ -3,13 +3,14 @@ id: crisis-in-progress
 name: Crisis in progress
 layer: overlay
 trigger: crisis-in-progress
-version: 0.2.0
-status: draft
+version: 0.3.0
+status: active
 last_reviewed: 2026-09-28
 review_by: 2027-03-28
 rests_on: >-
   Communicators' codes on correcting errors, research on repairing trust after evidence emerges, and the field's main crisis theory on matching the response to responsibility.
 changelog:
+  - "0.3.0 (2026-09-28): after the duplicate check, the responsibility check shortened and no longer asks what will be done to put things right (the Incident family's remedy check and the framework cover that); it gives way to the Apology overlay's responsibility check when both apply."
   - "0.2.0 (2026-09-28): the responsibility check accepts, where the context shows counsel has limited admissions, a plain account of what the organization is doing to put things right without admitting fault; the denial-and-apology trigger no longer treats a declared legal constraint as denial."
   - "0.1.0 (2026-09-28): first draft from the Crisis in progress source review; replaces the unbuilt Stage overlay."
 
@@ -24,11 +25,12 @@ elements:
     basis_note: "Communicators' codes require prompt correction of errors; one set of experiments found apology repairs trust better than denial once evidence of fault emerges. No study tests correcting a crisis statement."
   - id: crisis-in-progress.response-fits-responsibility
     name: A response that fits responsibility
-    means: The response fits the organization's share of responsibility as the supplied context shows it. Where its own actions or failures caused the harm, the draft takes responsibility and says what it will do to put things right; where the context shows counsel has limited admissions, it says plainly what it is doing to put things right, without admitting fault. Either way, not only information or sympathy.
+    means: Where the supplied context shows the organization's own actions or failures caused the harm, the draft says so, or, where counsel has limited admissions, says plainly what the organization is doing about it. It doesn't offer only information or sympathy.
     weight: core
     dimension: accountability_agency
     basis: research
     sources: [coombs-2007, ma-zhan-2016]
+    superseded_by: apology.acknowledged-responsibility
     basis_note: "The field's main crisis theory recommends taking responsibility for preventable crises; its meta-analysis (known through a summary) found responsibility matters more than wording. A theory, not a measured effect."
 
 triggers:

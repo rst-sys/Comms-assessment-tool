@@ -255,6 +255,18 @@ export const SHORT_DRAFT_WARNING =
   "score lower on evidence, corrective action and follow-up; read the findings on clarity, accuracy and tone. For a " +
   "fairer review, paste the full statement the post points to into “Anything else we should know?”";
 
+/**
+ * Under "Anything else we should know?" while the situation is still
+ * unfolding. The Crisis in progress overlay checks what has changed since the
+ * last statement, and it can only see an earlier statement if one is here.
+ */
+export const EARLIER_STATEMENT_HINT =
+  "If you’ve already made a statement about this, paste it here so the review can check what’s changed.";
+
+export function showEarlierStatementHint(situation: SituationStatus | ""): boolean {
+  return situation === "Still unfolding";
+}
+
 /** True once there is something to review, but less than a full statement. */
 export function showShortDraftWarning(draft: string): boolean {
   const words = wordCount(draft);

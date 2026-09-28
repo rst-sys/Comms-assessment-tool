@@ -459,9 +459,9 @@ sources:
     url: https://www.iabc.com/about/what-we-do/standards/code-of-ethics
     version_or_date: "undated"
     read_status: read
-    last_checked: null
-    review_by: null
-    notes: "Used by geopolitical as background on character rather than content."
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Used by geopolitical as background on character rather than content; also cited by the Crisis in progress overlay."
 
   # ---------------------------------------------------------------- core protocol and the new overlays
   - id: who-erc-2017
@@ -946,3 +946,15 @@ sources:
     last_checked: 2026-09-27
     review_by: 2027-03-27
     notes: "Peer-reviewed conceptual paper, not binding. Abstract only; a typology, not a measured effect. doi:10.1177/0743915620947359. Cited by external.actions-match-words."
+  - id: ma-zhan-2016
+    title: "Effects of attributed responsibility and response strategies on organizational reputation — a meta-analysis of situational crisis communication theory research"
+    issuer: "Ma and Zhan — Journal of Public Relations Research 28(2)"
+    tier: 5
+    jurisdiction: []
+    binding: false
+    url: https://www.tandfonline.com/doi/abs/10.1080/1062726X.2016.1166367
+    version_or_date: "2016"
+    read_status: not_opened
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Peer-reviewed meta-analysis, not binding. Not opened: findings known through Chon, Kim and Tam (2022), International Journal of Communication 16, https://ijoc.org/index.php/ijoc/article/download/18185/3751. Cited by crisis-in-progress.response-fits-responsibility."

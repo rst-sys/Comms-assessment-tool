@@ -11,7 +11,7 @@ import { writeFileSync } from "node:fs";
 import { protocolsFor } from "../src/engine/protocols.js";
 import { buildSystemBlocks } from "../src/engine/prompt.js";
 import { DEMOS, CONTROL } from "../src/engine/fixtures.js";
-import { COMMUNICATION_EVENTS, PURPOSES } from "../src/engine/types.js";
+import { COMMUNICATION_EVENTS, PURPOSES, SITUATION_STATUSES } from "../src/engine/types.js";
 import type { EvaluationRequest } from "../src/engine/types.js";
 
 const OUT = "src/engine/__tests__/baseline/protocol-bundles.json";
@@ -36,6 +36,12 @@ for (const event of COMMUNICATION_EVENTS) {
 }
 for (const purpose of PURPOSES) {
   record(`purpose:${purpose}`, { ...base, communication_event: "Something else", purpose });
+}
+// One case per answer to "Where do things stand?". Every other case above
+// shares the demo's "Not yet public", so without these the baseline could not
+// see an overlay that switches on by situation.
+for (const situation of SITUATION_STATUSES) {
+  record(`situation:${situation}`, { ...base, communication_event: "Product recall or safety issue", purpose: "Announce a decision or change", situation });
 }
 for (const f of [...DEMOS, CONTROL]) record(`fixture:${f.key}`, f.request);
 

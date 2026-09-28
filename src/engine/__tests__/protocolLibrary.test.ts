@@ -199,6 +199,28 @@ describe("the checker", () => {
     ).toContain("may only give way to a layer below it");
   });
 
+  it("refuses an element that gives way to one that is missing, in its own protocol, higher up, or deferring back", () => {
+    const el = (id: string, extra: object = {}) => ({ id, name: "N", means: "M.", weight: "core", dimension: "accountability_agency", basis: "judgement", sources: [], ...extra });
+    const ovl = (id: string, trigger: string, elements: object[]) =>
+      ({ file: `${id}.md`, data: { ...good, id, layer: "overlay", trigger, family: undefined, prose, triggers: [], elements } as never });
+    const msgs = (files: { file: string; data: never }[]) => checkLibrary(files).map((e) => e.message).join(" | ");
+
+    // Same layer is allowed: overlays have nothing below them.
+    const winner = ovl("win", "apology", [el("win.a")]);
+    expect(checkLibrary([ovl("lose", "people-harmed", [el("lose.a", { superseded_by: "win.a" })]), winner])).toEqual([]);
+
+    expect(msgs([ovl("lose", "people-harmed", [el("lose.a", { superseded_by: "win.zzz" })]), winner])).toContain("which no protocol defines");
+    expect(msgs([ovl("lose", "people-harmed", [el("lose.a", { superseded_by: "lose.b" }), el("lose.b")])])).toContain("in the same protocol");
+
+    // A pair that each defer to the other has no winner.
+    const mutual = ovl("win", "apology", [el("win.a", { superseded_by: "lose.a" })]);
+    expect(msgs([ovl("lose", "people-harmed", [el("lose.a", { superseded_by: "win.a" })]), mutual])).toContain("each defer to the other");
+
+    // An overlay may not give way to a family's element: that runs uphill.
+    const fam = { file: "fam.md", data: { ...good, id: "fam", layer: "family", family: undefined, prose, triggers: [], elements: [el("fam.a")] } as never };
+    expect(msgs([ovl("lose", "people-harmed", [el("lose.a", { superseded_by: "fam.a" })]), fam])).toContain("same layer or a more specific one");
+  });
+
   it("refuses two protocols with the same id, or two overlays on one rule", () => {
     const a = { file: "a.md", data: { ...good, prose } as never };
     expect(checkLibrary([a, { ...a, file: "c.md" }]).map((e) => e.message).join(" | ")).toContain('id "example" is already used');

@@ -23,6 +23,7 @@
     "4841f3d5d8764535": "EXTERNAL EVENTS AND SOCIETAL ISSUES (family protocol)\n\nELEMENTS\n- Why the organization is speaking (causation_explanation). The draft says how the event or issue connects to the organization (its people, operations, customers or stated commitments) and why it is speaking now. Where it takes a position, it says why this organization has standing to.\n- What it means here (stakeholder_respect_impact). The draft separates what is happening in the world from what it means for the organization, saying which people, sites, customers or services are affected, how, and what the organization is doing about it.\n- Practice that matches the words (truthfulness_factual_discipline). Nothing in the supplied context shows the organization's own practice (donations, lobbying, policies or conduct) contradicting the support or position the draft states; where it does, the draft addresses the contradiction.\n- Consistent with the authorities (truthfulness_factual_discipline, supporting). Where the draft tells people what to do to stay safe, it matches the authorities' current guidance, names the authority, and says the advice will change if that guidance changes.\n\nHIGH-SEVERITY TRIGGERS\n- The draft presents a step the organization is required to take (an authority's closure or evacuation order, sanctions compliance, insurance terms) as a moral choice or an act of generosity. (truthfulness_factual_discipline; review Legal)\n- The draft gives safety or health instructions that differ from, or go beyond, the authorities' current guidance without saying so. (truthfulness_factual_discipline; review Health and safety or Legal)",
     "62148ad06cdaa7d4": "EXTERNAL EVENTS AND SOCIETAL ISSUES (family protocol)\n\nELEMENTS\n- Why the organization is speaking (causation_explanation). The draft says how the event or issue connects to the organization (its people, operations, customers or stated commitments) and why it is speaking now. Where it takes a position, it says why this organization has standing to.\n- What it means here (stakeholder_respect_impact). The draft separates what is happening in the world from what it means for the organization, saying which people, sites, customers or services are affected, how, and what the organization is doing about it.\n- Practice that matches the words (truthfulness_factual_discipline). Nothing in the supplied context shows the organization's own practice (donations, lobbying, policies or conduct) contradicting the support or position the draft states; where it does, the draft addresses the contradiction.\n\nHIGH-SEVERITY TRIGGERS\n- The draft presents a step the organization is required to take (an authority's closure or evacuation order, sanctions compliance, insurance terms) as a moral choice or an act of generosity. (truthfulness_factual_discipline; review Legal)\n- The draft gives safety or health instructions that differ from, or go beyond, the authorities' current guidance without saying so. (truthfulness_factual_discipline; review Health and safety or Legal)",
     "295ff6b89163c461": "PUBLIC APOLOGY (overlay protocol)\n\nELEMENTS\n- Acknowledged responsibility (accountability_agency). The organization or a named leader says it is responsible for the conduct, decision or failure — not merely that the outcome is regrettable.\n- Repair offered (corrective_action_proof). A remedy for the people affected — restitution, correction, recall, support or access — proportionate to the harm.\n- Direct regret (stakeholder_respect_impact). An unconditional apology for the organization's own conduct, not conditional on how anyone reacted.\n- Conduct rejected (accountability_agency, supporting). The draft says the conduct was wrong, not only that the reaction was unfortunate.\n- Restraint in the ask (fairness_independence_conflicts, supporting). The draft does not demand forgiveness, understanding or moving on, and does not ask before repair is stated.\n\nHIGH-SEVERITY TRIGGERS\n- No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern. (accountability_agency; review Legal)\n- The only apology sentence is conditional on the audience's reaction — \"if\", \"to anyone who felt\", \"that concerns were raised\". (stakeholder_respect_impact; review Legal)\n- The cause is placed on an individual employee, a vendor, a miscommunication or the audience's reaction, and the draft does not state the organization's own supervisory or control role. (fairness_independence_conflicts; review Legal or HR)\n- The draft describes harm to identifiable people and offers neither a repair nor any corrective action. (corrective_action_proof; review Executive)\n- The draft, or the context supplied with it, describes knowledge, intent, concealment or deliberate choice, and the draft calls it a mistake, error, oversight or miscommunication. (truthfulness_factual_discipline; review Legal)",
+    "02d51849e846a1a0": "CRISIS IN PROGRESS (overlay protocol)\n\nELEMENTS\n- What has changed since the last statement (truthfulness_factual_discipline). Where the supplied context shows an earlier statement, the draft says what is new since then and plainly corrects anything said earlier that is now known to be wrong or incomplete.\n- A response that fits responsibility (accountability_agency). Where the supplied context shows the organization's own actions or failures caused the harm, the draft says so, or, where counsel has limited admissions, says plainly what the organization is doing about it. It doesn't offer only information or sympathy.\n\nHIGH-SEVERITY TRIGGERS\n- The draft both denies or minimizes the organization's responsibility and apologizes or offers compensation, so that each undercuts the other. Saying plainly that the organization can't comment on fault while legal matters are open is not a denial. (accountability_agency; review Legal)\n- The draft presents the organization mainly as a victim of the crisis (\"we too have been let down\", \"an attack on our business\") where the supplied context shows its own actions contributed. (accountability_agency)\n- The draft repeats a claim from an earlier statement that the supplied context shows is no longer accurate, or changes a figure from an earlier statement without saying it has changed. (truthfulness_factual_discipline; review Legal)",
     "dbade91ce0f597fa": "PUBLIC SCRUTINY AND REPUTATION (family protocol)\n\nELEMENTS\n- What is being said, stated fairly (listening_employee_voice). The draft says what criticism, claim or demand it is responding to, in terms the people who raised it would recognise, and who raised it where that is already public. A false claim is stated once, just before the correction.\n- A correction that leads with the fact (truthfulness_factual_discipline). Where the draft corrects a false or inaccurate claim, it leads with the accurate fact, refers to the false claim once, says why it is wrong, points to evidence readers can check, and ends on the fact.\n- No denial of what is true (truthfulness_factual_discipline). The draft doesn't deny, or dismiss as rumour or speculation, a claim the supplied context shows is accurate or partly accurate. Where the organization can't comment, it says so plainly rather than implying the claim is false.\n- A position, with reasons (causation_explanation). The draft says what the organization accepts, what it doesn't and why, and whether anything will change as a result, giving its reasoning rather than only regret or sympathy.\n\nHIGH-SEVERITY TRIGGERS\n- The draft questions critics' motives or character (\"agenda-driven\", \"a vocal minority\", \"misinformed activists\", \"short-term investors\") instead of answering what they said, where the supplied context doesn't support the charge. (stakeholder_respect_impact; review Legal or Investor relations)\n- The draft opens with the false claim (in the headline or first sentence) or repeats it more than once, rather than leading with the accurate fact. (truthfulness_factual_discipline; sharper form of the core check \"The central fact first, in ordinary words\" — one finding, not two)\n- The draft calls a claim \"false\", \"misleading\" or \"misinformation\" without saying what is true or pointing to evidence. (truthfulness_factual_discipline)\n- The draft says the organization has \"listened\" or \"heard the feedback\" without saying what, if anything, will change. (listening_employee_voice)\n\nNARROWS THIS CORE CHECK\n- sharper form of the core check \"Estimates marked as estimates\" — one finding, not two",
     "94144033e1965369": "LISTED COMPANY DISCLOSURE (overlay protocol)\n\nELEMENTS\n- Nothing left out that makes the rest misleading (truthfulness_factual_discipline). Where the draft describes the financial effect, cause or outlook of the event, it doesn't leave out a fact the supplied context shows would change how a reader understands what it does say.\n- The same material facts for every audience (fairness_independence_conflicts). The material facts in the draft match what the organization is telling investors and the market, and the draft doesn't give one audience (employees, analysts, partners) material information that the others don't get at the same time.\n\nHIGH-SEVERITY TRIGGERS\n- The draft describes the event as having little or no financial effect, or gives a positive outlook, while the supplied context shows costs, losses, liabilities or uncertainty the draft doesn't mention. (truthfulness_factual_discipline; review Legal or Investor relations)\n- The draft is addressed to employees, customers or partners and contains figures, dates or decisions that the supplied context doesn't show being released to the market at the same time. (fairness_independence_conflicts; review Legal or Investor relations)"
   },
@@ -529,6 +530,60 @@
       "blocks": [
         "b74eb69c2debf22b",
         "cde7ccd96d2c2c4d",
+        "b8311842d8150fe2",
+        "aece05adab62c36d"
+      ]
+    },
+    "situation:Planned": {
+      "ids": [
+        "core",
+        "incident"
+      ],
+      "blocks": [
+        "b74eb69c2debf22b",
+        "cde7ccd96d2c2c4d",
+        "f758a0cd9ede3c92",
+        "b8311842d8150fe2",
+        "aece05adab62c36d"
+      ]
+    },
+    "situation:Not yet public": {
+      "ids": [
+        "core",
+        "incident"
+      ],
+      "blocks": [
+        "b74eb69c2debf22b",
+        "cde7ccd96d2c2c4d",
+        "f758a0cd9ede3c92",
+        "b8311842d8150fe2",
+        "aece05adab62c36d"
+      ]
+    },
+    "situation:Already public": {
+      "ids": [
+        "core",
+        "incident"
+      ],
+      "blocks": [
+        "b74eb69c2debf22b",
+        "cde7ccd96d2c2c4d",
+        "f758a0cd9ede3c92",
+        "b8311842d8150fe2",
+        "aece05adab62c36d"
+      ]
+    },
+    "situation:Still unfolding": {
+      "ids": [
+        "core",
+        "incident",
+        "crisis-in-progress"
+      ],
+      "blocks": [
+        "b74eb69c2debf22b",
+        "cde7ccd96d2c2c4d",
+        "f758a0cd9ede3c92",
+        "02d51849e846a1a0",
         "b8311842d8150fe2",
         "aece05adab62c36d"
       ]

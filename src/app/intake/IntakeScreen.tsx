@@ -16,6 +16,7 @@ import { Progress } from "../Progress.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
 import {
   canEvaluate,
+  EARLIER_STATEMENT_HINT,
   EMPTY_INTAKE,
   HIGH_RISK_WARNING,
   intakeComplete,
@@ -28,6 +29,7 @@ import {
   showShortDraftWarning,
   showTooShortWarning,
   TOO_SHORT_WARNING,
+  showEarlierStatementHint,
   showHighRiskWarning,
   wordCount,
   type IntakeState,
@@ -190,6 +192,9 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
             Facts, constraints or background the draft doesn't show. What you write here is treated as fact; the draft is
             treated as claims.
           </span>
+          {showEarlierStatementHint(intake.situation) ? (
+            <span className="muted small earlier-statement-hint">{EARLIER_STATEMENT_HINT}</span>
+          ) : null}
           <textarea
             rows={4}
             value={context}

@@ -2,13 +2,14 @@
 id: core
 name: Core protocol
 layer: core
-version: 0.6.0
+version: 0.6.1
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.
 changelog:
+  - "0.6.1 (2026-09-28): body only. Timing no longer points at the Stage overlay, which was removed; no element, trigger or question changed."
   - "0.6.0 (2026-09-25): central-fact threshold tightened from \"the first two or three sentences\" to \"first, or second after a one-sentence signpost\", after a return-to-office test memo put the fact in sentence three behind a values sentence and a euphemism."
   - "0.5.1 — basis notes moved into the file"
   - "0.5.0 (2026-09-25): made to pass the build checker. Added rests_on; removed the frontmatter narrows (the core sits directly under the framework and can't narrow it; the relationship is described in the body); added a Source section. No element, trigger or question changed."
@@ -94,7 +95,7 @@ The reputation-first trigger rests on Coombs (2007): "The first priority in any 
 ## What this protocol does not cover
 
 - Everything the framework prompt already checks (see the source review's addendum, which maps its sources onto those framework elements).
-- **Timing** (whether the organization spoke first): Stage overlay.
+- **Timing** (whether the organization spoke first): not checked; it can’t be judged from a draft.
 - **Acknowledging harm in words:** People harmed overlay.
 - **Apology:** apology overlay and the Allegations family.
 - **Legal obligations:** overlays.

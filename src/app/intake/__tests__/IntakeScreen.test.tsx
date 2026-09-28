@@ -108,6 +108,18 @@ describe("IntakeScreen", () => {
     expect(options()).not.toMatch(/Donors, funders and trustees|Investors and analysts/);
   });
 
+  it("asks for the earlier statement only while the situation is still unfolding", () => {
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
+    const hint = /paste it here so the review can check what’s changed/;
+    expect(screen.queryByText(hint)).toBeNull();
+    menu("Where do things stand?").pick(/Still unfolding/);
+    expect(screen.getByText(hint)).toBeTruthy();
+    menu("Where do things stand?").pick(/Already public/);
+    expect(screen.queryByText(hint)).toBeNull();
+    menu("Where do things stand?").pick(/Not yet public/);
+    expect(screen.queryByText(hint)).toBeNull();
+  });
+
   it("pre-selects Still unfolding for a holding statement, and leaves a chosen answer alone", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     menu("What are you drafting?").pick(/Holding statement/);

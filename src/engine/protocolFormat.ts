@@ -63,7 +63,7 @@ export const OVERLAY_TRIGGERS = [
   "people-harmed",
   "workforce-impact",
   "personal-data",
-  "stage-unfolding",
+  "crisis-in-progress",
   "apology",
 ] as const;
 export type OverlayTrigger = (typeof OVERLAY_TRIGGERS)[number];
@@ -180,6 +180,28 @@ export interface ProtocolElement {
    * `replaces` is the one that wins.
    */
   replaces?: string[];
+  /**
+   * An element id, in another protocol, that this element gives way to. Where
+   * that element survives into the same bundle, this one is not sent.
+   *
+   * The loser names the winner — the opposite of `replaces` — so a protocol
+   * can defer to another without that other file having to change. The Crisis
+   * in progress overlay asks whether the response fits the organization's
+   * share of responsibility; where the author is apologizing, the Apology
+   * overlay's "Acknowledged responsibility" asks it more directly, and sending
+   * both invites two findings for one gap.
+   *
+   * It names an element rather than a protocol, as a trigger's must, because
+   * an element can say exactly which check it defers to, and the check can be
+   * made only against an element that actually survived: one dropped by its
+   * own applies_if has not been sent, and giving way to it would leave the
+   * check missing from both.
+   *
+   * The target may sit in the same layer. Overlays have no layer below them,
+   * and which of two overlays carries the sharper check is the owner's call;
+   * checkLibrary refuses a pair that would each defer to the other.
+   */
+  superseded_by?: string;
 }
 
 export interface ProtocolTrigger {
@@ -381,6 +403,9 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
           for (const r of e.replaces) if (typeof r !== "string") err(`${at} replaces an entry that is not an element id`);
         }
       }
+      if (e.superseded_by !== undefined && !(isStr(e.superseded_by) && /^[a-z0-9-]+\.[\w-]+$/.test(e.superseded_by))) {
+        err(`${at} superseded_by ${JSON.stringify(e.superseded_by)}. Name the element it gives way to by its id, such as apology.acknowledged-responsibility.`);
+      }
       if (e.applies_if !== undefined) {
         if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
         else {
@@ -566,6 +591,33 @@ export function checkLibrary(
         });
       }
     });
+    // An element's superseded_by: the element it defers to must exist, in
+    // another protocol, in the same layer or a more specific one, and must not
+    // itself defer back or replace this one. A dangling pointer is silent at
+    // review time — the element is simply never dropped.
+    for (const e of data.elements) {
+      if (!e.superseded_by) continue;
+      const target = elementsById.get(e.superseded_by);
+      if (!target) {
+        errors.push({ file, message: `element ${e.id} is superseded_by "${e.superseded_by}", which no protocol defines` });
+        continue;
+      }
+      if (e.superseded_by.split(".")[0] === data.id) {
+        errors.push({ file, message: `element ${e.id} is superseded_by "${e.superseded_by}", which is in the same protocol` });
+      }
+      if (PROTOCOL_LAYERS.indexOf(target.layer) < PROTOCOL_LAYERS.indexOf(data.layer)) {
+        errors.push({
+          file,
+          message:
+            `element ${e.id} is superseded_by "${e.superseded_by}", which is in the ${target.layer} layer. ` +
+            `A ${data.layer} protocol's element may only give way to one in the same layer or a more specific one.`,
+        });
+      }
+      const back = files.flatMap(({ data: d }) => d.elements).find((x) => x.id === e.superseded_by);
+      if (back && (back.superseded_by === e.id || (back.replaces ?? []).includes(e.id))) {
+        errors.push({ file, message: `element ${e.id} and "${e.superseded_by}" each defer to the other; one of them has to win` });
+      }
+    }
     // superseded_by runs the other way: the protocol that wins is the more
     // specific one, so it must sit BELOW the one giving way. A dangling or
     // sideways pointer is silent — the trigger is simply never dropped.

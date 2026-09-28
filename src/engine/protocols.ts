@@ -89,7 +89,10 @@ export function activeTriggers(request: EvaluationRequest): OverlayTrigger[] {
   if (JOB_AFFECTING.includes(id) || (COMMERCIAL.includes(id) && toEmployees)) on.push("workforce-impact");
 
   if (event?.id === "cyber-incident") on.push("personal-data");
-  if (request.situation === "Not yet public" || request.situation === "Still unfolding") on.push("stage-unfolding");
+  // Still unfolding only. "Not yet public" means the organization is still
+  // initiating: there is no earlier statement to correct and no crisis yet
+  // under way, so the overlay's two checks would have nothing to hold to.
+  if (request.situation === "Still unfolding") on.push("crisis-in-progress");
   if (request.purpose === "Apologize and take responsibility") on.push("apology");
 
   return on;
@@ -190,6 +193,18 @@ function withoutSupersededTriggers(protocol: ProtocolFile, applied: ReadonlySet<
 }
 
 /**
+ * A protocol with the elements that give way to another element in this
+ * bundle removed.
+ *
+ * Checked against the elements that survived every other filter, so an
+ * element only gives way to one that is actually being sent.
+ */
+function withoutGivenWayElements(protocol: ProtocolFile, surviving: ReadonlySet<string>): ProtocolFile {
+  const elements = protocol.elements.filter((e) => !(e.superseded_by && surviving.has(e.superseded_by)));
+  return elements.length === protocol.elements.length ? protocol : { ...protocol, elements };
+}
+
+/**
  * Overlay elements an event protocol's own element supersedes.
  *
  * Only elements that survived the applies_if filter get to supersede anything.
@@ -226,7 +241,11 @@ export function resolvedProtocols(request: EvaluationRequest, library?: readonly
   const applicable = protocolsFor(request, library).map((p) => filtered(p, request));
   const superseded = supersededBy(applicable);
   const applied = new Set(applicable.map((p) => p.id));
-  return applicable.map((p) => withoutSupersededTriggers(filtered(p, request, superseded), applied));
+  const kept = applicable.map((p) => withoutSupersededTriggers(filtered(p, request, superseded), applied));
+  // Last, the elements that defer to another: only against what survived the
+  // passes above, so none gives way to a check that was itself dropped.
+  const surviving = new Set(kept.flatMap((p) => p.elements.map((e) => e.id)));
+  return kept.map((p) => withoutGivenWayElements(p, surviving));
 }
 
 /** The protocols that applied, as `id@version`, in the order they are sent. */
