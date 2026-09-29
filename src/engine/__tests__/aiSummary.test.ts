@@ -110,6 +110,74 @@ describe("aiSummaryLeak: nothing only the context knows", () => {
   });
 });
 
+/**
+ * The Arcadia merger test, where honest summaries were being dropped: the
+ * draft restates its context closely, so a faithful summary shares four-word
+ * runs with it. A run now counts only when it carries a telling word the
+ * draft never uses.
+ */
+describe("aiSummaryLeak on the Arcadia merger test", () => {
+  const arcadia: EvaluationRequest = {
+    ...DEMO_1.request,
+    communication_event: "Merger, acquisition or sale",
+    draft: [
+      "Arcadia and Halvorsen: what yesterday's announcement means for you",
+      "Dear Halvorsen colleagues,",
+      "Yesterday Arcadia signed an agreement to acquire Halvorsen. I want to tell you directly what that means, and what it doesn't.",
+      "The deal isn't done yet. It needs clearance from US competition authorities and approval from Halvorsen's shareholders. We expect it to close in the first quarter of 2027, but that could take longer, and a deal like this can be blocked.",
+      "Until then, we are two separate companies, and competitors. Please keep doing your jobs exactly as you do today, for Halvorsen and its customers. Keep competing with Arcadia for business. Don't share pricing, customer or product plans with anyone at Arcadia, and don't take instructions from Arcadia. If anyone asks you to, tell your manager or Halvorsen's legal team.",
+      "What happens after closing hasn't been decided. That includes jobs, leadership, products and prices. A small team, working under strict rules set by our lawyers, is planning for the day the deal closes. It isn't making decisions for either company today.",
+      "What I can tell you is why Arcadia wants to bring the companies together: we think Halvorsen's engineering and Arcadia's distribution would serve customers better together. Whether that proves true depends on decisions we can't make yet.",
+      "We'll write again when the deal has cleared, or sooner if anything significant changes. Questions: dealquestions@halvorsenfixings.com, answered by Halvorsen, not Arcadia.",
+      "Maria Lind\nChief Executive Officer, Arcadia Tools",
+    ].join("\n\n"),
+    context:
+      "Agreement signed 27 September 2026. Needs US antitrust clearance under the HSR Act (waiting period not yet expired) and Halvorsen shareholder approval. Expected to close in the first quarter of 2027; could be delayed or blocked. Until closing the companies must operate independently and keep competing; counsel has set up a clean team for integration planning. No decisions have been made about jobs, leadership, products or prices after closing. The announcement was filed with the SEC under Rule 425.",
+  };
+  const summary =
+    "Arcadia Tools' chief executive tells Halvorsen employees that Arcadia has signed an agreement to acquire their company, pending US competition clearance and a Halvorsen shareholder vote, with closing expected in early 2027 and possibly blocked. Until then the two firms remain separate competitors; staff are told to keep working as normal and not share plans with Arcadia. Decisions on jobs, leadership, products and prices are not yet made.";
+  const restated = summary.replace(
+    "Decisions on jobs, leadership, products and prices are not yet made.",
+    "No decisions have been made about jobs, leadership, products or prices.",
+  );
+
+  it("keeps the accurate, draft-only summary", () => {
+    expect(aiSummaryLeak(summary, arcadia)).toBeNull();
+  });
+
+  it("keeps a summary that echoes the context's sentence using only words the draft or common speech supplies", () => {
+    // Every word of "No decisions have been made about jobs, leadership,
+    // products or prices" is in the draft except "made", which is common.
+    expect(aiSummaryLeak(restated, arcadia)).toBeNull();
+  });
+
+  it.each([
+    ["the clean team", summary.replace("Until then", "A clean team for integration planning is preparing for closing. Until then")],
+    ["the HSR Act", summary.replace("pending US competition clearance", "pending US competition clearance under the HSR Act")],
+    ["the SEC filing, with no figure", `${summary} The announcement was filed with the SEC.`],
+  ])("drops a summary that copies %s from the context", (_label, leaked) => {
+    expect(aiSummaryLeak(leaked, arcadia)).toBe("context_phrase");
+  });
+
+  it("drops a summary citing Rule 425, through the figure: the words are not one run in the context", () => {
+    expect(aiSummaryLeak(`${summary} The announcement was filed under Rule 425.`, arcadia)).toBe("context_number");
+  });
+
+  // Expected behaviour, not a bug: the known gap in the phrase rule. A
+  // context phrase whose every telling word also appears somewhere in the
+  // draft passes, even though the draft never says it. That is the price of
+  // not dropping honest summaries of drafts that restate their context.
+  it("known gap (expected): passes a copied context phrase whose telling words all appear elsewhere in the draft", () => {
+    const leeds: EvaluationRequest = {
+      ...DEMO_1.request,
+      draft:
+        "Our Leeds team has done outstanding work this year. Every site in the group is part of the review. We will close the review and share what we decide in March.",
+      context: "Decided: the Leeds site will close in March.",
+    };
+    expect(aiSummaryLeak("The company says the Leeds site will close in March.", leeds)).toBeNull();
+  });
+});
+
 const finish = (raw: unknown, request: EvaluationRequest, log: string[] = []) =>
   finishEvaluation(raw, request, {
     requestId: "req",
