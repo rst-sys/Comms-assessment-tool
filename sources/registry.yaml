@@ -1042,3 +1042,64 @@ sources:
     last_checked: 2026-09-28
     review_by: 2027-03-28
     notes: "Binding for deals with an EU dimension. The Commission page was read; the EUR-Lex text was not reached. Cited by merger-acquisition.still-separate."
+  # ---------------------------------------------------------------- legal-constraints overlay
+  - id: fre-407
+    title: "Federal Rule of Evidence 407, Subsequent Remedial Measures, with Advisory Committee note"
+    issuer: Cornell LII
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/rules/fre/rule_407
+    version_or_date: "current"
+    read_status: read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Binding in federal courts. Cited by legal-constraints.limit-scope."
+  - id: fre-409
+    title: "Federal Rule of Evidence 409, Offers to Pay Medical and Similar Expenses, with Advisory Committee note"
+    issuer: Cornell LII
+    tier: 1
+    jurisdiction: [US]
+    binding: true
+    url: https://www.law.cornell.edu/rules/fre/rule_409
+    version_or_date: "current"
+    read_status: read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Binding in federal courts. Cited by legal-constraints.limit-scope."
+  - id: cal-evid-1160
+    title: "California Evidence Code § 1160(a)"
+    issuer: Justia
+    tier: 1
+    jurisdiction: [US-CA]
+    binding: true
+    url: https://law.justia.com/codes/california/code-evid/division-9/chapter-3/section-1160/
+    version_or_date: "current"
+    read_status: read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Binding in California civil actions. Cited in the legal-constraints Source section only."
+  - id: robbennolt-2003-apologies
+    title: "Robbennolt, J. K. (2003). \"Apologies and Legal Settlement: An Empirical Examination.\" Michigan Law Review, 102(3)"
+    issuer: SSRN
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://papers.ssrn.com/sol3/papers.cfm?abstract_id=708361
+    version_or_date: "2003"
+    read_status: partly_read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Research. Abstract only. Cited by legal-constraints.limit-scope."
+  - id: ho-liu-2011-apology-laws
+    title: "Ho, B., & Liu, E. (2011). \"Does sorry work? The impact of apology laws on medical malpractice.\" Journal of Risk and Uncertainty, 43(2), 141–167"
+    issuer: Springer
+    tier: 5
+    jurisdiction: [US]
+    binding: false
+    url: https://link.springer.com/article/10.1007/s11166-011-9126-0
+    version_or_date: "2011"
+    read_status: partly_read
+    last_checked: 2026-09-28
+    review_by: 2027-03-28
+    notes: "Research. Abstract only. Cited in the legal-constraints Source section only."

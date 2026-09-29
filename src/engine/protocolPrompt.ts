@@ -76,6 +76,12 @@ export function buildProtocolBlock(p: ProtocolFile): string {
     for (const n of core) lines.push(`- ${narrowsNote(n)}`);
   }
 
+  // Word for word from the file: it governs how every finding is worded while
+  // this overlay applies, so nothing here paraphrases it.
+  if (p.instruction) {
+    lines.push("", "INSTRUCTION", p.instruction.trim());
+  }
+
   return lines.join("\n");
 }
 

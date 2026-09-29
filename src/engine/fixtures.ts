@@ -43,6 +43,7 @@ const demo1Request: EvaluationRequest = {
   audiences: ["All employees", "Employees directly affected"],
   situation: "Not yet public",
   people_at_risk: false,
+  counsel_limited: false,
   locations: ["United States"],
   purpose: "Announce a decision or change",
   context: "",
@@ -94,6 +95,7 @@ export const DEMO_2: Fixture = {
     audiences: ["Customers", "Media", "General public and communities"],
     situation: "Already public",
     people_at_risk: false,
+    counsel_limited: false,
     locations: ["Multiple regions / global"],
     purpose: "Apologize and take responsibility",
     context: "",
@@ -126,6 +128,7 @@ export const DEMO_3: Fixture = {
     audiences: ["Investors and analysts"],
     situation: "Planned",
     people_at_risk: false,
+    counsel_limited: false,
     locations: ["United States"],
     purpose: "Explain what happened and why",
     context: "",
@@ -156,6 +159,7 @@ export const CONTROL: Fixture = {
     audiences: ["All employees"],
     situation: "Not yet public",
     people_at_risk: false,
+    counsel_limited: false,
     locations: ["United States"],
     purpose: "Explain what happened and why",
     context: "",
@@ -170,3 +174,29 @@ export const CONTROL: Fixture = {
 export const DEMOS: Fixture[] = [DEMO_1, DEMO_2, DEMO_3];
 
 export const ALL_FIXTURES: Fixture[] = [DEMO_1, DEMO_1_WITH_CONTEXT, DEMO_2, DEMO_3, CONTROL];
+
+/**
+ * Requests with the counsel box ticked, for the captured protocol baseline.
+ *
+ * Shared by the capture script and the test that reads it back, so the two
+ * cannot list different cases. The first is the combination where all three
+ * overlays that touch responsibility apply at once: an apology, a crisis
+ * still unfolding, and counsel's limit.
+ */
+export function COUNSEL_CASES(base: EvaluationRequest): [string, EvaluationRequest][] {
+  return [
+    [
+      "counsel:Workplace accident, apologize, still unfolding",
+      {
+        ...base,
+        communication_event: "Workplace accident or serious injury",
+        audiences: ["All employees"],
+        situation: "Still unfolding",
+        purpose: "Apologize and take responsibility",
+        counsel_limited: true,
+      },
+    ],
+    ["counsel:Layoffs, announce", { ...base, counsel_limited: true }],
+    ["counsel:Something else, announce", { ...base, communication_event: "Something else", purpose: "Announce a decision or change", counsel_limited: true }],
+  ];
+}

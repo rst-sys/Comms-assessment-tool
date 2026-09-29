@@ -23,6 +23,14 @@ describe("parseEvaluationRequest", () => {
     expect(() => parseEvaluationRequest({ ...DEMO_1.request, context: { unknown_key: "x" } as unknown as string })).toThrow(RequestValidationError);
   });
 
+  it("requires the counsel answer as true or false, like the other intake answers", () => {
+    expect(parseEvaluationRequest({ ...DEMO_1.request, counsel_limited: true }).counsel_limited).toBe(true);
+    const { counsel_limited: _unused, ...without } = DEMO_1.request;
+    // A missing field is reported at the top level, as for every required answer.
+    expect(() => parseEvaluationRequest(without)).toThrow(RequestValidationError);
+    expect(() => parseEvaluationRequest({ ...DEMO_1.request, counsel_limited: "yes" })).toThrow(/counsel_limited/);
+  });
+
   it("refuses a draft under the word floor, whatever the browser allowed", () => {
     // The schema counts characters, so this is the only thing standing
     // between a hand-made request and a provider call on nine words.

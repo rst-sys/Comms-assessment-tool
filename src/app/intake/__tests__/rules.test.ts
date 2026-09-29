@@ -8,6 +8,7 @@ import {
   disclosureMismatch,
   EMPTY_INTAKE,
   intakeFields,
+  intakeFromRequest,
   investorAudienceLabel,
   missingAnswers,
   SHORT_DRAFT_WARNING,
@@ -31,6 +32,7 @@ const full: IntakeState = {
   audiences: ["All employees"],
   situation: "Not yet public",
   people_at_risk: false,
+  counsel_limited: false,
   locations: ["United States"],
   purpose: "Announce a decision or change",
 };
@@ -166,5 +168,18 @@ describe("intakeFields", () => {
     });
     expect(fields.organization).toEqual({ type: "Publicly listed company", listed_where: "NYSE", headquarters: "United States" });
     expect(fields.main_announcement).toBe("The announcement.");
+  });
+});
+
+describe("the counsel answer", () => {
+  it("goes into the request and comes back out of it", () => {
+    expect(intakeFields({ ...full, counsel_limited: true }).counsel_limited).toBe(true);
+    const request = { ...intakeFields({ ...full, counsel_limited: true }), draft: "d", context: "", already_published: false };
+    expect(intakeFromRequest(request).counsel_limited).toBe(true);
+  });
+
+  it("reads a request from before the question as unticked", () => {
+    const { counsel_limited: _unused, ...older } = { ...intakeFields(full), draft: "d", context: "", already_published: false };
+    expect(intakeFromRequest(older).counsel_limited).toBe(false);
   });
 });

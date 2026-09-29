@@ -65,6 +65,7 @@ export const OVERLAY_TRIGGERS = [
   "crisis-in-progress",
   "change-readiness",
   "apology",
+  "legal-constraints",
 ] as const;
 export type OverlayTrigger = (typeof OVERLAY_TRIGGERS)[number];
 
@@ -200,8 +201,12 @@ export interface ProtocolElement {
    * The target may sit in the same layer. Overlays have no layer below them,
    * and which of two overlays carries the sharper check is the owner's call;
    * checkLibrary refuses a pair that would each defer to the other.
+   *
+   * One id, or a list where an element defers to more than one check: Crisis
+   * in progress's responsibility check gives way to Apology's and to Legal
+   * constraints' alike. Any one of them surviving is enough.
    */
-  superseded_by?: string;
+  superseded_by?: string | string[];
 }
 
 export interface ProtocolTrigger {
@@ -288,6 +293,19 @@ export interface ProtocolFile {
    * this protocol's narrower reading of it.
    */
   narrows?: string[];
+  /**
+   * Overlays only: one line telling the model how to word what it finds, from
+   * every layer, while this overlay applies. Sent at the end of the overlay's
+   * block, so only when the overlay is in the bundle, and counted in the token
+   * budget with the rest of the block. A change to it is a change to what the
+   * engine is told, so it turns the version like any other.
+   *
+   * The Legal constraints overlay is why it exists: where counsel has limited
+   * what a message can say, a fix from any layer that would need an admission
+   * the limit rules out has to be worded as an alternative instead. Neither
+   * an element nor a trigger can say that, and the prose below is never sent.
+   */
+  instruction?: string;
   /** Everything below the front matter: source, basis, limits. For the page, never the engine. */
   prose: string;
 }
@@ -296,6 +314,15 @@ export interface CheckError {
   file: string;
   message: string;
 }
+
+/** An element's superseded_by as a list, whichever form the file used. */
+export function givesWayTo(element: Pick<ProtocolElement, "superseded_by">): string[] {
+  const s = element.superseded_by;
+  return s === undefined ? [] : Array.isArray(s) ? s : [s];
+}
+
+/** The most words an overlay's instruction line may carry. */
+export const INSTRUCTION_MAX_WORDS = 60;
 
 const isStr = (v: unknown): v is string => typeof v === "string" && v.trim().length > 0;
 const isArr = (v: unknown): v is unknown[] => Array.isArray(v);
@@ -364,6 +391,22 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
     err("only a protocol with layer: overlay names a trigger");
   }
 
+  // An instruction reaches every finding the review writes, not just this
+  // protocol's, so it is held to one short line and to the layer that is
+  // switched on by an explicit intake answer.
+  if (d.instruction !== undefined) {
+    if (layer !== "overlay") err("only a protocol with layer: overlay may carry an instruction");
+    if (!isStr(d.instruction)) err("instruction must be one line of text");
+    else {
+      const text = (d.instruction as string).trim();
+      if (/\n/.test(text)) err("instruction must be one line; it has a line break in it");
+      const words = text.split(/\s+/).length;
+      if (words > INSTRUCTION_MAX_WORDS) {
+        err(`instruction is ${words} words; keep it to ${INSTRUCTION_MAX_WORDS}. It is sent with every review this overlay joins.`);
+      }
+    }
+  }
+
   // Elements.
   if (!isArr(d.elements)) err("needs an elements list, even if it is empty");
   else {
@@ -403,8 +446,12 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
           for (const r of e.replaces) if (typeof r !== "string") err(`${at} replaces an entry that is not an element id`);
         }
       }
-      if (e.superseded_by !== undefined && !(isStr(e.superseded_by) && /^[a-z0-9-]+\.[\w-]+$/.test(e.superseded_by))) {
-        err(`${at} superseded_by ${JSON.stringify(e.superseded_by)}. Name the element it gives way to by its id, such as apology.acknowledged-responsibility.`);
+      if (e.superseded_by !== undefined) {
+        const targets = isArr(e.superseded_by) ? e.superseded_by : [e.superseded_by];
+        const valid = (t: unknown) => isStr(t) && /^[a-z0-9-]+\.[\w-]+$/.test(t);
+        if (targets.length === 0 || !targets.every(valid)) {
+          err(`${at} superseded_by ${JSON.stringify(e.superseded_by)}. Name the element it gives way to by its id, such as apology.acknowledged-responsibility, or list several.`);
+        }
       }
       if (e.applies_if !== undefined) {
         if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
@@ -596,26 +643,27 @@ export function checkLibrary(
     // itself defer back or replace this one. A dangling pointer is silent at
     // review time — the element is simply never dropped.
     for (const e of data.elements) {
-      if (!e.superseded_by) continue;
-      const target = elementsById.get(e.superseded_by);
-      if (!target) {
-        errors.push({ file, message: `element ${e.id} is superseded_by "${e.superseded_by}", which no protocol defines` });
-        continue;
-      }
-      if (e.superseded_by.split(".")[0] === data.id) {
-        errors.push({ file, message: `element ${e.id} is superseded_by "${e.superseded_by}", which is in the same protocol` });
-      }
-      if (PROTOCOL_LAYERS.indexOf(target.layer) < PROTOCOL_LAYERS.indexOf(data.layer)) {
-        errors.push({
-          file,
-          message:
-            `element ${e.id} is superseded_by "${e.superseded_by}", which is in the ${target.layer} layer. ` +
-            `A ${data.layer} protocol's element may only give way to one in the same layer or a more specific one.`,
-        });
-      }
-      const back = files.flatMap(({ data: d }) => d.elements).find((x) => x.id === e.superseded_by);
-      if (back && (back.superseded_by === e.id || (back.replaces ?? []).includes(e.id))) {
-        errors.push({ file, message: `element ${e.id} and "${e.superseded_by}" each defer to the other; one of them has to win` });
+      for (const winner of givesWayTo(e)) {
+        const target = elementsById.get(winner);
+        if (!target) {
+          errors.push({ file, message: `element ${e.id} is superseded_by "${winner}", which no protocol defines` });
+          continue;
+        }
+        if (winner.split(".")[0] === data.id) {
+          errors.push({ file, message: `element ${e.id} is superseded_by "${winner}", which is in the same protocol` });
+        }
+        if (PROTOCOL_LAYERS.indexOf(target.layer) < PROTOCOL_LAYERS.indexOf(data.layer)) {
+          errors.push({
+            file,
+            message:
+              `element ${e.id} is superseded_by "${winner}", which is in the ${target.layer} layer. ` +
+              `A ${data.layer} protocol's element may only give way to one in the same layer or a more specific one.`,
+          });
+        }
+        const back = files.flatMap(({ data: d }) => d.elements).find((x) => x.id === winner);
+        if (back && (givesWayTo(back).includes(e.id) || (back.replaces ?? []).includes(e.id))) {
+          errors.push({ file, message: `element ${e.id} and "${winner}" each defer to the other; one of them has to win` });
+        }
       }
     }
     // superseded_by runs the other way: the protocol that wins is the more

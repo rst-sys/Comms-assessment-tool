@@ -1,7 +1,7 @@
 import { useId, useState, type ReactNode } from "react";
 import { DIMENSION_LABELS, DIMENSION_WEIGHTS } from "../engine/scoring.js";
 import { HAS_DRAFT_PROTOCOLS, PROTOCOLS } from "../engine/protocols.js";
-import type { ProtocolFile } from "../engine/protocolFormat.js";
+import type { OverlayTrigger, ProtocolFile } from "../engine/protocolFormat.js";
 import { DIMENSION_IDS, EVENT_TAXONOMY } from "../engine/types.js";
 import { PageNav } from "./PageNav.js";
 import { Clock } from "./Icons.js";
@@ -239,7 +239,7 @@ function Tag({ kind }: { kind: ClaimKind }) {
 /** When a protocol applies, read from the taxonomy rather than from the file. */
 function appliedWhen(p: ProtocolFile): string {
   if (p.layer === "core") return "Applied whenever an event is named";
-  if (p.layer === "overlay") return `Applied when ${OVERLAY_WHEN[p.trigger ?? ""] ?? "its rule holds"}, on top of any event or none`;
+  if (p.layer === "overlay") return `Applied when ${(p.trigger ? OVERLAY_WHEN[p.trigger] : undefined) ?? "its rule holds"}, on top of any event or none`;
   if (p.layer === "family") {
     const events = EVENT_TAXONOMY.filter((e) => e.family === p.id);
     return `Applied to every ${p.name.toLowerCase()} event · ${events.length} event${events.length === 1 ? "" : "s"}`;
@@ -250,13 +250,14 @@ function appliedWhen(p: ProtocolFile): string {
 }
 
 /** What each overlay rule means, in the words the intake uses. */
-const OVERLAY_WHEN: Record<string, string> = {
+const OVERLAY_WHEN: Record<OverlayTrigger, string> = {
   "listed-company": "the organization is a publicly listed company",
   "people-harmed": "people have been harmed or put at risk",
   "workforce-impact": "the event is layoffs, restructuring or a site closure, or it is cost-cutting, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
   "crisis-in-progress": "the situation is still unfolding",
   "change-readiness": "the event is a restructuring, a major policy change, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
   apology: "the draft is mainly trying to apologize and take responsibility",
+  "legal-constraints": "the writer says counsel has limited what this message can say",
 };
 
 /** The four layers, in the order the engine applies them. */

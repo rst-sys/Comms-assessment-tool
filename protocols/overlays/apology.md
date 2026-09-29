@@ -3,11 +3,12 @@ id: apology
 name: Public apology
 layer: overlay
 trigger: apology
-version: 1.0.1
+version: 1.0.2
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.0.2 — Acknowledged responsibility gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
   - "1.0.1 — Evidence labels added; no check changed."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
 rests_on: >-
@@ -21,6 +22,7 @@ elements:
     dimension: accountability_agency
     basis: research
     sources: [lewicki-2016-effective-apologies, sciencedaily-2016-six-elements]
+    superseded_by: legal-constraints.limit-scope
     basis_note: "The most important of six apology elements in one 2016 study of 755 people, known here through a press account."
 
   - id: apology.repair-offered

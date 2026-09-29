@@ -73,6 +73,7 @@ export interface IntakeState {
   audiences: Audience[];
   situation: SituationStatus | "";
   people_at_risk: boolean;
+  counsel_limited: boolean;
   locations: string[];
   purpose: Purpose | "";
 }
@@ -89,6 +90,7 @@ export const EMPTY_INTAKE: IntakeState = {
   audiences: [],
   situation: "",
   people_at_risk: false,
+  counsel_limited: false,
   locations: [],
   purpose: "",
 };
@@ -293,6 +295,7 @@ export function intakeFields(
   | "audiences"
   | "situation"
   | "people_at_risk"
+  | "counsel_limited"
   | "locations"
   | "purpose"
 > {
@@ -317,6 +320,7 @@ export function intakeFields(
     audiences: [...state.audiences],
     situation: state.situation as SituationStatus,
     people_at_risk: state.people_at_risk,
+    counsel_limited: state.counsel_limited,
     locations: [...state.locations],
     purpose: state.purpose as Purpose,
   };
@@ -336,6 +340,7 @@ export function intakeFromRequest(request: EvaluationRequest): IntakeState {
     audiences: [...request.audiences],
     situation: request.situation,
     people_at_risk: request.people_at_risk,
+    counsel_limited: request.counsel_limited ?? false,
     locations: [...request.locations],
     purpose: request.purpose,
   };

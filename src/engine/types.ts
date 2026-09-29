@@ -373,6 +373,12 @@ export interface EvaluationRequest {
   situation: SituationStatus;
   /** Whether people have been harmed or put at risk. */
   people_at_risk: boolean;
+  /**
+   * Counsel has limited what this message can say. Switches on the Legal
+   * constraints overlay. Optional so requests and saved reviews from before
+   * the question existed read as unticked; the server requires it.
+   */
+  counsel_limited?: boolean;
   /** Where the people affected by this are. At least one. */
   locations: string[];
   /** What the draft is mainly trying to do. */

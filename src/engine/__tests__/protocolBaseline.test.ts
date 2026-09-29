@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { buildSystemBlocks } from "../prompt.js";
 import { protocolsFor } from "../protocols.js";
-import { CONTROL, DEMOS } from "../fixtures.js";
+import { CONTROL, COUNSEL_CASES, DEMOS } from "../fixtures.js";
 import { COMMUNICATION_EVENTS, PURPOSES, SITUATION_STATUSES, type EvaluationRequest } from "../types.js";
 
 /**
@@ -65,6 +65,8 @@ const cases: [string, EvaluationRequest][] = [
         EvaluationRequest,
       ],
   ),
+  // The counsel box ticked; see the capture script.
+  ...COUNSEL_CASES(base),
   ...[...DEMOS, CONTROL].map((f) => [`fixture:${f.key}`, f.request] as [string, EvaluationRequest]),
 ];
 

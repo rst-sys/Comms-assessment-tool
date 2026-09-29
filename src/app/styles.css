@@ -336,6 +336,8 @@ textarea { resize: vertical; }
 .choice-list { display: grid; gap: 6px; }
 .choice { display: flex; gap: 10px; align-items: flex-start; padding: 5px 0; cursor: pointer; }
 .choice input { margin: 4px 0 0; flex: none; }
+/* A hint under a checkbox, lined up with the label text rather than the box. */
+.choice-hint { margin: 0 0 var(--space) 23px; }
 /* Step 1's radios: boxed, so the four read as one control rather than as prose. */
 .choice-box { display: flex; gap: 10px; align-items: center; padding: 9px 12px; border: 1px solid var(--border);
   border-radius: 4px; background: var(--surface); cursor: pointer; }

@@ -79,6 +79,32 @@ describe("App", () => {
     expect(screen.queryByText("Risk level")).toBeNull();
   });
 
+  it("sends the counsel box with the review and keeps it ticked for the next draft", async () => {
+    const bodies: Record<string, unknown>[] = [];
+    const base = fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 }));
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
+        if (String(input).endsWith("/api/evaluate") && init?.body) bodies.push(JSON.parse(String(init.body)));
+        return base(input);
+      }),
+    );
+    vi.stubGlobal("scrollTo", vi.fn());
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
+    fillLayoffIntake();
+    const box = () => screen.getByRole("checkbox", { name: "Counsel has limited what this message can say" }) as HTMLInputElement;
+    expect(box().checked).toBe(false);
+    fireEvent.click(box());
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    expect(await screen.findByText("Risk level")).toBeTruthy();
+    expect(bodies.at(-1)?.counsel_limited).toBe(true);
+
+    fireEvent.click(screen.getByRole("button", { name: "Review another draft" }));
+    expect(box().checked).toBe(true);
+  });
+
   it("keeps the settings, the context and the draft when Review another draft is pressed", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());

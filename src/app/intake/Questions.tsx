@@ -273,6 +273,18 @@ export function SituationQuestion({ state, onChange, onTouch }: QuestionProps & 
         <input type="checkbox" checked={state.people_at_risk} onChange={(e) => onChange({ ...state, people_at_risk: e.target.checked })} />
         <span>People have been harmed or put at risk</span>
       </label>
+      <label className="choice">
+        <input
+          type="checkbox"
+          checked={state.counsel_limited}
+          aria-describedby="counsel-limited-hint"
+          onChange={(e) => onChange({ ...state, counsel_limited: e.target.checked })}
+        />
+        <span>Counsel has limited what this message can say</span>
+      </label>
+      <p id="counsel-limited-hint" className="muted small choice-hint">
+        Say in ‘Anything else we should know?’ what counsel has ruled out, for example no admission of fault while litigation is possible.
+      </p>
     </div>
   );
 }

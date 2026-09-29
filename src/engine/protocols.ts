@@ -17,7 +17,7 @@
 import { createHash } from "node:crypto";
 import { jurisdictionCountries } from "./countries.js";
 import { buildProtocolBlock, PROTOCOL_RULES } from "./protocolPrompt.js";
-import type { OverlayTrigger, ProtocolFile } from "./protocolFormat.js";
+import { givesWayTo, type OverlayTrigger, type ProtocolFile } from "./protocolFormat.js";
 import { PROTOCOL_LIBRARY } from "./protocolLibrary.js";
 import { EMPLOYEE_AUDIENCES, EVENT_BY_LABEL, type EvaluationRequest } from "./types.js";
 
@@ -100,6 +100,9 @@ export function activeTriggers(request: EvaluationRequest): OverlayTrigger[] {
   // under way, so the overlay's two checks would have nothing to hold to.
   if (request.situation === "Still unfolding") on.push("crisis-in-progress");
   if (request.purpose === "Apologize and take responsibility") on.push("apology");
+  // The box alone, on any event: counsel's limit is the author's to declare,
+  // and nothing else in the intake can stand in for it.
+  if (request.counsel_limited === true) on.push("legal-constraints");
 
   return on;
 }
@@ -206,7 +209,7 @@ function withoutSupersededTriggers(protocol: ProtocolFile, applied: ReadonlySet<
  * element only gives way to one that is actually being sent.
  */
 function withoutGivenWayElements(protocol: ProtocolFile, surviving: ReadonlySet<string>): ProtocolFile {
-  const elements = protocol.elements.filter((e) => !(e.superseded_by && surviving.has(e.superseded_by)));
+  const elements = protocol.elements.filter((e) => !givesWayTo(e).some((winner) => surviving.has(winner)));
   return elements.length === protocol.elements.length ? protocol : { ...protocol, elements };
 }
 

@@ -108,6 +108,26 @@ describe("IntakeScreen", () => {
     expect(options()).not.toMatch(/Donors, funders and trustees|Investors and analysts/);
   });
 
+  it("offers the counsel box beside Where do things stand, unticked, with its hint, and sends the answer", () => {
+    const onEvaluate = vi.fn();
+    render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={onEvaluate} />);
+    const box = screen.getByRole("checkbox", { name: "Counsel has limited what this message can say" }) as HTMLInputElement;
+    expect(box.checked).toBe(false);
+    const hint = document.getElementById(box.getAttribute("aria-describedby")!)!;
+    expect(hint.textContent).toBe(
+      "Say in ‘Anything else we should know?’ what counsel has ruled out, for example no admission of fault while litigation is possible.",
+    );
+    // Offered whatever the event and audience: it is there before either is chosen.
+    fillLayoffIntake();
+    expect(screen.getByRole("checkbox", { name: "Counsel has limited what this message can say" })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    expect(onEvaluate.mock.calls[0]![0].counsel_limited).toBe(false);
+    fireEvent.click(box);
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    expect(onEvaluate.mock.calls[1]![0].counsel_limited).toBe(true);
+  });
+
   it("asks for the earlier statement only while the situation is still unfolding", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     const hint = /paste it here so the review can check what’s changed/;

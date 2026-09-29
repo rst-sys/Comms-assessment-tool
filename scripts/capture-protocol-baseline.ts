@@ -10,7 +10,7 @@ import { createHash } from "node:crypto";
 import { writeFileSync } from "node:fs";
 import { protocolsFor } from "../src/engine/protocols.js";
 import { buildSystemBlocks } from "../src/engine/prompt.js";
-import { DEMOS, CONTROL } from "../src/engine/fixtures.js";
+import { DEMOS, CONTROL, COUNSEL_CASES } from "../src/engine/fixtures.js";
 import { COMMUNICATION_EVENTS, PURPOSES, SITUATION_STATUSES } from "../src/engine/types.js";
 import type { EvaluationRequest } from "../src/engine/types.js";
 
@@ -43,6 +43,10 @@ for (const purpose of PURPOSES) {
 for (const situation of SITUATION_STATUSES) {
   record(`situation:${situation}`, { ...base, communication_event: "Product recall or safety issue", purpose: "Announce a decision or change", situation });
 }
+// The counsel box ticked. Every case above leaves it unticked, so without
+// these the baseline could not see the Legal constraints overlay, or the
+// Apology and Crisis in progress checks that give way to it.
+for (const [key, request] of COUNSEL_CASES(base)) record(key, request);
 for (const f of [...DEMOS, CONTROL]) record(`fixture:${f.key}`, f.request);
 
 writeFileSync(

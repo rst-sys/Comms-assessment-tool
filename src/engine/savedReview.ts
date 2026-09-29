@@ -34,6 +34,8 @@ export interface SavedSettings {
   audiences: string;
   situation: string;
   people_at_risk: boolean;
+  /** Absent on reviews saved before the question existed; read as unticked. */
+  counsel_limited?: boolean;
   locations: string;
   purpose: string;
   already_published: boolean;
@@ -52,6 +54,7 @@ function currentSettings(request: EvaluationRequest): SavedSettings {
     audiences: [...request.audiences].join(", "),
     situation: request.situation,
     people_at_risk: request.people_at_risk,
+    counsel_limited: request.counsel_limited ?? false,
     locations: [...request.locations].join(", "),
     purpose: request.purpose,
     already_published: request.already_published,
@@ -174,6 +177,7 @@ export const COMPARABLE_SETTINGS: (keyof SavedSettings)[] = [
   "audiences",
   "situation",
   "people_at_risk",
+  "counsel_limited",
   "locations",
   "purpose",
 ];
@@ -189,6 +193,7 @@ export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
   audiences: "Who will receive it",
   situation: "Where things stand",
   people_at_risk: "People harmed or put at risk",
+  counsel_limited: "Counsel has limited what this message can say",
   locations: "Where this is happening",
   purpose: "What the draft is mainly trying to do",
   already_published: "Already published",
@@ -197,7 +202,10 @@ export const SETTING_LABELS: Record<keyof SavedSettings, string> = {
 /** Settings that differ between the saved review and the current request. */
 export function settingsDrift(saved: SavedSettings, request: EvaluationRequest): string[] {
   const current = currentSettings(request);
-  return COMPARABLE_SETTINGS.filter((k) => saved[k] !== current[k]).map((k) => SETTING_LABELS[k]);
+  // A review saved before the counsel question existed has no answer to it,
+  // which means unticked, not a difference.
+  const before: SavedSettings = { ...saved, counsel_limited: saved.counsel_limited ?? false };
+  return COMPARABLE_SETTINGS.filter((k) => before[k] !== current[k]).map((k) => SETTING_LABELS[k]);
 }
 
 /**

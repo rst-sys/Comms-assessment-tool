@@ -71,35 +71,38 @@ export function worstCase(library?: readonly ProtocolFile[]): WorstCase {
           for (const communication_format of COMMUNICATION_FORMATS)
             for (const situation of SITUATION_STATUSES)
               for (const headquarters of PLACES)
-                for (const audiences of audienceSets) {
-                  requests += 1;
-                  const request: EvaluationRequest = {
-                    ...base,
-                    communication_event,
-                    communication_format,
-                    purpose,
-                    situation,
-                    people_at_risk,
-                    audiences,
-                    organization: { type, headquarters },
-                  };
-                  const { protocols } = resolveProtocols(request, library);
-                  if (protocols.length === 0) continue;
-                  // Two requests that resolve to the same protocols and the same
-                  // surviving elements produce the same text, so measure once.
-                  const key = protocols.map((p) => `${p.id}:${p.elements.map((e) => e.id).join(",")}`).join("|");
-                  if (seen.has(key)) continue;
-                  const text = [...protocols.map(buildProtocolBlock), PROTOCOL_RULES].join("\n\n");
-                  seen.set(key, {
-                    words: protocolWordCount(text),
-                    tokens: Math.ceil(text.length / CHARS_PER_TOKEN),
-                    protocols: protocols.map((p) => p.id),
-                    answers:
-                      `${communication_event} · ${type} · ${headquarters} · ${communication_format} · ` +
-                      `${purpose} · ${situation} · anyone harmed: ${people_at_risk ? "yes" : "no"} · ` +
-                      `audiences: ${audiences.length === AUDIENCES.length ? "all" : audiences.join(", ")}`,
-                  });
-                }
+                for (const audiences of audienceSets)
+                  for (const counsel_limited of [false, true]) {
+                    requests += 1;
+                    const request: EvaluationRequest = {
+                      ...base,
+                      communication_event,
+                      communication_format,
+                      purpose,
+                      situation,
+                      people_at_risk,
+                      audiences,
+                      counsel_limited,
+                      organization: { type, headquarters },
+                    };
+                    const { protocols } = resolveProtocols(request, library);
+                    if (protocols.length === 0) continue;
+                    // Two requests that resolve to the same protocols and the same
+                    // surviving elements produce the same text, so measure once.
+                    const key = protocols.map((p) => `${p.id}:${p.elements.map((e) => e.id).join(",")}`).join("|");
+                    if (seen.has(key)) continue;
+                    const text = [...protocols.map(buildProtocolBlock), PROTOCOL_RULES].join("\n\n");
+                    seen.set(key, {
+                      words: protocolWordCount(text),
+                      tokens: Math.ceil(text.length / CHARS_PER_TOKEN),
+                      protocols: protocols.map((p) => p.id),
+                      answers:
+                        `${communication_event} · ${type} · ${headquarters} · ${communication_format} · ` +
+                        `${purpose} · ${situation} · anyone harmed: ${people_at_risk ? "yes" : "no"} · ` +
+                        `audiences: ${audiences.length === AUDIENCES.length ? "all" : audiences.join(", ")} · ` +
+                        `counsel limited: ${counsel_limited ? "yes" : "no"}`,
+                    });
+                  }
 
   const all = [...seen.values()];
   const top = all.reduce((a, b) => (b.words > a.words ? b : a), all[0]!);
