@@ -7,6 +7,7 @@ import { activeTriggers, resolvedProtocols } from "../protocols.js";
 import { buildSavedReview, settingsDrift, type SavedSettings } from "../savedReview.js";
 import { COMMUNICATION_EVENTS, type EvaluationRequest } from "../types.js";
 import { DEMO_1 } from "../fixtures.js";
+import { EVENT_TAXONOMY } from "../eventTaxonomy.js";
 import type { EvaluationResult } from "../evaluate.js";
 import { sampleAnalysis } from "./helpers.js";
 
@@ -184,5 +185,52 @@ describe("saved reviews", () => {
     const { counsel_limited: _unused, ...older } = buildSavedReview(result, base).settings;
     expect(settingsDrift(older as SavedSettings, base)).toEqual([]);
     expect(settingsDrift(older as SavedSettings, ticked())).toEqual(["Counsel has limited what this message can say"]);
+  });
+});
+
+describe("the second round of give-way links", () => {
+  const APOLOGY_TRIGGER = "No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern.";
+  const DECLARED = "legal-constraints.declared";
+  const apologyTriggers = (r: EvaluationRequest) =>
+    resolvedProtocols(r).find((p) => p.id === "apology")?.triggers.map((t) => t.check) ?? [];
+  const apologizing = { purpose: "Apologize and take responsibility" as const };
+  const departure = { communication_event: "CEO or senior leader departure" as const };
+
+  it("Apology's no-responsibility trigger gives way to the limit check when the box is ticked, and only then", () => {
+    expect(apologyTriggers({ ...base, ...apologizing })).toContain(APOLOGY_TRIGGER);
+    expect(apologyTriggers(ticked(apologizing))).not.toContain(APOLOGY_TRIGGER);
+    // Apology's other triggers stay.
+    expect(apologyTriggers(ticked(apologizing)).length).toBe(apologyTriggers({ ...base, ...apologizing }).length - 1);
+  });
+
+  it("the declared check gives way to CEO departure's declared withholding, and stays on every other event", () => {
+    expect(elementIds(ticked(departure))).toContain("ceo-departure.reason-or-declared-withholding-of-it");
+    expect(elementIds(ticked(departure))).not.toContain(DECLARED);
+    expect(elementIds(ticked(departure))).toContain(LIMIT_SCOPE);
+    for (const communication_event of COMMUNICATION_EVENTS.filter((e) => e !== departure.communication_event)) {
+      expect(elementIds(ticked({ communication_event })), communication_event).toContain(DECLARED);
+    }
+  });
+
+  const library = () => PROTOCOL_LIBRARY.map((data) => ({ file: data.id, data }));
+  const swap = (id: string, change: (p: ProtocolFile) => ProtocolFile) =>
+    library().map((f) => (f.data.id === id ? { ...f, data: change(f.data) } : f));
+  const messages = (files: { file: string; data: ProtocolFile }[]) =>
+    checkLibrary(files, EVENT_TAXONOMY.map((e) => ({ ...e, ui_groups: [...e.ui_groups] }))).map((e) => e.message).join(" | ");
+
+  it("a trigger may name an element in a peer or more specific layer, and it must exist", () => {
+    expect(messages(library())).toBe("");
+    const pointAt = (target: string) =>
+      swap("apology", (p) => ({ ...p, triggers: p.triggers.map((t, i) => (i === 0 ? { ...t, superseded_by: target } : t)) }));
+    expect(messages(pointAt("legal-constraints.nothing"))).toContain('superseded_by "legal-constraints.nothing", which no protocol defines');
+    expect(messages(pointAt("core.central_fact_first"))).toContain("may only give way to an element in the same layer or a more specific one");
+    expect(messages(pointAt("apology.repair-offered"))).toContain("which is in the same protocol");
+  });
+
+  it("an overlay's element may give way to an event protocol's, but not to a family's", () => {
+    const pointAt = (target: string) =>
+      swap("legal-constraints", (p) => ({ ...p, elements: p.elements.map((e) => (e.id === DECLARED ? { ...e, superseded_by: target } : e)) }));
+    expect(messages(pointAt("ceo-departure.reason-or-declared-withholding-of-it"))).toBe("");
+    expect(messages(pointAt("incident.remedy"))).toContain("or to an event protocol's");
   });
 });

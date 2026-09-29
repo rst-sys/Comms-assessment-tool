@@ -197,7 +197,7 @@ function filtered(protocol: ProtocolFile, request: EvaluationRequest, superseded
  * both layers, which is the opposite of what the pointer is for.
  */
 function withoutSupersededTriggers(protocol: ProtocolFile, applied: ReadonlySet<string>): ProtocolFile {
-  const triggers = protocol.triggers.filter((t) => !(t.superseded_by && applied.has(t.superseded_by)));
+  const triggers = protocol.triggers.filter((t) => !(t.superseded_by && !t.superseded_by.includes(".") && applied.has(t.superseded_by)));
   return triggers.length === protocol.triggers.length ? protocol : { ...protocol, triggers };
 }
 
@@ -210,7 +210,12 @@ function withoutSupersededTriggers(protocol: ProtocolFile, applied: ReadonlySet<
  */
 function withoutGivenWayElements(protocol: ProtocolFile, surviving: ReadonlySet<string>): ProtocolFile {
   const elements = protocol.elements.filter((e) => !givesWayTo(e).some((winner) => surviving.has(winner)));
-  return elements.length === protocol.elements.length ? protocol : { ...protocol, elements };
+  // A trigger that names an element rather than a protocol gives way on the
+  // same test, in the same pass.
+  const triggers = protocol.triggers.filter((t) => !(t.superseded_by?.includes(".") && surviving.has(t.superseded_by)));
+  return elements.length === protocol.elements.length && triggers.length === protocol.triggers.length
+    ? protocol
+    : { ...protocol, elements, triggers };
 }
 
 /**
@@ -251,8 +256,9 @@ export function resolvedProtocols(request: EvaluationRequest, library?: readonly
   const superseded = supersededBy(applicable);
   const applied = new Set(applicable.map((p) => p.id));
   const kept = applicable.map((p) => withoutSupersededTriggers(filtered(p, request, superseded), applied));
-  // Last, the elements that defer to another: only against what survived the
-  // passes above, so none gives way to a check that was itself dropped.
+  // Last, the elements and triggers that defer to an element: only against
+  // what survived the passes above, so none gives way to a check that was
+  // itself dropped.
   const surviving = new Set(kept.flatMap((p) => p.elements.map((e) => e.id)));
   return kept.map((p) => withoutGivenWayElements(p, surviving));
 }

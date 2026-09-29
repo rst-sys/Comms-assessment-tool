@@ -1664,11 +1664,12 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Public apology",
       "layer": "overlay",
       "trigger": "apology",
-      "version": "1.0.2",
+      "version": "1.0.3",
       "status": "active",
       "last_reviewed": "2026-09-25",
       "review_by": null,
       "changelog": [
+        "1.0.3 — The trigger \"No sentence says the organization or a named leader is responsible\" gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged.",
         "1.0.2 — Acknowledged responsibility gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged.",
         "1.0.1 — Evidence labels added; no check changed.",
         "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -1739,7 +1740,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "dimension": "accountability_agency",
           "review": [
             "Legal"
-          ]
+          ],
+          "superseded_by": "legal-constraints.limit-scope"
         },
         {
           "check": "The only apology sentence is conditional on the audience's reaction — \"if\", \"to anyone who felt\", \"that concerns were raised\".",
@@ -2001,13 +2003,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Legal constraints",
       "layer": "overlay",
       "trigger": "legal-constraints",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "status": "active",
       "last_reviewed": "2026-09-29",
       "review_by": "2027-03-29",
       "rests_on": "US evidence rules on remedial measures and offers to pay, state apology laws, and research on apologies and settlement; the rest is declared professional judgement.",
       "instruction": "Legal constraints apply. Where a fix would need an admission the stated limit rules out, offer instead a plain declaration of the limit, an expression of sympathy or regret, or what is being done, and refer the question to counsel. Never say a statement is legally safe.",
       "changelog": [
+        "0.1.1 (2026-09-29): Constraint declared, not hidden gives way to the CEO departure protocol's \"Reason, or declared withholding of it\" when both apply; wording unchanged.",
         "0.1.0 (2026-09-29): first draft from the Legal constraints source review; owner's six design decisions of 29 September 2026."
       ],
       "elements": [
@@ -2018,7 +2021,8 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
           "weight": "core",
           "dimension": "truthfulness_factual_discipline",
           "basis": "judgement",
-          "sources": []
+          "sources": [],
+          "superseded_by": "ceo-departure.reason-or-declared-withholding-of-it"
         },
         {
           "id": "legal-constraints.limit-scope",

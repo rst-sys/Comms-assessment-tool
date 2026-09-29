@@ -200,7 +200,10 @@ export interface ProtocolElement {
    *
    * The target may sit in the same layer. Overlays have no layer below them,
    * and which of two overlays carries the sharper check is the owner's call;
-   * checkLibrary refuses a pair that would each defer to the other.
+   * checkLibrary refuses a pair that would each defer to the other. An
+   * overlay's element may also give way to an event protocol's, the same
+   * direction `replaces` allows: the event knows more than the intake answer
+   * that switched the overlay on.
    *
    * One id, or a list where an element defers to more than one check: Crisis
    * in progress's responsibility check gives way to Apology's and to Legal
@@ -249,6 +252,14 @@ export interface ProtocolTrigger {
    * condition is "that protocol applied", never a copy of the intake rule that
    * switches it on. A file that could restate that rule could quietly widen
    * it.
+   *
+   * It may instead name an element, `<protocol>.<slug>`, in another protocol
+   * of the same layer or a more specific one. The trigger is then dropped
+   * only when that element survives into the bundle, the same test an
+   * element's own superseded_by uses. That is how a peer overlay can take a
+   * trigger's place: Apology's "no sentence says the organization is
+   * responsible" gives way to Legal constraints' "The limit covers only what
+   * it has to", which asks for responsibility only as far as counsel allows.
    */
   superseded_by?: string;
 }
@@ -481,8 +492,8 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       if (t.narrows !== undefined && !(isStr(t.narrows) && /^[a-z0-9-]+\.[\w-]+$/.test(t.narrows))) {
         err(`${at} narrows ${JSON.stringify(t.narrows)}. Name the element it sharpens by its id, such as core.central_fact_first or leadership.disagreement-described.`);
       }
-      if (t.superseded_by !== undefined && !(isStr(t.superseded_by) && /^[a-z0-9-]+$/.test(t.superseded_by))) {
-        err(`${at} superseded_by ${JSON.stringify(t.superseded_by)}. Name the protocol whose sharper check replaces this trigger by its id, such as apology.`);
+      if (t.superseded_by !== undefined && !(isStr(t.superseded_by) && /^[a-z0-9-]+(\.[\w-]+)?$/.test(t.superseded_by))) {
+        err(`${at} superseded_by ${JSON.stringify(t.superseded_by)}. Name the protocol whose sharper check replaces this trigger by its id, such as apology, or the element, such as legal-constraints.limit-scope.`);
       }
       reviewList(t.review, at, err);
     });
@@ -652,12 +663,14 @@ export function checkLibrary(
         if (winner.split(".")[0] === data.id) {
           errors.push({ file, message: `element ${e.id} is superseded_by "${winner}", which is in the same protocol` });
         }
-        if (PROTOCOL_LAYERS.indexOf(target.layer) < PROTOCOL_LAYERS.indexOf(data.layer)) {
+        const overlayToEvent = data.layer === "overlay" && target.layer === "event";
+        if (PROTOCOL_LAYERS.indexOf(target.layer) < PROTOCOL_LAYERS.indexOf(data.layer) && !overlayToEvent) {
           errors.push({
             file,
             message:
               `element ${e.id} is superseded_by "${winner}", which is in the ${target.layer} layer. ` +
-              `A ${data.layer} protocol's element may only give way to one in the same layer or a more specific one.`,
+              `A ${data.layer} protocol's element may only give way to one in the same layer or a more specific one` +
+              `${data.layer === "overlay" ? ", or to an event protocol's" : ""}.`,
           });
         }
         const back = files.flatMap(({ data: d }) => d.elements).find((x) => x.id === winner);
@@ -671,6 +684,27 @@ export function checkLibrary(
     // sideways pointer is silent — the trigger is simply never dropped.
     data.triggers.forEach((t, i) => {
       if (!t.superseded_by) return;
+      // An element: it must exist, in another protocol, in the same layer or
+      // a more specific one.
+      if (t.superseded_by.includes(".")) {
+        const element = elementsById.get(t.superseded_by);
+        if (!element) {
+          errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which no protocol defines` });
+          return;
+        }
+        if (t.superseded_by.split(".")[0] === data.id) {
+          errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is in the same protocol` });
+        }
+        if (PROTOCOL_LAYERS.indexOf(element.layer) < PROTOCOL_LAYERS.indexOf(data.layer)) {
+          errors.push({
+            file,
+            message:
+              `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is in the ${element.layer} layer. ` +
+              `A ${data.layer} protocol's trigger may only give way to an element in the same layer or a more specific one.`,
+          });
+        }
+        return;
+      }
       const target = files.find(({ data: d }) => d.id === t.superseded_by);
       if (!target) {
         errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is not a protocol in the library` });

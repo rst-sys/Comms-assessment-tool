@@ -3,11 +3,12 @@ id: apology
 name: Public apology
 layer: overlay
 trigger: apology
-version: 1.0.2
+version: 1.0.3
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.0.3 — The trigger \"No sentence says the organization or a named leader is responsible\" gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
   - "1.0.2 — Acknowledged responsibility gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
   - "1.0.1 — Evidence labels added; no check changed."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -65,6 +66,7 @@ triggers:
   - check: No sentence says the organization or a named leader is responsible. The draft offers only regret, sympathy or concern.
     dimension: accountability_agency
     review: [Legal]
+    superseded_by: legal-constraints.limit-scope
 
   - check: The only apology sentence is conditional on the audience's reaction — "if", "to anyone who felt", "that concerns were raised".
     dimension: stakeholder_respect_impact
