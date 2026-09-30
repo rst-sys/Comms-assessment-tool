@@ -2003,13 +2003,14 @@ export const PROTOCOL_LIBRARY: ProtocolFile[] = [
       "name": "Legal constraints",
       "layer": "overlay",
       "trigger": "legal-constraints",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "status": "active",
       "last_reviewed": "2026-09-29",
       "review_by": "2027-03-29",
       "rests_on": "US evidence rules on remedial measures and offers to pay, state apology laws, and research on apologies and settlement; the rest is declared professional judgement.",
-      "instruction": "Legal constraints apply. Where a fix would need an admission the stated limit rules out, offer instead a plain declaration of the limit, an expression of sympathy or regret, or what is being done, and refer the question to counsel. Never say a statement is legally safe.",
+      "instruction": "Legal constraints apply. Where a fix would need an admission the stated limit rules out, offer instead a plain declaration of the limit, an expression of sympathy or regret, or what is being done, and refer the question to counsel. Never say a statement is legally safe, or whether it would or wouldn't admit fault; that is for counsel.",
       "changelog": [
+        "0.1.2 (2026-09-30): instruction line also forbids saying whether a statement would or wouldn't admit fault (Thornbury weak report asserted legal effect).",
         "0.1.1 (2026-09-29): Constraint declared, not hidden gives way to the CEO departure protocol's \"Reason, or declared withholding of it\" when both apply; wording unchanged.",
         "0.1.0 (2026-09-29): first draft from the Legal constraints source review; owner's six design decisions of 29 September 2026."
       ],

@@ -12,7 +12,7 @@ import type { EvaluationResult } from "../evaluate.js";
 import { sampleAnalysis } from "./helpers.js";
 
 const INSTRUCTION =
-  "Legal constraints apply. Where a fix would need an admission the stated limit rules out, offer instead a plain declaration of the limit, an expression of sympathy or regret, or what is being done, and refer the question to counsel. Never say a statement is legally safe.";
+  "Legal constraints apply. Where a fix would need an admission the stated limit rules out, offer instead a plain declaration of the limit, an expression of sympathy or regret, or what is being done, and refer the question to counsel. Never say a statement is legally safe, or whether it would or wouldn't admit fault; that is for counsel.";
 
 const base: EvaluationRequest = { ...DEMO_1.request, counsel_limited: false };
 const ticked = (r: Partial<EvaluationRequest> = {}): EvaluationRequest => ({ ...base, ...r, counsel_limited: true });
