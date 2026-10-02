@@ -8,12 +8,19 @@
  * - logs carry request kinds, hashed request ids, domains and status codes,
  *   never draft text, response bodies, URL paths or fetched content
  * - no analytics, no telemetry, no fallback provider
+ *
+ * Robustness rules:
+ * - no request, however malformed, can take the process down: the address
+ *   is parsed defensively and every handler runs inside one safety net
+ * - on shutdown (every deploy) the server stops taking new work and lets
+ *   the reviews already running finish before it exits
  */
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { EngineError } from "../engine/client.js";
 import { getEngineConfig } from "../engine/config.js";
+import { FEATURES } from "../app/features.js";
 import { evaluateDraft } from "../engine/evaluate.js";
 import { compareWithSaved } from "../engine/compare.js";
 import { findPublicContext } from "../engine/publicContext.js";
@@ -23,13 +30,17 @@ import { loadEnvFile } from "./env.js";
 import { parseEvaluationRequest, RequestValidationError } from "./requestSchema.js";
 import {
   chargeOne,
+  clearLoginFailures,
   refundOne,
   clearedCookie,
   GATE_ENABLED,
   isAuthorized,
+  loginAllowed,
   passwordMatches,
   PER_VISITOR_DAILY,
+  recordLoginFailure,
   sessionCookie,
+  TOO_MANY_ATTEMPTS,
   TOTAL_DAILY,
   usageToday,
 } from "./access.js";
@@ -41,19 +52,59 @@ const SERVE_STATIC = process.env.ACR_SERVE_STATIC === "1" || process.env.NODE_EN
 const MAX_BODY = 1_000_000;
 
 
-function send(res: ServerResponse, status: number, body: unknown): void {
-  res.writeHead(status, {
-    "content-type": "application/json; charset=utf-8",
-    "cache-control": "no-store",
+/**
+ * Headers every response carries. The page may not be framed by another site,
+ * may load scripts, styles, fonts and data only from this server, and over
+ * HTTPS tells the browser to keep using HTTPS. Inline style attributes are
+ * allowed because the app sets a few; inline scripts are not. Blob and data
+ * URLs cover the PDF download, the PDF reader's worker and pasted images.
+ *
+ * 'unsafe-eval' is there for one reason: the validator (ajv) turns each
+ * schema into code when the page loads, and without it the app does not
+ * start. Scripts still come only from this server.
+ */
+export const CONTENT_SECURITY_POLICY = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "worker-src 'self' blob:",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
+export function securityHeaders(secure: boolean): Record<string, string> {
+  return {
+    "content-security-policy": CONTENT_SECURITY_POLICY,
+    "x-frame-options": "DENY",
     "referrer-policy": "no-referrer",
     "x-content-type-options": "nosniff",
-  });
-  res.end(JSON.stringify(body));
+    ...(secure ? { "strict-transport-security": "max-age=31536000" } : {}),
+  };
 }
 
 /** True when the deployment is behind HTTPS, so the session cookie can be marked Secure. */
 function isSecure(req: IncomingMessage): boolean {
   return (req.headers["x-forwarded-proto"] as string | undefined) === "https";
+}
+
+function send(res: ServerResponse, status: number, body: unknown, extra: Record<string, string> = {}): void {
+  if (res.headersSent) {
+    res.end();
+    return;
+  }
+  res.writeHead(status, {
+    ...securityHeaders(isSecure(res.req)),
+    "content-type": "application/json; charset=utf-8",
+    "cache-control": "no-store",
+    ...(shuttingDown ? { connection: "close" } : {}),
+    ...extra,
+  });
+  res.end(JSON.stringify(body));
 }
 
 async function handleLogin(req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -64,27 +115,25 @@ async function handleLogin(req: IncomingMessage, res: ServerResponse): Promise<v
   } catch {
     return send(res, 400, { error: "bad_request", message: "The request could not be read." });
   }
+  // Checked before the password, so a pause cannot be waited out by
+  // guessing faster.
+  if (!loginAllowed(req)) {
+    console.log("login result=paused");
+    return send(res, 429, { error: "rate_limited", message: TOO_MANY_ATTEMPTS });
+  }
   const supplied = typeof body === "object" && body !== null ? (body as { password?: unknown }).password : undefined;
   if (!passwordMatches(supplied)) {
+    recordLoginFailure(req);
     console.log("login result=refused");
     return send(res, 401, { error: "unauthorized", message: "That password is not right." });
   }
+  clearLoginFailures(req);
   console.log("login result=accepted");
-  res.writeHead(200, {
-    "content-type": "application/json; charset=utf-8",
-    "cache-control": "no-store",
-    "set-cookie": sessionCookie(isSecure(req)),
-  });
-  res.end(JSON.stringify({ ok: true }));
+  send(res, 200, { ok: true }, { "set-cookie": sessionCookie(isSecure(req)) });
 }
 
 function handleLogout(req: IncomingMessage, res: ServerResponse): void {
-  res.writeHead(200, {
-    "content-type": "application/json; charset=utf-8",
-    "cache-control": "no-store",
-    "set-cookie": clearedCookie(isSecure(req)),
-  });
-  res.end(JSON.stringify({ ok: true }));
+  send(res, 200, { ok: true }, { "set-cookie": clearedCookie(isSecure(req)) });
 }
 
 function readJson(req: IncomingMessage): Promise<unknown> {
@@ -246,23 +295,82 @@ const MIME: Record<string, string> = {
   ".woff2": "font/woff2",
 };
 
-function serveStatic(pathname: string, res: ServerResponse): boolean {
+function serveStatic(pathname: string, req: IncomingMessage, res: ServerResponse): boolean {
   if (!SERVE_STATIC || !existsSync(join(DIST, "index.html"))) return false;
   const safe = normalize(pathname).replace(/^(\.\.[/\\])+/, "");
   let file = join(DIST, safe);
   if (!file.startsWith(DIST)) return false;
   if (!existsSync(file) || statSync(file).isDirectory()) file = join(DIST, "index.html");
   const type = MIME[extname(file)] ?? "application/octet-stream";
-  res.writeHead(200, { "content-type": type, "cache-control": file.endsWith("index.html") ? "no-store" : "public, max-age=3600" });
-  createReadStream(file).pipe(res);
+  res.writeHead(200, {
+    ...securityHeaders(isSecure(req)),
+    "content-type": type,
+    "cache-control": file.endsWith("index.html") ? "no-store" : "public, max-age=3600",
+  });
+  // A file that vanishes mid-read (a deploy replacing dist/) ends this
+  // response, not the process.
+  createReadStream(file)
+    .on("error", () => res.destroy())
+    .pipe(res);
   return true;
 }
 
 /** The endpoints that call the provider and therefore cost money. */
 const PAID = new Set(["/api/evaluate", "/api/compare", "/api/public-context"]);
 
+/**
+ * Paid endpoints behind a feature switched off in the app. The screen hides
+ * them; the server must refuse them too, or anyone with the password could
+ * still spend money on, and send text to, a feature nobody is testing.
+ * Comparing needs a saved review, so it needs both switches.
+ */
+export function switchedOff(pathname: string): boolean {
+  if (pathname === "/api/compare") return !(FEATURES.compareRevisions && FEATURES.saveReview);
+  if (pathname === "/api/public-context") return !FEATURES.publicContextSearch;
+  return false;
+}
+
+const SWITCHED_OFF = "This feature is switched off for this round of testing.";
+
+/** The request's path, or null when the address cannot be read at all. */
+function pathOf(req: IncomingMessage): string | null {
+  try {
+    return new URL(req.url ?? "/", "http://localhost").pathname;
+  } catch {
+    return null;
+  }
+}
+
+/** Requests being worked on now, so a shutdown can wait for them. */
+let inFlight = 0;
+let shuttingDown = false;
+
 export const server = createServer(async (req, res) => {
-  const url = new URL(req.url ?? "/", "http://localhost");
+  inFlight += 1;
+  // While stopping, each reply closes its connection, so a browser holding it
+  // open for the next request cannot keep the old server alive.
+  if (shuttingDown) res.setHeader("connection", "close");
+  res.once("close", () => {
+    inFlight -= 1;
+    if (shuttingDown) setImmediate(() => server.closeIdleConnections());
+  });
+  // The safety net. A fault in one request is that request's problem: it gets
+  // an error reply and the server keeps serving everyone else.
+  try {
+    await route(req, res);
+  } catch (error) {
+    console.log(`request failed: ${error instanceof Error ? error.name : "unknown"}`);
+    if (!res.headersSent) send(res, 500, { error: "server_error", message: "Something went wrong. Try again." });
+    else res.destroy();
+  }
+});
+
+async function route(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const pathname = pathOf(req);
+  if (pathname === null) {
+    return send(res, 400, { error: "bad_request", message: "The request could not be read." });
+  }
+  const url = { pathname };
   const method = req.method ?? "GET";
   if (url.pathname === "/api/config" && method === "GET") return handleConfig(req, res);
   if (url.pathname === "/api/login" && method === "POST") return handleLogin(req, res);
@@ -273,6 +381,7 @@ export const server = createServer(async (req, res) => {
     return send(res, 401, { error: "unauthorized", message: "Enter the password to use this tool." });
   }
   if (url.pathname === "/api/usage" && method === "GET") return send(res, 200, usageToday());
+  if (switchedOff(url.pathname)) return send(res, 404, { error: "switched_off", message: SWITCHED_OFF });
   if (PAID.has(url.pathname) && method === "POST") {
     const decision = chargeOne(req);
     if (!decision.allowed) return send(res, 429, { error: "rate_limited", message: decision.message });
@@ -287,13 +396,49 @@ export const server = createServer(async (req, res) => {
   if (url.pathname === "/api/public-context" && method === "POST") return handlePublicContext(req, res);
   if (url.pathname === "/api/compare" && method === "POST") return handleCompare(req, res);
   if (url.pathname.startsWith("/api/")) return send(res, 404, { error: "not_found", message: "No such endpoint." });
-  if (method === "GET" && serveStatic(url.pathname, res)) return;
+  if (method === "GET" && serveStatic(url.pathname, req, res)) return;
   send(res, 404, { error: "not_found", message: "Not found." });
-});
+}
+
+/**
+ * How long a shutdown waits for running reviews. A review takes one to two
+ * minutes, and two attempts can take four; render.yaml gives Render's own
+ * wait the most it allows (maxShutdownDelaySeconds: 300), a little longer
+ * than this, so the process finishes on its own terms.
+ */
+export const SHUTDOWN_GRACE_MS = 290_000;
+
+/**
+ * Stop taking new work, let what is running finish, then exit. Render sends
+ * SIGTERM on every deploy and restart; without this, a push cut off every
+ * review in progress and testers saw "The server could not be reached".
+ */
+export function shutdown(signal: string, exit: (code: number) => void = (code) => process.exit(code)): void {
+  console.log(`${signal} received: finishing ${inFlight} request(s) in progress, then stopping`);
+  shuttingDown = true;
+  server.close(() => exit(0));
+  server.closeIdleConnections();
+  const deadline = setTimeout(() => {
+    console.log("shutdown grace period over; stopping");
+    exit(0);
+  }, SHUTDOWN_GRACE_MS);
+  deadline.unref();
+}
 
 if (process.argv[1] && /server\.(ts|js)$/.test(process.argv[1])) {
+  // Settings are checked once, at start. A typo in ACR_EFFORT or ACR_SPEED
+  // used to throw inside the health check on every call; now it stops the
+  // start with a plain message, and Render keeps the previous version live.
+  let c: ReturnType<typeof getEngineConfig>;
+  try {
+    c = getEngineConfig();
+  } catch (error) {
+    console.error(`Cannot start: ${error instanceof Error ? error.message : String(error)}. Fix it in the service's environment settings.`);
+    process.exit(1);
+  }
+  process.once("SIGTERM", () => shutdown("SIGTERM"));
+  process.once("SIGINT", () => shutdown("SIGINT"));
   server.listen(PORT, () => {
-    const c = getEngineConfig();
     console.log(`Trust Assessment Assistant server on http://localhost:${PORT} (provider ${c.provider}, model ${c.model}${SERVE_STATIC ? ", serving dist/" : ""})`);
     console.log(
       GATE_ENABLED

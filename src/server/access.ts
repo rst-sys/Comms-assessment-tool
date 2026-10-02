@@ -12,7 +12,7 @@
  * the process restarts, so they are a brake, not a guarantee; the hard stop is
  * the spending limit the owner sets with the provider.
  */
-import { createHash, timingSafeEqual } from "node:crypto";
+import { createHash, scryptSync, timingSafeEqual } from "node:crypto";
 import type { IncomingMessage } from "node:http";
 
 /** The password every tester types once. Unset means the gate is open, which is correct only on your own computer. */
@@ -31,18 +31,34 @@ export const TOTAL_DAILY = num(process.env.ACR_DAILY_LIMIT_TOTAL, 60);
 
 /**
  * The cookie value a browser must present. Derived from the password itself,
- * so there is no second secret to manage. Holding the cookie is equivalent to
+ * so there is no second secret to manage, and the same across restarts, so a
+ * deploy does not sign everyone out. Holding the cookie is equivalent to
  * holding the password, which is the same trust the owner already extends to
  * whoever they gave it to.
+ *
+ * A slow derivation rather than a plain hash: a cookie copied from someone's
+ * browser must not be a quick way to work out the password itself, which
+ * the owner may have used elsewhere. Worked out once per password and kept.
  */
+const tokens = new Map<string, string>();
 export function accessToken(password: string): string {
-  return createHash("sha256").update(`acr:${password}`).digest("hex");
+  let token = tokens.get(password);
+  if (!token) {
+    token = scryptSync(password, "acr-session-v2", 32).toString("hex");
+    tokens.set(password, token);
+  }
+  return token;
 }
 
+/**
+ * Constant-time comparison that also hides the length of the secret: both
+ * sides are hashed to the same length first, so a wrong guess of the wrong
+ * length takes as long to refuse as one of the right length.
+ */
 function equals(a: string, b: string): boolean {
-  const x = Buffer.from(a);
-  const y = Buffer.from(b);
-  return x.length === y.length && timingSafeEqual(x, y);
+  const x = createHash("sha256").update(a).digest();
+  const y = createHash("sha256").update(b).digest();
+  return timingSafeEqual(x, y);
 }
 
 /** True when the supplied password is the configured one. Compared in constant time. */
@@ -79,14 +95,72 @@ export function clearedCookie(secure: boolean): string {
 }
 
 /**
+ * The visitor's address, from a source the visitor cannot write.
+ *
+ * On Render every request passes through Cloudflare, which sets
+ * CF-Connecting-IP (and True-Client-IP) to the address it actually saw,
+ * replacing anything the browser sent. X-Forwarded-For is no good here:
+ * Render adds to whatever the browser supplied rather than replacing it, so
+ * its first entry is the visitor's own claim, and a new claim on every
+ * request used to mean a fresh daily allowance on every request.
+ *
+ * Anywhere else (your own computer, a plain container) there is no such
+ * proxy to trust, so the connection's own address is used.
+ */
+export function clientAddress(req: IncomingMessage, env: NodeJS.ProcessEnv = process.env): string {
+  if (env.RENDER === "true") {
+    for (const name of ["cf-connecting-ip", "true-client-ip"] as const) {
+      const value = (req.headers[name] as string | undefined)?.trim();
+      if (value) return value;
+    }
+  }
+  return req.socket.remoteAddress || "unknown";
+}
+
+/**
  * A stable, non-identifying label for one visitor, used only to keep a daily
  * count in memory. The address is hashed and never logged or stored, so the
  * counter cannot be turned back into a list of who used the tool.
  */
 export function visitorKey(req: IncomingMessage): string {
-  const forwarded = (req.headers["x-forwarded-for"] as string | undefined)?.split(",")[0]?.trim();
-  const address = forwarded || req.socket.remoteAddress || "unknown";
-  return createHash("sha256").update(`acr:${address}`).digest("hex").slice(0, 16);
+  return createHash("sha256").update(`acr:${clientAddress(req)}`).digest("hex").slice(0, 16);
+}
+
+/** Wrong passwords one visitor may try in a minute before a short pause. */
+export const LOGIN_ATTEMPTS = 5;
+export const LOGIN_WINDOW_MS = 60_000;
+export const TOO_MANY_ATTEMPTS = "Too many wrong passwords. Wait a minute, then try again.";
+
+/** Recent wrong-password times per visitor. In memory, like the daily counts. */
+const failures = new Map<string, number[]>();
+
+function recentFailures(key: string, now: number): number[] {
+  const recent = (failures.get(key) ?? []).filter((t) => now - t < LOGIN_WINDOW_MS);
+  if (recent.length > 0) failures.set(key, recent);
+  else failures.delete(key);
+  return recent;
+}
+
+/**
+ * Whether this visitor may try a password now. After LOGIN_ATTEMPTS wrong
+ * ones inside a minute they wait until the oldest drops out of the minute.
+ * Enough for a tester who mistypes; far too slow to guess a password.
+ */
+export function loginAllowed(req: IncomingMessage, now: number = Date.now()): boolean {
+  return recentFailures(visitorKey(req), now).length < LOGIN_ATTEMPTS;
+}
+
+export function recordLoginFailure(req: IncomingMessage, now: number = Date.now()): void {
+  const key = visitorKey(req);
+  const recent = recentFailures(key, now);
+  failures.set(key, [...recent, now]);
+  // A cap on visitors tracked, so a flood of addresses cannot grow memory
+  // without limit; the oldest entries go first.
+  if (failures.size > 10_000) failures.delete(failures.keys().next().value!);
+}
+
+export function clearLoginFailures(req: IncomingMessage): void {
+  failures.delete(visitorKey(req));
 }
 
 interface Counters {
@@ -161,4 +235,5 @@ export function resetCounters(): void {
   counters.day = "";
   counters.total = 0;
   counters.perVisitor.clear();
+  failures.clear();
 }

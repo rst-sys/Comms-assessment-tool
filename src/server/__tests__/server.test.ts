@@ -3,6 +3,9 @@ import { DEMO_1 } from "../../engine/fixtures.js";
 import { parseEvaluationRequest, RequestValidationError } from "../requestSchema.js";
 import { MIN_DRAFT_WORDS } from "../../engine/limits.js";
 import { server } from "../server.js";
+import { FEATURES } from "../../app/features.js";
+import { connect } from "node:net";
+import { spawnSync } from "node:child_process";
 
 describe("parseEvaluationRequest", () => {
   it("accepts a complete request", () => {
@@ -75,9 +78,51 @@ describe("server endpoints", () => {
     expect(JSON.parse(text).error).toBe("bad_request");
   });
 
-  it("rejects an empty public-context query without calling the provider", async () => {
-    const res = await fetch(`${base}/api/public-context`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "ab" }) });
-    expect(res.status).toBe(400);
+  it("refuses the public search and the comparison while their features are switched off", async () => {
+    expect(FEATURES.publicContextSearch).toBe(false);
+    for (const path of ["/api/public-context", "/api/compare"]) {
+      const res = await fetch(`${base}${path}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "a real topic" }) });
+      expect(res.status, path).toBe(404);
+      const body = await res.json();
+      expect(body.error, path).toBe("switched_off");
+      expect(body.message, path).toBe("This feature is switched off for this round of testing.");
+    }
+  });
+
+  it("rejects an empty public-context query without calling the provider, when the search is switched on", async () => {
+    FEATURES.publicContextSearch = true;
+    try {
+      const res = await fetch(`${base}/api/public-context`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query: "ab" }) });
+      expect(res.status).toBe(400);
+    } finally {
+      FEATURES.publicContextSearch = false;
+    }
+  });
+
+  it("survives a malformed address: replies bad request and keeps serving", async () => {
+    // This one request used to crash the whole process (an unreadable URL threw
+    // outside any handler). Sent raw, because fetch refuses to build it.
+    const reply = await new Promise<string>((resolve, reject) => {
+      const socket = connect(Number(new URL(base).port), "127.0.0.1", () => socket.write("GET http://[ HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n"));
+      let data = "";
+      socket.on("data", (chunk) => (data += chunk.toString()));
+      socket.on("end", () => resolve(data));
+      socket.on("error", reject);
+    });
+    expect(reply.split("\r\n")[0]).toMatch(/^HTTP\/1\.1 400/);
+    expect(reply).toContain('"bad_request"');
+    const res = await fetch(`${base}/api/config`);
+    expect(res.status).toBe(200);
+  });
+
+  it("sends the security headers on every reply, and HSTS only over HTTPS", async () => {
+    const plain = await fetch(`${base}/api/config`);
+    expect(plain.headers.get("content-security-policy")).toContain("frame-ancestors 'none'");
+    expect(plain.headers.get("x-frame-options")).toBe("DENY");
+    expect(plain.headers.get("x-content-type-options")).toBe("nosniff");
+    expect(plain.headers.get("strict-transport-security")).toBeNull();
+    const secure = await fetch(`${base}/api/nothing`, { headers: { "x-forwarded-proto": "https" } });
+    expect(secure.headers.get("strict-transport-security")).toContain("max-age=");
   });
 
   it("returns 404 JSON for the removed import endpoint", async () => {
@@ -88,5 +133,17 @@ describe("server endpoints", () => {
   it("returns 404 JSON for unknown api paths", async () => {
     const res = await fetch(`${base}/api/nothing`);
     expect(res.status).toBe(404);
+  });
+});
+
+describe("starting with a mistyped setting", () => {
+  it("stops at start with a plain message, instead of crashing on every health check", () => {
+    const run = spawnSync(process.execPath, ["--import", "tsx", "src/server/server.ts"], {
+      env: { ...process.env, ACR_SPEED: "fastest", PORT: "0" },
+      encoding: "utf8",
+      timeout: 20_000,
+    });
+    expect(run.status).toBe(1);
+    expect(run.stderr).toContain("Cannot start: ACR_SPEED must be one of standard, fast");
   });
 });

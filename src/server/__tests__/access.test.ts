@@ -1,7 +1,14 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import type { IncomingMessage } from "node:http";
+import { createHash } from "node:crypto";
 import {
   accessToken,
+  clearLoginFailures,
+  clientAddress,
+  LOGIN_ATTEMPTS,
+  LOGIN_WINDOW_MS,
+  loginAllowed,
+  recordLoginFailure,
   chargeOne,
   refundOne,
   OVER_TOTAL_LIMIT,
@@ -69,13 +76,30 @@ describe("the visitor label", () => {
     expect(visitorKey(req({}, "10.0.0.1"))).not.toContain("10.0.0.1");
   });
 
-  it("reads the forwarded address a host puts in front, taking the original client", () => {
-    const behindProxy = req({ "x-forwarded-for": "203.0.113.7, 70.41.3.18" }, "10.0.0.1");
-    expect(visitorKey(behindProxy)).toBe(visitorKey(req({}, "203.0.113.7")));
+  it("ignores X-Forwarded-For, which a visitor can write themselves", () => {
+    // Render adds to whatever the browser sends rather than replacing it, so a
+    // new made-up first entry on every request used to be a new daily allowance.
+    const spoofed = req({ "x-forwarded-for": "203.0.113.7, 70.41.3.18" }, "10.0.0.1");
+    expect(visitorKey(spoofed)).toBe(visitorKey(req({}, "10.0.0.1")));
+    expect(clientAddress(req({ "x-forwarded-for": "1.2.3.4" }, "10.0.0.1"), { RENDER: "true" })).toBe("10.0.0.1");
+  });
+
+  it("on Render, reads the address Cloudflare saw, and nowhere else trusts that header", () => {
+    const viaCloudflare = req({ "cf-connecting-ip": "203.0.113.7", "x-forwarded-for": "9.9.9.9" }, "10.0.0.1");
+    expect(clientAddress(viaCloudflare, { RENDER: "true" })).toBe("203.0.113.7");
+    expect(clientAddress(req({ "true-client-ip": "203.0.113.8" }, "10.0.0.1"), { RENDER: "true" })).toBe("203.0.113.8");
+    // Off Render nothing sets that header, so a browser could; the connection is used.
+    expect(clientAddress(viaCloudflare, {})).toBe("10.0.0.1");
   });
 });
 
 describe("the access token", () => {
+  it("is not a quick hash of the password, so a copied cookie does not give the password away", () => {
+    const quick = createHash("sha256").update("acr:copper-lantern-marsh").digest("hex");
+    expect(accessToken("copper-lantern-marsh")).not.toBe(quick);
+    expect(accessToken("copper-lantern-marsh")).toMatch(/^[0-9a-f]{64}$/);
+  });
+
   it("is derived from the password and reveals nothing about it", () => {
     expect(accessToken("copper-lantern-marsh")).toBe(accessToken("copper-lantern-marsh"));
     expect(accessToken("copper-lantern-marsh")).not.toBe(accessToken("copper-lantern-marsX"));
@@ -122,5 +146,28 @@ describe("a failed review gives its charge back", () => {
     // b still holds its charge, so its own allowance is one lower than a's.
     for (let i = 0; i < 9; i += 1) expect(chargeOne(b).allowed).toBe(true);
     expect(chargeOne(b).allowed).toBe(false);
+  });
+});
+
+describe("wrong-password pauses", () => {
+  it("allows a few mistakes, pauses after five in a minute, and lifts the pause as the minute passes", () => {
+    const visitor = req({}, "10.0.0.9");
+    const t0 = 1_000_000;
+    for (let i = 0; i < LOGIN_ATTEMPTS; i += 1) {
+      expect(loginAllowed(visitor, t0 + i)).toBe(true);
+      recordLoginFailure(visitor, t0 + i);
+    }
+    expect(loginAllowed(visitor, t0 + 10)).toBe(false);
+    // Another visitor is not affected.
+    expect(loginAllowed(req({}, "10.0.0.10"), t0 + 10)).toBe(true);
+    expect(loginAllowed(visitor, t0 + LOGIN_WINDOW_MS + 1)).toBe(true);
+  });
+
+  it("forgets the mistakes after a correct password", () => {
+    const visitor = req({}, "10.0.0.11");
+    for (let i = 0; i < LOGIN_ATTEMPTS; i += 1) recordLoginFailure(visitor, 5_000 + i);
+    expect(loginAllowed(visitor, 5_010)).toBe(false);
+    clearLoginFailures(visitor);
+    expect(loginAllowed(visitor, 5_011)).toBe(true);
   });
 });

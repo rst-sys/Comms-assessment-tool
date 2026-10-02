@@ -85,4 +85,19 @@ describe("the access gate on a running server", () => {
     });
     expect(res.status).not.toBe(401);
   });
+
+  it("pauses a visitor after five wrong passwords in a minute, with a plain message, even for the right one", async () => {
+    const { resetCounters, LOGIN_ATTEMPTS, TOO_MANY_ATTEMPTS } = await import("../access.js");
+    resetCounters();
+    const attempt = (password: string) =>
+      fetch(`${base}/api/login`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ password }) });
+    for (let i = 0; i < LOGIN_ATTEMPTS; i += 1) expect((await attempt(`guess-${i}`)).status).toBe(401);
+    const paused = await attempt("guess-again");
+    expect(paused.status).toBe(429);
+    expect((await paused.json()).message).toBe(TOO_MANY_ATTEMPTS);
+    // Checked before the password, so the pause cannot be guessed through.
+    expect((await attempt(PASSWORD)).status).toBe(429);
+    resetCounters();
+    expect((await attempt(PASSWORD)).status).toBe(200);
+  });
 });

@@ -53,6 +53,9 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
   // The settings and context of the review just shown, kept so the next draft
   // can be measured against the same situation without re-answering anything.
   const [carriedOver, setCarriedOver] = useState<EvaluationRequest | null>(null);
+  // The request a review was refused for because the sign-in had expired, kept
+  // so the intake comes back exactly as it was once the password is entered.
+  const [resumeRequest, setResumeRequest] = useState<EvaluationRequest | null>(null);
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
   const [comparisonError, setComparisonError] = useState<string | null>(null);
   const [signedIn, setSignedIn] = useState(false);
@@ -83,6 +86,7 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
     setComparisonError(null);
     try {
       const result = await evaluate(request);
+      setResumeRequest(null);
       setReview({ request, result });
       window.scrollTo({ top: 0 });
       if (baseline) {
@@ -94,6 +98,15 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
         }
       }
     } catch (e) {
+      // The sign-in has expired (or the password changed). Show the password
+      // screen, and keep the draft, the context and every answer so nothing
+      // has to be typed again. The refused call cost nothing.
+      if (e instanceof ApiError && e.status === 401 && config?.gate_enabled) {
+        setResumeRequest(request);
+        setError(null);
+        setSignedIn(false);
+        return;
+      }
       const message = e instanceof ApiError ? e.message : "The evaluation failed. Try again.";
       // Log the kind and the hashed request id only; never the draft or the response.
       console.error(`evaluation failed: ${e instanceof ApiError ? `${e.kind}${e.requestId ? ` [${e.requestId}]` : ""}` : "unknown"}`);
@@ -112,6 +125,7 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
   };
 
   const discard = () => {
+    setResumeRequest(null);
     setReview(null);
     setError(null);
     setBaseline(null);
@@ -207,8 +221,8 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
             busy={busy}
             error={error}
             onEvaluate={runEvaluation}
-            initialRequest={baseline ? baselineRequest(baseline, initialRequest) : (carriedOver ?? initialRequest)}
-            carriedOver={carriedOver !== null}
+            initialRequest={resumeRequest ?? (baseline ? baselineRequest(baseline, initialRequest) : (carriedOver ?? initialRequest))}
+            carriedOver={resumeRequest === null && carriedOver !== null}
             baseline={baseline}
             publicSearch={publicSearch}
           />

@@ -105,6 +105,59 @@ describe("App", () => {
     expect(box().checked).toBe(true);
   });
 
+  it("shows the password screen when the sign-in has expired, and gives back the intake exactly as it was", async () => {
+    let signedIn = true;
+    let evaluations = 0;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (input: RequestInfo | URL) => {
+        const url = String(input);
+        if (url.endsWith("/api/config")) {
+          return new Response(JSON.stringify({ provider: "Anthropic", model: "claude-opus-5", processing_mode: "Zero-retention API", training_term: "Not used to train models", gate_enabled: true, signed_in: signedIn }), { status: 200 });
+        }
+        if (url.endsWith("/api/login")) {
+          signedIn = true;
+          return new Response(JSON.stringify({ ok: true }), { status: 200 });
+        }
+        if (url.endsWith("/api/evaluate")) {
+          evaluations += 1;
+          // The first call finds the cookie expired; the retry after signing in works.
+          if (evaluations === 1) {
+            signedIn = false;
+            return new Response(JSON.stringify({ error: "unauthorized", message: "Enter the password to use this tool." }), { status: 401 });
+          }
+          return new Response(JSON.stringify(captured("demo1")), { status: 200 });
+        }
+        return new Response("{}", { status: 404 });
+      }),
+    );
+    vi.stubGlobal("scrollTo", vi.fn());
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
+    fillLayoffIntake();
+    fireEvent.change(screen.getByPlaceholderText(/what's confirmed so far/), { target: { value: "Board signed off on 18 September." } });
+    fireEvent.click(screen.getByRole("checkbox", { name: "Counsel has limited what this message can say" }));
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+
+    // The password screen, not an error on the intake.
+    expect(await screen.findByRole("heading", { name: "Tester access" })).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Password"), { target: { value: "copper-lantern-marsh" } });
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+
+    // Back on the intake with everything still there.
+    expect(await screen.findByLabelText("Draft text")).toBeTruthy();
+    expect((screen.getByLabelText("Draft text") as HTMLTextAreaElement).value).toBe(LONG_DRAFT);
+    expect((screen.getByPlaceholderText(/what's confirmed so far/) as HTMLTextAreaElement).value).toBe("Board signed off on 18 September.");
+    expect(chosen("What's happening?", "Layoffs or job cuts")).toBe(true);
+    expect((screen.getByRole("checkbox", { name: "Counsel has limited what this message can say" }) as HTMLInputElement).checked).toBe(true);
+    expect(screen.queryByText(/Carried over from your last review/)).toBeNull();
+    expect(screen.queryByText(/Enter the password to use this tool/)).toBeNull();
+
+    fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
+    expect(await screen.findByText("Risk level")).toBeTruthy();
+  });
+
   it("keeps the settings, the context and the draft when Review another draft is pressed", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());
