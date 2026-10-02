@@ -118,7 +118,7 @@ export function ToolOverview({ config, runtimeNote, onStandards }: Props) {
           </div>
 
           <div className="card panel-card">
-            <h3>Ten weighted dimensions</h3>
+            <h3>Ten things every draft is scored on</h3>
             <p className="muted small">{DIMENSIONS_NOTE}</p>
             <ul className="weight-bars">
               {DIMENSION_IDS.map((id, i) => (

@@ -5,6 +5,7 @@
  */
 import { Ajv } from "ajv";
 import { countWords, MIN_DRAFT_WORDS } from "../engine/limits.js";
+import { safePointer } from "../engine/safePointer.js";
 import {
   AUDIENCES,
   COMMUNICATION_EVENTS,
@@ -96,7 +97,7 @@ export class RequestValidationError extends Error {
 
 export function parseEvaluationRequest(body: unknown): EvaluationRequest {
   if (!validate(body)) {
-    throw new RequestValidationError(validate.errors?.[0]?.instancePath ?? "/");
+    throw new RequestValidationError(safePointer(validate.errors?.[0]?.instancePath ?? "", REQUEST_SCHEMA));
   }
   const request = body as EvaluationRequest;
   // The word floor, not just a non-empty string. JSON Schema counts

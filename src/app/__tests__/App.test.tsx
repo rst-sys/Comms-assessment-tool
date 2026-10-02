@@ -284,7 +284,7 @@ describe("App", () => {
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Tool Overview" }));
     expect(screen.getByRole("heading", { name: "What the assistant checks, and how it scores", level: 1 })).toBeTruthy();
-    expect(screen.getByRole("heading", { name: "Ten weighted dimensions" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Ten things every draft is scored on" })).toBeTruthy();
     expect(screen.getByText("Accountability: who decided, who owns it")).toBeTruthy();
     expect(screen.getByText(/never invents a metric/)).toBeTruthy();
     // Every section the contents list promises is on the page and linkable.

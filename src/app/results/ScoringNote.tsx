@@ -10,14 +10,16 @@ import { ceilingWithoutContext, DIMENSION_LABELS } from "../../engine/scoring.js
  *
  * The numbers are computed, not written down — the dimension count from the
  * labels and the ceiling from the weights — so the sentence cannot come to
- * claim something the scoring no longer does.
+ * claim something the scoring no longer does. The model name stays in
+ * brackets so the review records which model ran it.
  *
  * Returned as paragraphs so the page and the PDF render the same words in the
  * same order and cannot drift apart.
  */
 export function scoringNoteParagraphs(result: EvaluationResult, contextSupplied: boolean): string[] {
-  const dimensions = Object.keys(DIMENSION_LABELS).length;
-  const opening = `${result.provider.provider} (${result.provider.model}) scored this draft across ${dimensions} weighted dimensions, out of 100.`;
+  const n = Object.keys(DIMENSION_LABELS).length;
+  const dimensions = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"][n] ?? String(n);
+  const opening = `Claude, Anthropic's AI model (${result.provider.model}), scored this draft out of 100 on ${dimensions} things, some counting more than others.`;
 
   const scoring = contextSupplied
     ? `${opening} The context you supplied was weighed against the draft, so what it confirms counts as fact, not just a claim. Add more under "Anything else we should know?" for a fuller review.`

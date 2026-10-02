@@ -53,8 +53,11 @@ describe("the grammar-too-large fallback", () => {
     const log = vi.fn();
     await expect(callModel({ ...args, client: { messages: { create } } as unknown as Anthropic, log })).rejects.toThrow(/turned the request down/);
     expect(create).toHaveBeenCalledTimes(1);
-    // The reader gets plain words; the provider's own reason reaches the log.
-    expect(log.mock.calls.flat().join("\n")).toMatch(/provider error 400: .*credit balance/);
+    // The reader gets plain words; the log gets the status, code and a fixed
+    // label for the reason, never the provider's own text.
+    const logged = log.mock.calls.flat().join("\n");
+    expect(logged).toMatch(/provider error 400 invalid_request_error \(low_credit\)/);
+    expect(logged).not.toContain("credit balance");
   });
 
   it("surfaces the real error when the retry also fails", async () => {
@@ -63,7 +66,9 @@ describe("the grammar-too-large fallback", () => {
       .mockRejectedValueOnce(new Anthropic.APIError(400, { type: "error", error: { type: "invalid_request_error", message: "something else entirely" } }, "400", undefined));
     const log = vi.fn();
     await expect(callModel({ ...args, client: { messages: { create } } as unknown as Anthropic, log })).rejects.toThrow(/turned the request down/);
-    expect(log.mock.calls.flat().join("\n")).toMatch(/something else entirely/);
+    const logged = log.mock.calls.flat().join("\n");
+    expect(logged).toMatch(/provider error 400 invalid_request_error/);
+    expect(logged).not.toContain("something else entirely");
   });
 
   it("sends no enum lists to the provider, which is what caused this", async () => {

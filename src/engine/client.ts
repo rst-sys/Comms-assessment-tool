@@ -19,12 +19,9 @@ export type EngineErrorKind =
   | "validation";
 
 /**
- * The provider's own explanation of a rejected request. `error.name` is only
- * the SDK's class name ("Error"), which tells nobody anything; the useful text
- * is in the parsed body. A 400 is nearly always a fact about the account or
- * the request shape — a credit balance, a model the key cannot reach, a
- * parameter this model no longer takes — so it has to reach the operator. The
- * draft is never echoed back in these, and the text is capped regardless.
+ * The provider's own explanation of a rejected request, for recognising known
+ * reasons in code. It is free text the provider writes, so it is never logged
+ * or shown: see providerErrorSummary for what the log gets.
  */
 export function providerDetail(error: unknown): string {
   const body = (error as { error?: unknown })?.error;
@@ -38,6 +35,32 @@ export function providerDetail(error: unknown): string {
   const text = raw.replace(/\s+/g, " ").trim();
   if (!text) return "no detail given";
   return text.length > 300 ? `${text.slice(0, 300)}…` : text;
+}
+
+/** Reasons the operator needs to tell apart, matched in the provider's text and logged as fixed labels. */
+const KNOWN_PROVIDER_REASONS: [RegExp, string][] = [
+  [/credit balance/i, "low_credit"],
+  [/grammar is too large/i, "schema_too_large"],
+  [/prompt is too long/i, "prompt_too_long"],
+  [/overloaded/i, "overloaded"],
+];
+
+/**
+ * What the log may say about a rejected provider call: the status number, the
+ * provider's error code, a fixed label for a reason we recognise, and the
+ * provider's own reference. Each part is checked against a strict pattern, so
+ * nothing the provider wrote in free text — which could in principle quote the
+ * request — ever reaches the log.
+ */
+export function providerErrorSummary(error: unknown): string {
+  const e = error as { status?: unknown; error?: { error?: { type?: unknown } }; requestID?: unknown };
+  const status = typeof e?.status === "number" ? String(e.status) : "unknown";
+  const type = e?.error?.error?.type;
+  const code = typeof type === "string" && /^[a-z_]{1,40}$/.test(type) ? type : "no_code";
+  const detail = providerDetail(error);
+  const reason = KNOWN_PROVIDER_REASONS.find(([pattern]) => pattern.test(detail))?.[1];
+  const ref = typeof e?.requestID === "string" && /^req_[A-Za-z0-9]{1,64}$/.test(e.requestID) ? e.requestID : null;
+  return `provider error ${status} ${code}${reason ? ` (${reason})` : ""}${ref ? `, provider ref ${ref}` : ""}`;
 }
 
 export class EngineError extends Error {
@@ -171,9 +194,9 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
       throw new EngineError("auth", "The tool isn't set up to reach the AI service. Tell the owner.", requestId, error);
     }
     if (error instanceof Anthropic.APIError) {
-      // The reader gets plain words; the status and the provider's own detail
-      // go to the log, under the same reference number.
-      options.log?.(`[${requestId}] provider error ${error.status ?? "unknown"}: ${providerDetail(error)}`);
+      // The reader gets plain words; the status and codes go to the log,
+      // under the same reference number.
+      options.log?.(`[${requestId}] ${providerErrorSummary(error)}`);
       throw new EngineError("api", "The AI service turned the request down. Try again, or tell the owner the reference below.", requestId, error);
     }
     if (error instanceof Error && /Could not resolve authentication method/.test(error.message)) {

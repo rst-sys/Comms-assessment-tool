@@ -16,6 +16,7 @@
  */
 import { Ajv, type ErrorObject } from "ajv";
 import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
+import { safePointer } from "./safePointer.js";
 import { ANALYSIS_SCHEMA } from "./schema.js";
 import { ASSERTED_CEILING, CAPPED_WITHOUT_CONTEXT, isValidDimensionScore } from "./scoring.js";
 import {
@@ -64,7 +65,7 @@ const validateSchema = ajv.compile(ANALYSIS_SCHEMA);
 
 function describe(error: ErrorObject | undefined): { path: string; message: string } {
   if (!error) return { path: "/", message: "schema validation failed" };
-  return { path: error.instancePath || "/", message: error.message ?? "invalid" };
+  return { path: safePointer(error.instancePath, ANALYSIS_SCHEMA), message: error.message ?? "invalid" };
 }
 
 export function contextWasSupplied(context: string): boolean {

@@ -9,6 +9,7 @@ import { Ajv } from "ajv";
 import { callModel, EngineError, newRequestId, type ModelUsage } from "./client.js";
 import { getEngineConfig, type EngineConfig } from "./config.js";
 import type { EvaluationResult } from "./evaluate.js";
+import { safePointer } from "./safePointer.js";
 import { DIMENSION_LABELS } from "./scoring.js";
 import type { SavedReview } from "./savedReview.js";
 import type { EvaluationRequest } from "./types.js";
@@ -137,7 +138,7 @@ export function finishComparison(
   if (!validateSchema(raw)) {
     const e = validateSchema.errors?.[0];
     throw new EngineError("validation", "The comparison came back incomplete. Try again.", options.requestId, {
-      path: e?.instancePath ?? "/",
+      path: safePointer(e?.instancePath ?? "", COMPARE_SCHEMA),
     });
   }
   const parsed = raw as Comparison;
