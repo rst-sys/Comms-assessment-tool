@@ -2,13 +2,7 @@
  * Pure helpers for the results page. No React here so they can be unit-tested
  * without a DOM.
  */
-import { rankFindings } from "../../engine/scoring.js";
 import type { DimensionId, Finding, Severity, SpecialistReviewType } from "../../engine/types.js";
-
-/** The five highest-severity findings, in display order. */
-export function topFindings(findings: ReadonlyArray<Finding>, count = 5): Finding[] {
-  return rankFindings(findings).slice(0, count);
-}
 
 /**
  * Which review function a question names, if any (revision 21).
@@ -36,10 +30,6 @@ const REVIEW_FUNCTIONS: [SpecialistReviewType, RegExp][] = [
 /** Every review function a question names. Empty when it names none. */
 export function reviewTagsFor(question: string): SpecialistReviewType[] {
   return REVIEW_FUNCTIONS.filter(([, re]) => re.test(question)).map(([name]) => name);
-}
-
-export function specialistQuestions(questions: ReadonlyArray<string>): string[] {
-  return questions.filter((q) => reviewTagsFor(q).length > 0);
 }
 
 export const REGISTER_FILTERS = [
@@ -86,6 +76,3 @@ export function sortFindings(findings: ReadonlyArray<Finding>, sort: RegisterSor
     return cmp * sign || a.id.localeCompare(b.id);
   });
 }
-
-export const FINDING_STATUSES = ["Open", "Accepted risk", "Not applicable", "Resolved", "Needs review"] as const;
-export type FindingStatus = (typeof FINDING_STATUSES)[number];

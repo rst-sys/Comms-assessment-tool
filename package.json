@@ -22,10 +22,8 @@
     "protocols:baseline": "tsx scripts/capture-protocol-baseline.ts"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.127.0",
+    "@anthropic-ai/sdk": "^0.131.0",
     "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1",
-    "jsdom": "^30.1.0",
     "jspdf": "^4.2.1",
     "mammoth": "^1.12.3",
     "pdfjs-dist": "^6.3.289",
@@ -40,6 +38,7 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.1.0",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.1",

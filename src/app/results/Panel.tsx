@@ -20,11 +20,3 @@ export function Panel({ id, title, note, defaultOpen = false, children }: PanelP
     </details>
   );
 }
-
-/** Opens a panel by id and scrolls to it, for "one click from its rationale" links. */
-export function openPanel(id: string, scrollTo?: string) {
-  const el = document.getElementById(id);
-  if (el instanceof HTMLDetailsElement) el.open = true;
-  const target = scrollTo ? document.getElementById(scrollTo) : el;
-  target?.scrollIntoView({ behavior: "smooth", block: "start" });
-}

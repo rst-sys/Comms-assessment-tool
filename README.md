@@ -110,7 +110,7 @@ The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code
 
 ## Regenerating the prompt text
 
-`src/engine/promptText.ts` is generated from the fenced blocks under Sections 5 and 10 of `PROMPT.md`. After editing those sections, regenerate with:
+`src/engine/promptText.ts` is generated from the fenced block under Section 5 of `PROMPT.md`. After editing those sections, regenerate with:
 
 ```
 node scripts/extract-prompt.mjs

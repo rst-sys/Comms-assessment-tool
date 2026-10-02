@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { reviewTagsFor, specialistQuestions } from "../model.js";
+import { reviewTagsFor } from "../model.js";
 import { SPECIALIST_REVIEW_TYPES } from "../../../engine/types.js";
 
 /**
@@ -52,6 +52,6 @@ describe("Information security as a review function", () => {
   });
 
   it("still counts a security question as needing a specialist", () => {
-    expect(specialistQuestions(["Has the ransomware been contained?"])).toHaveLength(1);
+    expect(reviewTagsFor("Has the ransomware been contained?").length).toBeGreaterThan(0);
   });
 });

@@ -58,7 +58,6 @@ export type CommunicationEvent = (typeof COMMUNICATION_EVENTS)[number];
 
 /** The event by its label, for anything that starts from what the user picked. */
 export const EVENT_BY_LABEL: ReadonlyMap<string, EventEntry> = new Map(EVENT_TAXONOMY.map((e) => [e.label, e]));
-export const EVENT_BY_ID: ReadonlyMap<string, EventEntry> = new Map(EVENT_TAXONOMY.map((e) => [e.id, e]));
 
 /**
  * The menu, as the intake draws it: the group heading and the events under it,
@@ -438,22 +437,6 @@ export const SPECIALIST_REVIEW_TYPES = [
   "Executive",
 ] as const;
 export type SpecialistReviewType = (typeof SPECIALIST_REVIEW_TYPES)[number];
-
-/**
- * The six ways language lets responsibility disappear. The engine reads for
- * these and lets what it finds shape the findings and the scores; it no longer
- * lists them back as output, which nothing displayed. Kept as one list so the
- * prompt and the Standards Library page name the same six.
- */
-export const SCAN_CATEGORIES = [
-  "External weather",
-  "Institutional abstraction",
-  "Audience displacement",
-  "Passive accountability",
-  "Values without action",
-  "Vague action",
-] as const;
-export type ScanCategory = (typeof SCAN_CATEGORIES)[number];
 
 export const DEVILS_ADVOCATE_DISCLAIMER =
   "These are plausible audience interpretations, not statements of fact.";

@@ -125,13 +125,6 @@ export const NOT_THIS: [string, string][] = [
 
 export const NOT_THIS_CLOSE = "It's decision-support software. The judgment, and the words, stay yours.";
 
-export const NOT_THIS_SHORT: string[] = [
-  "It doesn't write for you. No drafting, no rewriting, no suggested wording.",
-  "It isn't an editor. Grammar, style and readability are outside its scope.",
-  "It isn't legal, HR or investor-relations advice, and it doesn't certify compliance.",
-  "It doesn't judge motives. It separates information that's missing from information that's false.",
-];
-
 /** Plain-language privacy points; `provider` is filled from the live configuration. */
 export function privacyPoints(provider: string | null, training: string | null): [string, string][] {
   return [

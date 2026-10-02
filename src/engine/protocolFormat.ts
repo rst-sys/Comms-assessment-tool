@@ -17,17 +17,15 @@
  * protocol already owns, must fail loudly here rather than quietly produce
  * worse reviews for months.
  */
+import { COUNTRIES, JURISDICTION_BLOCS } from "./countries.js";
 import { MAX_QUESTIONS } from "./limits.js";
 import { SYSTEM_PROMPT } from "./promptText.js";
 import {
-  COMMUNICATION_EVENTS,
+  COMMUNICATION_FORMATS,
   DIMENSION_IDS,
-  OTHER_EVENT,
-  PURPOSES,
+  ORGANIZATION_TYPES,
   SPECIALIST_REVIEW_TYPES,
-  type CommunicationEvent,
   type DimensionId,
-  type Purpose,
   type SpecialistReviewType,
 } from "./types.js";
 
@@ -335,6 +333,29 @@ export function givesWayTo(element: Pick<ProtocolElement, "superseded_by">): str
 /** The most words an overlay's instruction line may carry. */
 export const INSTRUCTION_MAX_WORDS = 60;
 
+/**
+ * Every setting name the format knows, at each level. Anything else is
+ * refused by name: a misspelt pointer ("superseeded_by") used to pass the
+ * checker and then do nothing at all, which is the worst way to fail.
+ */
+const FILE_KEYS = new Set([
+  "id", "name", "layer", "family", "trigger", "version", "status", "last_reviewed", "review_by",
+  "changelog", "rests_on", "elements", "triggers", "questions", "narrows", "instruction",
+]);
+const ELEMENT_KEYS = new Set([
+  "id", "name", "means", "weight", "dimension", "basis", "basis_note", "sources", "applies_if", "replaces", "superseded_by",
+]);
+const TRIGGER_KEYS = new Set(["check", "dimension", "review", "narrows", "superseded_by"]);
+const QUESTION_KEYS = new Set(["ask", "review"]);
+
+/** Organization types as applies_if matches them: lower case, words joined by underscores. */
+const ORG_TYPE_SLUGS = ORGANIZATION_TYPES.map((t) => t.toLowerCase().replace(/[^a-z]+/g, "_"));
+
+function unknownKeys(value: unknown, allowed: ReadonlySet<string>): string[] {
+  if (typeof value !== "object" || value === null) return [];
+  return Object.keys(value).filter((k) => !allowed.has(k));
+}
+
 const isStr = (v: unknown): v is string => typeof v === "string" && v.trim().length > 0;
 const isArr = (v: unknown): v is unknown[] => Array.isArray(v);
 
@@ -373,8 +394,22 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       err(`${field} must be a date as YYYY-MM-DD, or null. Got ${JSON.stringify(v)}`);
     }
   }
+  for (const key of unknownKeys(d, FILE_KEYS)) {
+    if (key === "events" || key === "purposes") continue; // refused below, with its own explanation
+    err(`does not understand the setting "${key}". Check the spelling; the settings are: ${[...FILE_KEYS].join(", ")}.`);
+  }
   if (!isArr(d.changelog) || d.changelog.length === 0) {
     err('needs a changelog: a list of lines, starting with the version, such as "1.0.0 — first version."');
+  } else {
+    d.changelog.forEach((line, i) => {
+      if (typeof line !== "string" || !/^\d+\.\d+\.\d+\b/.test(line)) {
+        err(`changelog line ${i + 1} must start with the version it describes, such as "1.0.0 — first version."`);
+      }
+    });
+    const first = typeof d.changelog[0] === "string" ? /^(\d+\.\d+\.\d+)/.exec(d.changelog[0])?.[1] : undefined;
+    if (first && isStr(d.version) && first !== d.version) {
+      err(`the first changelog line is for ${first} but the version is ${d.version}. Add a line for ${d.version} at the top.`);
+    }
   }
 
   if (!one(d.layer, PROTOCOL_LAYERS)) {
@@ -429,6 +464,9 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
     d.elements.forEach((raw, i) => {
       const e = raw as Record<string, unknown>;
       const at = `element ${i + 1}`;
+      for (const key of unknownKeys(e, ELEMENT_KEYS)) {
+        err(`${at} does not understand the setting "${key}". Check the spelling; an element takes: ${[...ELEMENT_KEYS].join(", ")}.`);
+      }
       if (!isStr(e.id)) err(`${at} needs an id, such as ${isStr(d.id) ? d.id : "protocol"}.what-it-checks`);
       else {
         if (seenIds.has(e.id)) err(`${at} repeats the id "${e.id}"`);
@@ -467,9 +505,32 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
       if (e.applies_if !== undefined) {
         if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
         else {
-          for (const key of Object.keys(e.applies_if)) {
+          const cond = e.applies_if as Record<string, unknown>;
+          for (const key of Object.keys(cond)) {
             if (key !== "org_type" && key !== "jurisdiction" && key !== "format" && key !== "event") {
               err(`${at} applies_if does not understand "${key}"; it takes org_type, jurisdiction, format and event`);
+            } else if (!isArr(cond[key])) {
+              err(`${at} applies_if ${key} must be a list`);
+            }
+          }
+          // A value that matches nothing switches the element off everywhere
+          // and looks exactly like an element that never fires, so each one is
+          // checked against the lists the intake actually offers. Event ids
+          // are checked against events.yaml in checkLibrary.
+          const list = (key: string): unknown[] => (isArr(cond[key]) ? (cond[key] as unknown[]) : []);
+          for (const v of list("org_type")) {
+            if (typeof v !== "string" || !ORG_TYPE_SLUGS.some((slug) => slug.includes(v.toLowerCase()))) {
+              err(`${at} applies_if org_type ${JSON.stringify(v)} matches no organization type. Use part of one of: ${ORG_TYPE_SLUGS.join(", ")}.`);
+            }
+          }
+          for (const v of list("format")) {
+            if (typeof v !== "string" || !(COMMUNICATION_FORMATS as readonly string[]).includes(v)) {
+              err(`${at} applies_if format ${JSON.stringify(v)} is not one of the formats the intake offers. Copy it exactly from the intake list.`);
+            }
+          }
+          for (const v of list("jurisdiction")) {
+            if (typeof v !== "string" || !(v in JURISDICTION_BLOCS || COUNTRIES.includes(v))) {
+              err(`${at} applies_if jurisdiction ${JSON.stringify(v)} is neither a country the intake offers nor a bloc (${Object.keys(JURISDICTION_BLOCS).join(", ")}).`);
             }
           }
         }
@@ -487,6 +548,9 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
     d.triggers.forEach((raw, i) => {
       const t = raw as Record<string, unknown>;
       const at = `trigger ${i + 1}`;
+      for (const key of unknownKeys(t, TRIGGER_KEYS)) {
+        err(`${at} does not understand the setting "${key}". Check the spelling; a trigger takes: ${[...TRIGGER_KEYS].join(", ")}.`);
+      }
       if (!isStr(t.check)) err(`${at} needs "check": what to look for, checkable by reading the draft`);
       if (!one(t.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(t.dimension)} is not one of the ten scored dimensions`);
       if (t.narrows !== undefined && !(isStr(t.narrows) && /^[a-z0-9-]+\.[\w-]+$/.test(t.narrows))) {
@@ -508,6 +572,9 @@ export function checkProtocol(file: string, data: unknown, prose: string): Check
     d.questions.forEach((raw, i) => {
       const q = raw as Record<string, unknown>;
       const at = `question ${i + 1}`;
+      for (const key of unknownKeys(q, QUESTION_KEYS)) {
+        err(`${at} does not understand the setting "${key}". A question takes ask and review.`);
+      }
       if (!isStr(q.ask)) err(`${at} needs "ask": the question itself`);
       // Contains a question mark, rather than ends with one. The rule is here
       // to stop a statement being filed as a question, and a legal question

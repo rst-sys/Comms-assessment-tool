@@ -108,7 +108,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
   };
 
   return (
-    <div className="page intake">
+    <main className="page intake">
       <header className="page-head">
         <div>
           <h1>Start a review</h1>
@@ -240,7 +240,7 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
       </div>
 
       <PrivacyPanel config={config} />
-    </div>
+    </main>
   );
 }
 

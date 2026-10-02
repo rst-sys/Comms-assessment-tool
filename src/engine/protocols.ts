@@ -25,11 +25,6 @@ export type { ProtocolFile } from "./protocolFormat.js";
 
 const ACTIVE = PROTOCOL_LIBRARY.filter((p) => p.status === "active");
 
-export const CORE_PROTOCOL: ProtocolFile | undefined = ACTIVE.find((p) => p.layer === "core");
-export const FAMILY_PROTOCOLS: ProtocolFile[] = ACTIVE.filter((p) => p.layer === "family");
-export const EVENT_PROTOCOLS: ProtocolFile[] = ACTIVE.filter((p) => p.layer === "event");
-export const OVERLAY_PROTOCOLS: ProtocolFile[] = ACTIVE.filter((p) => p.layer === "overlay");
-
 /** Every protocol the library carries, draft or not, for the Standards Library page. */
 export const PROTOCOLS: ProtocolFile[] = [...PROTOCOL_LIBRARY];
 

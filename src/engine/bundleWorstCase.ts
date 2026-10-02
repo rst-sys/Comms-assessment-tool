@@ -10,8 +10,10 @@
  * believes, and the first thing anyone does with one is raise it.
  *
  * So this enumerates. Every event, every organization type, both answers to
- * "anyone harmed", every purpose, every format, every stage, an EU and a
- * non-EU headquarters, and each audience on its own plus all of them at once —
+ * "anyone harmed", every purpose, every format, every stage, both answers to
+ * the counsel box, one place per region a check names plus one no check
+ * names (see enumerationPlaces), and each audience on its own plus all of
+ * them at once —
  * pushed through `protocolsFor` and `resolveProtocols`, the same functions a
  * review uses. No case is written down here, so none can be quietly chosen to
  * flatter the total.
@@ -23,7 +25,9 @@
  * bundleWorstCase.test.ts is what keeps that true.
  */
 import { buildProtocolBlock, PROTOCOL_RULES, protocolWordCount } from "./protocolPrompt.js";
+import { COUNTRIES, jurisdictionCountries } from "./countries.js";
 import type { ProtocolFile } from "./protocolFormat.js";
+import { PROTOCOL_LIBRARY } from "./protocolLibrary.js";
 import { resolveProtocols } from "./protocols.js";
 import { DEMOS } from "./fixtures.js";
 import {
@@ -52,10 +56,56 @@ export interface WorstCase {
   requests: number;
 }
 
-/** An EU and a non-EU headquarters, so bloc-conditional elements are exercised both ways. */
-const PLACES = ["Germany", "United States"];
+/** Where an enumerated request is: the headquarters, and the places affected. */
+interface Place {
+  headquarters: string;
+  locations: string[];
+}
+
+/**
+ * One place for every region any check names, one place no check names, and,
+ * where checks name more than one region, all of them at once, so a review
+ * spanning several regions is measured too.
+ *
+ * It used to be Germany and the United States, fixed. That was right while
+ * the only region a check named was the EU, but a UK-only or a single-state
+ * check would never have been switched on, and the budget would have been
+ * measured too low without anyone knowing.
+ */
+export function enumerationPlaces(library: readonly ProtocolFile[]): Place[] {
+  const named = [...new Set(library.flatMap((p) => p.elements.flatMap((e) => e.applies_if?.jurisdiction ?? [])))].sort();
+  // Germany for the EU, as before, so the build report reads the same.
+  const representative = (entry: string): string => {
+    const members = jurisdictionCountries(entry);
+    return members.includes("Germany") ? "Germany" : members[0]!;
+  };
+  const regional = [...new Set(named.map(representative))];
+  const covered = new Set(named.flatMap((entry) => jurisdictionCountries(entry)));
+  const elsewhere = !covered.has("United States") ? "United States" : COUNTRIES.find((c) => !covered.has(c))!;
+  const places: Place[] = [...regional, elsewhere].map((p) => ({ headquarters: p, locations: [] }));
+  if (regional.length > 1) places.push({ headquarters: regional[0]!, locations: regional.slice(1) });
+  return places;
+}
+
+/**
+ * Results by library content. Walking every intake combination takes about
+ * thirty seconds, and the build check and three tests each asked for the same
+ * answer; now the first asks and the rest are told. Keyed by the library's
+ * content rather than the array, so a freshly compiled copy of the same files
+ * finds the answer too.
+ */
+const remembered = new Map<string, WorstCase>();
 
 export function worstCase(library?: readonly ProtocolFile[]): WorstCase {
+  const key = JSON.stringify(library ?? PROTOCOL_LIBRARY);
+  const known = remembered.get(key);
+  if (known) return known;
+  const result = enumerate(library);
+  remembered.set(key, result);
+  return result;
+}
+
+function enumerate(library?: readonly ProtocolFile[]): WorstCase {
   const audienceSets: Audience[][] = [...AUDIENCES.map((a) => [a]), [...AUDIENCES]];
   const seen = new Map<string, { words: number; tokens: number; protocols: string[]; answers: string }>();
   let requests = 0;
@@ -70,7 +120,7 @@ export function worstCase(library?: readonly ProtocolFile[]): WorstCase {
         for (const purpose of PURPOSES)
           for (const communication_format of COMMUNICATION_FORMATS)
             for (const situation of SITUATION_STATUSES)
-              for (const headquarters of PLACES)
+              for (const { headquarters, locations } of enumerationPlaces(library ?? PROTOCOL_LIBRARY))
                 for (const audiences of audienceSets)
                   for (const counsel_limited of [false, true]) {
                     requests += 1;
@@ -83,6 +133,7 @@ export function worstCase(library?: readonly ProtocolFile[]): WorstCase {
                       people_at_risk,
                       audiences,
                       counsel_limited,
+                      locations,
                       organization: { type, headquarters },
                     };
                     const { protocols } = resolveProtocols(request, library);
@@ -97,7 +148,7 @@ export function worstCase(library?: readonly ProtocolFile[]): WorstCase {
                       tokens: Math.ceil(text.length / CHARS_PER_TOKEN),
                       protocols: protocols.map((p) => p.id),
                       answers:
-                        `${communication_event} · ${type} · ${headquarters} · ${communication_format} · ` +
+                        `${communication_event} · ${type} · ${[headquarters, ...locations].join(" + ")} · ${communication_format} · ` +
                         `${purpose} · ${situation} · anyone harmed: ${people_at_risk ? "yes" : "no"} · ` +
                         `audiences: ${audiences.length === AUDIENCES.length ? "all" : audiences.join(", ")} · ` +
                         `counsel limited: ${counsel_limited ? "yes" : "no"}`,

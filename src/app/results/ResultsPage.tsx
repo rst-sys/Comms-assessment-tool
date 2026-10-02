@@ -5,7 +5,6 @@ import { ApiError, saveFile } from "../api.js";
 import { ComparisonPanel } from "./ComparisonPanel.js";
 import { Findings } from "./Findings.js";
 import { COMING_SOON, FEATURES } from "../features.js";
-import { buildReviewPdf, reviewPdfFilename } from "./pdf.js";
 import type { EvaluationResult } from "../../engine/evaluate.js";
 import type { EvaluationRequest } from "../../engine/types.js";
 import { PrivacyPanel, type PrivacyConfig } from "../PrivacyPanel.js";
@@ -79,6 +78,9 @@ export function ResultsPage({ result, request, config = null, onDiscard, onRevie
     setSaving(true);
     setSaveStatus(null);
     try {
+      // Loaded on the first click rather than with the page: the PDF maker is
+      // about a third of the app's size, and most visits never download one.
+      const { buildReviewPdf, reviewPdfFilename } = await import("./pdf.js");
       const doc = buildReviewPdf(result, request);
       const blob = doc.output("blob");
       await saveFile(reviewPdfFilename(request), blob);

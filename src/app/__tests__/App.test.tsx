@@ -158,6 +158,19 @@ describe("App", () => {
     expect(await screen.findByText("Risk level")).toBeTruthy();
   });
 
+  it("moves focus to the new screen's heading when the screen changes", async () => {
+    vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
+    vi.stubGlobal("scrollTo", vi.fn());
+    await renderApp();
+    fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
+    expect(await screen.findByText("Anthropic · claude-opus-5")).toBeTruthy();
+    const h1 = () => document.querySelector("main h1");
+    expect(document.activeElement).toBe(h1());
+    fireEvent.click(screen.getByRole("button", { name: "Standards Library" }));
+    expect(document.activeElement).toBe(h1());
+    expect(document.activeElement?.textContent).toBe("What every draft is measured against");
+  });
+
   it("keeps the settings, the context and the draft when Review another draft is pressed", async () => {
     vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify(captured("demo1")), { status: 200 })));
     vi.stubGlobal("scrollTo", vi.fn());

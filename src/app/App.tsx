@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { EvaluationResult } from "../engine/evaluate.js";
 import type { EvaluationRequest } from "../engine/types.js";
 import type { ComparisonResult } from "../engine/compare.js";
@@ -60,6 +60,26 @@ export function App({ initialRequest, publicSearch = true, runtimeNote }: AppOpt
   const [comparisonError, setComparisonError] = useState<string | null>(null);
   const [signedIn, setSignedIn] = useState(false);
   const [configLoaded, setConfigLoaded] = useState(false);
+
+  // When the screen changes, move focus to its heading. Without this the
+  // focus stayed on the button just pressed, or fell back to the page, and a
+  // screen reader said nothing about the new screen. Not on the first screen:
+  // there the browser's own start is right.
+  const screenKey = `${signedIn}|${welcomeDone}|${view}|${review ? "results" : "intake"}`;
+  const firstScreen = useRef(true);
+  useEffect(() => {
+    if (!configLoaded) return;
+    if (firstScreen.current) {
+      firstScreen.current = false;
+      return;
+    }
+    // The password screen puts the cursor in the password box itself.
+    if (!signedIn) return;
+    const heading = document.querySelector<HTMLHeadingElement>("main h1");
+    if (!heading) return;
+    if (!heading.hasAttribute("tabindex")) heading.setAttribute("tabindex", "-1");
+    heading.focus({ preventScroll: true });
+  }, [screenKey, configLoaded, signedIn]);
 
   useEffect(() => {
     let cancelled = false;

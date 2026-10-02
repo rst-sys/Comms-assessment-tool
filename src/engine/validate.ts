@@ -6,13 +6,13 @@
  *      the error carries only the instance path, never the response body.
  *   2. Structural constraints the schema cannot express: exactly ten
  *      dimensions with the ten ids, scores in 0.5 steps, exactly five
- *      personas, five to twelve questions, three strongest elements and
- *      three priority improvements, excerpt and omission never both null.
+ *      personas, a count of questions (fewer than five is recorded, not
+ *      refused), three strongest elements and three priority improvements,
+ *      excerpt and omission never both null.
  *   3. Findings whose excerpt is not verbatim in the draft are dropped and
- *      counted. Agency-scan phrases that are not in the draft are dropped
- *      too, because the results page highlights them in the draft.
- *   4. Readiness is never "Ready with minor edits" while any finding needs
- *      specialist review; context_supplied reflects what was actually sent.
+ *      counted, and any past the cap are trimmed from the end.
+ *   4. context_supplied reflects what was actually sent, and the specialist
+ *      review summary includes every type a kept finding names.
  */
 import { Ajv, type ErrorObject } from "ajv";
 import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
@@ -197,13 +197,9 @@ export function validateAnalysis(raw: unknown, draft: string, context: string): 
   // Enforced here as well as asked for in the prompt: a protocol must never be
   // able to lengthen the page, or the wait, by talking the model past the cap.
   // Applied before everything downstream, so a trimmed finding cannot leave a
-  // scan phrase pointing at nothing or name a specialist review with no
-  // finding behind it.
+  // specialist review with no finding behind it.
   const trimmedFindings = Math.max(0, verified.length - MAX_FINDINGS);
   const findings = trimmedFindings > 0 ? verified.slice(0, MAX_FINDINGS) : verified;
-
-  // Readiness rule, enforced in code.
-  const specialistNeeded = findings.some((f) => f.specialist_review_needed);
 
   // Context flag reflects what the request actually carried.
   const contextSupplied = contextWasSupplied(context);

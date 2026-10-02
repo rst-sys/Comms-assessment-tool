@@ -14,7 +14,6 @@ import { join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { parse as parseYaml } from "yaml";
 import {
-  PROTOCOL_CAPS,
   checkLibrary,
   checkProtocol,
   protocolWordBudget,

@@ -4,7 +4,7 @@ import { compile, readSourceIds, render, splitFrontMatter } from "../../../scrip
 import { checkLibrary, checkProtocol, PROTOCOL_CAPS, protocolWordBudget, TRIGGER_CAPS } from "../protocolFormat.js";
 import { buildProtocolBlock, protocolWordCount } from "../protocolPrompt.js";
 import { PROTOCOL_LIBRARY } from "../protocolLibrary.js";
-import { worstCase } from "../bundleWorstCase.js";
+import { enumerationPlaces, worstCase } from "../bundleWorstCase.js";
 import { activeTriggers } from "../protocols.js";
 import { DEMOS } from "../fixtures.js";
 import { AUDIENCES, COMMUNICATION_EVENTS, EMPLOYEE_AUDIENCES, SPECIALIST_REVIEW_TYPES } from "../types.js";
@@ -87,6 +87,31 @@ describe("the checker", () => {
 
   it("passes a well-formed protocol", () => {
     expect(checkProtocol("f.md", good, prose)).toEqual([]);
+  });
+
+  // The eight mistakes from the code review. Seven used to pass silently.
+  const element = good.elements[0]!;
+  const trigger = good.triggers[0]!;
+  it.each([
+    ["a misspelt give-way link on an element", { ...good, elements: [{ ...element, superseeded_by: "apology.direct-regret" }] }, 'does not understand the setting "superseeded_by"'],
+    ["a misspelt link on a trigger", { ...good, triggers: [{ ...trigger, narrow: "core.central_fact_first" }] }, 'does not understand the setting "narrow"'],
+    ["a misspelt whole-file setting", { ...good, instructions: "Never do X." }, 'does not understand the setting "instructions"'],
+    ["a format the intake does not offer", { ...good, elements: [{ ...element, applies_if: { format: ["Press relase"] } }] }, 'format "Press relase" is not one of the formats'],
+    ["a jurisdiction that matches nothing", { ...good, elements: [{ ...element, applies_if: { jurisdiction: ["Untied States"] } }] }, 'jurisdiction "Untied States" is neither a country'],
+    ["an organization type that matches nothing", { ...good, elements: [{ ...element, applies_if: { org_type: ["charity_trust"] } }] }, 'org_type "charity_trust" matches no organization type'],
+    ["an element with an empty meaning", { ...good, elements: [{ ...element, means: "   " }] }, 'needs "means"'],
+    ["a changelog line that does not start with the version", { ...good, changelog: ["first version"] }, "changelog line 1 must start with the version"],
+  ])("refuses %s", (_label, data, message) => {
+    expect(messages(data)).toContain(message);
+  });
+
+  it("refuses a version bump with no changelog line for it", () => {
+    expect(messages({ ...good, version: "1.1.0" })).toContain("the first changelog line is for 1.0.0 but the version is 1.1.0");
+  });
+
+  it("accepts the condition values the intake really offers", () => {
+    const ok = { ...good, elements: [{ ...element, applies_if: { format: ["Press release or public statement"], jurisdiction: ["EU", "United States"], org_type: ["listed"] } }] };
+    expect(checkProtocol("f.md", ok, prose)).toEqual([]);
   });
 
   it("names a dimension that does not exist, rather than silently ignoring it", () => {
@@ -383,5 +408,26 @@ describe("evidence labels", () => {
       expect(e.basis_note, `${e.id} rests on law and must say how far that reaches`).toBeTruthy();
       expect(e.basis_note!.trim().split(/\s+/).length, e.id).toBeGreaterThan(5);
     }
+  });
+});
+
+describe("the places the budget check tries", () => {
+  it("is Germany and the United States today, because the EU is the only region a check names", () => {
+    expect(enumerationPlaces(PROTOCOL_LIBRARY)).toEqual([
+      { headquarters: "Germany", locations: [] },
+      { headquarters: "United States", locations: [] },
+    ]);
+  });
+
+  it("adds a place for any new region a check names, and all regions at once", () => {
+    const withUk = PROTOCOL_LIBRARY.map((p, i) =>
+      i === 0 ? { ...p, elements: [...p.elements, { ...p.elements[0]!, id: `${p.id}.uk-only`, applies_if: { jurisdiction: ["UK"] } }] } : p,
+    );
+    expect(enumerationPlaces(withUk)).toEqual([
+      { headquarters: "Germany", locations: [] },
+      { headquarters: "United Kingdom", locations: [] },
+      { headquarters: "United States", locations: [] },
+      { headquarters: "Germany", locations: ["United Kingdom"] },
+    ]);
   });
 });
