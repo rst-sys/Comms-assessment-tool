@@ -3,11 +3,12 @@ id: ceo-departure
 name: CEO or senior-leader departure
 layer: event
 family: leadership
-version: 1.3.0
+version: 1.3.1
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.3.1 (2026-10-02): opening description added or reworded in plain English; no check changed."
   - "1.3.0 (2026-09-27): refresh after the Leadership family went live. Removed the trigger on no one holding authority (the element covers it). Back to six triggers."
   - "1.2.0 (2026-09-26): new trigger for thanking or praising a leader who left after a misconduct investigation without acknowledging the finding (basis: the Wells Fargo report's documented gap between a board's finding and its public statement)."
   - "1.1.1 — Evidence labels added; no check changed."
@@ -122,6 +123,10 @@ narrows:
   - plain-naming
 
 ---
+
+## What this protocol is
+
+Checks a message announcing that a CEO or senior leader is leaving. It adds checks the Leadership family doesn't have: what kind of departure it is; the reason, or a plain statement that the reason isn't being given; when the decision was made and when it takes effect; the organization speaking in its own voice; any separation terms; what happens to the leader's commitments; and whether other news is burying the announcement. Where it overlaps the Leadership family, for example on who holds the role now, its own check is used. When counsel has limited what can be said, its check on the reason is used instead of the Legal constraints check on saying there is a limit.
 
 ## What this protocol narrows
 

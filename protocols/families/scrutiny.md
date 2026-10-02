@@ -2,13 +2,14 @@
 id: scrutiny
 name: Public scrutiny and reputation
 layer: family
-version: 0.1.1
+version: 0.1.2
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   Research consensus on correcting false claims, EU and NYSE rules on rumours about listed companies, the SEC rule on shareholder campaigns, and a large study of online backlash.
 changelog:
+  - "0.1.2 (2026-10-02): opening description added or reworded in plain English; no check changed."
   - "0.1.1 (2026-09-26): after the duplicate check, the trigger on opening with the false claim narrows the core check on the central fact; the conditional-regret trigger gives way to the Apology overlay's sharper check when that overlay applies."
   - "0.1.0 (2026-09-26): first draft from the Public scrutiny family source review."
 
@@ -78,7 +79,7 @@ questions:
 
 The shared checks for every event in the Public scrutiny family: backlash to something the organization said or did; rumours or misinformation about it; and pressure from activists, campaigners or investors. None of these events has its own protocol.
 
-*No denial of what is true* is a sharper form of the core protocol's *Estimates marked as estimates*: where both fire, the tool raises one finding. Where the user's purpose is to apologize, the Apology overlay's checks on regret also apply.
+*No denial of what is true* is a sharper form of the core protocol's *Estimates marked as estimates*: where both fire, the tool raises one finding. When you are writing to apologize, the Apology overlay also applies, and its checks on regret are used instead of this family's.
 
 ## Source
 

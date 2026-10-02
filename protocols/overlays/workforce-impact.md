@@ -4,13 +4,14 @@ name: Workforce impact
 layer: overlay
 # rule: event in [layoffs, restructuring, site-closure] OR (event in [financial-difficulty, strategy-market-exit, merger-acquisition] AND audiences include an Employees option)
 trigger: workforce-impact
-version: 0.3.3
+version: 0.3.4
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   EU collective-redundancy and consultation directives and US WARN rules, which govern formal notices; applying their content to employee messages is professional judgement.
 changelog:
+  - "0.3.4 — opening description added or reworded in plain English; no check changed."
   - "0.3.3 — also replaces the Commercial family's employee check"
   - "0.3.2 — replaces the Workforce family's equivalent elements"
   - "0.3.1 — basis notes moved into the file"
@@ -112,6 +113,8 @@ questions:
 ## What this overlay does
 
 It carries the checks every job-affecting decision needs, whatever the event: whether the decision is final, who is affected, how people were chosen, how and when each person hears, and what can still change. They were written for the workforce-reduction protocol and are moved here word for word, so they also apply to site closures, and to cost-cutting, market exits and mergers when employees are an audience.
+
+For a merger, the Merger protocol's check on where the deal stands is used instead of 'Decision status'. Where this overlay and the Workforce or Commercial family check the same thing, only this overlay's check is used.
 
 ## Source
 

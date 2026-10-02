@@ -2,13 +2,14 @@
 id: commercial
 name: Commercial and financial decisions
 layer: family
-version: 0.2.1
+version: 0.2.2
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   US rules on forecasts by listed companies, EU telecoms rules on contract changes and EU takeover rules on informing employees; each narrow, applied more widely as professional judgement.
 changelog:
+  - "0.2.2 (2026-10-02): opening description added or reworded in plain English; no check changed."
   - "0.2.1 (2026-09-26): What a deal means for employees applies to mergers, acquisitions and sales only; it was being sent on price, profit-warning and other drafts where it has nothing to check."
   - "0.2.0 (2026-09-26): after a dry run on two merger memos, the business-as-usual trigger no longer fires on statements limited to the period before closing (which are accurate), only when unlimited or used in place of saying what isn't known about jobs or service afterwards."
   - "0.1.0 (2026-09-26): first draft from the Commercial family source review."
@@ -60,7 +61,7 @@ questions:
 
 ## What this protocol is
 
-The shared checks for every event in the Commercial family: mergers, acquisitions and sales; profit warnings; price increases or changes to terms; financial difficulty or cost-cutting; and changes of strategy or market exits. None of these events has its own protocol.
+The shared checks for every event in the Commercial family: mergers, acquisitions and sales; profit warnings; price increases or changes to terms; financial difficulty or cost-cutting; and changes of strategy or market exits. Mergers, acquisitions and sales also have their own protocol, which checks that the message doesn't act as if the deal has already closed.
 
 *Forecasts with their assumptions* is a sharper form of the core protocol's *Estimates marked as estimates*: where both fire, the tool raises one finding. Where the Workforce impact overlay also applies (a merger, cost-cutting or exit addressed to employees), its *Scope of impact* replaces *What a deal means for employees*.
 

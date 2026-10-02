@@ -3,11 +3,12 @@ id: cyber-incident
 name: Cyber incident and data breach
 layer: event
 family: incident
-version: 1.1.2
+version: 1.1.3
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.3 — opening description added or reworded in plain English; no check changed."
   - "1.1.2 — replaces the Incident family's equivalent element"
   - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — the categorical-outcome trigger now narrows core.estimates_as_estimates, and support matched to harm replaces the people-harmed overlay's general support element. No check reworded."
@@ -110,6 +111,10 @@ questions:
     review: [HR]
 
 ---
+
+## What this protocol is
+
+Checks a message about a cyber attack or data breach. It adds checks the Incident family doesn't have: what kind of exposure it was and which data was involved; what is being done now; support that fits the data involved; how to tell a real notice from a fake one; and care before naming an attacker or blaming a supplier. Where it overlaps the Incident family or the People harmed overlay, its own check is used. It also flags flat claims such as 'no data was taken' while that is still being checked.
 
 ## 3. Source
 Professional judgment, informed by the following. Each was read as a fetched summary, not full text.

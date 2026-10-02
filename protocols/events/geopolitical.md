@@ -3,11 +3,12 @@ id: geopolitical
 name: Geopolitical event affecting operations or employee welfare
 layer: event
 family: external
-version: 1.1.2
+version: 1.1.3
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.1.3 — opening description added or reworded in plain English; no check changed."
   - "1.1.2 — replaces the External family's two general checks with its own versions"
   - "1.1.1 — Evidence labels added; no check changed."
   - "1.1.0 — narrows core.central_fact_first, replacing the dead plain-naming pointer. Danger and protective steps now replaces the people-harmed overlay's general version. No check reworded."
@@ -135,6 +136,10 @@ narrows:
   - core.central_fact_first
 
 ---
+
+## What this protocol is
+
+Checks a message about a war, sanctions or unrest that affects the organization's work or people. It adds checks the External family doesn't have: what the organization had to do and what it chose to do; which decisions are still open; staff affected by the conflict in different ways; a way for people to report their own situation; and when the position will be looked at again. Where it overlaps the External family or the People harmed overlay, its own check is used. It also checks more closely that the main fact comes first.
 
 ## Source
 

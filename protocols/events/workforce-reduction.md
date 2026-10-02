@@ -3,11 +3,12 @@ id: workforce-reduction
 name: Workforce reduction and restructuring
 layer: event
 family: workforce
-version: 2.0.1
+version: 2.0.2
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "2.0.2 — opening description added or reworded in plain English; no check changed."
   - "2.0.1 — Evidence labels added; no check changed."
   - "2.0.0 — five elements, four triggers and three questions moved to the workforce-impact overlay, which applies them to every job-affecting event. The euphemism trigger now narrows core.central_fact_first."
   - "1.0.0 — moved into the layered framework. Checks, triggers and questions unchanged."
@@ -64,6 +65,10 @@ questions:
     review: [HR]
 
 ---
+
+## What this protocol is
+
+Checks a message about layoffs, a restructuring or a site closure. It adds three checks: support for the people leaving; what changes for the people who stay; and whether leaders share the cost. The checks every decision affecting jobs needs (whether the decision is final, who is affected, how people were chosen, notice and terms, and what can still change) are in the Workforce impact overlay, which applies alongside it. It also flags a message that never says plainly that jobs are ending.
 
 ## 3. Source
 

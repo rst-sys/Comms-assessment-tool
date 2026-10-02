@@ -3,11 +3,12 @@ id: apology
 name: Public apology
 layer: overlay
 trigger: apology
-version: 1.0.3
+version: 1.0.4
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.0.4 — opening description added or reworded in plain English; no check changed."
   - "1.0.3 — The trigger \"No sentence says the organization or a named leader is responsible\" gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
   - "1.0.2 — Acknowledged responsibility gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
   - "1.0.1 — Evidence labels added; no check changed."
@@ -94,6 +95,10 @@ questions:
     review: [Legal]
 
 ---
+
+## What this overlay is
+
+Applies when the main purpose of the draft is to apologize, whatever happened. It checks for what makes an apology believable: taking responsibility, offering to put things right, saying sorry directly, rejecting what went wrong, and not asking too much of the audience. Where it overlaps the Public scrutiny family or the Crisis in progress overlay, its own checks are used. When counsel has limited what can be said, its responsibility checks are replaced by the Legal constraints check, which asks for responsibility as far as the limit allows.
 
 ## 3. Source
 

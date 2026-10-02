@@ -3,13 +3,14 @@ id: change-readiness
 name: Change readiness
 layer: overlay
 trigger: change-readiness
-version: 0.3.0
+version: 0.3.1
 status: active
 last_reviewed: 2026-09-27
 review_by: 2027-03-27
 rests_on: >-
   Research on the five beliefs that decide whether employees are ready for change (Armenakis and colleagues), with field and meta-analytic support for information, confidence and explanation.
 changelog:
+  - "0.3.1 (2026-10-02): opening description added or reworded in plain English; no check changed."
   - "0.3.0 (2026-09-28): after the duplicate check, each element cut to what the framework and other protocols don't already ask. Why this change: the choice over alternatives only, giving way to Workforce impact's Selection basis and alternatives when both apply. Leaders' commitment renamed What is different this time. Gains and losses: the honest balance only. Able to make the change and its trigger moved to stakeholder respect."
   - "0.2.0 (2026-09-28): wording tightened to save space in the prompt, before going live; no check added or removed."
   - "0.1.0 (2026-09-27): first draft from the Change readiness source review."
@@ -69,6 +70,8 @@ questions:
 ## What this overlay is
 
 Checks for any message asking employees to make a change: a restructuring or reorganization, a major policy change, a new or updated strategy, or a merger or acquisition. It adds what the Workforce family, the Workforce impact overlay and the framework don't cover: why *this* change, whether people will be able to make it, whether leaders are visibly committed, and an honest account of what people gain and lose.
+
+When the Workforce impact overlay also applies, its check on how the choice was made, and what else was considered, is used instead of this overlay's 'Why this change, rather than another'.
 
 It doesn't repeat what the others check: what changes and when (Workforce family), whether the decision is final and what can still be influenced (Workforce impact overlay), consultation and bargaining (Workforce family), or why change is needed at all (the framework's causation dimension).
 
