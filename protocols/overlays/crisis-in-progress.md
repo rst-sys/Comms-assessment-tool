@@ -3,13 +3,14 @@ id: crisis-in-progress
 name: Crisis in progress
 layer: overlay
 trigger: crisis-in-progress
-version: 0.3.1
+version: 0.3.2
 status: active
 last_reviewed: 2026-09-28
 review_by: 2027-03-28
 rests_on: >-
   Communicators' codes on correcting errors, research on repairing trust after evidence emerges, and the field's main crisis theory on matching the response to responsibility.
 changelog:
+  - "0.3.2 (2026-10-02): the description says which checks the responsibility check gives way to; no check changed."
   - "0.3.1 (2026-09-29): the responsibility check also gives way to the Legal constraints overlay's \"The limit covers only what it has to\", as an explicit link; wording unchanged."
   - "0.3.0 (2026-09-28): after the duplicate check, the responsibility check shortened and no longer asks what will be done to put things right (the Incident family's remedy check and the framework cover that); it gives way to the Apology overlay's responsibility check when both apply."
   - "0.2.0 (2026-09-28): the responsibility check accepts, where the context shows counsel has limited admissions, a plain account of what the organization is doing to put things right without admitting fault; the denial-and-apology trigger no longer treats a declared legal constraint as denial."
@@ -56,6 +57,8 @@ questions:
 ## What this overlay is
 
 Checks for any message sent while a crisis is still unfolding, whatever the event. It adds what single-message checks can't see: whether an update corrects what went before, and whether the response fits the organization's share of responsibility.
+
+Its responsibility check gives way to the Apology overlay's "Acknowledged responsibility" when the author is apologizing, and to Legal constraints' "The limit covers only what it has to" when counsel has limited what can be said.
 
 It doesn't repeat what others check: what is known and not yet known (core protocol), harm and support (People harmed overlay), remedies (Incident family), apology wording (Apology overlay), or what is alleged versus established (Allegations family).
 
