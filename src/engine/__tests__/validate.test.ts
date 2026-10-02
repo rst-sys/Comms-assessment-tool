@@ -216,11 +216,10 @@ describe("personas with nothing in them", () => {
 });
 
 describe("what a failed review tells the tester", () => {
-  it("names the field in the error that reaches the browser, and no draft text", () => {
-    // The server used to replace all four format errors with one sentence, so
-    // a tester could report a reference number and nothing else, and every
-    // failure cost a trip to the service log. The path is a JSON pointer and
-    // the facts beside it are structural, so it is safe to show.
+  it("gives the browser plain words, with no field path and no draft text", () => {
+    // The field path used to travel with the message. The owner chose plain
+    // words for the reader instead (2 October 2026); the path still reaches
+    // the service log under the same reference number (see evaluate.test.ts).
     const bad = sampleAnalysis();
     bad.devils_advocate.personas = bad.devils_advocate.personas.slice(0, 3);
     try {
@@ -233,7 +232,7 @@ describe("what a failed review tells the tester", () => {
     } catch (error) {
       expect(error).toBeInstanceOf(EngineError);
       const message = (error as EngineError).message;
-      expect(message).toContain("/devils_advocate/personas");
+      expect(message).toBe("The review came back incomplete. Try again.");
       expect(message).not.toContain(SAMPLE_DRAFT.slice(0, 30));
     }
   });

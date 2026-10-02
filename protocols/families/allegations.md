@@ -2,13 +2,14 @@
 id: allegations
 name: Allegations and misconduct
 layer: family
-version: 0.2.2
+version: 0.2.3
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   EU and US law protecting whistleblowers, the EU presumption of innocence (binding on authorities, applied by analogy), US prosecutors' criteria for internal investigations, and research on denial after trust violations.
 changelog:
+  - "0.2.3 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.2.2 (2026-09-28): body only. Data protection for allegations is now marked not covered; it pointed at a Personal data overlay that will not be built. No element, trigger or question changed."
   - "0.2.1 (2026-09-26): Steps taken while the matter is open now checks only that interim steps aren't presented as a finding; asking for specific, owned, timed action is already in the framework prompt. rests_on and one basis note trimmed to the word caps."
   - "0.2.0 (2026-09-26): after a dry run on two memos, the 'baseless' trigger also covers vouching for the accused while the matter is open; the 'take very seriously' trigger also fires beside a dismissal of the allegations; 'Who is finding out' names the court or regulator as the reviewer for lawsuits and regulatory action."
@@ -81,7 +82,7 @@ questions:
 
 The shared checks for every event in the Allegations family: allegations against a leader; harassment, discrimination or culture allegations; fraud or financial misconduct; and investigations, lawsuits or regulatory action. None of these events has its own protocol.
 
-*What is alleged, and what is established* is a sharper form of the core protocol's *Estimates marked as estimates*: where both fire, the tool raises one finding. Where people have been harmed, the People harmed overlay applies as usual. Where an allegation has led to a leader's exit and the user files the message as a departure, the CEO departure protocol applies instead of this family.
+Its check on what is alleged and what is established goes further than the core check on marking estimates; where both apply, they're reported as one point. Where people have been harmed, the People harmed overlay applies as usual. Where an allegation has led to a leader's exit and the user files the message as a departure, the CEO departure protocol applies instead of this family.
 
 ## Source
 

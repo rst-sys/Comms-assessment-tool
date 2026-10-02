@@ -134,7 +134,7 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
 
   w.heading("Executive summary", 15);
   if (s.headline) w.heading(s.headline, 13);
-  w.label("Accountable Communication Score");
+  w.label("Trust score");
   w.paragraph(`${result.score} / 100 — ${result.band}`, 12, 0, "bold");
   w.label("Risk level");
   w.paragraph(s.risk_level);
@@ -144,16 +144,16 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.paragraph(HEIGHTENED_NOTICE, 9.5);
   }
   if (request.already_published) {
-    w.label("Retrospective");
+    w.label("Status");
     w.paragraph("Already issued", 10.5, 0, "bold");
   }
   if (request.audience_documents?.length) {
-    w.label("Audience context considered");
+    w.label("Documents considered");
     w.bullets(request.audience_documents.map((d) => `${KIND_LABEL[d.kind]}: ${d.title}${d.description ? ` — ${d.description}` : ""} (${d.delivery || "delivery not described"}; ${REACH_LABEL[d.reach].toLowerCase()}${d.kind === "supporting" ? (d.same_time ? "; same time" : "; later") : ""})`));
   }
-  w.label("Strongest elements");
+  w.label("What works well");
   w.bullets(s.strongest_elements);
-  w.label("Priority improvements");
+  w.label("What to improve first");
   w.bullets(s.priority_improvements);
 
   w.label("How the scoring works");
@@ -179,12 +179,12 @@ export function buildReviewPdf(result: EvaluationResult, request: EvaluationRequ
     w.paragraph(f.finding, 10.5, 0, "bold");
     w.label("Ways to fix this");
     w.paragraph(f.recommended_action);
-    w.paragraph(`Fact validation: ${f.fact_validation_needed ? "needed" : "not flagged"} · Specialist review: ${f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}`, 9);
+    w.paragraph(`Facts to check: ${f.fact_validation_needed ? "yes" : "no"} · Specialist to involve: ${f.specialist_review_needed ? f.specialist_review_type ?? "yes" : "no"}`, 9);
   }
 
   w.pageBreak();
   w.heading("Devil's Advocate: how skeptical audiences may read this", 15);
-  w.label("Most damning interpretation if issued as is");
+  w.label("The worst reasonable reading if it goes out as it is");
   w.paragraph(a.devils_advocate.most_damaging_interpretation, 10.5, 0, "bold");
   w.paragraph(a.devils_advocate.disclaimer, 9.5, 0, "italic");
   for (const p of a.devils_advocate.personas) {

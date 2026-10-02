@@ -2,13 +2,14 @@
 id: workforce
 name: Workforce and organization change
 layer: family
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   EU working-conditions and consultation directives, the US National Labor Relations Act and EEOC disability guidance, applied to workforce messages; where they don't reach, professional judgement.
 changelog:
+  - "0.2.1 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.2.0 (2026-09-25): refined after a dry run on two return-to-office memos. Exempt-groups check no longer penalizes silence about leadership (moved to a question); new trigger for a generic talk-to-your-manager route."
   - "0.1.0 (2026-09-25): first draft from the Workforce family source review."
 
@@ -69,13 +70,7 @@ questions:
 
 The shared checks for every event in the Workforce family: layoffs, restructuring, site closures, major policy changes (such as return to office or benefits) and strikes or labor disputes. It matters most for policy changes and labor disputes, which have no event protocol.
 
-Where the Workforce impact overlay also applies (layoffs, restructuring, site closures), its more specific elements replace this family's equivalents, so the same gap isn't checked twice:
-
-- Workforce impact's *Individual notice, timing and terms* replaces *What changes, and from when*.
-- Workforce impact's *Scope of impact* replaces *Who it applies to, and who is exempt*.
-- Workforce impact's *Voice and what can still change* replaces *Bargaining and consultation status*.
-
-*A route for individual circumstances* applies to every event in the family.
+For layoffs, restructuring and site closures, the Workforce impact overlay also applies, and its more detailed checks are used instead of three of this family's: notice, timing and terms; who is affected; and what can still change. The check on a route for individual circumstances applies to every event in the family.
 
 ## Source
 

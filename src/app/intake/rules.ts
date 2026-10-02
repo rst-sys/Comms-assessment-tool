@@ -253,9 +253,9 @@ export const TOO_SHORT_WARNING = `Paste at least ${MIN_WORDS} words to run a rev
 
 /** Shown while a draft is long enough to review but too short to carry a full account. */
 export const SHORT_DRAFT_WARNING =
-  "Short draft. Reviews work best on full statements. A post this short can’t carry a full account, so it will " +
-  "score lower on evidence, corrective action and follow-up; read the findings on clarity, accuracy and tone. For a " +
-  "fairer review, paste the full statement the post points to into “Anything else we should know?”";
+  "Short draft. Reviews work best on a full statement. A post this short can’t give a full account, so it will " +
+  "score lower on evidence, putting things right and follow-up. Focus on the findings about clarity, accuracy and " +
+  "tone. For a fairer review, paste the full statement into “Anything else we should know?”";
 
 /**
  * Under "Anything else we should know?" while the situation is still

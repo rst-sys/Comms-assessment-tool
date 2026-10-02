@@ -3,7 +3,7 @@ export const STUB_PAGES = [
   {
     key: "saved-reviews",
     title: "Saved Reviews",
-    text: "Saved Reviews will keep a private history of the reviews you have run, so you can reopen one without keeping track of a file. It is not in this build: the app stores nothing. You can save a review to your own computer from the results page, and load it again under Compare Revisions.",
+    text: "Saved Reviews will keep a private history of the reviews you have run, so you can reopen one without keeping track of a file. It isn't in this build. The app stores nothing.",
   },
   {
     key: "team-workspace",
@@ -13,12 +13,12 @@ export const STUB_PAGES = [
   {
     key: "enterprise-governance",
     title: "Governance Console",
-    text: "The Enterprise Governance Console will hold customer-controlled processing, redaction, retention policies, data residency, audit logging, and access controls. It is not in this build; the privacy panel shows only what the code currently enforces.",
+    text: "The Governance Console will let an organization control how drafts are handled: what's hidden before sending, how long anything is kept, where it's stored, who can use the tool, and a record of who did what. It isn't in this build. The privacy panel shows only what the tool does today.",
   },
   {
     key: "settings",
     title: "Settings",
-    text: "Settings will cover provider and model selection, processing mode, retention choices, and the classification label. It is not in this build; the provider and model are read from the server's configuration and shown in the privacy panel.",
+    text: "Settings will let you choose the AI model, how long anything is kept, and how drafts are labelled. It isn't in this build. For now these are set by the owner and shown in the privacy panel.",
   },
 ] as const;
 export type StubKey = (typeof STUB_PAGES)[number]["key"];

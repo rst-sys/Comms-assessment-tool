@@ -4,13 +4,14 @@ name: People harmed or at risk
 layer: overlay
 # rule: people_at_risk = true
 trigger: people-harmed
-version: 0.3.1
+version: 0.3.2
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   The EU workplace-safety directive (binding only for EU employers toward their workers) and US CDC emergency-communication guidance applied by analogy, plus crisis-communication theory.
 changelog:
+  - "0.3.2 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.3.1 — basis notes moved into the file"
   - "0.3.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed."
   - "0.2.0 (2026-09-25): combination rule with the geopolitical and cyber protocols set: their event-specific elements replace this overlay's equivalents when both apply."
@@ -67,7 +68,7 @@ questions:
 
 ## What this overlay does
 
-It adds what a message owes people who were hurt or are still at risk. The framework already asks who is affected and what readers should do. This overlay narrows both: harm must be named as harm, and people still at risk must be told the danger and what is being done about it.
+It adds what a message owes people who were hurt or are still at risk. The framework already asks who is affected and what readers should do. This overlay asks more of both: harm must be named as harm, and people still at risk must be told the danger and what is being done about it.
 
 ## Source
 

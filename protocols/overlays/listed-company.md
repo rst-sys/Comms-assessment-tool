@@ -4,13 +4,14 @@ name: Listed company disclosure
 layer: overlay
 # rule: org_type = publicly_listed
 trigger: listed-company
-version: 0.2.1
+version: 0.2.2
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   US and EU securities disclosure law, applied to every message from a listed organization; its extension to employees and partners is professional judgement.
 changelog:
+  - "0.2.2 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.2.1 — basis notes moved into the file"
   - "0.2.0 (2026-09-25): made to pass the build checker: added rests_on and a Source heading. No element, trigger or question changed."
   - "0.1.0 (2026-09-25): first draft, built from sources already opened in the CEO departure source review. No new research."
@@ -66,7 +67,7 @@ questions:
 
 It adds the checks that securities disclosure rules make relevant to **any** message from a listed organization, whatever the event. Rules written for one event (for example the Form 8-K departure deadline, or the EU rule that a board's removal decision triggers disclosure) stay in that event's protocol.
 
-The framework prompt already flags securities questions for specialist review. This overlay doesn't judge compliance. It checks whether the message's content is complete and consistent enough to raise the questions counsel must answer.
+The tool already flags securities questions for a specialist. This overlay doesn't judge compliance. It checks whether the message's content is complete and consistent enough to raise the questions counsel must answer.
 
 ## Source
 

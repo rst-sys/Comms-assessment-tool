@@ -2,13 +2,14 @@
 id: core
 name: Core protocol
 layer: core
-version: 0.6.1
+version: 0.6.2
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   Emergency risk-communication guidance (WHO, US CDC) applied to organizations by analogy, a plain-language standard, and three studies, none of them testing whether these checks build trust.
 changelog:
+  - "0.6.2 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.6.1 (2026-09-28): body only. Timing no longer points at the Stage overlay, which was removed; no element, trigger or question changed."
   - "0.6.0 (2026-09-25): central-fact threshold tightened from \"the first two or three sentences\" to \"first, or second after a one-sentence signpost\", after a return-to-office test memo put the fact in sentence three behind a values sentence and a euphemism."
   - "0.5.1 — basis notes moved into the file"
@@ -55,12 +56,7 @@ questions:
 
 ## What this protocol is
 
-The framework prompt already asks every draft to make the account visible: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol does not repeat any of that. It **narrows** two framework elements for every named event:
-
-- **The decision** must come in the first sentence, or the second after a one-sentence signpost, and in ordinary words, not after context or behind euphemism.
-- **What is known and not yet known.** The framework applies this only when the situation is still unfolding. The core applies it at every stage, because planned announcements also contain forecasts and estimates.
-
-It adds one trigger with its own basis: leading with the organization's strategy, ambitions, record or values before the people affected (Coombs 2007).
+Every draft is already checked for the basic account: the decision, who had authority, who is affected, what readers should do, what will change, who owns it, and when the next update comes. The core protocol doesn't repeat that. On every review it looks more closely at two things: the decision comes first, in ordinary words, not after background or behind softened language; and what is known and not yet known is clear at every stage, not only while things are still unfolding. It also flags a message that talks about the organization's strategy, record or values before the people affected (Coombs 2007).
 
 ## Source
 

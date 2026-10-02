@@ -174,7 +174,7 @@ async function handleEvaluate(req: IncomingMessage, res: ServerResponse): Promis
   } catch (error) {
     const path = error instanceof RequestValidationError ? error.path : "/";
     console.log(`evaluate rejected: invalid request at ${path}`);
-    send(res, 400, { error: "bad_request", message: "The request is missing or has an invalid field." });
+    send(res, 400, { error: "bad_request", message: "Something in the form wasn't filled in correctly. Check your answers and try again." });
     return;
   }
   try {
@@ -215,7 +215,7 @@ async function handleCompare(req: IncomingMessage, res: ServerResponse): Promise
   } catch (error) {
     const path = error instanceof RequestValidationError ? error.path : "/";
     console.log(`compare rejected: invalid request at ${path}`);
-    send(res, 400, { error: "bad_request", message: "The request is missing or has an invalid field." });
+    send(res, 400, { error: "bad_request", message: "Something in the form wasn't filled in correctly. Check your answers and try again." });
     return;
   }
   const saved = b.saved as SavedReview | undefined;

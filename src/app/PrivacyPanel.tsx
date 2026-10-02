@@ -42,7 +42,7 @@ export function PrivacyPanel({ config }: { config: PrivacyConfig | null }) {
         ))}
       </dl>
       <p className="muted small" style={{ margin: 0 }}>
-        Enterprise controls — customer-controlled processing, redaction, retention policies, data residency, and audit logging — are planned and not in this build.
+        Controls for organizations, such as hiding names before sending, choosing how long anything is kept, and keeping a record of use, are planned but not in this build.
       </p>
     </aside>
   );

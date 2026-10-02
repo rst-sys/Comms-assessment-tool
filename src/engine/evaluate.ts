@@ -35,7 +35,7 @@ export interface EvaluationResult {
    */
   bundle: string[];
   analysis: Analysis;
-  /** Accountable Communication Score, 0-100. */
+  /** Trust score, 0-100. */
   score: number;
   band: BandName;
   confidence_label: string;
@@ -77,13 +77,14 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
     validated = validateAnalysis(raw, request.draft, request.context);
   } catch (error) {
     if (error instanceof AnalysisValidationError) {
-      // The path names the offending field and nothing from the draft, so it
-      // travels with the message. Without it a validation failure is a dead
-      // end for whoever is trying to fix it.
+      // The path names the offending field and nothing from the draft. It
+      // goes to the log under the reference number; the reader gets plain
+      // words. Without it a validation failure is a dead end for whoever is
+      // trying to fix it.
       log(`[${requestId}] validation failed at ${error.path}`);
       throw new EngineError(
         "validation",
-        `The analysis did not return in the expected format (at ${error.path}). Try again.`,
+        "The review came back incomplete. Try again.",
         requestId,
         error,
       );
@@ -186,7 +187,7 @@ async function askOnce({ request, system, user, config, requestId, log, client }
   try {
     raw = JSON.parse(call.text);
   } catch (error) {
-    throw new EngineError("invalid_json", "The analysis did not return in the expected format. Try again.", requestId, error);
+    throw new EngineError("invalid_json", "The review came back incomplete. Try again.", requestId, error);
   }
   // Normalized on this path too, not only on the claude.ai page. The provider's
   // grammar no longer carries the permitted values (see schema.ts), so the

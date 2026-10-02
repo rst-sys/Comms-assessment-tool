@@ -27,10 +27,10 @@ export function FindingCard({ finding }: { finding: Finding }) {
       <p style={{ margin: 0 }}>{f.recommended_action}</p>
       <div className="flags">
         <span className={`flag ${f.fact_validation_needed ? "flag-on" : ""}`}>
-          Fact validation: {f.fact_validation_needed ? "needed" : "not flagged"}
+          Facts to check: {f.fact_validation_needed ? "yes" : "no"}
         </span>
         <span className={`flag ${f.specialist_review_needed ? "flag-on" : ""}`}>
-          Specialist review: {f.specialist_review_needed ? f.specialist_review_type ?? "needed" : "not flagged"}
+          Specialist to involve: {f.specialist_review_needed ? f.specialist_review_type ?? "yes" : "no"}
         </span>
       </div>
     </article>

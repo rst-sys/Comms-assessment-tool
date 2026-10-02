@@ -193,7 +193,7 @@ export const SCAN_CARD =
   "Six patterns of language that let responsibility disappear: external weather, institutional abstraction, audience displacement, passive accountability, values without action and vague action. A phrase is flagged only when it's doing the explaining.";
 
 export const PROTOCOLS_INTRO: string[] = [
-  "Four layers apply, in this order: the core on every review; the family your event belongs to; the event's own protocol, for the five events that have one; and any overlays your other answers switch on. A protocol is a lens on the ten dimensions, never an eleventh score: a missing element shows up as an ordinary finding under the dimension it belongs to. Where two layers check the same thing, the more specific one is used and the other gives way.",
+  "Four layers apply, in this order: the core on every review; the family your event belongs to; the event's own protocol, for the five events that have one; and any overlays your other answers switch on. A protocol is a lens on the ten dimensions, never an eleventh score: a missing element shows up as an ordinary finding under the dimension it belongs to. Where two layers check the same thing, the more specific check is used instead of the other.",
   "Each protocol states what kind of authority it rests on. Its full sources, including what its author couldn't access and what it can't judge, sit behind the expander on its card.",
 ];
 
@@ -229,7 +229,7 @@ export function ownJudgment(): [string, string][] {
   return [
     [
       "The ten dimensions and their weights",
-      `Which dimensions exist, and that accountability and agency carries ${heaviest} of the ${total} points while future readiness carries ${lightest}. No code assigns weights.`,
+      `Which dimensions exist, and that accountability carries ${heaviest} of the ${total} points while learning for the future carries ${lightest}. No code assigns weights.`,
     ],
     [
       `The 0\u2013${total} score and its ${bandCount} bands`,
@@ -280,15 +280,18 @@ export const BASIS_LABELS: Record<string, string> = {
  * protocol checks of their own. Basis labels are the addendum's, unchanged.
  */
 export const FRAMEWORK_GROUNDING: { element: string; sources: string; basis: string }[] = [
-  { element: "Who had authority over it", sources: "Fausey & Boroditsky 2010", basis: "judgement, supported by research" },
-  { element: "Who is affected and how", sources: "CDC CERC “Express Empathy”; WHO A.1; Coombs 2007", basis: "guidance + research" },
-  { element: "What the reader should do now", sources: "WHO C4.3; CDC CERC “Promote Action”; Seeger 2006; Coombs 2007", basis: "guidance + research" },
-  { element: "What will change, who owns it", sources: "CDC CERC “Be Right”; Coombs 2007", basis: "guidance + research" },
+  { element: "Who had authority over it", sources: "Fausey & Boroditsky 2010", basis: "Our judgment, backed by research" },
+  { element: "Who is affected and how", sources: "CDC CERC “Express Empathy”; WHO A.1; Coombs 2007", basis: "Guidance and research" },
+  { element: "What the reader should do now", sources: "WHO C4.3; CDC CERC “Promote Action”; Seeger 2006; Coombs 2007", basis: "Guidance and research" },
+  { element: "What will change, who owns it", sources: "CDC CERC “Be Right”; Coombs 2007", basis: "Guidance and research" },
   { element: "When the next update comes, where, how to ask", sources: "WHO A.1 (“timely”); Seeger 2006 (“remain accessible”)", basis: "judgement" },
   { element: "Known vs not yet known (still unfolding)", sources: "WHO A.2; CDC CERC “Be Right”; Seeger 2006", basis: "guidance" },
 ];
 
 export const FRAMEWORK_GROUNDING_INTRO =
-  "The account is the framework's own, applied to every draft. The core protocol's source review gathered published guidance for five of these; it grounds them rather than repeating them as protocol checks, which would count them twice.";
+  "The ten things a message should show are this tool's own list, used on every draft. Published guidance backs up five of them, shown below. They're checked once, as part of the core framework, not again in a protocol.";
 
-export const SOURCES_NOT_READ_HEADING = "Sources not read in the original";
+/** The heading the protocol files use for this section; the cards look it up by this name. */
+export const SOURCES_NOT_READ_SECTION = "Sources not read in the original";
+/** What the card shows above that section. */
+export const SOURCES_NOT_READ_HEADING = "Sources we read only in summary";

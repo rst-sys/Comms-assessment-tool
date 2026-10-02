@@ -11,6 +11,7 @@ import {
   FRAMEWORK_GROUNDING,
   FRAMEWORK_GROUNDING_INTRO,
   SOURCES_NOT_READ_HEADING,
+  SOURCES_NOT_READ_SECTION,
   ACCOUNT_CARD,
   CLAIM_LABELS,
   CODES,
@@ -376,10 +377,10 @@ function ProtocolCard({ protocol, openByDefault }: { protocol: ProtocolFile; ope
           {/* Not behind the sources expander. A protocol resting partly on
               something nobody opened is the first thing a reader weighing it
               needs, not the last. */}
-          {protocolSection(protocol.prose, SOURCES_NOT_READ_HEADING) ? (
+          {protocolSection(protocol.prose, SOURCES_NOT_READ_SECTION) ? (
             <div className="rests-row">
               <div className="label">{SOURCES_NOT_READ_HEADING}</div>
-              {proseBlocks(protocolSection(protocol.prose, SOURCES_NOT_READ_HEADING)).map((b, i) =>
+              {proseBlocks(protocolSection(protocol.prose, SOURCES_NOT_READ_SECTION)).map((b, i) =>
                 b.kind === "list" ? (
                   <ul key={i} className="tight prose small">
                     {(b.items ?? []).map((item, j) => (

@@ -3,13 +3,14 @@ id: merger-acquisition
 name: Merger or acquisition
 layer: event
 family: commercial
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-28
 review_by: 2027-03-28
 rests_on: >-
   US and EU merger law requiring the companies to stay separate until a deal is cleared and closed, recent record enforcement, and SEC filing rules for deal communications.
 changelog:
+  - "0.2.1 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.2.0 (2026-09-28): after the duplicate check, Where the deal stands replaces the Workforce impact overlay's Decision status on merger drafts; the combined-company trigger narrows the core's Estimates marked as estimates; the coordination trigger moves to accountability and agency."
   - "0.1.0 (2026-09-28): first draft from the Merger or acquisition source review (gun jumping)."
 
@@ -51,7 +52,7 @@ questions:
 
 ## What this protocol is
 
-Checks for announcements and memos about a merger, acquisition or sale, between signing and closing. It adds one thing the Commercial family doesn't cover: **gun jumping**, acting or communicating as if a deal has closed before the law allows. It adds to the Commercial family's checks (customers and suppliers, forecasts, employees in a deal) and doesn't replace any of them. On merger drafts to employees, *Where the deal stands* replaces the Workforce impact overlay's *Decision status*: for a deal, the decision's status is the deal's status.
+Checks for announcements and memos about a merger, acquisition or sale, between signing and closing. It adds one thing the Commercial family doesn't cover: **gun jumping**, acting or communicating as if a deal has closed before the law allows. It adds to the Commercial family's checks (customers and suppliers, forecasts, employees in a deal) and doesn't replace any of them. On merger messages to employees, its check on where the deal stands is used instead of the Workforce impact overlay's 'Decision status': for a deal, the decision is only as final as the deal.
 
 ## Source
 

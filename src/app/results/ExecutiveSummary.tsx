@@ -31,7 +31,7 @@ export function ExecutiveSummary({ result, request }: Props) {
 
       <div className="summary-head">
         <div className="score-block">
-          <div className="label">Accountable Communication Score</div>
+          <div className="label">Trust score</div>
           <a
             className="score-number"
             href="#scorecard"
@@ -48,7 +48,7 @@ export function ExecutiveSummary({ result, request }: Props) {
           </div>
           {request.already_published ? (
             <div>
-              <div className="label">Retrospective</div>
+              <div className="label">Status</div>
               <div>Already issued</div>
             </div>
           ) : null}
@@ -63,7 +63,7 @@ export function ExecutiveSummary({ result, request }: Props) {
 
       {request.audience_documents?.length ? (
         <>
-          <div className="label">Audience context considered</div>
+          <div className="label">Documents considered</div>
           <ul className="tight prose">
             {request.audience_documents.map((d, i) => (
               <li key={i}>
@@ -83,7 +83,7 @@ export function ExecutiveSummary({ result, request }: Props) {
 
       <div className="two-col">
         <div>
-          <div className="label">Strongest elements</div>
+          <div className="label">What works well</div>
           <ul className="tight">
             {s.strongest_elements.map((e, i) => (
               <li key={i}>{e}</li>
@@ -91,7 +91,7 @@ export function ExecutiveSummary({ result, request }: Props) {
           </ul>
         </div>
         <div>
-          <div className="label">Priority improvements</div>
+          <div className="label">What to improve first</div>
           <ul className="tight">
             {s.priority_improvements.map((e, i) => (
               <li key={i}>{e}</li>

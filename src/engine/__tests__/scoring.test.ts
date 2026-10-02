@@ -33,16 +33,16 @@ describe("scoring", () => {
   });
 
   it("maps scores to bands at the boundaries", () => {
-    expect(scoreBand(100)).toBe("Strongly accountable");
-    expect(scoreBand(90)).toBe("Strongly accountable");
-    expect(scoreBand(89)).toBe("Credible, with targeted improvements");
-    expect(scoreBand(75)).toBe("Credible, with targeted improvements");
-    expect(scoreBand(74)).toBe("Material accountability and trust gaps");
-    expect(scoreBand(60)).toBe("Material accountability and trust gaps");
-    expect(scoreBand(59)).toBe("High risk of evasiveness or stakeholder mistrust");
-    expect(scoreBand(40)).toBe("High risk of evasiveness or stakeholder mistrust");
-    expect(scoreBand(39)).toBe("Serious clarity, accountability, or ethical-risk concerns");
-    expect(scoreBand(0)).toBe("Serious clarity, accountability, or ethical-risk concerns");
+    expect(scoreBand(100)).toBe("Builds trust");
+    expect(scoreBand(90)).toBe("Builds trust");
+    expect(scoreBand(89)).toBe("Credible, with a few things to fix");
+    expect(scoreBand(75)).toBe("Credible, with a few things to fix");
+    expect(scoreBand(74)).toBe("Real gaps in accountability and trust");
+    expect(scoreBand(60)).toBe("Real gaps in accountability and trust");
+    expect(scoreBand(59)).toBe("Likely to read as evasive or lose trust");
+    expect(scoreBand(40)).toBe("Likely to read as evasive or lose trust");
+    expect(scoreBand(39)).toBe("Serious problems with clarity, accountability or ethics");
+    expect(scoreBand(0)).toBe("Serious problems with clarity, accountability or ethics");
   });
 
   it("maps dimension scores to the color scale", () => {

@@ -26,9 +26,9 @@ const WHAT_YOU_GET: [string, string][] = [
 
 /** What the tool is, for a reader who has not met it: the model, and the framework on top of it. */
 const HOW_IT_WORKS = [
-  "A specialist in trust, built on Claude, Anthropic’s large language model.",
+  "A specialist in trust, built on Claude, Anthropic’s AI model.",
   "It uses that model’s ability to read tone, implication and what’s left unsaid.",
-  "It’s guided by a communicator’s framework: ten weighted dimensions, plus standards written for specific events.",
+  "It’s guided by a communicator’s framework: ten things it scores, some counting more than others, plus standards written for specific events and situations.",
   "It assesses; you decide.",
 ];
 
@@ -36,7 +36,7 @@ const PRIVACY_POINTS = (provider: string) => [
   "Nothing is saved. Close the tab and it's gone.",
   `Sent once, only to ${provider}, for analysis.`,
   "No analytics or tracking. Errors are logged without your text.",
-  "Public-coverage searches send only the topic you type.",
+  "Your draft is never sent to a search engine.",
 ];
 
 const WONT_DO = [
@@ -60,7 +60,7 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
     <main className="page welcome" aria-labelledby="welcome-heading">
       <div className="hero">
         <div className="hero-main">
-          <p className="eyebrow">Trust decision support for communicators</p>
+          <p className="eyebrow">Trust checks for communicators</p>
           <h1 id="welcome-heading" className="hero-title">
             Know whether your message will be trusted before your audience decides.
           </h1>
@@ -74,7 +74,7 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
               Start a review
               <ArrowRight />
             </button>
-            <span className="cta-meta">A minute or two · No account · Nothing saved</span>
+            <span className="cta-meta">A minute or two · No account · Your draft isn't saved</span>
           </div>
           <p className="callout-warning" role="note">
             <WarningTriangle />
@@ -97,7 +97,7 @@ export function WelcomeScreen({ config, onStart, onOverview, onStandards }: Prop
             ))}
           </ol>
           <p className="muted small hero-foot">
-            Every draft is scored on the same ten weighted dimensions, plus any standard written for your type of event.{" "}
+            Every draft is scored on the same ten things, plus any standard written for your kind of event or situation.{" "}
             <button type="button" className="linklike" onClick={onStandards}>See every standard in the Standards Library</button>
           </p>
         </section>

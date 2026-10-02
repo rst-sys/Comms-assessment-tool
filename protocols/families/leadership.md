@@ -2,13 +2,14 @@
 id: leadership
 name: Leadership change
 layer: family
-version: 0.4.0
+version: 0.4.1
 status: active
 last_reviewed: 2026-09-26
 review_by: 2027-03-26
 rests_on: >-
   US securities disclosure rules for appointments and board disputes, applied to announcements and to all organizations as professional judgement; no rule governs death announcements.
 changelog:
+  - "0.4.1 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.4.0 (2026-09-26): event conditions added. Who holds the role and How the decision was made apply to departures, appointments and board changes only; A death announced with care applies to deaths only. Before this, the first two reached death announcements, where there is no role change or decision to describe."
   - "0.3.0 (2026-09-26): after a dry run on two messages about three employees killed in an air crash, the death check asks who holds responsibilities only for the death of a leader; new trigger for those who died left nameless with no reason given."
   - "0.2.0 (2026-09-26): after a dry run on two CEO appointment releases, the check on ties behind an appointment became a trigger (fires only when a tie is shown and not mentioned) and a question, since announcements rarely state ties and filings carry them; the CEO departure protocol's question on the character of a departure added word for word, so succession announcements get it and the checklist removes it as a duplicate on departure drafts."
@@ -78,7 +79,7 @@ questions:
 
 The shared checks for every event in the Leadership family: CEO or senior-leader departures, new appointments, board changes or disputes, and the death of a leader or employee. It matters most for the three events without their own protocol.
 
-On CEO departure drafts, that protocol's *Who holds the authority now* replaces this family's *Who holds the role, and from when*, and its trigger on a departing board member's unexplained "differences" is a sharper form of *A disagreement described, or openly withheld*.
+For a CEO or senior-leader departure, that protocol's checks on who holds the role now, and on unexplained "differences", are used instead of this family's versions.
 
 ## Source
 

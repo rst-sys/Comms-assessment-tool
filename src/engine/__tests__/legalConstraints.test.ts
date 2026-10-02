@@ -171,7 +171,7 @@ describe("what gives way to it", () => {
 
 describe("saved reviews", () => {
   const result: EvaluationResult = {
-    request_id: "r", bundle_hash: "", bundle: [], analysis: sampleAnalysis(), score: 50, band: "Strongly accountable", confidence_label: "c",
+    request_id: "r", bundle_hash: "", bundle: [], analysis: sampleAnalysis(), score: 50, band: "Builds trust", confidence_label: "c",
     adjustments: { dropped_findings: 0, context_flag_corrected: false, trimmed_findings: 0, thin_questions: null },
     provider: { provider: "Anthropic", model: "m" }, usage: {} as never,
   };

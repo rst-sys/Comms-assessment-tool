@@ -167,23 +167,27 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
     }
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
-      throw new EngineError("auth", "The provider rejected the configured credential.", requestId, error);
+      options.log?.(`[${requestId}] provider rejected the credential (${error.status ?? "unknown"})`);
+      throw new EngineError("auth", "The tool isn't set up to reach the AI service. Tell the owner.", requestId, error);
     }
     if (error instanceof Anthropic.APIError) {
-      throw new EngineError("api", `Provider error ${error.status ?? "unknown"}: ${providerDetail(error)}`, requestId, error);
+      // The reader gets plain words; the status and the provider's own detail
+      // go to the log, under the same reference number.
+      options.log?.(`[${requestId}] provider error ${error.status ?? "unknown"}: ${providerDetail(error)}`);
+      throw new EngineError("api", "The AI service turned the request down. Try again, or tell the owner the reference below.", requestId, error);
     }
     if (error instanceof Error && /Could not resolve authentication method/.test(error.message)) {
       // The SDK resolves credentials lazily and throws a plain Error at call time when none is configured.
       throw new EngineError("auth", NO_CREDENTIAL_MESSAGE, requestId, error);
     }
-    throw new EngineError("api", "The provider call failed.", requestId, error);
+    throw new EngineError("api", "The AI service couldn't be reached. Try again.", requestId, error);
   }
 
   if (response.stop_reason === "refusal") {
-    throw new EngineError("refusal", "The provider declined to analyze this draft.", requestId);
+    throw new EngineError("refusal", "The AI service declined to review this draft.", requestId);
   }
   if (response.stop_reason === "max_tokens" || response.stop_reason === "model_context_window_exceeded") {
-    throw new EngineError("truncated", "The analysis was cut off before it completed.", requestId);
+    throw new EngineError("truncated", "The review was cut off before it finished. Try again.", requestId);
   }
 
   const text = response.content
@@ -191,7 +195,7 @@ export async function callModel(options: CallModelOptions): Promise<ModelCallRes
     .map((b) => b.text)
     .join("");
   if (text.trim().length === 0) {
-    throw new EngineError("no_text", "The provider returned no analysis text.", requestId);
+    throw new EngineError("no_text", "The review came back empty. Try again.", requestId);
   }
 
   const durationMs = Date.now() - startedAt;

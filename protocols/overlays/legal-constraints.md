@@ -3,7 +3,7 @@ id: legal-constraints
 name: Legal constraints
 layer: overlay
 trigger: legal-constraints
-version: 0.1.3
+version: 0.1.4
 status: active
 last_reviewed: 2026-09-29
 review_by: 2027-03-29
@@ -12,6 +12,7 @@ rests_on: >-
 instruction: >-
   Legal constraints apply. Where a fix would need an admission the stated limit rules out, offer instead a plain declaration of the limit, an expression of sympathy or regret, or what is being done, and refer the question to counsel. Never say a statement is legally safe, or whether it would or wouldn't admit fault; that is for counsel.
 changelog:
+  - "0.1.4 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.1.3 (2026-10-02): the description names every check that gives way to this overlay, and the one that gives way from it; no check changed."
   - "0.1.2 (2026-09-30): instruction line also forbids saying whether a statement would or wouldn't admit fault (Thornbury weak report asserted legal effect)."
   - "0.1.1 (2026-09-29): Constraint declared, not hidden gives way to the CEO departure protocol's \"Reason, or declared withholding of it\" when both apply; wording unchanged."
@@ -51,9 +52,9 @@ questions:
 
 Switched on when the writer ticks "Counsel has limited what this message can say", on any event. It treats a limit counsel has declared as a constraint, not as evasion, while still asking the draft to say everything it can. The writer describes the limit in "Anything else we should know?".
 
-With the box ticked, the Apology overlay's "Acknowledged responsibility" check and its trigger "No sentence says the organization or a named leader is responsible", and the Crisis in progress overlay's "A response that fits responsibility", give way to this overlay's second check, which asks for responsibility as far as the stated limit allows. Apology's other checks (direct regret, repair offered) still apply. On a CEO or senior-leader departure, this overlay's first check gives way to that protocol's "Reason, or declared withholding of it". Ticking the box doesn't lower any other check.
+With the box ticked, this overlay's responsibility check is used instead of the Apology overlay's responsibility checks and the Crisis in progress responsibility check. It asks for responsibility as far as the limit allows. Apology's other checks (saying sorry directly, offering to put things right) still apply. For a CEO or senior-leader departure, that protocol's check on the reason is used instead of this overlay's check on saying there is a limit. Ticking the box doesn't lower any other check.
 
-The instruction line applies to fixes from every layer: where a fix would need an admission the limit rules out, the review offers an alternative and refers the point to counsel.
+It also changes how every suggested fix is worded: where a fix would need an admission the limit rules out, the review offers another way and points the question to counsel.
 
 It doesn't repeat what others check: facts known and not yet known (core protocol), remedies (Incident family), support for those harmed (People harmed overlay), apology wording (Apology overlay), or declared withholding of a departure's reason (CEO departure protocol).
 

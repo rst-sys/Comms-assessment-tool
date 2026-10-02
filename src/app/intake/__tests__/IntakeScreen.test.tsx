@@ -30,7 +30,7 @@ describe("IntakeScreen", () => {
     render(<IntakeScreen config={config} busy={false} error={null} onEvaluate={() => {}} />);
     expect(screen.getByText("Anthropic · claude-opus-5")).toBeTruthy();
     expect(screen.getByText("Zero-retention API")).toBeTruthy();
-    expect(screen.getByText(/planned and not in this build/)).toBeTruthy();
+    expect(screen.getByText(/planned but not in this build/)).toBeTruthy();
   });
 
   it("keeps Evaluate disabled until every required field is answered", () => {

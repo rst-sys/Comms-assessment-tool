@@ -57,7 +57,7 @@ export const APP_NAME = "Trust Assessment Assistant";
  * specialties a reader should go and check is the half worth keeping.
  */
 export const HEIGHTENED_NOTICE =
-  "This kind of event warrants heightened review. Watch out for employment, restructuring, health and safety, AI, surveillance, privacy, financial disclosure, public policy, litigation-sensitive topics, or impact on vulnerable audiences.";
+  "This kind of event needs extra care. Take particular care with anything about jobs, restructuring, health and safety, AI, surveillance, privacy, financial results, public policy, lawsuits, or people who may be vulnerable.";
 
 
 /** Under the app title on the password screen. Nothing else shows it. */

@@ -2,13 +2,14 @@
 id: incident
 name: Incident and disruption
 layer: family
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-25
 review_by: 2027-03-25
 rests_on: >-
   EU and US product-recall rules and EU rules on service incidents, which are specific but narrow; applied to other incidents as professional judgement.
 changelog:
+  - "0.2.1 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.2.0 (2026-09-25): after a dry run on two recall notices, the risk-lessening trigger was split. Shrinking words (precautionary, abundance of caution, discretionary, rare situations) fire when a hazard is known; \"voluntary\" fires only where EU law applies or a regulator ordered the recall, since in the US it is a legal status."
   - "0.1.0 (2026-09-25): first draft from the Incident family source review."
 
@@ -67,7 +68,7 @@ questions:
 
 The shared checks for every event in the Incident family: cyber incidents, system outages, product recalls, environmental incidents, workplace accidents and supply-chain disruptions. It matters most for the five events without their own protocol.
 
-The cyber protocol's *What and when* replaces this family's *What happened, and when* on cyber drafts. Where people are harmed, the People harmed overlay adds harm, danger and support checks.
+For a cyber incident, the Cyber protocol's check on what happened and when is used instead of this family's. Where people are harmed, the People harmed overlay adds checks on harm, danger and support.
 
 ## Source
 

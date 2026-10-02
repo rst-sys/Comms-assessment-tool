@@ -49,8 +49,8 @@ describe("evaluateDraft", () => {
     const result = await evaluateDraft(DEMO_1.request, { config, client, log: (l) => logs.push(l) });
 
     expect(result.score).toBe(30); // all dimensions 1.5 → 30
-    expect(result.band).toBe("Serious clarity, accountability, or ethical-risk concerns");
-    expect(result.confidence_label).toMatch(/draft language only/);
+    expect(result.band).toBe("Serious problems with clarity, accountability or ethics");
+    expect(result.confidence_label).toMatch(/Scored on the draft alone/);
     expect(result.provider).toEqual({ provider: "Anthropic", model: "test-model-served" });
     expect(result.analysis.findings).toHaveLength(1);
     // The only line on a clean run is the latency record, which carries no content.
@@ -97,8 +97,8 @@ describe("evaluateDraft", () => {
     const logs: string[] = [];
     await expect(evaluateDraft(DEMO_1.request, { config, client, log: (l) => logs.push(l) })).rejects.toMatchObject({
       kind: "validation",
-      // The path travels with the message: it names the field, never the draft.
-      message: "The analysis did not return in the expected format (at /dimensions). Try again.",
+      // Plain words for the reader; the path goes to the log under the same reference.
+      message: "The review came back incomplete. Try again.",
     });
     // Two attempts, each logging its latency and the path it failed at, plus
     // the line saying it asked again.

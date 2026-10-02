@@ -87,7 +87,7 @@ export const ACCOUNT_ELEMENTS: [string, string][] = [
 ];
 
 export const DIMENSIONS_NOTE =
-  "Each is scored 0 to 5 with a written rationale, then weighted into the score out of 100. Accountability and agency counts most, because that's where trust is most often lost.";
+  "Each is scored 0 to 5 with a written rationale, then weighted into the score out of 100. Accountability counts most, because that's where trust is most often lost.";
 
 export const LENSES_INTRO =
   "Three more checks sharpen the review. None adds a score or a section of its own. What they find shows up as ordinary findings and questions.";

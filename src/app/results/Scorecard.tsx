@@ -11,7 +11,7 @@ export function Scorecard({ dimensions }: { dimensions: Dimension[] }) {
   return (
     <section id="scorecard" className="scorecard" aria-labelledby="scorecard-heading">
       <h3 id="scorecard-heading">Scorecard <span className="muted">— ten dimensions, weighted</span></h3>
-      <p className="muted small" style={{ marginTop: 0 }}>Click a dimension for its rationale and what would raise it.</p>
+      <p className="muted small" style={{ marginTop: 0 }}>Click a score to see why it got that score and what would raise it.</p>
       {DIMENSION_IDS.map((id) => {
         const d = byId.get(id);
         if (!d) return null;

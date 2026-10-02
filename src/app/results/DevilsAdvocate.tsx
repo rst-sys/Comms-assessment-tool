@@ -19,7 +19,7 @@ export function DevilsAdvocate({ data }: { data: DevilsAdvocateData }) {
       <h2 id="devils-advocate-heading">Devil's Advocate: how skeptical audiences may read this</h2>
 
       <div className="callout-material" role="note">
-        <div className="label">Most damning interpretation if issued as is</div>
+        <div className="label">The worst reasonable reading if it goes out as it is</div>
         <p style={{ margin: 0 }}>{data.most_damaging_interpretation}</p>
       </div>
 

@@ -54,8 +54,8 @@ describe("finishComparison", () => {
   });
 
   it("fails loudly on a malformed comparison", () => {
-    expect(() => finishComparison({ summary: "x" }, saved, fresh, [], { requestId: "a", provider: { provider: "p", model: "m" }, usage })).toThrow(/expected format/);
-    expect(() => finishComparison({ summary: "x", verdicts: [{ finding_id: "F-001", verdict: "Better", evidence: "e" }], new_concerns: [] }, saved, fresh, [], { requestId: "a", provider: { provider: "p", model: "m" }, usage })).toThrow(/expected format/);
+    expect(() => finishComparison({ summary: "x" }, saved, fresh, [], { requestId: "a", provider: { provider: "p", model: "m" }, usage })).toThrow(/came back incomplete/);
+    expect(() => finishComparison({ summary: "x", verdicts: [{ finding_id: "F-001", verdict: "Better", evidence: "e" }], new_concerns: [] }, saved, fresh, [], { requestId: "a", provider: { provider: "p", model: "m" }, usage })).toThrow(/came back incomplete/);
   });
 });
 

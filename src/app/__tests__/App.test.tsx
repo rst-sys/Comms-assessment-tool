@@ -211,14 +211,14 @@ describe("App", () => {
   });
 
   it("shows the server's plain error and stays on intake when evaluation fails", async () => {
-    vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify({ error: "validation", message: "The analysis did not return in the expected format. Try again.", request_id: "abc" }), { status: 502 })));
+    vi.stubGlobal("fetch", fakeFetch(() => new Response(JSON.stringify({ error: "validation", message: "The review came back incomplete. Try again.", request_id: "abc" }), { status: 502 })));
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     await renderApp();
     fireEvent.click(screen.getByRole("button", { name: "Start a review" }));
     fillLayoffIntake();
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
     expect(await screen.findByRole("alert")).toBeTruthy();
-    expect(screen.getByText(/did not return in the expected format/)).toBeTruthy();
+    expect(screen.getByText(/The review came back incomplete/)).toBeTruthy();
     expect(consoleError.mock.calls[0]![0]).not.toContain("Rapid growth");
     consoleError.mockRestore();
   });
@@ -253,7 +253,7 @@ describe("App", () => {
     vi.stubGlobal(
       "fetch",
       fakeFetch(() =>
-        new Response(JSON.stringify({ error: "api", message: "Provider error 529: overloaded", request_id: "9a83fbab61d0" }), {
+        new Response(JSON.stringify({ error: "api", message: "The AI service turned the request down. Try again, or tell the owner the reference below.", request_id: "9a83fbab61d0" }), {
           status: 502,
           headers: { "content-type": "application/json" },
         }),
@@ -265,10 +265,10 @@ describe("App", () => {
     fillLayoffIntake();
     fireEvent.click(screen.getByRole("button", { name: "Evaluate draft" }));
 
-    expect(await screen.findByText("Provider error 529: overloaded")).toBeTruthy();
+    expect(await screen.findByText(/The AI service turned the request down/)).toBeTruthy();
     // "Try again" alone leaves a tester with nothing to report, and no way to
     // tell a slow failure from an instant one.
-    expect(screen.getByText(/Failed after \d+ seconds?/)).toBeTruthy();
+    expect(screen.getByText(/Stopped after \d+ seconds?/)).toBeTruthy();
     expect(screen.getByText("9a83fbab61d0")).toBeTruthy();
   });
 
@@ -285,7 +285,7 @@ describe("App", () => {
     fireEvent.click(screen.getByRole("button", { name: "Tool Overview" }));
     expect(screen.getByRole("heading", { name: "What the assistant checks, and how it scores", level: 1 })).toBeTruthy();
     expect(screen.getByRole("heading", { name: "Ten weighted dimensions" })).toBeTruthy();
-    expect(screen.getByText("Accountability and agency")).toBeTruthy();
+    expect(screen.getByText("Accountability: who decided, who owns it")).toBeTruthy();
     expect(screen.getByText(/never invents a metric/)).toBeTruthy();
     // Every section the contents list promises is on the page and linkable.
     for (const { id, title } of OVERVIEW_SECTIONS) {

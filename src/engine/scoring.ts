@@ -1,6 +1,6 @@
 /**
  * Scoring rules (PROMPT.md Section 7). The application computes the
- * Accountable Communication Score; the model never sees or returns it.
+ * trust score; the model never sees or returns it.
  */
 import type { Dimension, DimensionId, Finding, Severity } from "./types.js";
 
@@ -18,16 +18,16 @@ export const DIMENSION_WEIGHTS: Record<DimensionId, number> = {
 };
 
 export const DIMENSION_LABELS: Record<DimensionId, string> = {
-  accountability_agency: "Accountability and agency",
-  truthfulness_factual_discipline: "Truthfulness and factual discipline",
-  causation_explanation: "Causation and explanation",
-  stakeholder_respect_impact: "Stakeholder respect and impact",
-  listening_employee_voice: "Listening and employee voice",
-  corrective_action_proof: "Corrective action and proof",
-  clarity_plain_language: "Clarity and plain language",
-  verification_follow_through: "Verification and follow-through",
-  fairness_independence_conflicts: "Fairness, independence and conflicts",
-  future_readiness_learning: "Future readiness and learning",
+  accountability_agency: "Accountability: who decided, who owns it",
+  truthfulness_factual_discipline: "Accuracy and honesty",
+  causation_explanation: "Explaining why",
+  stakeholder_respect_impact: "Respect for the people affected",
+  listening_employee_voice: "Listening and giving people a say",
+  corrective_action_proof: "Putting things right",
+  clarity_plain_language: "Clear, plain language",
+  verification_follow_through: "Follow-through people can check",
+  fairness_independence_conflicts: "Fairness and conflicts of interest",
+  future_readiness_learning: "Learning for the future",
 };
 
 export const WEIGHT_TOTAL = Object.values(DIMENSION_WEIGHTS).reduce((a, b) => a + b, 0);
@@ -39,11 +39,11 @@ export function computeScore(dimensions: ReadonlyArray<Pick<Dimension, "id" | "s
 }
 
 export const SCORE_BANDS = [
-  { min: 90, name: "Strongly accountable" },
-  { min: 75, name: "Credible, with targeted improvements" },
-  { min: 60, name: "Material accountability and trust gaps" },
-  { min: 40, name: "High risk of evasiveness or stakeholder mistrust" },
-  { min: 0, name: "Serious clarity, accountability, or ethical-risk concerns" },
+  { min: 90, name: "Builds trust" },
+  { min: 75, name: "Credible, with a few things to fix" },
+  { min: 60, name: "Real gaps in accountability and trust" },
+  { min: 40, name: "Likely to read as evasive or lose trust" },
+  { min: 0, name: "Serious problems with clarity, accountability or ethics" },
 ] as const;
 export type BandName = (typeof SCORE_BANDS)[number]["name"];
 
@@ -63,9 +63,9 @@ export function dimensionTone(score: number): DimensionTone {
   return "material";
 }
 
-export const CONFIDENCE_WITH_CONTEXT = "Scored against supplied context";
+export const CONFIDENCE_WITH_CONTEXT = "Scored with the context you added";
 export const CONFIDENCE_DRAFT_ONLY =
-  "Scored on draft language only — add known facts and decision details for a substantiated score";
+  "Scored on the draft alone. Add what you know under “Anything else we should know?” for a fuller score.";
 
 export function confidenceLabel(contextSupplied: boolean): string {
   return contextSupplied ? CONFIDENCE_WITH_CONTEXT : CONFIDENCE_DRAFT_ONLY;

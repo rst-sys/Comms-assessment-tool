@@ -2,13 +2,14 @@
 id: external
 name: External events and societal issues
 layer: family
-version: 0.2.0
+version: 0.2.1
 status: active
 last_reviewed: 2026-09-27
 review_by: 2027-03-27
 rests_on: >-
   Research on corporate stances and brand activism, WHO guidance on consistent emergency messages applied by analogy, and the geopolitical source review; binding law arrives through the overlays.
 changelog:
+  - "0.2.1 (2026-10-02): opening description reworded in plain English; no check changed."
   - "0.2.0 (2026-09-27): after the duplicate check, the practice element checks only for practice contradicting the stated position (asking for action, not just language, is already the corrective-action dimension); the solidarity and practice-contradiction triggers removed (covered by the core, the People harmed overlay, the framework's scan, and now the element)."
   - "0.1.0 (2026-09-27): first draft from the External family source review."
 
@@ -70,7 +71,7 @@ questions:
 
 The shared checks for every event in the External family: geopolitical events; natural disasters and extreme weather; public health emergencies; and social or political issues where the organization is deciding whether to speak. Only the geopolitical event has its own protocol.
 
-On geopolitical drafts, the Geopolitical protocol's *Basis for speaking* replaces *Why the organization is speaking*, and its *Exposure separated from event* replaces *What it means here*. The trigger on presenting a required step as a moral choice gives way to the Geopolitical protocol's *Discretion inside compliance*. Where people are in danger, the People harmed overlay carries the danger and the protective steps.
+For a geopolitical event, the Geopolitical protocol's own checks are used instead of this family's checks on why the organization is speaking, what it means here, and presenting a required step as a moral choice. Where people are in danger, the People harmed overlay covers the danger and the protective steps.
 
 ## Source
 

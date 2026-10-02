@@ -52,7 +52,7 @@ describe("what the page says is ours", () => {
     const text = ownJudgment().map(([t, d]) => `${t} ${d}`).join(" ");
     const total = Object.values(DIMENSION_WEIGHTS).reduce((a, b) => a + b, 0);
     expect(text).toContain(`carries ${DIMENSION_WEIGHTS.accountability_agency} of the ${total} points`);
-    expect(text).toContain(`future readiness carries ${DIMENSION_WEIGHTS.future_readiness_learning}`);
+    expect(text).toContain(`learning for the future carries ${DIMENSION_WEIGHTS.future_readiness_learning}`);
     expect(text).toContain(`at ${ASSERTED_CEILING} of 5`);
     for (const band of SCORE_BANDS.filter((b) => b.min > 0)) {
       expect(text, String(band.min)).toContain(String(band.min));

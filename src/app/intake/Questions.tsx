@@ -189,7 +189,7 @@ export function FormatQuestion({
     <div>
       <Menu
         label="What are you drafting?"
-        hint="Grouped by category. One choice."
+        hint="Choose one."
         placeholder="Choose a format"
         groups={FORMAT_MENU}
         value={state.communication_format}
@@ -235,7 +235,7 @@ export function AudienceQuestion({ state, onChange, onTouch }: QuestionProps & {
   return (
     <Menu
       label="Who will receive this?"
-      hint="Multi-select. Assume anything you send may be seen by the media."
+      hint="Choose all that apply. Assume anything you send may be seen by the media."
       placeholder="Select all that apply"
       groups={groups}
       multiple
@@ -304,7 +304,7 @@ export function LocationQuestion({ state, onChange }: QuestionProps) {
     <div>
       <Menu
         label="Where is this happening?"
-        hint="Multi-select. Quick picks at the top, then search for a country."
+        hint="Choose all that apply. Common choices first, then search for a country."
         placeholder="Where are the people affected?"
         groups={LOCATION_MENU}
         searchable

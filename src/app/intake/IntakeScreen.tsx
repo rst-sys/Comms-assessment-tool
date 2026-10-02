@@ -215,8 +215,8 @@ export function IntakeScreen({ config, busy, error, onEvaluate, initialRequest, 
         <div role="alert">
           <p className="error" style={{ marginBottom: 4 }}>{error.message}</p>
           <p className="muted small" style={{ margin: 0 }}>
-            Failed after {error.seconds} second{error.seconds === 1 ? "" : "s"}
-            {error.requestId ? <> · reference <code>{error.requestId}</code></> : null}
+            Stopped after {error.seconds} second{error.seconds === 1 ? "" : "s"}
+            {error.requestId ? <> · reference number <code>{error.requestId}</code></> : null}
             {error.requestId ? " · quote it if you report this" : null}
           </p>
         </div>

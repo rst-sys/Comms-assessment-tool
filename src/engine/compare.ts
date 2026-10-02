@@ -136,7 +136,7 @@ export function finishComparison(
 ): ComparisonResult {
   if (!validateSchema(raw)) {
     const e = validateSchema.errors?.[0];
-    throw new EngineError("validation", "The comparison did not return in the expected format. Try again.", options.requestId, {
+    throw new EngineError("validation", "The comparison came back incomplete. Try again.", options.requestId, {
       path: e?.instancePath ?? "/",
     });
   }
@@ -190,7 +190,7 @@ export async function compareWithSaved(
   try {
     raw = JSON.parse(call.text);
   } catch (error) {
-    throw new EngineError("invalid_json", "The comparison did not return in the expected format. Try again.", requestId, error);
+    throw new EngineError("invalid_json", "The comparison came back incomplete. Try again.", requestId, error);
   }
   return finishComparison(raw, saved, fresh, drift, {
     requestId,

@@ -34,7 +34,7 @@ function getSample(): Promise<SampleFn | null> {
   return samplePromise;
 }
 
-const FORMAT_ERROR = "The analysis did not return in the expected format. Try again.";
+const FORMAT_ERROR = "The review came back incomplete. Try again.";
 
 /** The page runtime accepts about 64 KiB of prompt. Audience context documents are trimmed, longest first, to stay under it. */
 const PROMPT_BUDGET_BYTES = 60_000;
@@ -64,7 +64,7 @@ function viewerMessage(code: string, fallback: string): string {
     case "session_expired":
       return "Your claude.ai session has expired. Sign in again and retry.";
     case "refused":
-      return "Claude declined to analyze this draft.";
+      return "Claude declined to review this draft.";
     case "invalid_json":
     case "empty_completion":
       return FORMAT_ERROR;

@@ -39,7 +39,7 @@ describe("ResultsPage with the captured Demo 1 analysis", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.queryByLabelText("Specialist review required")).toBeNull();
     // Still named on the findings themselves, so the information is not lost.
-    expect(screen.getAllByText(/Specialist review: HR/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Specialist to involve: HR/).length).toBeGreaterThan(0);
   });
 
   it("shows every finding in one merged section, most serious first", () => {
@@ -137,10 +137,10 @@ describe("the score ceiling when no context was supplied", () => {
     result.analysis.executive_summary.context_supplied = false;
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.getByText("How the scoring works")).toBeTruthy();
-    expect(screen.getByText(/the maximum score for three dimensions/)).toBeTruthy();
-    expect(screen.getByText(new RegExp(`caps this review at ${ceilingWithoutContext()} out of 100`))).toBeTruthy();
+    expect(screen.getByText(/three of the scores .* can go no higher than 3\.5 out of 5/)).toBeTruthy();
+    expect(screen.getByText(new RegExp(`this review can score no more than ${ceilingWithoutContext()}\\.`))).toBeTruthy();
     // The caveat is its own paragraph, and says the same thing either way.
-    expect(screen.getByText(/^NB: This is decision support, not advice/)).toBeTruthy();
+    expect(screen.getByText(/^Note: this helps you decide\. It isn't advice/)).toBeTruthy();
   });
 
   it("says nothing of the sort once context is supplied, because the cap is lifted", () => {
@@ -148,8 +148,8 @@ describe("the score ceiling when no context was supplied", () => {
     result.analysis.executive_summary.context_supplied = true;
     render(<ResultsPage result={result} request={DEMO_1.request} />);
     expect(screen.getByText(/The context you supplied was weighed against the draft/)).toBeTruthy();
-    expect(screen.queryByText(/the maximum score for three dimensions/)).toBeNull();
-    expect(screen.getByText(/^NB: This is decision support, not advice/)).toBeTruthy();
+    expect(screen.queryByText(/can go no higher than 3\.5 out of 5/)).toBeNull();
+    expect(screen.getByText(/^Note: this helps you decide\. It isn't advice/)).toBeTruthy();
   });
 
   it("derives the ceiling from the weights rather than a written-down number", () => {
@@ -203,7 +203,7 @@ describe("the Devil's Advocate, opened up (revision 24)", () => {
 
   it("uses the shorter heading", () => {
     render(<ResultsPage result={result} request={DEMO_1.request} />);
-    expect(screen.getByText("Most damning interpretation if issued as is")).toBeTruthy();
+    expect(screen.getByText("The worst reasonable reading if it goes out as it is")).toBeTruthy();
     expect(screen.queryByText(/plausible interpretation if issued unchanged/)).toBeNull();
   });
 

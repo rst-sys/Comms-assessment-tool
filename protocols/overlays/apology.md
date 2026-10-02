@@ -3,11 +3,12 @@ id: apology
 name: Public apology
 layer: overlay
 trigger: apology
-version: 1.0.4
+version: 1.0.5
 status: active
 last_reviewed: 2026-09-25
 review_by: null
 changelog:
+  - "1.0.5 (2026-10-02): source notes reworded in plain English; no check changed."
   - "1.0.4 — opening description added or reworded in plain English; no check changed."
   - "1.0.3 — The trigger \"No sentence says the organization or a named leader is responsible\" gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
   - "1.0.2 — Acknowledged responsibility gives way to the Legal constraints overlay's \"The limit covers only what it has to\" when both apply; wording unchanged."
@@ -25,7 +26,7 @@ elements:
     basis: research
     sources: [lewicki-2016-effective-apologies, sciencedaily-2016-six-elements]
     superseded_by: legal-constraints.limit-scope
-    basis_note: "The most important of six apology elements in one 2016 study of 755 people, known here through a press account."
+    basis_note: "The most important of six parts of an apology in one 2016 study of 755 people, known here through a press account."
 
   - id: apology.repair-offered
     name: Repair offered
@@ -34,7 +35,7 @@ elements:
     dimension: corrective_action_proof
     basis: research
     sources: [lewicki-2016-effective-apologies, sciencedaily-2016-six-elements]
-    basis_note: "The second most important element in the same study, known through a press account."
+    basis_note: "The second most important part in the same study, known through a press account."
 
   - id: apology.direct-regret
     name: Direct regret
@@ -43,7 +44,7 @@ elements:
     dimension: stakeholder_respect_impact
     basis: judgement
     sources: []
-    basis_note: "Regret is one of six apology elements in a 2016 study, but requiring it to be unconditional is the tool's own standard."
+    basis_note: "Regret is one of six parts of an apology in a 2016 study, but requiring it to be unconditional is the tool's own standard."
 
   - id: apology.conduct-rejected
     name: Conduct rejected
