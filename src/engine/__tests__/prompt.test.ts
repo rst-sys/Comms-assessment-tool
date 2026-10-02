@@ -243,3 +243,20 @@ describe("the ai_summary rules", () => {
     );
   });
 });
+
+describe("no names of fields the reply no longer has", () => {
+  // what_would_make_it_credible and suggested_revision were removed from the
+  // reply, and the scan no longer produces entries of its own; the
+  // instructions went on naming all three until the code review found them.
+  it("in the output notes", () => {
+    for (const stale of ["what_would_make_it_credible", "suggested revision", "scan entry", "Low entry"]) {
+      expect(OUTPUT_NOTES, stale).not.toContain(stale);
+    }
+  });
+
+  it("in the note for a draft that has already been issued", () => {
+    const message = buildUserMessage({ ...DEMO_1.request, already_published: true });
+    expect(message).not.toContain("suggested revision");
+    expect(message).toContain("Any recommended action is a model for future statements or a follow-up");
+  });
+});

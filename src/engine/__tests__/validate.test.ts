@@ -14,6 +14,7 @@ describe("validateAnalysis", () => {
       context_flag_corrected: false,
       trimmed_findings: 0,
       thin_questions: null,
+      capped_dimensions: 0,
     });
   });
 

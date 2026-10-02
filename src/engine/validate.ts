@@ -17,7 +17,7 @@
 import { Ajv, type ErrorObject } from "ajv";
 import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
 import { ANALYSIS_SCHEMA } from "./schema.js";
-import { isValidDimensionScore } from "./scoring.js";
+import { ASSERTED_CEILING, CAPPED_WITHOUT_CONTEXT, isValidDimensionScore } from "./scoring.js";
 import {
   DIMENSION_IDS,
   type Analysis,
@@ -47,6 +47,11 @@ export interface ValidationAdjustments {
   trimmed_findings: number;
   /** How many questions came back when fewer than MIN_QUESTIONS did, 0 included. Null when the count was fine. */
   thin_questions: number | null;
+  /**
+   * Dimensions brought down to ASSERTED_CEILING because no context was
+   * supplied. Optional so results from before this rule still read.
+   */
+  capped_dimensions?: number;
 }
 
 export interface ValidatedAnalysis {
@@ -109,6 +114,25 @@ export function decodeStrayEscapes<T>(value: T): T {
     return Object.fromEntries(Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, decodeStrayEscapes(v)])) as T;
   }
   return value;
+}
+
+/**
+ * The no-context ceiling, enforced in code. The prompt asks for it, and the
+ * results page states it as fact ("restricted to 3.5 out of 5"), so a score
+ * above it on any of the three dimensions would make the page untrue. The
+ * model kept to it in every captured review; this makes sure it always does.
+ */
+export function applyContextCeiling<D extends Pick<Analysis["dimensions"][number], "id" | "score">>(
+  dimensions: readonly D[],
+  contextSupplied: boolean,
+): { dimensions: D[]; capped: number } {
+  let capped = 0;
+  const out = dimensions.map((d) => {
+    if (contextSupplied || !CAPPED_WITHOUT_CONTEXT.includes(d.id) || d.score <= ASSERTED_CEILING) return d;
+    capped += 1;
+    return { ...d, score: ASSERTED_CEILING };
+  });
+  return { dimensions: out, capped };
 }
 
 function fail(path: string, message: string): never {
@@ -211,8 +235,11 @@ export function validateAnalysis(raw: unknown, draft: string, context: string): 
     if (f.specialist_review_needed && f.specialist_review_type) summaryTypes.add(f.specialist_review_type);
   }
 
+  const { dimensions, capped: cappedDimensions } = applyContextCeiling(input.dimensions, contextSupplied);
+
   const analysis: Analysis = {
     ...input,
+    dimensions,
     executive_summary: { ...summary, context_supplied: contextSupplied },
     findings,
     specialist_review_summary: [...summaryTypes],
@@ -225,6 +252,7 @@ export function validateAnalysis(raw: unknown, draft: string, context: string): 
       context_flag_corrected: contextCorrected,
       trimmed_findings: trimmedFindings,
       thin_questions: thinQuestions,
+      capped_dimensions: cappedDimensions,
     },
   };
 }

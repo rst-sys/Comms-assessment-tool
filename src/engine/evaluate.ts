@@ -10,7 +10,7 @@ import { callModel, EngineError, newRequestId, type EngineErrorKind, type ModelU
 import { getEngineConfig, type EngineConfig } from "./config.js";
 import { buildSystemBlocks, buildUserMessage, type SystemBlock } from "./prompt.js";
 import { resolveProtocols } from "./protocols.js";
-import { computeScore, confidenceLabel, scoreBand, type BandName } from "./scoring.js";
+import { ASSERTED_CEILING, computeScore, confidenceLabel, scoreBand, type BandName } from "./scoring.js";
 import { MAX_FINDINGS, MIN_QUESTIONS } from "./limits.js";
 import type { Analysis, EvaluationRequest } from "./types.js";
 import { AnalysisValidationError, validateAnalysis, type ValidationAdjustments } from "./validate.js";
@@ -109,6 +109,9 @@ export function finishEvaluation(raw: unknown, request: EvaluationRequest, optio
   }
   if (adjustments.thin_questions !== null) {
     log(`[${requestId}] only ${adjustments.thin_questions} question(s) returned, below the ${MIN_QUESTIONS} aimed for`);
+  }
+  if (adjustments.capped_dimensions) {
+    log(`[${requestId}] capped ${adjustments.capped_dimensions} dimension(s) at ${ASSERTED_CEILING} because no context was supplied`);
   }
   if (adjustments.trimmed_findings > 0) {
     log(`[${requestId}] trimmed ${adjustments.trimmed_findings} finding(s) past the ${MAX_FINDINGS}-finding cap`);
