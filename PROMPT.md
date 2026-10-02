@@ -173,6 +173,8 @@ Below the card, one line: "Enterprise controls — customer-controlled processin
 
 ## 5. Evaluation system prompt
 
+> **Historical (note added 2 October 2026).** The prompt below is the original text and no longer matches what the tool sends. `src/engine/prompt.ts` is the source of truth for the instructions: it assembles the main instructions, held in `src/engine/promptText.ts`, with the protocol blocks and the output notes. Change the instructions there, not here.
+
 Use the following as the system prompt for the evaluation call, verbatim. Send the draft and every intake field in the user message as labeled blocks. Set temperature to 0.2 or lower. Request JSON output matching Section 6 and validate it before rendering.
 
 ```markdown

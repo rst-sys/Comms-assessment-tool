@@ -108,13 +108,9 @@ The live runner needs `ACR_API_KEY` (or `ANTHROPIC_API_KEY`). Hosted Claude Code
 
 `npm run build:artifact` builds the same app for a private claude.ai page (`dist-artifact/`) that asks Claude through the viewer's own account instead of the server. See `DEVIATIONS.md` item 28.
 
-## Regenerating the prompt text
+## Where the prompt text lives
 
-`src/engine/promptText.ts` is generated from the fenced block under Section 5 of `PROMPT.md`. After editing those sections, regenerate with:
-
-```
-node scripts/extract-prompt.mjs
-```
+`src/engine/prompt.ts` is the source of truth for what the model is sent: it assembles the main instructions (held in `src/engine/promptText.ts`), the protocol blocks and the output notes. Edit those files directly. The prompt in `PROMPT.md` Section 5 is historical and no longer matches.
 
 ## Deviations from PROMPT.md
 
