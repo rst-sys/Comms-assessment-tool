@@ -168,7 +168,7 @@ export function ToolOverview({ config, runtimeNote, onStandards }: Props) {
 
         <Section id="privacy" title="Your draft and your privacy">
           <div className="tile-grid">
-            {privacyPoints(provider, config?.training_term ?? null).map(([title, body]) => (
+            {privacyPoints(provider, config?.training_term ?? null, config?.gate_enabled ?? false).map(([title, body]) => (
               <div className="card tile" key={title}>
                 <h3>{title}</h3>
                 <p>{body}</p>

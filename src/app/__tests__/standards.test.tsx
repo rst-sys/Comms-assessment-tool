@@ -108,7 +108,7 @@ describe("the page, and the line it must not cross", () => {
     for (const protocol of ACTIVE) {
       expect(screen.getByRole("heading", { name: protocol.name })).toBeTruthy();
       // Not anchored on "Applied when": each layer says when it applies in its
-      // own words — "Applied whenever an event is named" for the core,
+      // own words — "Applied to every review" for the core,
       // "Applied to every workforce event" for a family.
       expect(screen.getAllByText(new RegExp(`Applied .*Version ${protocol.version}`)).length, protocol.id).toBeGreaterThan(0);
     }
@@ -135,5 +135,24 @@ describe("the page, and the line it must not cross", () => {
     // Its sources are behind a second expander, and open when asked.
     fireEvent.click(screen.getByRole("button", { name: /Sources in full/ }));
     expect(screen.getAllByText(/cannot|does not|assumes/i).length).toBeGreaterThan(0);
+  });
+
+  it("shows what each overlay cannot judge, whichever heading its file uses", () => {
+    // Three overlays call the section "What this overlay does not cover", and
+    // the page used to look only for "What this protocol does not cover" or
+    // "Limits", so their limits never appeared.
+    render(<StandardsLibrary />);
+    for (const name of ["Change readiness", "Crisis in progress", "Legal constraints"]) {
+      const card = screen.getByRole("heading", { name }).closest("section")!;
+      fireEvent.click(card.querySelector("button.protocol-head")!);
+      fireEvent.click(card.querySelector("button.sources-toggle")!);
+      expect(card.textContent, name).toContain("What it cannot do");
+    }
+  });
+
+  it("says the core applies to every review", () => {
+    render(<StandardsLibrary />);
+    const core = screen.getByRole("heading", { name: "Core protocol" }).closest("section")!;
+    expect(core.textContent).toContain("Applied to every review");
   });
 });

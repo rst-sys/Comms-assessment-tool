@@ -149,7 +149,7 @@ export const STANDARDS_LEDE =
 export const STANDARDS_SECTIONS: { id: string; title: string }[] = [
   { id: "read", title: "How to read this page" },
   { id: "core", title: "The core framework" },
-  { id: "protocols", title: "Event protocols" },
+  { id: "protocols", title: "Protocols" },
   { id: "codes", title: "Published codes" },
   { id: "judgement", title: "Our own judgment" },
 ];
@@ -170,7 +170,7 @@ export const HOW_TO_READ_INTRO =
 export const HOW_TO_READ: { kind: ClaimKind; body: string; strong?: string }[] = [
   {
     kind: "applied",
-    body: "Rules the review engine runs: the ten dimensions, the agency scan and the event protocols.",
+    body: "Rules the review engine runs: the ten dimensions, the agency scan and the protocols (the core, families, event protocols and overlays).",
     strong: "These determine your score.",
   },
   {
@@ -193,13 +193,13 @@ export const SCAN_CARD =
   "Six patterns of language that let responsibility disappear: external weather, institutional abstraction, audience displacement, passive accountability, values without action and vague action. A phrase is flagged only when it's doing the explaining.";
 
 export const PROTOCOLS_INTRO: string[] = [
-  "Naming the event at intake brings in the protocol written for it. A protocol is a lens on the ten dimensions, never an eleventh score: a missing element shows up as an ordinary finding under the dimension it belongs to.",
+  "Four layers apply, in this order: the core on every review; the family your event belongs to; the event's own protocol, for the five events that have one; and any overlays your other answers switch on. A protocol is a lens on the ten dimensions, never an eleventh score: a missing element shows up as an ordinary finding under the dimension it belongs to. Where two layers check the same thing, the more specific one is used and the other gives way.",
   "Each protocol states what kind of authority it rests on. Its full sources, including what its author couldn't access and what it can't judge, sit behind the expander on its card.",
 ];
 
 export const PROTOCOLS_PLANNED: [string, string] = [
   "More protocols are planned.",
-  "Until then, a draft about an event without its own protocol is judged against the core framework, plus the checks every high-stakes event shares.",
+  "Until then, a draft about an event without its own protocol is judged against the core, the family the event belongs to, and any overlays that apply.",
 ];
 
 export const CODES_INTRO =
@@ -245,11 +245,15 @@ export function ownJudgment(): [string, string][] {
     ],
     [
       "Asserted, Supported, Unverifiable",
-      `Capping a dimension at ${ASSERTED_CEILING} of 5 when the draft claims something no supplied context confirms.`,
+      `Capping a dimension at ${ASSERTED_CEILING} of 5 when the draft claims something no supplied context confirms, and capping accountability, causation and corrective action at ${ASSERTED_CEILING} whenever no context is supplied.`,
     ],
     [
-      "Severity thresholds and readiness",
-      "What makes a finding High rather than Moderate, and when a draft should not be issued.",
+      "Severity thresholds",
+      "What makes a finding High rather than Moderate or Low.",
+    ],
+    [
+      "The AI summary check",
+      "Dropping an AI summary that repeats a figure, or a telling phrase, found only in your context, so it reflects the draft alone.",
     ],
   ];
 }

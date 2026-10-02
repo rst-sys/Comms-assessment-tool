@@ -73,6 +73,8 @@ export function getEngineConfig(env: NodeJS.ProcessEnv = process.env): EngineCon
     maxOutputTokens,
     speed: speedRaw as Speed,
     trainingTerm: env.ACR_TRAINING_TERM?.trim() || "Not used to train models",
-    processingMode: env.ACR_PROCESSING_MODE?.trim() || "Zero-retention API",
+    // Neutral when unset, so deleting the setting can never claim zero
+    // retention by accident; the deployment states its actual terms.
+    processingMode: env.ACR_PROCESSING_MODE?.trim() || "Anthropic API",
   };
 }

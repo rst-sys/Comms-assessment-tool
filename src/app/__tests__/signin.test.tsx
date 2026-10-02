@@ -27,7 +27,11 @@ describe("the password screen", () => {
     render(<SignIn onDone={() => {}} />);
     expect(screen.getByRole("heading", { name: "Tester access" })).toBeTruthy();
     expect(screen.getByText("This prototype is open to a small group of testers. Enter the password you were given.")).toBeTruthy();
-    expect(screen.getByText(/Everyone testing shares this password\. It isn’t an account, and nothing about you is stored\. Please ask before passing it on\./)).toBeTruthy();
+    expect(
+      screen.getByText(
+        /Everyone testing shares this password\. It isn’t an account\. The app keeps only a sign-in cookie in your browser and a daily count of reviews, cleared each day\. Please ask before passing it on\./,
+      ),
+    ).toBeTruthy();
     expect(document.activeElement).toBe(field());
     // Never greyed out for an empty field.
     expect(button().disabled).toBe(false);

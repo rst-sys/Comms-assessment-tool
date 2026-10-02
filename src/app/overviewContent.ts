@@ -43,14 +43,14 @@ export const VALUE_POINTS: [string, string][] = [
 
 /** In the order the Review screen asks for them: the questions, then the draft. */
 export const REVIEW_STEPS: [string, string][] = [
-  ["Answer the setup questions", "Including what happened, what you're writing and who it's for. Your answers decide which standards apply."],
-  ["Paste your draft", "Add as much context as you can: the facts, supporting documents, earlier communications and coverage."],
+  ["Answer the setup questions", "Including what happened, what you're writing, who it's for, and whether counsel has limited what you can say. Your answers decide which standards apply."],
+  ["Paste your draft", "At least 10 words, though it works best on a full statement of 50 or more. Add what you know under “Anything else we should know?”: the facts, who decided, and anything counsel has ruled out."],
   ["Read your review", "In a minute or two. Download the PDF to share with your team."],
 ];
 
 export const EVIDENCE_RULE: [string, string] = [
   "Your draft is treated as claims. Your context is treated as fact.",
-  "The assistant never invents a metric, a date, a commitment or a name, and it says plainly when a score reflects the draft's language alone. Supporting material you add is read as what your audience already knows.",
+  "The assistant never invents a metric, a date, a commitment or a name, and it says plainly when a score reflects the draft's language alone. Without context, accountability, causation and corrective action can score no higher than 3.5 out of 5.",
 ];
 
 /** What comes back, in the order the results page shows it. Lead phrase, then the rest. */
@@ -58,9 +58,11 @@ export const WHAT_YOU_GET: [string, string][] = [
   ["A trust score out of 100,", "with a band and a risk level"],
   ["A headline takeaway,", "and the ten dimension scores behind it"],
   ["Specific findings,", "each naming the gap and the information that would close it"],
-  ["Five audience voices,", "one line each on what the draft leaves them asking"],
-  ["Questions to ask before you publish,", "tagged for the reviewer who should see them"],
   ["The most damning reading:", "how the draft could reasonably be read if it went out unchanged"],
+  ["Five audience voices,", "one line each on what the draft leaves them asking"],
+  ["How an AI assistant might summarize it:", "an illustration, drawn from the draft alone"],
+  ["Questions to ask before you publish,", "tagged for the reviewer who should see them"],
+  ["A checklist for your reviewers,", "from the standards that apply to your situation"],
   ["A PDF of the whole review", "to keep or share"],
 ];
 
@@ -94,8 +96,8 @@ export const LENSES: { title: string; paragraphs: string[] }[] = [
   {
     title: "Event standards",
     paragraphs: [
-      "The event you name adds checks. Every high-stakes event shares a core: who decided, who's affected, what's confirmed versus assumed, what readers should do, when the next update comes, and whether the hard fact is said plainly.",
-      "Some events add a standard of their own, drawn from published research or regulation. Choose “Something else” to use the ten dimensions alone.",
+      "Every review adds a core of checks all high-stakes messages share: who decided, who's affected, what's confirmed versus assumed, what readers should do, when the next update comes, and whether the hard fact is said plainly.",
+      "The event you name adds the standard for its family, such as leadership change or incidents, and five events have a standard of their own. Other answers add overlays: a listed company, people harmed, jobs affected, a crisis still unfolding, a change employees must make, an apology, or a limit counsel has set. Choose “Something else” and the core and any overlays still apply.",
     ],
   },
   {
@@ -108,7 +110,7 @@ export const LENSES: { title: string; paragraphs: string[] }[] = [
   {
     title: "Devil's advocate",
     paragraphs: [
-      "Five audiences chosen for your message type each say what a reasonable but skeptical reader may hear, question and find missing.",
+      "Five audiences chosen for your message each get one line in their own voice: the question or objection the draft leaves them with. Above them sits the most damning reasonable reading if the draft goes out unchanged.",
     ],
   },
 ];
@@ -118,15 +120,20 @@ export const NOT_THIS: [string, string][] = [
   ["Copyedit", "Grammar, spelling, house style and readability are out of scope."],
   [
     "Certify compliance",
-    "It isn't legal, employment, financial-disclosure, regulatory, privacy or tax advice, and it doesn't replace counsel, HR or investor relations. It flags where their review is needed.",
+    "It isn't legal, employment, financial-disclosure, regulatory, privacy or tax advice, and it doesn't replace counsel, HR or investor relations. It flags where their review is needed. If you tick the counsel box, it works within the limit you describe and leaves legal judgements to counsel: it never says whether a statement is legally safe or admits fault.",
   ],
   ["Judge motives", "It never says an organization lied, acted in bad faith or broke the law. It separates missing information from false information."],
 ];
 
 export const NOT_THIS_CLOSE = "It's decision-support software. The judgment, and the words, stay yours.";
 
-/** Plain-language privacy points; `provider` is filled from the live configuration. */
-export function privacyPoints(provider: string | null, training: string | null): [string, string][] {
+/**
+ * Plain-language privacy points; `provider` is filled from the live
+ * configuration. The tester-access point is shown only where the password
+ * screen is switched on, because only there does the app keep the cookie and
+ * the daily count it describes.
+ */
+export function privacyPoints(provider: string | null, training: string | null, gateEnabled = false): [string, string][] {
   return [
     ["Nothing is saved", "Your draft, context and results live only in this browser tab. Close it and they're gone. No account, history or database."],
     [
@@ -134,6 +141,14 @@ export function privacyPoints(provider: string | null, training: string | null):
       `${provider ?? "The configured AI provider"} analyzes it, and it goes nowhere else.${training ? ` ${training}.` : ""}`,
     ],
     ["No one is watching", "No analytics, tracking or session recording. Errors are logged as a code and a random reference, never as your text."],
-    ["Never a web search", "If you search for public coverage, only the topic you type is sent."],
+    ["No web search", "Your draft is never searched for or sent to a search engine."],
+    ...(gateEnabled
+      ? ([
+          [
+            "Tester access",
+            "One shared password keeps the prototype to invited testers. It isn't an account. The app keeps only a sign-in cookie in your browser and a daily count of reviews per network address, held in memory and cleared each day.",
+          ],
+        ] as [string, string][])
+      : []),
   ];
 }

@@ -93,8 +93,8 @@ export function SignIn({ onDone }: { onDone: () => void }) {
           </div>
         </form>
         <p className="muted small signin-note">
-          Everyone testing shares this password. It isn’t an account, and nothing about you is stored. Please ask
-          before passing it on.
+          Everyone testing shares this password. It isn’t an account. The app keeps only a sign-in cookie in your
+          browser and a daily count of reviews, cleared each day. Please ask before passing it on.
         </p>
       </section>
     </main>

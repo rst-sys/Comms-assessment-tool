@@ -152,7 +152,7 @@ export function StandardsLibrary({ onOverview }: { onOverview?: () => void }) {
           </div>
         </Section>
 
-        <Section id="protocols" title="Event protocols" tag="applied">
+        <Section id="protocols" title="Protocols" tag="applied">
           {PROTOCOLS_INTRO.map((text) => (
             <p className="prose" key={text}>{text}</p>
           ))}
@@ -238,7 +238,7 @@ function Tag({ kind }: { kind: ClaimKind }) {
 
 /** When a protocol applies, read from the taxonomy rather than from the file. */
 function appliedWhen(p: ProtocolFile): string {
-  if (p.layer === "core") return "Applied whenever an event is named";
+  if (p.layer === "core") return "Applied to every review";
   if (p.layer === "overlay") return `Applied when ${(p.trigger ? OVERLAY_WHEN[p.trigger] : undefined) ?? "its rule holds"}, on top of any event or none`;
   if (p.layer === "family") {
     const events = EVENT_TAXONOMY.filter((e) => e.family === p.id);
@@ -253,7 +253,7 @@ function appliedWhen(p: ProtocolFile): string {
 const OVERLAY_WHEN: Record<OverlayTrigger, string> = {
   "listed-company": "the organization is a publicly listed company",
   "people-harmed": "people have been harmed or put at risk",
-  "workforce-impact": "the event is layoffs, restructuring or a site closure, or it is cost-cutting, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
+  "workforce-impact": "the event is layoffs, restructuring or a site closure; or when it is cost-cutting, a new or updated strategy or exit from a market, or a merger sent to employees",
   "crisis-in-progress": "the situation is still unfolding",
   "change-readiness": "the event is a restructuring, a major policy change, a new or updated strategy or exit from a market, or a merger, and employees are an audience",
   apology: "the draft is mainly trying to apologize and take responsibility",
@@ -385,7 +385,9 @@ function Sources({ protocol }: { protocol: ProtocolFile }) {
     ["Basis", protocolSection(protocol.prose, "Basis")],
     [
       "What it cannot do",
-      protocolSection(protocol.prose, "What this protocol does not cover") || protocolSection(protocol.prose, "Limits"),
+      protocolSection(protocol.prose, "What this protocol does not cover") ||
+        protocolSection(protocol.prose, "What this overlay does not cover") ||
+        protocolSection(protocol.prose, "Limits"),
     ],
   ];
   return (
