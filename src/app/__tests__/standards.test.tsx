@@ -155,4 +155,14 @@ describe("the page, and the line it must not cross", () => {
     const core = screen.getByRole("heading", { name: "Core protocol" }).closest("section")!;
     expect(core.textContent).toContain("Applied to every review");
   });
+
+  it("opens each card with the protocol's own description, where its file has one", () => {
+    render(<StandardsLibrary />);
+    const card = screen.getByRole("heading", { name: "Legal constraints" }).closest("section")!;
+    fireEvent.click(card.querySelector("button.protocol-head")!);
+    const intro = card.querySelector(".protocol-intro")!;
+    expect(intro.textContent).toContain("Switched on when the writer ticks");
+    // Before the checks, not after them.
+    expect(intro.compareDocumentPosition(card.querySelector("table.check-table")!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
 });

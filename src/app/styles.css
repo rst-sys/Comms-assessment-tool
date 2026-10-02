@@ -1028,3 +1028,7 @@ a.score-number:hover { text-decoration-color: var(--ink); }
    announce the new page. It is focused by the app, not by a click or a tab,
    so it shows no ring. */
 h1[tabindex="-1"]:focus { outline: none; }
+
+/* A protocol's own description, above its checks. */
+.protocol-intro { margin-bottom: calc(var(--space) * 2); }
+.protocol-intro > :first-child { margin-top: 0; }

@@ -249,6 +249,18 @@ function appliedWhen(p: ProtocolFile): string {
   return `Applied when the event is ${list}`;
 }
 
+/** The headings a protocol file uses for its opening description, in the order tried. */
+const INTRO_HEADINGS = ["What this protocol is", "What this overlay is", "What this overlay does"];
+
+/** The protocol's opening description, as display blocks; empty when the file has none. */
+function protocolIntro(prose: string): ReturnType<typeof proseBlocks> {
+  for (const heading of INTRO_HEADINGS) {
+    const text = protocolSection(prose, heading);
+    if (text) return proseBlocks(text);
+  }
+  return [];
+}
+
 /** What each overlay rule means, in the words the intake uses. */
 const OVERLAY_WHEN: Record<OverlayTrigger, string> = {
   "listed-company": "the organization is a publicly listed company",
@@ -307,6 +319,23 @@ function ProtocolCard({ protocol, openByDefault }: { protocol: ProtocolFile; ope
 
       {open ? (
         <div className="protocol-body" id={bodyId}>
+          {/* The file's own account of what it is for, and how it relates to
+              the protocols around it, before the checks themselves. */}
+          {protocolIntro(protocol.prose).length > 0 ? (
+            <div className="protocol-intro">
+              {protocolIntro(protocol.prose).map((b, i) =>
+                b.kind === "list" ? (
+                  <ul key={i} className="tight prose">
+                    {(b.items ?? []).map((item, j) => (
+                      <li key={j}>{item}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p key={i} className="prose">{b.text}</p>
+                ),
+              )}
+            </div>
+          ) : null}
           <table className="check-table">
             <thead>
               <tr>
