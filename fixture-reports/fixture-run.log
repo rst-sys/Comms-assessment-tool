@@ -1,0 +1,108 @@
+
+> accountable-communications-review@0.1.0 fixtures
+> tsx scripts/run-fixtures.ts
+
+Accountable Communications Review — fixture run
+provider Anthropic, model claude-opus-5, effort high
+
+→ Demo 1 — Restructuring memo [demo1] ... done in 154.4s (507 in / 12196 out)
+  demo1: score 13 (Serious clarity, accountability, or ethical-risk concerns); risk Critical; readiness "Do not issue until material gaps are resolved"; 11 findings (8 High); 4 scan flags; specialist: HR, Labor
+    dimensions: accountability 0.5, truthfulness 1.0, causation 0.5, stakeholder 0.5, listening 0.5, corrective 0.5, clarity 1.5, verification 0.0, fairness 1.0, future 0.5
+
+Demo 1 expectations
+  PASS  score ≤ 39 — score 13
+  PASS  readiness in [Do not issue until material gaps are resolved] — Do not issue until material gaps are resolved
+  PASS  High finding: growth as a nonhuman cause — F-004 (causation_explanation)
+  PASS  High finding: employee feedback near an adverse decision — F-001 (accountability_agency)
+  PASS  High finding: no leadership ownership — F-001 (accountability_agency)
+  PASS  High finding: no decision rights — F-001 (accountability_agency)
+  PASS  High finding: no selection criteria or support — F-002 (stakeholder_respect_impact)
+  PASS  High finding: no redeployment — F-003 (stakeholder_respect_impact)
+  PASS  High finding: no correction beyond headcount — F-001 (accountability_agency)
+  PASS  High finding: no learning plan — F-002 (stakeholder_respect_impact)
+  PASS  High finding: no verification — F-005 (truthfulness_factual_discipline)
+  PASS  scan flag /rapid growth brought complexity/i as Institutional abstraction High — "Rapid growth brought complexity"
+  PASS  scan flag /leaner and more agile/i as Vague action — "to become leaner and more agile"
+  PASS  specialist review includes HR — HR, Labor
+  PASS  specialist review includes Labor — HR, Labor
+  PASS  persona /affected employee/i — Affected employee; Remaining employee; Front-line manager; Labor representative; Journalist
+  PASS  persona /remaining employee/i — Affected employee; Remaining employee; Front-line manager; Labor representative; Journalist
+
+→ Demo 2 — Product apology [demo2] ... done in 128.6s (478 in / 9927 out)
+  demo2: score 13 (Serious clarity, accountability, or ethical-risk concerns); risk Critical; readiness "Do not issue until material gaps are resolved"; 10 findings (5 High); 3 scan flags; specialist: Legal, Local market, Executive
+    dimensions: accountability 0.5, truthfulness 1.0, causation 0.5, stakeholder 0.5, listening 1.0, corrective 0.5, clarity 1.0, verification 0.0, fairness 1.0, future 0.5
+
+Demo 2 expectations
+  PASS  score ≤ 44 — score 13
+  PASS  High finding: audience displacement — F-001 (accountability_agency)
+  PASS  High finding: content treated as autonomous, no approval chain — F-001 (accountability_agency)
+  PASS  High finding: no harm acknowledgment — F-002 (stakeholder_respect_impact)
+  PASS  High finding: values without action — F-001 (accountability_agency)
+  PASS  High finding: no corrective action — F-001 (accountability_agency)
+  PASS  High finding: no timeline — F-004 (truthfulness_factual_discipline)
+  FAIL  High finding: no verification — no High finding matched /verif|measur|metric|update|follow[- ]through/i
+  PASS  scan flag /some customers were offended/i as Audience displacement — "Some customers were offended"
+  PASS  scan flag /committed to learning/i as Values without action — "We are committed to learning from this"
+  PASS  most damaging interpretation names /audience|customer|offen|reaction|blame|responsib|fault|sensitiv/i
+
+→ Demo 3 — Investor statement [demo3] ... done in 119.3s (482 in / 10477 out)
+  demo3: score 16 (Serious clarity, accountability, or ethical-risk concerns); risk Critical; readiness "Do not issue until material gaps are resolved"; 10 findings (5 High); 3 scan flags; specialist: Investor relations, Legal, Executive
+    dimensions: accountability 0.5, truthfulness 0.5, causation 0.5, stakeholder 0.5, listening 2.0, corrective 0.5, clarity 1.5, verification 0.5, fairness 1.5, future 0.5
+
+Demo 3 expectations
+  PASS  score ≤ 49 — score 16
+  PASS  High finding: external conditions as the complete explanation — F-001 (accountability_agency)
+  PASS  High finding: no management assumptions or exposure — F-001 (accountability_agency)
+  PASS  High finding: unsupported reassurance — F-003 (causation_explanation)
+  PASS  High finding: no strategy correction — F-002 (stakeholder_respect_impact)
+  PASS  High finding: no measurable response — F-003 (causation_explanation)
+  FAIL  scan flag /macroeconomic headwinds and sector-wide conditions/i as External weather (Incomplete explanation) — not flagged
+  PASS  scan flag /remain confident/i as Values without action — "We remain confident in our strategy"
+  PASS  specialist review includes Investor relations — Investor relations, Legal, Executive
+  PASS  specialist review includes Legal — Investor relations, Legal, Executive
+
+→ Control draft (calibration 2) [control] ... done in 103.9s (631 in / 8741 out)
+  control: score 83 (Credible, with targeted improvements); risk Low; readiness "Revise before issuing"; 6 findings (0 High); 0 scan flags; specialist: HR
+    dimensions: accountability 3.5, truthfulness 4.5, causation 3.5, stakeholder 4.5, listening 4.5, corrective 3.5, clarity 5.0, verification 4.5, fairness 4.5, future 4.5
+
+Calibration 2 — false-positive ceiling (control draft)
+  PASS  score ≥ 80 — score 83
+  PASS  readiness in [Ready with minor edits | Revise before issuing] — Revise before issuing
+  PASS  ≤ 1 scan flag(s) — 0 flag(s): none
+  PASS  scan severity ≤ Low
+
+→ Demo 1 with known facts (calibration 1) [demo1-context] ... done in 139.6s (522 in / 11378 out)
+  demo1-context: score 19 (Serious clarity, accountability, or ethical-risk concerns); risk Critical; readiness "Do not issue until material gaps are resolved"; 10 findings (7 High); 4 scan flags; specialist: HR, Labor
+    dimensions: accountability 1.0, truthfulness 1.0, causation 1.0, stakeholder 1.0, listening 0.5, corrective 1.0, clarity 1.5, verification 0.5, fairness 1.0, future 0.5
+
+Calibration 1 — context sensitivity
+  PASS  bare run shows the draft-language-only confidence label — Scored on draft language only — add known facts and decision details for a substantiated score
+  PASS  context run shows the supplied-context confidence label — Scored against supplied context
+  PASS  accountability_agency scores higher with context — 0.5 → 1
+  PASS  corrective_action_proof scores higher with context — 0.5 → 1
+
+→ Demo 2 — Product apology [demo2-run2] ... done in 131.5s (478 in / 10287 out)
+
+→ Demo 2 — Product apology [demo2-run3] ... done in 138.4s (478 in / 10562 out)
+
+Calibration 3 — determinism (Demo 2 × 3)
+  PASS  score varies by ≤ 5 points — scores 13, 14, 14 (spread 1)
+  PASS  top three findings share at least two dimensions across every pair of runs — accountability_agency+causation_explanation+stakeholder_respect_impact | accountability_agency+causation_explanation+stakeholder_respect_impact | accountability_agency+causation_explanation+stakeholder_respect_impact
+  Top-three findings per run, for a substance check by eye:
+    run 1:
+      F-001 High accountability_agency: The content is described without any actor: no one is named as having created, commissioned, approved or published it, and no decision or decision rights appear anywhere in the draft. No context fields were supplied, so there is no ownership claim that could be confirmed, and the phrasing may leave agency entirely unclear.
+      F-002 High stakeholder_respect_impact: Harm is expressed as a reaction held by an unnamed subset of the audience rather than as an impact the organization caused, and the word "some" minimises scope without stating what is known. Under heightened review, this is a euphemism for adverse impact combined with an omitted acknowledgment of who was affected.
+      F-003 High causation_explanation: The draft offers no causal account at all: a reader learns that content existed and that it conflicted with stated values, but nothing about the process, judgement or governance condition that allowed it to be published. Nothing in the draft or the empty context could confirm a cause.
+    run 2:
+      F-001 High accountability_agency: The content is presented as an object that failed a values test, with no person, role or body identified as having created, commissioned or approved it. A reasonable stakeholder could not tell who held decision rights or who is answerable.
+      F-002 High stakeholder_respect_impact: The impact is framed as offence felt by an unspecified subset of customers, which relocates the event to the audience's reaction and may read as minimizing both scope and harm. No affected group is named and no apology is offered.
+      F-003 High causation_explanation: The draft offers no causal explanation whatsoever; "did not reflect our values" restates the outcome rather than identifying the condition that produced it. Nothing distinguishes external context from internal exposure.
+    run 3:
+      F-001 High accountability_agency: The sentence contains no actor: customers are the subject of the harm and "content" is the subject of the failure, so no person, team or governing body is shown as having created, approved or published the material. Any ownership implied by the following sentence is asserted in the draft and unconfirmed, since no context fields were supplied.
+      F-002 High stakeholder_respect_impact: The harm is described as offence felt by an unnamed subset of customers rather than as an impact the organization caused, and no affected group, community or market is identified. Under heightened review, framing adverse impact through the audience's reaction is a High-severity concern.
+      F-003 High causation_explanation: The draft offers no account of how the content was developed, reviewed or approved, and attributes the failure to a mismatch with values rather than to any identifiable internal decision or control gap. This causal framing is asserted and unconfirmed by any context field.
+
+2 check(s) failed:
+  - Demo 2 expectations: High finding: no verification
+  - Demo 3 expectations: scan flag /macroeconomic headwinds and sector-wide conditions/i as External weather (Incomplete explanation)
+Raw results: fixture-runs/*-2026-09-19T20-07-28-105Z.json

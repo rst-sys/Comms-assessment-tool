@@ -1,0 +1,372 @@
+{
+  "request_id": "8d445ac24c37",
+  "analysis": {
+    "schema_version": "1.0",
+    "executive_summary": {
+      "assessment": "No context fields were supplied, so agency and causation are scored on the draft's language alone and no claim in the draft can be marked SUPPORTED. In two sentences the draft never states what happened, what the content was, who created or approved it, who was harmed and how, what the organization is doing, or who owns any follow-up; the opening clause places the event in the customers' reaction (\"Some customers were offended\") rather than in an organizational decision, and the closing clause offers commitment without a single action, owner or date. Under heightened review, the euphemistic framing of adverse impact, the unsupported reassurance and the absence of any acknowledgment of affected people each meet the High-severity threshold. As an apology intended to repair trust with a global customer audience, this text does not yet give a reader anything to hold the organization to.",
+      "risk_level": "Critical",
+      "readiness": "Do not issue until material gaps are resolved",
+      "context_supplied": false,
+      "strongest_elements": [
+        "The language is short and free of technical jargon, so a general reader can parse the sentences even though the substance is missing.",
+        "The draft does register that harm was experienced by customers rather than denying that anything occurred.",
+        "The draft is unpublished, so the account can be rebuilt before any external exposure."
+      ],
+      "priority_improvements": [
+        "State plainly what the content was, when and where it appeared, who approved it, and apologize directly for the harm rather than for the reaction to it.",
+        "Name the internal conditions that allowed it to be produced and published (review steps, approval authority, market checks) and distinguish what is known from what is still being established.",
+        "Replace \"committed to learning\" with dated, owned corrective actions and a stated update channel so a reader can verify follow-through."
+      ]
+    },
+    "dimensions": [
+      {
+        "id": "accountability_agency",
+        "score": 0.5,
+        "rationale": "The only subject connected to the event is \"Some customers were offended\", and the organization appears solely as the owner of values in \"content that did not reflect our values\", so no decision, decision-maker or approval authority is visible anywhere in the draft. There is no ASSERTED ownership claim to evaluate, let alone a SUPPORTED one; with no context fields supplied, nothing here can be confirmed and the account of who decided what is simply absent.",
+        "would_raise": "Name the decision, the role or body that approved the content, and state in the first person what that role got wrong."
+      },
+      {
+        "id": "truthfulness_factual_discipline",
+        "score": 1,
+        "rationale": "The draft describes the subject only as \"content that did not reflect our values\", giving no date, channel, market or description, so a reader cannot tell what is being apologized for or check any part of it. Nothing is falsified, but the vagueness creates an impression of candor without any verifiable fact, and no uncertainty is disclosed about what remains under review.",
+        "would_raise": "Describe the content, where and when it appeared, and separate confirmed facts from what is still being established."
+      },
+      {
+        "id": "causation_explanation",
+        "score": 0.5,
+        "rationale": "The draft offers no cause at all: it does not say how the content was created, reviewed or approved, and \"did not reflect our values\" restates the outcome rather than explaining it. Any causal account is therefore UNVERIFIABLE on the draft's language, and with no context fields supplied there is nothing to confirm internal exposure.",
+        "would_raise": "Explain the specific review, approval or market-check step that failed and why it failed, distinguishing external context from internal exposure."
+      },
+      {
+        "id": "stakeholder_respect_impact",
+        "score": 0.5,
+        "rationale": "\"Some customers were offended\" characterizes the impact as a feeling held by an unspecified subset rather than naming who was affected and how, and the word \"Some\" may read to a reasonable stakeholder as minimizing scope. There is no apology, no acknowledgment of any group depicted or harmed, and no information the affected audience could act on.",
+        "would_raise": "Name the affected groups, state the harm in plain terms, and say \"we are sorry\" for the organization's action rather than for the reaction."
+      },
+      {
+        "id": "listening_employee_voice",
+        "score": 1,
+        "rationale": "The draft's framing locates the problem in the audience's response rather than in the organization's conduct, which is the opposite of keeping stakeholder voice separate from organizational ownership. No channel is offered for anyone to respond, and no employee or community input is described or protected.",
+        "would_raise": "Open a named channel for affected customers and communities to be heard, and state that the organization, not those who raised concerns, owns the failure."
+      },
+      {
+        "id": "corrective_action_proof",
+        "score": 0.5,
+        "rationale": "\"We are committed to learning from this.\" is an intention with no action, owner, mechanism or date, and under heightened review it functions as unsupported reassurance. The commitment is ASSERTED only, not confirmed by any context field, and nothing in it is capable of being checked by a reader.",
+        "would_raise": "List at least two specific corrective steps with a named owner and a completion date for each."
+      },
+      {
+        "id": "clarity_plain_language",
+        "score": 1.5,
+        "rationale": "The sentences are grammatically simple, but \"content that did not reflect our values\" leaves the reader unable to tell what happened, and \"were offended\" is a euphemism that obscures the nature of the harm. A reader finishes the message without knowing the event, the audience affected, or any next step.",
+        "would_raise": "Say in one plain sentence what was published, where, and what the organization is doing about it."
+      },
+      {
+        "id": "verification_follow_through",
+        "score": 0,
+        "rationale": "There is no metric, milestone, update date, review process or named owner anywhere in the draft; \"We are committed to learning from this.\" is not falsifiable. A reader has no way to return later and establish whether anything changed.",
+        "would_raise": "Name an accountable owner, a fixed update date and the channel where progress will be published."
+      },
+      {
+        "id": "fairness_independence_conflicts",
+        "score": 1,
+        "rationale": "\"content that did not reflect our values\" distances the organization from its own output and may read as self-serving framing, while \"Some customers were offended\" places the burden of the incident on the audience's reaction. No interests are disclosed and no independent or external review of the content or process is mentioned.",
+        "would_raise": "State that the organization produced and approved the content, and identify who will review the incident and whether that review is independent."
+      },
+      {
+        "id": "future_readiness_learning",
+        "score": 0.5,
+        "rationale": "The draft names no change to governance, approval rights, review practice, incentives or operating model, so nothing reduces the chance of recurrence. \"We are committed to learning from this.\" describes a disposition rather than a change in how decisions will be made.",
+        "would_raise": "Describe one concrete change to the content approval or market-review process, with the role now accountable for it."
+      }
+    ],
+    "findings": [
+      {
+        "id": "F-001",
+        "dimension": "accountability_agency",
+        "severity": "High",
+        "excerpt": "content that did not reflect our values",
+        "omission": null,
+        "claim_status": "Unverifiable",
+        "finding": "The content is presented as an object that failed a values test, with no person, role or body identified as having created, commissioned or approved it. A reasonable stakeholder could not tell who held decision rights or who is answerable.",
+        "why_it_matters": "An apology that never identifies the decision or the decision-maker gives the audience nothing to hold the organization to, and may read as distancing the institution from its own output.",
+        "stakeholder_risk": "Customers and affected communities may conclude that no one inside the organization is accountable, deepening rather than repairing the trust breach.",
+        "recommended_action": "State what was published, that the organization produced and approved it, and which role or body owns the failure and the remedy.",
+        "suggested_revision": "On [date], we published [description of content] in [channel or market]. We created and approved it, and [accountable executive or team] is accountable for that decision.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Legal",
+        "confidence_note": "No context fields were supplied, so ownership cannot be confirmed or contradicted; this finding rests on the draft's language only."
+      },
+      {
+        "id": "F-002",
+        "dimension": "stakeholder_respect_impact",
+        "severity": "High",
+        "excerpt": "Some customers were offended",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The impact is framed as offence felt by an unspecified subset of customers, which relocates the event to the audience's reaction and may read as minimizing both scope and harm. No affected group is named and no apology is offered.",
+        "why_it_matters": "Under heightened review, euphemism for adverse impact and the absence of an acknowledgment of affected people are material defects in an apology whose stated goal is trust repair.",
+        "stakeholder_risk": "Affected customers and depicted communities may read \"Some\" and \"offended\" as an attempt to shrink the harm, producing a second wave of criticism about the apology itself.",
+        "recommended_action": "Name who was affected and how, describe the harm in plain terms, and apologize for the organization's action rather than for the reaction to it.",
+        "suggested_revision": "We are sorry. [Description of content] caused [specific harm] to [named affected group], and that harm came from our decision, not from how the content was read.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Local market",
+        "confidence_note": "Who was affected and how is not supplied in context; the finding concerns the draft's framing, not the underlying facts."
+      },
+      {
+        "id": "F-003",
+        "dimension": "causation_explanation",
+        "severity": "High",
+        "excerpt": null,
+        "omission": "No account of how the content was produced, reviewed or approved, or which internal step failed.",
+        "claim_status": "Unverifiable",
+        "finding": "The draft offers no causal explanation whatsoever; \"did not reflect our values\" restates the outcome rather than identifying the condition that produced it. Nothing distinguishes external context from internal exposure.",
+        "why_it_matters": "Without a cause, a reader cannot judge whether the incident was a one-off error or a predictable result of how content is approved, and any corrective commitment is unmoored.",
+        "stakeholder_risk": "Customers, journalists and regulators may assume the organization either does not know what went wrong or is choosing not to say.",
+        "recommended_action": "Explain which review or approval step failed and why, and state clearly what remains under investigation.",
+        "suggested_revision": "This content passed through [review step] without [specific check]. We are still establishing [open question], and [accountable executive or team] will report what we find by [date].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "No context fields were supplied, so no causal claim in the draft could be confirmed; scored on the draft's language only."
+      },
+      {
+        "id": "F-004",
+        "dimension": "truthfulness_factual_discipline",
+        "severity": "High",
+        "excerpt": null,
+        "omission": "No description of the content, its date, channel, or the markets in which it appeared.",
+        "claim_status": null,
+        "finding": "The draft apologizes for an event it never describes, so no statement in it can be checked against anything. A reader in one market cannot even tell whether the message concerns them.",
+        "why_it_matters": "An unspecified apology can read as pre-emptive reputation management rather than an account, and invites others to define the incident on the organization's behalf.",
+        "stakeholder_risk": "Media and commentators may supply their own description of the content, and customers in unaffected markets may assume a broader problem than exists.",
+        "recommended_action": "Describe the content factually, with date and channel, and mark clearly what is confirmed versus still being established.",
+        "suggested_revision": "On [date], we published [factual description of content] in [channel and markets]. The following is what we have confirmed so far: [confirmed facts].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Legal",
+        "confidence_note": "This is a missing-information finding, not an allegation that anything stated is false."
+      },
+      {
+        "id": "F-005",
+        "dimension": "corrective_action_proof",
+        "severity": "High",
+        "excerpt": "We are committed to learning from this.",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "The sole forward-looking statement names no action, mechanism, owner or date. Under heightened review this constitutes unsupported reassurance placed immediately after an acknowledgment of harm.",
+        "why_it_matters": "A commitment that cannot fail cannot be verified, and offering it in place of action may read to a skeptical reader as closing the subject rather than addressing it.",
+        "stakeholder_risk": "Affected customers may conclude nothing will actually change, and advocacy groups may treat the statement as evidence of an unserious response.",
+        "recommended_action": "Replace the sentence with at least two specific, dated corrective actions, each with a named owner.",
+        "suggested_revision": "By [date], [accountable executive or team] will [specific corrective action], and by [date] we will [second specific action]. We will publish what changed at [update channel].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Executive",
+        "confidence_note": "The commitment is asserted in the draft and is not confirmed by any context field."
+      },
+      {
+        "id": "F-006",
+        "dimension": "listening_employee_voice",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "No channel through which affected customers or communities can respond, ask questions or be heard.",
+        "claim_status": null,
+        "finding": "The draft references the audience's reaction but offers no route for that audience to engage further, and frames the incident around how the content was received rather than around what the organization did.",
+        "why_it_matters": "An apology that speaks about an audience without offering it a way to speak back may be read as one-directional messaging rather than repair.",
+        "stakeholder_risk": "Affected communities may feel talked about rather than talked with, and unaddressed concerns may migrate to public channels.",
+        "recommended_action": "Offer a named contact or channel for affected customers and communities, and state how input will be used.",
+        "suggested_revision": "If this affected you, you can reach us at [contact or channel]. [Accountable executive or team] will review what we hear and report back at [update channel].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "No context field indicates whether a channel already exists; this may be a disclosure gap rather than an absence."
+      },
+      {
+        "id": "F-007",
+        "dimension": "verification_follow_through",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "No owner, metric, milestone, update date or review process.",
+        "claim_status": null,
+        "finding": "Nothing in the draft is falsifiable, so no reader can establish at a later date whether the organization did anything. There is no stated place where follow-up will appear.",
+        "why_it_matters": "Verifiability is the difference between an apology and an account; without it, trust repair depends entirely on the reader's goodwill.",
+        "stakeholder_risk": "Customers and journalists may return to this statement later and find no basis on which to judge progress, which tends to reinforce cynicism.",
+        "recommended_action": "Name an accountable owner, a fixed update date and the channel where the update will be published.",
+        "suggested_revision": "[Accountable executive or team] owns this work and will publish a progress update at [update channel] by [date].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "Assessed from the draft alone; no context field indicates an existing reporting mechanism."
+      },
+      {
+        "id": "F-008",
+        "dimension": "clarity_plain_language",
+        "severity": "Moderate",
+        "excerpt": "content that did not reflect our values",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The phrase is an internal-facing formulation that tells the reader nothing about what was published or why it caused harm. Combined with \"offended\", the message reads as an abstraction rather than a description.",
+        "why_it_matters": "If the audience cannot tell what happened, the message cannot do the work of an apology regardless of tone.",
+        "stakeholder_risk": "Global and multi-market readers may be unsure whether the message concerns them at all, producing confusion alongside the original harm.",
+        "recommended_action": "Replace the euphemism with a plain description of the content and the harm.",
+        "suggested_revision": "We published [plain description of the content], which [plain description of the harm it caused].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Local market",
+        "confidence_note": "Wording assessed on the draft only; local-market phrasing may carry additional sensitivities not visible here."
+      },
+      {
+        "id": "F-009",
+        "dimension": "fairness_independence_conflicts",
+        "severity": "Moderate",
+        "excerpt": "did not reflect our values",
+        "omission": null,
+        "claim_status": null,
+        "finding": "Framing the content as inconsistent with the organization's values may read as self-serving, since it foregrounds the organization's good intentions at the moment it should be acknowledging its conduct. No independent or external review is mentioned.",
+        "why_it_matters": "Self-assessment presented in the language of values, with no reviewer named, gives a skeptical reader no reason to credit the organization's judgment of its own failure.",
+        "stakeholder_risk": "Advocacy groups and journalists may read the values framing as reputational positioning rather than accountability.",
+        "recommended_action": "Lead with what the organization did, and state who is reviewing the incident and whether that review is independent.",
+        "suggested_revision": "We approved and published this content. [Named reviewer or independent party] is reviewing how that happened, and we will publish the findings at [update channel].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "No motive is attributed; this concerns how the framing may be received."
+      },
+      {
+        "id": "F-010",
+        "dimension": "future_readiness_learning",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "No change to approval rights, review practice, governance or operating model that would reduce recurrence.",
+        "claim_status": null,
+        "finding": "The draft describes a disposition to learn but no change to how content decisions will be made in future. Nothing in it would prevent the same outcome next quarter.",
+        "why_it_matters": "Recurrence prevention is the part of an apology that carries forward; without it, the statement resolves only the present moment.",
+        "stakeholder_risk": "Repeat incidents would make this statement evidence that the organization was warned and did not change.",
+        "recommended_action": "Name one concrete change to the content approval or market-review process and the role now accountable for it.",
+        "suggested_revision": "From [date], [specific content or market review step] will be required before publication in [markets], and [accountable executive or team] is accountable for it.",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "No context field indicates whether process changes are already underway; this may be a disclosure gap."
+      }
+    ],
+    "agency_scan": [
+      {
+        "phrase": "Some customers were offended",
+        "category": "Audience displacement",
+        "severity": "High",
+        "assessment": "Potential accountability gap",
+        "why": "This clause is the grammatical subject of the sentence about what happened, and it locates the event in the customers' reaction rather than in the organization's decision to create and publish the content.",
+        "what_would_make_it_credible": "A first-person statement of what the organization published, the harm it caused, and an apology for that action rather than for the reaction to it.",
+        "suggested_edit": "We published [description of content], which caused [specific harm] to [named affected group]. We are sorry.",
+        "finding_id": "F-002"
+      },
+      {
+        "phrase": "content that did not reflect our values",
+        "category": "Institutional abstraction",
+        "severity": "High",
+        "assessment": "Potential accountability gap",
+        "why": "The content stands in for the people who commissioned, produced and approved it, so the sentence explains the event without any decision-maker appearing in it.",
+        "what_would_make_it_credible": "Naming the role or body that approved the content and stating plainly that the organization made that choice.",
+        "suggested_edit": "We commissioned and approved this content, and [accountable executive or team] is accountable for that decision.",
+        "finding_id": "F-001"
+      },
+      {
+        "phrase": "We are committed to learning from this.",
+        "category": "Values without action",
+        "severity": "High",
+        "assessment": "Incomplete explanation",
+        "why": "The commitment is the entire forward-looking content of the draft and no specific action, owner, mechanism or date follows it.",
+        "what_would_make_it_credible": "Two or more dated corrective actions, each with a named owner and a stated place where progress will be published.",
+        "suggested_edit": "By [date], [accountable executive or team] will [specific corrective action]; we will publish progress at [update channel].",
+        "finding_id": "F-005"
+      }
+    ],
+    "devils_advocate": {
+      "disclaimer": "These are plausible audience interpretations, not statements of fact.",
+      "personas": [
+        {
+          "persona": "Affected customer",
+          "may_hear": "They think my problem is that I was offended, not that they did something harmful.",
+          "may_question": "Why is the word 'sorry' nowhere in this, and why is it 'some' customers?",
+          "may_find_missing": "A direct apology, a description of what was published, and any acknowledgment of the specific harm.",
+          "would_address_it": "An unqualified apology that names the content and the harm before any mention of values.",
+          "suggested_sentence": "We are sorry: we published [description of content], and it caused [specific harm] to [named affected group]."
+        },
+        {
+          "persona": "Community advocate",
+          "may_hear": "A generic statement designed to close the subject without naming the community that was harmed.",
+          "may_question": "Who approved this, and what will stop it happening to us again?",
+          "may_find_missing": "Any named accountable role, any process change, and any route for the community to be heard.",
+          "would_address_it": "Naming the approver, one concrete change to the approval process, and a contact channel.",
+          "suggested_sentence": "From [date], [specific review step] will be required before we publish content involving [community or market], and [accountable executive or team] owns that change."
+        },
+        {
+          "persona": "Journalist",
+          "may_hear": "A non-statement that confirms an incident occurred while refusing to describe it.",
+          "may_question": "What was the content, where did it run, when was it withdrawn, and who signed it off?",
+          "may_find_missing": "Date, channel, markets, withdrawal status, and an identifiable spokesperson.",
+          "would_address_it": "A factual paragraph with date, channel, markets and current status, plus a named contact.",
+          "suggested_sentence": "The content ran on [date] in [channel and markets] and was withdrawn on [date]; press enquiries to [contact]."
+        },
+        {
+          "persona": "Regulator",
+          "may_hear": "An organization acknowledging an issue without describing it or its remediation.",
+          "may_question": "Is there an internal review, what are its terms, and when will findings be available?",
+          "may_find_missing": "Any review process, timeline, or statement of whether applicable market rules were considered.",
+          "would_address_it": "Stating that a review is underway, who is conducting it, and when findings will be reported.",
+          "suggested_sentence": "[Named reviewer] is reviewing how this content was approved and will report findings by [date]."
+        },
+        {
+          "persona": "Front-line employee",
+          "may_hear": "Customer-facing staff are being left to handle complaints about an incident the company will not describe.",
+          "may_question": "What am I supposed to say when a customer asks me what happened?",
+          "may_find_missing": "Agreed language, escalation route, and confirmation that staff are not being blamed.",
+          "would_address_it": "An internal note with agreed wording, an escalation contact, and a clear statement of where responsibility sits.",
+          "suggested_sentence": "Colleagues handling questions can use [agreed wording] and escalate to [contact]; responsibility for this decision sits with [accountable executive or team], not with front-line teams."
+        }
+      ],
+      "most_damaging_interpretation": "A reasonable but skeptical reader could conclude that the organization is apologizing for the fact that people reacted rather than for what it published, that it is deliberately withholding a description of the content, and that \"committed to learning\" is a formula intended to end the conversation without any change; issued unchanged, the statement itself could become the second story."
+    },
+    "questions_before_publication": [
+      "What exactly was the content, on what date, in which channels and which markets did it appear, and has it been withdrawn?",
+      "Who commissioned, produced and approved the content, and which role or body held final sign-off?",
+      "Which specific review or market-check step did the content pass through, and which check did not occur?",
+      "Who was materially affected, in what way, and has anyone spoken with representatives of the affected group before this statement is issued?",
+      "Why does the draft not contain a direct apology, and is there a legal or disclosure reason for that omission that should be documented?",
+      "What corrective actions has the organization already taken or decided on, with what owners and completion dates?",
+      "Is an internal or independent review underway, who is conducting it, and when will its findings be shared?",
+      "Where and by what date will the organization publish an update, and who is accountable for it?",
+      "What channel will affected customers and communities use to raise concerns, and who will respond?",
+      "Has this topic been the subject of prior commitments or previous incidents that stakeholders will compare this statement against?",
+      "What localization and market review is required before a global or multi-market release of this apology?",
+      "Have Legal, and where relevant local-market counsel, reviewed the wording of the acknowledgment and any statement about cause?"
+    ],
+    "specialist_review_summary": [
+      "Legal",
+      "Local market",
+      "Executive"
+    ]
+  },
+  "score": 14,
+  "band": "Serious clarity, accountability, or ethical-risk concerns",
+  "confidence_label": "Scored on draft language only — add known facts and decision details for a substantiated score",
+  "adjustments": {
+    "dropped_findings": 0,
+    "dropped_scan_phrases": 0,
+    "readiness_overridden": false,
+    "context_flag_corrected": false
+  },
+  "provider": {
+    "provider": "Anthropic",
+    "model": "claude-opus-5"
+  },
+  "usage": {
+    "input_tokens": 478,
+    "output_tokens": 10287,
+    "cache_read_input_tokens": 7964,
+    "cache_creation_input_tokens": 0
+  }
+}

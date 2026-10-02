@@ -1,0 +1,372 @@
+{
+  "request_id": "56e26f58daf1",
+  "analysis": {
+    "schema_version": "1.0",
+    "executive_summary": {
+      "assessment": "No context fields were supplied, so accountability and causation are scored on the draft's language only and every claim in the draft is treated as asserted rather than confirmed. The draft is two sentences that attribute an unspecified performance outcome entirely to external conditions and close with an unsupported expression of confidence; it does not name the decision or event, the period or magnitude of the performance change, any internal exposure, any accountable executive, any corrective action, or any way for investors to verify what happens next. For an investor communication about a material corporate event under heightened review, a reasonable reader cannot tell what happened, how large it was, why it happened beyond the weather, or what the company will do, and the closing reassurance sits next to an adverse outcome without support.",
+      "risk_level": "Critical",
+      "readiness": "Do not issue until material gaps are resolved",
+      "context_supplied": false,
+      "strongest_elements": [
+        "The language is short and free of technical jargon, so the sentences themselves are readable.",
+        "It does not scapegoat employees, named individuals, or any specific team for the outcome.",
+        "It identifies an external condition category that, if substantiated, could form part of a legitimate explanation."
+      ],
+      "priority_improvements": [
+        "Name the actual decision or result being communicated, the reporting period, and the magnitude, using [metric] and [period] placeholders until the figures are confirmed.",
+        "Separate external conditions from the internal choices, assumptions, or exposures that made the organization sensitive to them, and name the [accountable executive or team].",
+        "Replace the closing reassurance with specific, dated, owned actions and a stated [update channel] and [date] so investors can verify follow-through."
+      ]
+    },
+    "dimensions": [
+      {
+        "id": "accountability_agency",
+        "score": 0.5,
+        "rationale": "The only sentence about what happened has external conditions as its grammatical subject — \"Macroeconomic headwinds and sector-wide conditions affected performance\" — so no decision, decision-maker, or body with decision rights is visible anywhere in the draft. With no context fields supplied, even the implied claim that external conditions drove the outcome is ASSERTED, not confirmed, and there is no actor to match responsibility to authority.",
+        "would_raise": "Name the decision or result, the [accountable executive or team] who owns it, and the governance body that reviewed it."
+      },
+      {
+        "id": "truthfulness_factual_discipline",
+        "score": 0.5,
+        "rationale": "The draft contains no figures, period, or definition of \"performance\", and it closes with \"We remain confident in our strategy\" — a forward-looking assurance offered without any stated basis or disclosed uncertainty. Nothing here distinguishes fact from forecast, and under heightened review an unsupported reassurance adjacent to an adverse result is a material discipline gap.",
+        "would_raise": "State the specific [metric], [period], and magnitude, label forward-looking statements as such, and disclose the key uncertainties."
+      },
+      {
+        "id": "causation_explanation",
+        "score": 0.5,
+        "rationale": "\"Macroeconomic headwinds and sector-wide conditions affected performance\" identifies an external condition but does not yet explain internal exposure: no assumption, concentration, pricing choice, cost structure, or planning decision is named. This causal claim is ASSERTED and cannot be confirmed from any context field, and as the entire explanation it is not proportionate to a material corporate event.",
+        "would_raise": "Distinguish the external condition from the internal choices or exposures that made results sensitive to it, with [metric] evidence of each contribution."
+      },
+      {
+        "id": "stakeholder_respect_impact",
+        "score": 0.5,
+        "rationale": "Investors are the primary audience and are never told what happened to them — there is no result, no period, no guidance impact, and \"affected performance\" is a euphemism that obscures the direction and size of the adverse outcome. No affected group beyond an implied shareholder base is named, so the audience's core information need is unmet.",
+        "would_raise": "State plainly what the result was, for which [period], by how much, and what it means for guidance, dividends, or outlook."
+      },
+      {
+        "id": "listening_employee_voice",
+        "score": 2,
+        "rationale": "The draft cites no stakeholder or employee feedback and does not place blame on any team, which avoids the most serious misuse of voice, but it also takes no ownership plainly and offers no channel through which investors or employees can raise questions. There is no separation of stakeholder input from leadership decisions because neither is present.",
+        "would_raise": "Add a plain statement of leadership ownership and a named [update channel] or contact for investor and employee questions."
+      },
+      {
+        "id": "corrective_action_proof",
+        "score": 0.5,
+        "rationale": "The draft names no action at all — \"We remain confident in our strategy\" is a reassurance rather than a commitment, with no owner, mechanism, date, or measure. Any implied corrective response is UNVERIFIABLE: nothing in the draft or in the empty context fields could confirm that anything will change.",
+        "would_raise": "List two or three specific, dated actions with a named owner for each and the measure that will show they worked."
+      },
+      {
+        "id": "clarity_plain_language",
+        "score": 1.5,
+        "rationale": "The sentences are short and jargon-light, but \"affected performance\" hides both direction and magnitude and the causal subject is an abstraction, so a reader finishes the draft unable to say what happened or what is next. Brevity without content is not clarity for this audience.",
+        "would_raise": "Replace \"affected performance\" with a plain statement of what changed, by how much, and over what [period]."
+      },
+      {
+        "id": "verification_follow_through",
+        "score": 0.5,
+        "rationale": "The draft contains no metric, milestone, update date, independent review, or falsifiable commitment of any kind; there is nothing a reader could check later. A specific omission: no [update channel] or next reporting date is given.",
+        "would_raise": "Commit to a named owner, a fixed update cadence with a first [date], and at least one measure investors can track."
+      },
+      {
+        "id": "fairness_independence_conflicts",
+        "score": 1.5,
+        "rationale": "No individual or team is scapegoated, which is to the draft's credit, but the framing is self-serving: adverse outcomes are attributed entirely to outside forces while \"We remain confident in our strategy\" preserves management's judgment without disclosing any independent basis. No reviewer, auditor, or board oversight is mentioned.",
+        "would_raise": "Acknowledge the internal share of the outcome and reference any [board or independent review] that examined the results."
+      },
+      {
+        "id": "future_readiness_learning",
+        "score": 0.5,
+        "rationale": "The draft describes no change to leadership practice, governance, incentives, planning assumptions, or operating model — \"We remain confident in our strategy\" signals continuity rather than learning. Nothing here reduces the likelihood of recurrence.",
+        "would_raise": "Name one change to planning, governance, or risk review that makes the organization less exposed to the same conditions next time."
+      }
+    ],
+    "findings": [
+      {
+        "id": "F-001",
+        "dimension": "accountability_agency",
+        "severity": "High",
+        "excerpt": "Macroeconomic headwinds and sector-wide conditions affected performance.",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "The sentence that explains what happened has external conditions as its subject, and no decision, decision-maker, executive, or governance body appears anywhere in the draft. With no context fields supplied, this attribution is asserted and unconfirmed.",
+        "why_it_matters": "An investor communication about a material corporate event that names no accountable party leaves decision rights invisible and makes the account impossible to test.",
+        "stakeholder_risk": "Investors and analysts may conclude that management is unwilling to state who owned the decisions behind the result, which can compound a performance disappointment with a governance concern.",
+        "recommended_action": "Name the decision or result, the [accountable executive or team] responsible for it, and the [board or committee] that reviewed it before publication.",
+        "suggested_revision": "For [period], [metric] came in at [figure] against [prior figure]. [Accountable executive or team] owns the operating decisions behind this result, and the [board or committee] reviewed them on [date].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Investor relations",
+        "confidence_note": "Based solely on the draft text; no context fields were supplied to confirm or contradict the attribution."
+      },
+      {
+        "id": "F-002",
+        "dimension": "stakeholder_respect_impact",
+        "severity": "High",
+        "excerpt": null,
+        "omission": "The draft never states what the result was, for what period, by how much, or what it means for investors' holdings, guidance, or outlook.",
+        "claim_status": null,
+        "finding": "The primary audience is given no material facts about the event being communicated; \"performance\" is left undefined in direction and magnitude.",
+        "why_it_matters": "Under heightened review, a euphemism standing in for an adverse outcome and an omitted statement of impact are material respect and disclosure gaps.",
+        "stakeholder_risk": "Investors may read the vagueness as an attempt to soften an adverse result and may price in a worse outcome than the facts support, or seek the information from other sources.",
+        "recommended_action": "State the result, period, and magnitude plainly, and say what changes for investors in terms of guidance, outlook, or capital allocation; route the wording through disclosure counsel.",
+        "suggested_revision": "For [period], [metric] declined to [figure] from [prior figure]. As a result, [guidance or outlook item] is now [figure], and we expect [stated effect] for shareholders.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Investor relations",
+        "confidence_note": "Assessed from the draft alone; the actual figures and their materiality are unknown to this review."
+      },
+      {
+        "id": "F-003",
+        "dimension": "causation_explanation",
+        "severity": "High",
+        "excerpt": "Macroeconomic headwinds and sector-wide conditions affected performance.",
+        "omission": null,
+        "claim_status": "Asserted",
+        "finding": "External conditions are offered as the complete explanation, with no account of the internal assumptions, concentrations, cost structures, pricing choices, or planning decisions that determined how exposed the organization was to those conditions.",
+        "why_it_matters": "This identifies an external condition but does not yet explain internal exposure, so the causal claim is neither proportionate nor testable for a material event.",
+        "stakeholder_risk": "Analysts may conclude that management either does not understand its own sensitivity to market conditions or is choosing not to disclose it, which undercuts confidence in future guidance.",
+        "recommended_action": "Separate external conditions from internal exposure and quantify the contribution of each where the data supports it.",
+        "suggested_revision": "External conditions — [specific condition, quantified] — reduced [metric] by approximately [figure]. The remainder reflects our own decisions: [specific internal assumption, concentration, or choice], which [accountable executive or team] is now reassessing.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Investor relations",
+        "confidence_note": "No context fields were supplied, so the external attribution can be neither confirmed nor contradicted here."
+      },
+      {
+        "id": "F-004",
+        "dimension": "truthfulness_factual_discipline",
+        "severity": "High",
+        "excerpt": "We remain confident in our strategy.",
+        "omission": null,
+        "claim_status": null,
+        "finding": "A forward-looking assurance is placed immediately after an adverse outcome with no stated basis, no supporting evidence, no disclosed uncertainty, and no forward-looking-statement framing.",
+        "why_it_matters": "Under heightened review, unsupported reassurance adjacent to an adverse result is a material discipline gap, and in a United States investor setting forward-looking language carries specific disclosure conventions.",
+        "stakeholder_risk": "Investors may treat the statement as a signal about future results and, if outcomes differ, may view the communication as having conveyed misleading certainty.",
+        "recommended_action": "Replace the bare assurance with the specific evidence supporting the strategy, disclose the key uncertainties, and have disclosure counsel review the forward-looking language and safe-harbour framing.",
+        "suggested_revision": "We are maintaining the current strategy because [specific evidence, e.g. metric, cohort, or contract data]. Key uncertainties that could change this view are [uncertainty 1] and [uncertainty 2]; these statements are forward-looking and subject to [legal review] framing.",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Legal",
+        "confidence_note": "This review does not assess legal compliance; it flags the wording for disclosure counsel."
+      },
+      {
+        "id": "F-005",
+        "dimension": "corrective_action_proof",
+        "severity": "High",
+        "excerpt": null,
+        "omission": "No action, owner, mechanism, date, or measure of any kind is committed to in the draft.",
+        "claim_status": "Unverifiable",
+        "finding": "The draft communicates an adverse outcome and then closes without a single commitment, so there is nothing that could later be shown to have been done or not done.",
+        "why_it_matters": "For a material corporate event, an account without corrective action tells stakeholders only that something went wrong and that management intends to continue unchanged.",
+        "stakeholder_risk": "Investors may interpret the absence of any response as complacency or as an indication that management has not yet diagnosed the problem.",
+        "recommended_action": "Add two or three proportionate, dated actions, each with a named owner and a measure that will show whether it worked.",
+        "suggested_revision": "In response, we are taking three actions: [action 1], owned by [accountable executive or team], complete by [date]; [action 2], owned by [accountable executive or team], complete by [date]; and [action 3], measured by [metric].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Executive",
+        "confidence_note": "No context fields were supplied, so it is unknown whether actions exist and were simply omitted from the draft."
+      },
+      {
+        "id": "F-006",
+        "dimension": "verification_follow_through",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "No metric, milestone, next update date, reporting channel, or independent review is named.",
+        "claim_status": null,
+        "finding": "Nothing in the draft is falsifiable; a reader has no basis on which to check the organization's position at any future point.",
+        "why_it_matters": "Commitments and confidence that cannot be verified do not rebuild credibility after an adverse result.",
+        "stakeholder_risk": "Investors may assume no further disclosure is planned and discount management statements generally.",
+        "recommended_action": "Name the next update date, the channel, the measures that will be reported, and any independent or board review of the results.",
+        "suggested_revision": "We will report progress on [metric] at [update channel] on [date], and every [cadence] thereafter until [end date].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Investor relations",
+        "confidence_note": "Based on the draft text only; a separate filing or release may exist but is not evidenced here."
+      },
+      {
+        "id": "F-007",
+        "dimension": "clarity_plain_language",
+        "severity": "Moderate",
+        "excerpt": "affected performance",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The phrase conceals both the direction and the size of the change, so the central fact of the communication is not actually stated in plain terms.",
+        "why_it_matters": "Clarity requires that the audience can say what happened after reading; this wording prevents that.",
+        "stakeholder_risk": "Readers may perceive the softened wording as deliberate obscuring of a poor result.",
+        "recommended_action": "Replace the euphemism with a direct statement of what changed and by how much.",
+        "suggested_revision": "[Metric] fell [figure] percent in [period], from [prior figure] to [figure].",
+        "fact_validation_needed": true,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "Wording assessment only; the underlying figures are not known to this review."
+      },
+      {
+        "id": "F-008",
+        "dimension": "fairness_independence_conflicts",
+        "severity": "Moderate",
+        "excerpt": "We remain confident in our strategy.",
+        "omission": null,
+        "claim_status": null,
+        "finding": "The draft assigns the adverse outcome wholly to outside forces while preserving management's own judgment, and discloses no independent or board input into that self-assessment.",
+        "why_it_matters": "A reasonable stakeholder could interpret this asymmetry as self-serving framing, particularly when no internal contribution is acknowledged.",
+        "stakeholder_risk": "Analysts and governance-focused investors may question the objectivity of management's review of its own performance.",
+        "recommended_action": "Acknowledge the internal share of the result and reference any independent, audit, or board review that has examined it.",
+        "suggested_revision": "Not all of this was external. [Accountable executive or team] has reviewed the internal decisions that contributed, and [board or committee] examined that review on [date].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": true,
+        "specialist_review_type": "Investor relations",
+        "confidence_note": "No context field indicates whether an independent review occurred; this flags a disclosure gap, not a finding of fact."
+      },
+      {
+        "id": "F-009",
+        "dimension": "future_readiness_learning",
+        "severity": "Moderate",
+        "excerpt": null,
+        "omission": "No change to planning assumptions, governance, incentives, risk review, or operating model is described.",
+        "claim_status": null,
+        "finding": "The draft signals continuity without describing anything that would reduce exposure to the same conditions recurring.",
+        "why_it_matters": "Without a learning statement, the account offers no reason to expect a different outcome if conditions repeat.",
+        "stakeholder_risk": "Investors may conclude the organization treats the result as purely cyclical and has no plan if the conditions persist.",
+        "recommended_action": "Name one concrete change to planning, scenario testing, or governance and who owns it.",
+        "suggested_revision": "We are changing how we plan for these conditions: [specific change to planning, governance, or risk review], owned by [accountable executive or team], effective [date].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "Assessed from the draft alone; internal changes may exist but are not disclosed."
+      },
+      {
+        "id": "F-010",
+        "dimension": "listening_employee_voice",
+        "severity": "Low",
+        "excerpt": null,
+        "omission": "No contact, briefing, or question channel is offered to investors, analysts, or employees who will read this externally.",
+        "claim_status": null,
+        "finding": "The draft is one-way and provides no route for questions, though it also avoids misusing stakeholder feedback or shifting blame onto any group.",
+        "why_it_matters": "A question channel is a low-cost way to reduce speculation after an adverse result.",
+        "stakeholder_risk": "Readers may fill the gap through informal channels or media inference.",
+        "recommended_action": "Add a named contact and a scheduled opportunity for questions.",
+        "suggested_revision": "Questions can be directed to [investor relations contact], and we will take questions at [call or forum] on [date].",
+        "fact_validation_needed": false,
+        "specialist_review_needed": false,
+        "specialist_review_type": null,
+        "confidence_note": "Low severity; this is an addition rather than a correction."
+      }
+    ],
+    "agency_scan": [
+      {
+        "phrase": "Macroeconomic headwinds",
+        "category": "External weather",
+        "severity": "High",
+        "assessment": "Incomplete explanation",
+        "why": "This is the grammatical subject of the only sentence explaining what happened, and it is offered as the whole explanation with no internal exposure named alongside it.",
+        "what_would_make_it_credible": "A specific, quantified statement of which condition moved, by how much, and how much of the result it accounts for, followed by the internal assumptions or concentrations that made the organization sensitive to it.",
+        "suggested_edit": "[Specific external condition, quantified] reduced [metric] by approximately [figure]; our exposure to it came from [specific internal assumption or concentration].",
+        "finding_id": "F-003"
+      },
+      {
+        "phrase": "sector-wide conditions affected performance",
+        "category": "External weather",
+        "severity": "High",
+        "assessment": "Incomplete explanation",
+        "why": "The clause does causal work while leaving both the condition and the effect undefined, so it identifies external weather without explaining what the organization chose or assumed.",
+        "what_would_make_it_credible": "Naming the sector measure, the period, the comparison against peers, and the portion of the result not explained by it.",
+        "suggested_edit": "Sector [metric] fell [figure] in [period]; against that, our [metric] fell [figure], and the difference reflects [specific internal decision or exposure].",
+        "finding_id": "F-003"
+      },
+      {
+        "phrase": "We remain confident in our strategy",
+        "category": "Values without action",
+        "severity": "High",
+        "assessment": "Incomplete explanation",
+        "why": "The assurance closes the communication with no action, owner, date, or evidence following it, so it carries reassurance work that the draft never substantiates.",
+        "what_would_make_it_credible": "The specific evidence supporting continued confidence, the uncertainties that could change it, and the dated actions management is taking in the meantime.",
+        "suggested_edit": "We are maintaining the strategy because [specific evidence]; the actions we are taking now are [action] owned by [accountable executive or team], due [date].",
+        "finding_id": "F-004"
+      }
+    ],
+    "devils_advocate": {
+      "disclaimer": "These are plausible audience interpretations, not statements of fact.",
+      "personas": [
+        {
+          "persona": "Institutional investor",
+          "may_hear": "Results were bad, management blames the market, and nothing is changing.",
+          "may_question": "What actually happened, how large was it, and which part of it was within management's control?",
+          "may_find_missing": "The result, the period, the magnitude, the internal contribution, and any corrective action with an owner.",
+          "would_address_it": "State the figures and period, separate external conditions from internal exposure, and list dated actions with named owners.",
+          "suggested_sentence": "[Metric] for [period] was [figure] against [prior figure]; approximately [figure] of the shortfall reflects [external condition] and the remainder reflects [internal decision], which [accountable executive or team] is addressing by [date]."
+        },
+        {
+          "persona": "Equity analyst",
+          "may_hear": "A pre-emptive excuse ahead of numbers that will have to be explained on the call anyway.",
+          "may_question": "Why did peers under the same conditions perform differently, and what is the revised guidance?",
+          "may_find_missing": "Peer comparison, guidance impact, and the sensitivity assumptions behind the strategy.",
+          "would_address_it": "Provide the sector comparison, restate or reaffirm guidance explicitly, and disclose the key assumptions and their sensitivities.",
+          "suggested_sentence": "Against sector [metric] of [figure], our [metric] was [figure]; we are [reaffirming or revising] guidance to [figure] and will detail the assumptions at [update channel] on [date]."
+        },
+        {
+          "persona": "Retail shareholder",
+          "may_hear": "Something went wrong but they are telling me not to worry.",
+          "may_question": "Does this affect the dividend, the outlook, or the value of what I hold?",
+          "may_find_missing": "A plain statement of what changed for shareholders and where to get more information.",
+          "would_address_it": "Say in one plain sentence what happened and what it means for shareholders, and give a contact and next update date.",
+          "suggested_sentence": "In plain terms: [metric] fell [figure] in [period]; the effect on [dividend or outlook] is [stated effect], and our next update is on [date] at [update channel]."
+        },
+        {
+          "persona": "Business journalist",
+          "may_hear": "A boilerplate statement that avoids naming any internal cause or accountable executive.",
+          "may_question": "Who is responsible for the decisions behind this, and why is no one named?",
+          "may_find_missing": "The decision owner, the board's role, and any acknowledgment of internal contribution.",
+          "would_address_it": "Name the accountable executive and the reviewing body, and acknowledge the internal share of the outcome.",
+          "suggested_sentence": "[Accountable executive or team] is responsible for the operating decisions behind this result, and [board or committee] reviewed them on [date]."
+        },
+        {
+          "persona": "Regulator",
+          "may_hear": "A forward-looking assurance issued around a material event without supporting detail or standard framing.",
+          "may_question": "What is the basis for the confidence statement, and has it been reviewed against disclosure requirements?",
+          "may_find_missing": "Forward-looking statement framing, disclosed uncertainties, and the factual basis for the assurance.",
+          "would_address_it": "Have disclosure counsel review the wording, add the standard framing, and state the uncertainties that could change the view.",
+          "suggested_sentence": "These statements are forward-looking and subject to the risks described in [filing reference]; the principal uncertainties are [uncertainty 1] and [uncertainty 2]."
+        }
+      ],
+      "most_damaging_interpretation": "A reasonable but skeptical reader could conclude that the organization experienced a material adverse result, chose to attribute it entirely to conditions outside its control, declined to name any figure, any accountable executive, or any change it will make, and then asked investors to accept reassurance in place of evidence — an interpretation that would frame the communication itself as evidence of weak accountability rather than as an explanation of performance."
+    },
+    "questions_before_publication": [
+      "What exactly is the decision or event being communicated, and for what reporting period?",
+      "What is the specific metric, the figure, and the magnitude of the change being referred to as \"performance\"?",
+      "Which external conditions are meant, how are they quantified, and how much of the result do they account for?",
+      "What internal assumptions, concentrations, cost structures, or planning decisions increased exposure to those conditions?",
+      "Who is the accountable executive or team for the decisions behind this result, and which board or committee reviewed them?",
+      "What is the factual basis for \"We remain confident in our strategy\", and which uncertainties could change that view?",
+      "What specific actions, with owners and dates, is the organization taking in response?",
+      "When and through what channel will investors receive the next update, and what measures will it report?",
+      "Has disclosure counsel reviewed the forward-looking language and the safe-harbour framing for this United States investor communication?",
+      "Does this communication affect guidance, dividends, or any previously stated commitment, and has any prior commitment on this topic been made?",
+      "Is any independent, audit, or board review of the results underway, and can it be referenced?",
+      "Who is the named contact for investor and analyst questions, and is a call or forum scheduled?"
+    ],
+    "specialist_review_summary": [
+      "Investor relations",
+      "Legal",
+      "Executive"
+    ]
+  },
+  "score": 16,
+  "band": "Serious clarity, accountability, or ethical-risk concerns",
+  "confidence_label": "Scored on draft language only — add known facts and decision details for a substantiated score",
+  "adjustments": {
+    "dropped_findings": 0,
+    "dropped_scan_phrases": 0,
+    "readiness_overridden": false,
+    "context_flag_corrected": false
+  },
+  "provider": {
+    "provider": "Anthropic",
+    "model": "claude-opus-5"
+  },
+  "usage": {
+    "input_tokens": 482,
+    "output_tokens": 10477,
+    "cache_read_input_tokens": 7964,
+    "cache_creation_input_tokens": 0
+  }
+}

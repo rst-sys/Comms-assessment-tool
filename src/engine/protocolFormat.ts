@@ -1,0 +1,826 @@
+/**
+ * The protocol file format, and the checker that guards it (step 4).
+ *
+ * A protocol is a Markdown file in protocols/ with a YAML front matter block
+ * the engine reads and prose below it for the Standards Library page. The
+ * owner writes one in a separate conversation, saves the reply, and uploads it
+ * — no programming, which is the whole point of the library.
+ *
+ * Everything here runs at build time, not per review. scripts/compile-protocols.ts
+ * turns the folder into src/engine/protocolLibrary.ts, so the engine ships a
+ * plain data structure and the three runtimes that share it — the Node server,
+ * the browser bundle and the tests — all read the same thing with no file
+ * system and no bundler magic.
+ *
+ * The checker is the part that matters. A protocol that names a dimension that
+ * does not exist, or lists fourteen triggers, or claims an event another
+ * protocol already owns, must fail loudly here rather than quietly produce
+ * worse reviews for months.
+ */
+import { COUNTRIES, JURISDICTION_BLOCS } from "./countries.js";
+import { MAX_QUESTIONS } from "./limits.js";
+import { SYSTEM_PROMPT } from "./promptText.js";
+import {
+  COMMUNICATION_FORMATS,
+  DIMENSION_IDS,
+  ORGANIZATION_TYPES,
+  SPECIALIST_REVIEW_TYPES,
+  type DimensionId,
+  type SpecialistReviewType,
+} from "./types.js";
+
+/**
+ * Per-protocol caps. These are the format, not a suggestion: a file that
+ * breaks one is rejected by name. Without them the library grows a little
+ * with each protocol until the results page is a wall again — which is what
+ * the owner's first three drafts already showed, at fourteen to sixteen
+ * elements apiece.
+ */
+export const PROTOCOL_CAPS = {
+  triggers: 6,
+  questions: 6,
+} as const;
+
+export function protocolWordBudget(): number {
+  return SYSTEM_PROMPT.trim().split(/\s+/).filter(Boolean).length;
+}
+
+export const PROTOCOL_LAYERS = ["core", "family", "event", "overlay"] as const;
+export type ProtocolLayer = (typeof PROTOCOL_LAYERS)[number];
+
+/** Where an element's authority comes from. Set by the owner, never inferred. */
+export const ELEMENT_BASES = ["law", "guidance", "standard", "research", "code", "judgement", "unclassified"] as const;
+export type ElementBasis = (typeof ELEMENT_BASES)[number];
+
+/**
+ * The intake answers an overlay can be switched on by. The resolver holds the
+ * rule for each; this list is what a protocol file is allowed to name.
+ */
+export const OVERLAY_TRIGGERS = [
+  "listed-company",
+  "people-harmed",
+  "workforce-impact",
+  "crisis-in-progress",
+  "change-readiness",
+  "apology",
+  "legal-constraints",
+] as const;
+export type OverlayTrigger = (typeof OVERLAY_TRIGGERS)[number];
+
+/**
+ * How many elements each layer may carry.
+ *
+ * A family says what its events share, so it is the smallest; an event holds
+ * only what differs from its family, and an overlay only what one intake
+ * answer adds. Without these the layers grow until every review is mostly
+ * protocol, which is the failure the word budget below also guards against.
+ */
+export const ELEMENT_CAPS: Record<ProtocolLayer, number> = {
+  core: 8,
+  family: 6,
+  event: 8,
+  overlay: 5,
+};
+
+/**
+ * How many triggers each layer may carry.
+ *
+ * Per-layer for the same reason the element caps are. An overlay is switched
+ * on by one intake answer but applies across every event that answer reaches,
+ * so what it carries is the union of what those events have in common — the
+ * workforce overlay took four triggers from workforce-reduction and added four
+ * of its own for site closures, market exits and mergers. An event protocol
+ * speaks to one event and has no such union to carry, so it stays at six.
+ */
+export const TRIGGER_CAPS: Record<ProtocolLayer, number> = {
+  core: PROTOCOL_CAPS.triggers,
+  family: PROTOCOL_CAPS.triggers,
+  event: PROTOCOL_CAPS.triggers,
+  overlay: 8,
+};
+
+/**
+ * The whole compiled instruction set — core plus the longest event plus the
+ * longest posture — must stay under the length of the framework itself.
+ *
+ * Not a speed limit. Instructions are read in parallel and cached, so a
+ * thousand extra words of them cost a fraction of a second where a thousand
+ * words of output cost twenty-five. The limit is about attention. The
+ * framework is what makes the tool's judgment its own rather than a
+ * checklist; let the protocol layer outgrow it and every review is mostly
+ * protocol, whatever the draft in front of it actually needs.
+ *
+ * Derived rather than written down, for the same reason the score ceiling is:
+ * a number picked by hand is a guess that rots. This one states the rule —
+ * protocols stay the smaller voice — and stays true when the framework
+ * changes.
+ */
+
+
+/**
+ * The framework checks an event protocol may soften, and what softening means.
+ *
+ * Anchored in code rather than in a protocol file because the framework is
+ * code: it is the standard every draft is held to, and nothing in the library
+ * gets to move it. An event protocol names one of these ids when the event
+ * makes the check unsafe to assert, and the engine is told to raise it as a
+ * question instead of a finding.
+ *
+ * One entry, and it should stay hard to add to. The case that earned it: in a
+ * geopolitical event, vagueness about a country or the location of staff may
+ * be a deliberate safety decision, and the draft cannot show which.
+ */
+export const FRAMEWORK_NARROWABLE: Record<string, string> = {
+  "plain-naming":
+    "that the central fact must be stated in ordinary words rather than in euphemism or abstraction",
+};
+export type ElementWeight = "core" | "supporting";
+
+export interface ProtocolElement {
+  /** Stable, `<protocol>.<slug>`. What a finding or a changelog points at. */
+  id: string;
+  name: string;
+  means: string;
+  weight: ElementWeight;
+  dimension: DimensionId;
+  /** What kind of authority this rests on. "unclassified" until the owner says. */
+  basis: ElementBasis;
+  /**
+   * One sentence qualifying that label, for the Standards Library card.
+   *
+   * The label alone overstates several of these checks: "law" is right for an
+   * element resting on the EU worker-information directive, and wrong for the
+   * reader who does not know it binds only EU employers toward their own
+   * workers. A note says so on the element rather than three paragraphs down
+   * behind an expander.
+   *
+   * It never reaches the model. A protocol changes what the engine looks for;
+   * where the evidence came from is the reader's business, not the model's,
+   * and sending it would change reviews that this field exists not to change.
+   */
+  basis_note?: string;
+  /** Ids from sources/registry.yaml. */
+  sources: string[];
+  /** Conditions under which the element applies at all; absent means always. */
+  applies_if?: { org_type?: string[]; jurisdiction?: string[]; format?: string[]; event?: string[] };
+  /**
+   * Overlay element ids this element supersedes.
+   *
+   * One layer carries the general form of a check and another the sharper one:
+   * support that fits the data exposed rather than support in general; notice
+   * dates and pay terms rather than what changes and when. Where both apply,
+   * sending both asks the model to find the same gap twice and invites two
+   * findings for one hole in the draft.
+   *
+   * It runs in both directions the layers allow. An event protocol replaces an
+   * overlay's element, because the event knows more than the intake answer;
+   * an overlay replaces a family's, because the answer that switched it on is
+   * more specific than the family the event belongs to. Whichever names
+   * `replaces` is the one that wins.
+   */
+  replaces?: string[];
+  /**
+   * An element id, in another protocol, that this element gives way to. Where
+   * that element survives into the same bundle, this one is not sent.
+   *
+   * The loser names the winner — the opposite of `replaces` — so a protocol
+   * can defer to another without that other file having to change. The Crisis
+   * in progress overlay asks whether the response fits the organization's
+   * share of responsibility; where the author is apologizing, the Apology
+   * overlay's "Acknowledged responsibility" asks it more directly, and sending
+   * both invites two findings for one gap.
+   *
+   * It names an element rather than a protocol, as a trigger's must, because
+   * an element can say exactly which check it defers to, and the check can be
+   * made only against an element that actually survived: one dropped by its
+   * own applies_if has not been sent, and giving way to it would leave the
+   * check missing from both.
+   *
+   * The target may sit in the same layer. Overlays have no layer below them,
+   * and which of two overlays carries the sharper check is the owner's call;
+   * checkLibrary refuses a pair that would each defer to the other. An
+   * overlay's element may also give way to an event protocol's, the same
+   * direction `replaces` allows: the event knows more than the intake answer
+   * that switched the overlay on.
+   *
+   * One id, or a list where an element defers to more than one check: Crisis
+   * in progress's responsibility check gives way to Apology's and to Legal
+   * constraints' alike. Any one of them surviving is enough.
+   */
+  superseded_by?: string | string[];
+}
+
+export interface ProtocolTrigger {
+  check: string;
+  dimension: DimensionId;
+  review?: SpecialistReviewType[];
+  /**
+   * An element id, in a layer above, that this trigger is the sharper form of.
+   *
+   * The core says the central fact must not hide behind euphemism;
+   * workforce-reduction lists the euphemisms. The leadership family asks for a
+   * disagreement to be described or openly withheld; ceo-departure names the
+   * "differences" formula that evades it. One gap in the draft, two ways of
+   * describing it, and without this the model is invited to raise it twice.
+   *
+   * Any element above this protocol's layer, not only a core one: the layer
+   * the target sits in is checked by checkLibrary, which has the whole library
+   * to look in.
+   */
+  narrows?: string;
+  /**
+   * A protocol id, in a layer BELOW this one, whose own check is the sharper
+   * form of this trigger. Where that protocol also applies, this trigger is
+   * not sent at all.
+   *
+   * The mirror image of `narrows`, and needed because the two relationships
+   * are not the same. `narrows` folds two checks into one finding, worded from
+   * the sharper of them, and both are still sent so the model knows they are
+   * the same gap. This drops one outright, for the case where the sharper
+   * check is not a variant but a replacement: the scrutiny family asks whether
+   * regret is conditional, and where the author's purpose is to apologize the
+   * Apology overlay asks the same thing in more detail, on the dimension it
+   * belongs to. Sending both would be one gap described twice.
+   *
+   * It names a protocol, not a trigger, because triggers have no ids. The
+   * loser names the winner, the opposite of an element's `replaces`, for the
+   * same reason: there is nothing on the winning side to hang the pointer on.
+   *
+   * Which protocols are switched on is the resolver's business, so the
+   * condition is "that protocol applied", never a copy of the intake rule that
+   * switches it on. A file that could restate that rule could quietly widen
+   * it.
+   *
+   * It may instead name an element, `<protocol>.<slug>`, in another protocol
+   * of the same layer or a more specific one. The trigger is then dropped
+   * only when that element survives into the bundle, the same test an
+   * element's own superseded_by uses. That is how a peer overlay can take a
+   * trigger's place: Apology's "no sentence says the organization is
+   * responsible" gives way to Legal constraints' "The limit covers only what
+   * it has to", which asks for responsibility only as far as counsel allows.
+   */
+  superseded_by?: string;
+}
+
+export interface ProtocolQuestion {
+  ask: string;
+  review?: SpecialistReviewType[];
+}
+
+export interface ProtocolFile {
+  id: string;
+  name: string;
+  layer: ProtocolLayer;
+  /** Event protocols: the family they sit under. */
+  family?: string;
+  /** Overlay protocols: the intake rule that switches them on. */
+  trigger?: OverlayTrigger;
+  /** Semver. The minor turns when checks change, the patch when wording does. */
+  version: string;
+  status: "draft" | "active" | "retired";
+  /** When a human last read this against its sources. Null if never. */
+  last_reviewed?: string | null;
+  /** When it should be read again. Null until the owner sets a cadence. */
+  review_by?: string | null;
+  changelog: string[];
+  /**
+   * One line naming what kind of authority this protocol rests on.
+   *
+   * Required because the Standards Library page cannot show every citation at
+   * once and stay readable: five protocols' sources ran to three thousand
+   * words, 42% of the page. The full sources stay, one click away; this is
+   * what a reader sees first, and it has to be honest about the weight of the
+   * evidence rather than impressive about its quantity.
+   */
+  rests_on: string;
+  elements: ProtocolElement[];
+  triggers: ProtocolTrigger[];
+  questions: ProtocolQuestion[];
+  /**
+   * What this protocol softens, as framework check ids, core element ids, or
+   * both. A framework check becomes a question; a core element is replaced by
+   * this protocol's narrower reading of it.
+   */
+  narrows?: string[];
+  /**
+   * Overlays only: one line telling the model how to word what it finds, from
+   * every layer, while this overlay applies. Sent at the end of the overlay's
+   * block, so only when the overlay is in the bundle, and counted in the token
+   * budget with the rest of the block. A change to it is a change to what the
+   * engine is told, so it turns the version like any other.
+   *
+   * The Legal constraints overlay is why it exists: where counsel has limited
+   * what a message can say, a fix from any layer that would need an admission
+   * the limit rules out has to be worded as an alternative instead. Neither
+   * an element nor a trigger can say that, and the prose below is never sent.
+   */
+  instruction?: string;
+  /** Everything below the front matter: source, basis, limits. For the page, never the engine. */
+  prose: string;
+}
+
+export interface CheckError {
+  file: string;
+  message: string;
+}
+
+/** An element's superseded_by as a list, whichever form the file used. */
+export function givesWayTo(element: Pick<ProtocolElement, "superseded_by">): string[] {
+  const s = element.superseded_by;
+  return s === undefined ? [] : Array.isArray(s) ? s : [s];
+}
+
+/** The most words an overlay's instruction line may carry. */
+export const INSTRUCTION_MAX_WORDS = 60;
+
+/**
+ * Every setting name the format knows, at each level. Anything else is
+ * refused by name: a misspelt pointer ("superseeded_by") used to pass the
+ * checker and then do nothing at all, which is the worst way to fail.
+ */
+const FILE_KEYS = new Set([
+  "id", "name", "layer", "family", "trigger", "version", "status", "last_reviewed", "review_by",
+  "changelog", "rests_on", "elements", "triggers", "questions", "narrows", "instruction",
+]);
+const ELEMENT_KEYS = new Set([
+  "id", "name", "means", "weight", "dimension", "basis", "basis_note", "sources", "applies_if", "replaces", "superseded_by",
+]);
+const TRIGGER_KEYS = new Set(["check", "dimension", "review", "narrows", "superseded_by"]);
+const QUESTION_KEYS = new Set(["ask", "review"]);
+
+/** Organization types as applies_if matches them: lower case, words joined by underscores. */
+const ORG_TYPE_SLUGS = ORGANIZATION_TYPES.map((t) => t.toLowerCase().replace(/[^a-z]+/g, "_"));
+
+function unknownKeys(value: unknown, allowed: ReadonlySet<string>): string[] {
+  if (typeof value !== "object" || value === null) return [];
+  return Object.keys(value).filter((k) => !allowed.has(k));
+}
+
+const isStr = (v: unknown): v is string => typeof v === "string" && v.trim().length > 0;
+const isArr = (v: unknown): v is unknown[] => Array.isArray(v);
+
+function one<T extends string>(value: unknown, allowed: readonly T[]): value is T {
+  return typeof value === "string" && (allowed as readonly string[]).includes(value);
+}
+
+/**
+ * Checks one parsed front matter block against the format. Returns every
+ * problem rather than the first, so a file can be fixed in one pass.
+ */
+export function checkProtocol(file: string, data: unknown, prose: string): CheckError[] {
+  const errors: CheckError[] = [];
+  const err = (message: string) => errors.push({ file, message });
+  if (typeof data !== "object" || data === null) {
+    err("the front matter between the --- lines is missing or is not a list of settings");
+    return errors;
+  }
+  const d = data as Record<string, unknown>;
+
+  if (!isStr(d.id)) err("needs an id, a short name with no spaces, such as cyber-incident");
+  else if (!/^[a-z0-9-]+$/.test(d.id)) err(`id "${d.id}" may use only lower-case letters, numbers and hyphens`);
+  if (!isStr(d.name)) err("needs a name, the title shown in the Standards Library");
+  if (!isStr(d.rests_on)) {
+    err('needs rests_on: one line naming what kind of authority it rests on, such as "US regulator guidance plus professional judgment; no effectiveness studies exist"');
+  } else if ((d.rests_on as string).trim().split(/\s+/).length > 30) {
+    err(`rests_on is ${(d.rests_on as string).trim().split(/\s+/).length} words; keep it to 30. It is the line a reader sees instead of the full sources, not a summary of them.`);
+  }
+  if (!isStr(d.version) || !/^\d+\.\d+\.\d+$/.test(d.version as string)) {
+    err(`version must be semver, such as 1.0.0. Got ${JSON.stringify(d.version)}`);
+  }
+  if (!one(d.status, ["draft", "active", "retired"] as const)) err('status must be "draft", "active" or "retired"');
+  for (const field of ["last_reviewed", "review_by"] as const) {
+    const v = d[field];
+    if (v !== null && v !== undefined && !(typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v))) {
+      err(`${field} must be a date as YYYY-MM-DD, or null. Got ${JSON.stringify(v)}`);
+    }
+  }
+  for (const key of unknownKeys(d, FILE_KEYS)) {
+    if (key === "events" || key === "purposes") continue; // refused below, with its own explanation
+    err(`does not understand the setting "${key}". Check the spelling; the settings are: ${[...FILE_KEYS].join(", ")}.`);
+  }
+  if (!isArr(d.changelog) || d.changelog.length === 0) {
+    err('needs a changelog: a list of lines, starting with the version, such as "1.0.0 — first version."');
+  } else {
+    d.changelog.forEach((line, i) => {
+      if (typeof line !== "string" || !/^\d+\.\d+\.\d+\b/.test(line)) {
+        err(`changelog line ${i + 1} must start with the version it describes, such as "1.0.0 — first version."`);
+      }
+    });
+    const first = typeof d.changelog[0] === "string" ? /^(\d+\.\d+\.\d+)/.exec(d.changelog[0])?.[1] : undefined;
+    if (first && isStr(d.version) && first !== d.version) {
+      err(`the first changelog line is for ${first} but the version is ${d.version}. Add a line for ${d.version} at the top.`);
+    }
+  }
+
+  if (!one(d.layer, PROTOCOL_LAYERS)) {
+    err(`layer must be one of ${PROTOCOL_LAYERS.join(", ")}. Got ${JSON.stringify(d.layer)}`);
+    return errors;
+  }
+  const layer = d.layer;
+
+  // An event protocol names its family; the taxonomy names its events. One
+  // direction only, so the menu and the engine cannot drift apart.
+  if (layer === "event") {
+    if (!isStr(d.family)) err("an event protocol needs family: the family id it sits under");
+  } else if (d.family !== undefined) {
+    err("only a protocol with layer: event names a family");
+  }
+  if (d.events !== undefined || d.purposes !== undefined) {
+    err("events and purposes are no longer named here. protocols/events.yaml points at an event protocol; an overlay names a trigger.");
+  }
+
+  if (layer === "overlay") {
+    if (!one(d.trigger, OVERLAY_TRIGGERS)) {
+      err(`an overlay needs trigger: one of ${OVERLAY_TRIGGERS.join(", ")}. Got ${JSON.stringify(d.trigger)}`);
+    }
+  } else if (d.trigger !== undefined) {
+    err("only a protocol with layer: overlay names a trigger");
+  }
+
+  // An instruction reaches every finding the review writes, not just this
+  // protocol's, so it is held to one short line and to the layer that is
+  // switched on by an explicit intake answer.
+  if (d.instruction !== undefined) {
+    if (layer !== "overlay") err("only a protocol with layer: overlay may carry an instruction");
+    if (!isStr(d.instruction)) err("instruction must be one line of text");
+    else {
+      const text = (d.instruction as string).trim();
+      if (/\n/.test(text)) err("instruction must be one line; it has a line break in it");
+      const words = text.split(/\s+/).length;
+      if (words > INSTRUCTION_MAX_WORDS) {
+        err(`instruction is ${words} words; keep it to ${INSTRUCTION_MAX_WORDS}. It is sent with every review this overlay joins.`);
+      }
+    }
+  }
+
+  // Elements.
+  if (!isArr(d.elements)) err("needs an elements list, even if it is empty");
+  else {
+    const cap = ELEMENT_CAPS[layer];
+    if (d.elements.length > cap) {
+      err(`has ${d.elements.length} elements; the most a ${layer} protocol may carry is ${cap}. Keep the ones this layer turns on and let the layer above carry the rest.`);
+    }
+    const seenIds = new Set<string>();
+    d.elements.forEach((raw, i) => {
+      const e = raw as Record<string, unknown>;
+      const at = `element ${i + 1}`;
+      for (const key of unknownKeys(e, ELEMENT_KEYS)) {
+        err(`${at} does not understand the setting "${key}". Check the spelling; an element takes: ${[...ELEMENT_KEYS].join(", ")}.`);
+      }
+      if (!isStr(e.id)) err(`${at} needs an id, such as ${isStr(d.id) ? d.id : "protocol"}.what-it-checks`);
+      else {
+        if (seenIds.has(e.id)) err(`${at} repeats the id "${e.id}"`);
+        seenIds.add(e.id);
+        if (isStr(d.id) && !e.id.startsWith(`${d.id}.`)) err(`${at} id "${e.id}" must start with "${d.id}."`);
+      }
+      if (!isStr(e.name)) err(`${at} needs a name`);
+      if (!isStr(e.means)) err(`${at} needs "means": one sentence saying what it is`);
+      if (!one(e.weight, ["core", "supporting"] as const)) err(`${at} weight must be "core" or "supporting"`);
+      if (!one(e.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(e.dimension)} is not one of the ten scored dimensions`);
+      if (!one(e.basis, ELEMENT_BASES)) err(`${at} basis must be one of ${ELEMENT_BASES.join(", ")}. Got ${JSON.stringify(e.basis)}`);
+      if (e.basis_note !== undefined) {
+        if (!isStr(e.basis_note)) err(`${at} basis_note must be one short sentence qualifying the basis label`);
+        else if ((e.basis_note as string).trim().split(/\s+/).length > 40) {
+          err(`${at} basis_note is ${(e.basis_note as string).trim().split(/\s+/).length} words; keep it to 40. It is the line under the label, not the Source section.`);
+        }
+      }
+      if (!isArr(e.sources)) err(`${at} needs a sources list, even if it is empty`);
+      else for (const src of e.sources) if (typeof src !== "string") err(`${at} lists a source that is not an id`);
+      if (e.replaces !== undefined) {
+        if (!isArr(e.replaces)) err(`${at} replaces must be a list of overlay element ids this one supersedes`);
+        else {
+          if (layer !== "event" && layer !== "overlay") {
+            err(`${at} names replaces, which only an event or overlay protocol's element may do: it is the sharper reading that wins`);
+          }
+          for (const r of e.replaces) if (typeof r !== "string") err(`${at} replaces an entry that is not an element id`);
+        }
+      }
+      if (e.superseded_by !== undefined) {
+        const targets = isArr(e.superseded_by) ? e.superseded_by : [e.superseded_by];
+        const valid = (t: unknown) => isStr(t) && /^[a-z0-9-]+\.[\w-]+$/.test(t);
+        if (targets.length === 0 || !targets.every(valid)) {
+          err(`${at} superseded_by ${JSON.stringify(e.superseded_by)}. Name the element it gives way to by its id, such as apology.acknowledged-responsibility, or list several.`);
+        }
+      }
+      if (e.applies_if !== undefined) {
+        if (typeof e.applies_if !== "object" || e.applies_if === null) err(`${at} applies_if must be a list of conditions`);
+        else {
+          const cond = e.applies_if as Record<string, unknown>;
+          for (const key of Object.keys(cond)) {
+            if (key !== "org_type" && key !== "jurisdiction" && key !== "format" && key !== "event") {
+              err(`${at} applies_if does not understand "${key}"; it takes org_type, jurisdiction, format and event`);
+            } else if (!isArr(cond[key])) {
+              err(`${at} applies_if ${key} must be a list`);
+            }
+          }
+          // A value that matches nothing switches the element off everywhere
+          // and looks exactly like an element that never fires, so each one is
+          // checked against the lists the intake actually offers. Event ids
+          // are checked against events.yaml in checkLibrary.
+          const list = (key: string): unknown[] => (isArr(cond[key]) ? (cond[key] as unknown[]) : []);
+          for (const v of list("org_type")) {
+            if (typeof v !== "string" || !ORG_TYPE_SLUGS.some((slug) => slug.includes(v.toLowerCase()))) {
+              err(`${at} applies_if org_type ${JSON.stringify(v)} matches no organization type. Use part of one of: ${ORG_TYPE_SLUGS.join(", ")}.`);
+            }
+          }
+          for (const v of list("format")) {
+            if (typeof v !== "string" || !(COMMUNICATION_FORMATS as readonly string[]).includes(v)) {
+              err(`${at} applies_if format ${JSON.stringify(v)} is not one of the formats the intake offers. Copy it exactly from the intake list.`);
+            }
+          }
+          for (const v of list("jurisdiction")) {
+            if (typeof v !== "string" || !(v in JURISDICTION_BLOCS || COUNTRIES.includes(v))) {
+              err(`${at} applies_if jurisdiction ${JSON.stringify(v)} is neither a country the intake offers nor a bloc (${Object.keys(JURISDICTION_BLOCS).join(", ")}).`);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  // Triggers.
+  if (!isArr(d.triggers)) err("needs a triggers list, even if it is empty");
+  else {
+    const triggerCap = TRIGGER_CAPS[layer];
+    if (d.triggers.length > triggerCap) {
+      err(`has ${d.triggers.length} triggers; the most a ${layer} protocol may carry is ${triggerCap}. If everything is serious, nothing is.`);
+    }
+    d.triggers.forEach((raw, i) => {
+      const t = raw as Record<string, unknown>;
+      const at = `trigger ${i + 1}`;
+      for (const key of unknownKeys(t, TRIGGER_KEYS)) {
+        err(`${at} does not understand the setting "${key}". Check the spelling; a trigger takes: ${[...TRIGGER_KEYS].join(", ")}.`);
+      }
+      if (!isStr(t.check)) err(`${at} needs "check": what to look for, checkable by reading the draft`);
+      if (!one(t.dimension, DIMENSION_IDS)) err(`${at} dimension ${JSON.stringify(t.dimension)} is not one of the ten scored dimensions`);
+      if (t.narrows !== undefined && !(isStr(t.narrows) && /^[a-z0-9-]+\.[\w-]+$/.test(t.narrows))) {
+        err(`${at} narrows ${JSON.stringify(t.narrows)}. Name the element it sharpens by its id, such as core.central_fact_first or leadership.disagreement-described.`);
+      }
+      if (t.superseded_by !== undefined && !(isStr(t.superseded_by) && /^[a-z0-9-]+(\.[\w-]+)?$/.test(t.superseded_by))) {
+        err(`${at} superseded_by ${JSON.stringify(t.superseded_by)}. Name the protocol whose sharper check replaces this trigger by its id, such as apology, or the element, such as legal-constraints.limit-scope.`);
+      }
+      reviewList(t.review, at, err);
+    });
+  }
+
+  // Questions.
+  if (!isArr(d.questions)) err("needs a questions list, even if it is empty");
+  else {
+    if (d.questions.length > PROTOCOL_CAPS.questions) {
+      err(`has ${d.questions.length} questions; the most allowed is ${PROTOCOL_CAPS.questions}, and a review shows at most ${MAX_QUESTIONS} in total.`);
+    }
+    d.questions.forEach((raw, i) => {
+      const q = raw as Record<string, unknown>;
+      const at = `question ${i + 1}`;
+      for (const key of unknownKeys(q, QUESTION_KEYS)) {
+        err(`${at} does not understand the setting "${key}". A question takes ask and review.`);
+      }
+      if (!isStr(q.ask)) err(`${at} needs "ask": the question itself`);
+      // Contains a question mark, rather than ends with one. The rule is here
+      // to stop a statement being filed as a question, and a legal question
+      // properly ends "... does the timing fit? Counsel must confirm." —
+      // which is what PROTOCOL-PROMPT.md asks authors to write.
+      else if (!q.ask.includes("?")) err(`${at} is not a question: it contains no question mark`);
+      reviewList(q.review, at, err);
+    });
+  }
+
+  if (d.narrows !== undefined) {
+    if (!isArr(d.narrows)) err("narrows must be a list of framework check ids this protocol softens");
+    else if (layer === "core") err("the core protocol cannot narrow the framework it sits directly under");
+    else {
+      for (const n of d.narrows) {
+        if (typeof n !== "string" || !(n in FRAMEWORK_NARROWABLE || n.startsWith("core."))) {
+          err(
+            `narrows ${JSON.stringify(n)}, which is neither a framework check that may be narrowed nor a core protocol element. ` +
+              `The framework allows: ${Object.keys(FRAMEWORK_NARROWABLE).join(", ")}. A core element is named by its id, such as core.central_fact_first. ` +
+              `Name the id, not the wording.`,
+          );
+        }
+      }
+    }
+  }
+
+  // A protocol changes what the engine looks for, never what it writes.
+  const body = JSON.stringify(d);
+  if (/protocol_review|a section of its own|own section/i.test(body)) {
+    err("asks for an output section. A protocol adds instructions, never output: raise what it finds through the ordinary findings.");
+  }
+  if (prose.trim().length === 0) {
+    err("has no prose below the front matter. Source, Basis and Limits are what the Standards Library page shows.");
+  } else {
+    // Every protocol shows its sources. Only an event protocol needs the
+    // separate Basis heading: rests_on, which every protocol now carries,
+    // already names what kind of authority it rests on, and the event
+    // protocols are where the distinction between binding law and professional
+    // consensus is long enough to need a section of its own.
+    for (const heading of layer === "event" ? ["Source", "Basis"] : ["Source"]) {
+      if (!new RegExp(`^#+\\s*(\\d+\\.\\s*)?${heading}\\b`, "im").test(prose)) {
+        err(`has no "${heading}" section. A protocol that cannot name what it rests on does not go in the library.`);
+      }
+    }
+  }
+
+  return errors;
+}
+
+function reviewList(value: unknown, at: string, err: (m: string) => void): void {
+  if (value === undefined) return;
+  if (!isArr(value)) {
+    err(`${at} review must be a list of specialist review types`);
+    return;
+  }
+  for (const r of value) {
+    if (!one(r, SPECIALIST_REVIEW_TYPES)) {
+      err(`${at} names ${JSON.stringify(r)}, which is not a specialist review type. The types are: ${SPECIALIST_REVIEW_TYPES.join(", ")}.`);
+    }
+  }
+}
+
+/** What the taxonomy says about an event; the compiler passes it in. */
+export interface EventEntry {
+  id: string;
+  label: string;
+  family: string | null;
+  event_protocol?: string;
+  ui_groups: string[];
+}
+
+/** Problems that only show up across the whole library, not in one file. */
+export function checkLibrary(
+  files: { file: string; data: ProtocolFile }[],
+  events: EventEntry[] = [],
+  families: string[] = [],
+  sourceIds: string[] = [],
+): CheckError[] {
+  const errors: CheckError[] = [];
+  const byId = new Map<string, string>();
+  const byTrigger = new Map<string, string>();
+  const known = new Set(sourceIds);
+
+  for (const { file, data } of files) {
+    const seenId = byId.get(data.id);
+    if (seenId) errors.push({ file, message: `id "${data.id}" is already used by ${seenId}` });
+    byId.set(data.id, file);
+
+    if (data.layer === "overlay" && data.trigger) {
+      const seen = byTrigger.get(data.trigger);
+      if (seen) errors.push({ file, message: `trigger "${data.trigger}" is already claimed by ${seen}. One overlay per rule.` });
+      byTrigger.set(data.trigger, file);
+    }
+    if (data.layer === "event" && data.family && families.length > 0 && !families.includes(data.family)) {
+      errors.push({ file, message: `family "${data.family}" is not one of the families in events.yaml: ${families.join(", ")}` });
+    }
+    if (sourceIds.length > 0) {
+      for (const e of data.elements) {
+        for (const src of e.sources ?? []) {
+          if (!known.has(src)) errors.push({ file, message: `element ${e.id} cites source "${src}", which is not in sources/registry.yaml` });
+        }
+      }
+    }
+  }
+
+  // Every `replaces` and every core-element `narrows` must point at an element
+  // that exists. A dangling pointer is silent: the overlay element is never
+  // dropped, or the model is told to fold a finding into a check that is not
+  // there, and the only sign is two findings for one gap.
+  const elementIds = new Set(files.flatMap(({ data }) => data.elements.map((e) => e.id)));
+  const elementsById = new Map(files.flatMap(({ data }) => data.elements.map((e) => [e.id, { layer: data.layer }] as const)));
+  for (const { file, data } of files) {
+    for (const e of data.elements) {
+      for (const target of e.replaces ?? []) {
+        if (!elementIds.has(target)) errors.push({ file, message: `element ${e.id} replaces "${target}", which no protocol defines` });
+      }
+    }
+    for (const n of data.narrows ?? []) {
+      if (n.includes(".") && !elementIds.has(n)) {
+        errors.push({ file, message: `narrows "${n}", which no protocol defines` });
+      }
+    }
+    data.triggers.forEach((t, i) => {
+      if (!t.narrows) return;
+      const target = elementsById.get(t.narrows);
+      if (!target) {
+        errors.push({ file, message: `trigger ${i + 1} narrows "${t.narrows}", which no protocol defines` });
+        return;
+      }
+      // Sharper, not sideways: a trigger folds a check stated generally by a
+      // layer ABOVE it into its own wording. Narrowing a peer or a layer below
+      // would be two protocols each deferring to the other.
+      if (PROTOCOL_LAYERS.indexOf(target.layer) >= PROTOCOL_LAYERS.indexOf(data.layer)) {
+        errors.push({
+          file,
+          message:
+            `trigger ${i + 1} narrows "${t.narrows}", which is in the ${target.layer} layer. ` +
+            `A ${data.layer} protocol may only sharpen a check stated by a layer above it.`,
+        });
+      }
+    });
+    // An element's superseded_by: the element it defers to must exist, in
+    // another protocol, in the same layer or a more specific one, and must not
+    // itself defer back or replace this one. A dangling pointer is silent at
+    // review time — the element is simply never dropped.
+    for (const e of data.elements) {
+      for (const winner of givesWayTo(e)) {
+        const target = elementsById.get(winner);
+        if (!target) {
+          errors.push({ file, message: `element ${e.id} is superseded_by "${winner}", which no protocol defines` });
+          continue;
+        }
+        if (winner.split(".")[0] === data.id) {
+          errors.push({ file, message: `element ${e.id} is superseded_by "${winner}", which is in the same protocol` });
+        }
+        const overlayToEvent = data.layer === "overlay" && target.layer === "event";
+        if (PROTOCOL_LAYERS.indexOf(target.layer) < PROTOCOL_LAYERS.indexOf(data.layer) && !overlayToEvent) {
+          errors.push({
+            file,
+            message:
+              `element ${e.id} is superseded_by "${winner}", which is in the ${target.layer} layer. ` +
+              `A ${data.layer} protocol's element may only give way to one in the same layer or a more specific one` +
+              `${data.layer === "overlay" ? ", or to an event protocol's" : ""}.`,
+          });
+        }
+        const back = files.flatMap(({ data: d }) => d.elements).find((x) => x.id === winner);
+        if (back && (givesWayTo(back).includes(e.id) || (back.replaces ?? []).includes(e.id))) {
+          errors.push({ file, message: `element ${e.id} and "${winner}" each defer to the other; one of them has to win` });
+        }
+      }
+    }
+    // superseded_by runs the other way: the protocol that wins is the more
+    // specific one, so it must sit BELOW the one giving way. A dangling or
+    // sideways pointer is silent — the trigger is simply never dropped.
+    data.triggers.forEach((t, i) => {
+      if (!t.superseded_by) return;
+      // An element: it must exist, in another protocol, in the same layer or
+      // a more specific one.
+      if (t.superseded_by.includes(".")) {
+        const element = elementsById.get(t.superseded_by);
+        if (!element) {
+          errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which no protocol defines` });
+          return;
+        }
+        if (t.superseded_by.split(".")[0] === data.id) {
+          errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is in the same protocol` });
+        }
+        if (PROTOCOL_LAYERS.indexOf(element.layer) < PROTOCOL_LAYERS.indexOf(data.layer)) {
+          errors.push({
+            file,
+            message:
+              `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is in the ${element.layer} layer. ` +
+              `A ${data.layer} protocol's trigger may only give way to an element in the same layer or a more specific one.`,
+          });
+        }
+        return;
+      }
+      const target = files.find(({ data: d }) => d.id === t.superseded_by);
+      if (!target) {
+        errors.push({ file, message: `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is not a protocol in the library` });
+        return;
+      }
+      if (PROTOCOL_LAYERS.indexOf(target.data.layer) <= PROTOCOL_LAYERS.indexOf(data.layer)) {
+        errors.push({
+          file,
+          message:
+            `trigger ${i + 1} is superseded_by "${t.superseded_by}", which is in the ${target.data.layer} layer. ` +
+            `A ${data.layer} protocol may only give way to a layer below it, which is the more specific one.`,
+        });
+      }
+    });
+  }
+
+  // An applies_if event must be a real event id. A typo here would switch the
+  // element off everywhere and look exactly like an element that never fires.
+  if (events.length > 0) {
+    const eventIds = new Set(events.map((e) => e.id));
+    for (const { file, data } of files) {
+      for (const e of data.elements) {
+        for (const id of e.applies_if?.event ?? []) {
+          if (!eventIds.has(id)) {
+            errors.push({ file, message: `element ${e.id} applies_if names event "${id}", which is not in protocols/events.yaml` });
+          }
+        }
+      }
+    }
+  }
+
+  // The taxonomy and the folder have to agree in both directions.
+  for (const event of events) {
+    if (event.family === null) continue;
+    if (families.length > 0 && !families.includes(event.family)) {
+      errors.push({ file: "protocols/events.yaml", message: `event "${event.id}" names family "${event.family}", which is not declared` });
+    }
+    if (families.includes(event.family) && !byId.has(event.family)) {
+      errors.push({ file: "protocols/events.yaml", message: `event "${event.id}" needs family "${event.family}", but protocols/families/${event.family}.md does not exist` });
+    }
+    if (event.event_protocol && !byId.has(event.event_protocol)) {
+      errors.push({ file: "protocols/events.yaml", message: `event "${event.id}" points at protocol "${event.event_protocol}", which does not exist` });
+    }
+  }
+  const claimed = new Set(events.flatMap((e) => (e.event_protocol ? [e.event_protocol] : [])));
+  for (const { file, data } of files) {
+    if (data.layer === "event" && !claimed.has(data.id)) {
+      errors.push({ file, message: `no event in events.yaml points at "${data.id}", so it can never apply` });
+    }
+  }
+  return errors;
+}
