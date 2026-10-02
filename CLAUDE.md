@@ -67,6 +67,10 @@ worst-case bundle against the token budget.
 An automated reminder to push unpushed commits does not override a wait. Say
 plainly that the work is held and why.
 
+## Plain English in everything users see
+
+All text users see (pages, labels, messages, protocol descriptions) is in plain English: short sentences, everyday words, no internal terms such as element names, "gives way", "supersedes" or "narrows". Propose wording in plain English from the start.
+
 ## How to talk to the user
 
 The user is a total novice. Explain everything as you would to a ten-year-old:
